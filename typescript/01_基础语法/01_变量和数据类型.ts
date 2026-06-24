@@ -1,5 +1,5 @@
 // ============================================================
-// TypeScript 基础语法 - 变量、类型、运算符
+// TypeScript 基础语法 - 变量和数据类型
 // 运行：ts-node 01_变量和数据类型.ts
 // 或编译：tsc 01_变量和数据类型.ts && node 01_变量和数据类型.js
 // ============================================================
@@ -24,39 +24,18 @@ let age: number = 37;
 let sentence: string = `Hello, my name is ${fullName}. I'll be ${age + 1} years old.`;
 console.log(`字符串: ${sentence}`);
 
-// 4. 数组
-let list1: number[] = [1, 2, 3];
-let list2: Array<number> = [1, 2, 3];
-console.log(`数组: [${list1.join(', ')}]`);
-
-// 5. 元组 Tuple
-let x: [string, number];
-x = ["hello", 10];
-console.log(`元组: [${x[0]}, ${x[1]}]`);
-
-// 6. 枚举
-enum Color {Red = 1, Green = 2, Blue = 4}
-let c: Color = Color.Green;
-console.log(`枚举: c = ${c}, Color[Green] = ${Color[2]}`);
-
-// 7. Any 类型
-let notSure: any = 4;
-notSure = "maybe a string instead";
-notSure = false;
-console.log(`any: 可以随意改变类型`);
-
-// 8. Void 类型
+// 4. Void 类型
 function warnUser(): void {
     console.log("这是一个没有返回值的函数");
 }
 warnUser();
 
-// 9. Null 和 Undefined
+// 5. Null 和 Undefined
 let u: undefined = undefined;
 let n: null = null;
 console.log(`undefined = ${u}, null = ${n}`);
 
-// 10. Never 类型
+// 6. Never 类型
 function error(message: string): never {
     throw new Error(message);
 }
@@ -66,7 +45,7 @@ try {
     console.log(`Never 类型: 抛出异常 - ${e.message}`);
 }
 
-// 11. Object 类型
+// 7. Object 类型
 declare function create(o: object | null): void;
 console.log("Object 类型: 可以传入对象");
 
@@ -126,31 +105,10 @@ let obj2 = { ...obj1, c: 3 };
 console.log(`对象展开: a=${obj2.a}, b=${obj2.b}, c=${obj2.c}`);
 
 // ============================================================
-// 类型别名
+// 字面量类型
 // ============================================================
 
-console.log("\n=== 5. 类型别名 ===");
-
-type Name = string;
-type NameResolver = () => string;
-type NameOrResolver = Name | NameResolver;
-
-function getName(n: NameOrResolver): Name {
-    if (typeof n === "string") {
-        return n;
-    } else {
-        return n();
-    }
-}
-
-console.log(`类型别名: ${getName("张三")}`);
-console.log(`类型别名函数: ${getName(() => "李四")}`);
-
-// ============================================================
-// 字符串字面量类型
-// ============================================================
-
-console.log("\n=== 6. 字面量类型 ===");
+console.log("\n=== 5. 字面量类型 ===");
 
 type Direction = "north" | "south" | "east" | "west";
 

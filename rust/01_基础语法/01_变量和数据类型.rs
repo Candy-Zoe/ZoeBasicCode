@@ -1,7 +1,6 @@
 // ============================================================
-// Rust 基础语法 - 变量、数据类型、函数
+// Rust 基础语法 - 变量和数据类型
 // 编译运行：rustc 01_变量和数据类型.rs -o 01_变量和数据类型 && ./01_变量和数据类型
-// 或使用 cargo
 // ============================================================
 
 fn main() {
@@ -27,10 +26,6 @@ fn main() {
     let spaces = spaces.len();
     println!("spaces = {} (字符串的长度)", spaces);
 
-    // ============================================================
-    // 数据类型
-    // ============================================================
-
     println!("\n=== 2. 数据类型 ===");
 
     // 整型
@@ -41,14 +36,6 @@ fn main() {
     let x = 2.0;       // f64
     let y: f32 = 3.0;  // f32
     println!("f64: x = {}, f32: y = {}", x, y);
-
-    // 数值运算
-    let sum = 5 + 10;
-    let difference = 95.5 - 4.3;
-    let product = 4 * 30;
-    let quotient = 56.7 / 32.2;
-    let remainder = 43 % 5;
-    println!("加: {}, 减: {}, 乘: {}, 除: {:.2}, 模: {}", sum, difference, product, quotient, remainder);
 
     // 布尔类型
     let t = true;
@@ -79,31 +66,14 @@ fn main() {
     println!("数组: [{}, {}, {}, {}, {}]", a[0], a[1], a[2], a[3], a[4]);
     println!("c = [{}, {}, {}, {}, {}]", c[0], c[1], c[2], c[3], c[4]);
 
-    // ============================================================
-    // 函数
-    // ============================================================
+    println!("\n=== 3. 类型转换 ===");
+    let x: i32 = 5;
+    let y: f64 = x as f64;
+    println!("i32 -> f64: {} -> {}", x, y);
 
-    println!("\n=== 3. 函数 ===");
-
-    println!("add(5, 3) = {}", add(5, 3));
-    println!("add(10, 20) = {}", add(10, 20));
-
-    let five = five();
-    println!("five() = {}", five);
-
-    let x = plus_one(5);
-    println!("plus_one(5) = {}", x);
-
-    // 函数作为表达式
-    let y = {
-        let x = 3;
-        x + 1  // 注意没有分号，这是表达式
-    };
-    println!("y = {}", y);
-
-    // ============================================================
-    // 注释
-    // ============================================================
+    let f = 3.99;
+    let i: i32 = f as i32;
+    println!("f64 -> i32: {} -> {}", f, i);
 
     println!("\n=== 4. 注释 ===");
     println!("// 单行注释");
@@ -111,86 +81,5 @@ fn main() {
     println!("/// 文档注释");
     println!("//! 模块级文档注释");
 
-    // ============================================================
-    // 控制流
-    // ============================================================
-
-    println!("\n=== 5. 控制流 ===");
-
-    // if 表达式
-    let number = 3;
-    if number < 5 {
-        println!("条件为真");
-    } else {
-        println!("条件为假");
-    }
-
-    // if let
-    let number = 6;
-    if number % 4 == 0 {
-        println!("能被 4 整除");
-    } else if number % 3 == 0 {
-        println!("能被 3 整除");
-    } else if number % 2 == 0 {
-        println!("能被 2 整除");
-    } else {
-        println!("不能被 4, 3, 2 整除");
-    }
-
-    // if 作为表达式
-    let condition = true;
-    let number = if condition { 5 } else { 6 };
-    println!("number = {}", number);
-
-    // loop 循环
-    println!("\n--- loop 循环 ---");
-    let mut counter = 0;
-    let result = loop {
-        counter += 1;
-        if counter == 10 {
-            break counter * 2;  // break 可以返回值
-        }
-    };
-    println!("循环结果: {}", result);
-
-    // while 循环
-    println!("\n--- while 循环 ---");
-    let mut number = 3;
-    while number != 0 {
-        println!("{}!", number);
-        number -= 1;
-    }
-    println!("发射！");
-
-    // for 循环
-    println!("\n--- for 循环 ---");
-    let a = [10, 20, 30, 40, 50];
-    for element in a.iter() {
-        println!("值为: {}", element);
-    }
-
-    // Range
-    println!("\n--- Range ---");
-    for number in 1..4 {  // 1..4 是 1, 2, 3
-        println!("{}", number);
-    }
-
-    for number in (1..4).rev() {  // 反转
-        println!("{}!", number);
-    }
-    println!("出发！");
-
     println!("\n=== 运行完成 ===");
-}
-
-fn add(a: i32, b: i32) -> i32 {
-    a + b  // 表达式，没有分号
-}
-
-fn five() -> i32 {
-    5
-}
-
-fn plus_one(x: i32) -> i32 {
-    x + 1
 }
