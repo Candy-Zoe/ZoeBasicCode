@@ -61,6 +61,12 @@
                 <ul>
                     <li><a href="#intro">简介</a></li>
                     <li><a href="#variable">变量和数据类型</a></li>
+                    <li><a href="#operator">运算符</a></li>
+                    <li><a href="#condition">条件语句</a></li>
+                    <li><a href="#loop">循环语句</a></li>
+                    <li><a href="#function-basic">函数基础</a></li>
+                    <li><a href="#array">数组</a></li>
+                    <li><a href="#string">string 字符串</a></li>
                     <li><a href="#oop">面向对象</a></li>
                     <li><a href="#stl">STL 容器</a></li>
                     <li><a href="#function">函数和模板</a></li>
@@ -153,6 +159,1040 @@ nums.push_back(6);           // 添加元素
 cout << "大小: " << nums.size() << endl;
 cout << "第一个: " << nums.front() << endl;
 cout << "最后一个: " << nums.back() << endl;</code></pre>
+                </div>
+            </section>
+
+            <section id="operator">
+                <h2>运算符</h2>
+
+                <h3>算术运算符</h3>
+                <p>算术运算符用于执行基本的数学运算，包括加、减、乘、除和取模。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int a = 10, b = 3;
+
+cout << "a + b = " << a + b << endl;   // 加法: 13
+cout << "a - b = " << a - b << endl;   // 减法: 7
+cout << "a * b = " << a * b << endl;   // 乘法: 30
+cout << "a / b = " << a / b << endl;   // 除法: 3（整数除法）
+cout << "a % b = " << a % b << endl;   // 取模: 1
+
+// 浮点数除法
+double c = 10.0, d = 3.0;
+cout << "c / d = " << c / d << endl;   // 3.333333</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 整数除法 vs 浮点数除法</strong>
+                    <p>当两个整数相除时，结果也是整数（小数部分被截断）。只要其中一个操作数是浮点数，结果就是浮点数。</p>
+                </div>
+
+                <h3>比较运算符</h3>
+                <p>比较运算符用于比较两个值的大小关系，返回 true 或 false。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int x = 5, y = 10;
+
+cout << boolalpha;           // 显示 true/false 而非 1/0
+cout << "x == y: " << (x == y) << endl;  // false（相等）
+cout << "x != y: " << (x != y) << endl;  // true（不相等）
+cout << "x > y: " << (x > y) << endl;   // false（大于）
+cout << "x < y: " << (x < y) << endl;   // true（小于）
+cout << "x >= y: " << (x >= y) << endl; // false（大于等于）
+cout << "x <= y: " << (x <= y) << endl; // true（小于等于）</code></pre>
+                </div>
+
+                <h3>逻辑运算符</h3>
+                <p>逻辑运算符用于组合多个条件，常用于条件判断和循环控制。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>bool a = true, b = false;
+
+cout << boolalpha;
+cout << "a && b: " << (a && b) << endl;  // false（逻辑与：两者都为true才为true）
+cout << "a || b: " << (a || b) << endl;  // true（逻辑或：至少一个为true就为true）
+cout << "!a: " << (!a) << endl;          // false（逻辑非：取反）
+
+// 实际应用示例
+int age = 20;
+bool hasID = true;
+
+if (age >= 18 && hasID) {
+    cout << "可以进入电影院" << endl;
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 短路求值</strong>
+                    <p>C++ 在计算逻辑表达式时会"短路"：如果使用 &&，左边为 false 则右边不执行；如果使用 ||，左边为 true 则右边不执行。这可以提高效率并避免错误。</p>
+                </div>
+
+                <h3>自增自减运算符</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int i = 5;
+
+cout << "i++: " << i++ << endl;  // 先使用值(5)，再增加 -> 输出5，i变为6
+cout << "i: " << i << endl;      // i现在是6
+
+cout << "++i: " << ++i << endl;  // 先增加，再使用值 -> 输出7，i变为7
+
+cout << "i--: " << i-- << endl;  // 先使用值(7)，再减少 -> 输出7，i变为6
+cout << "--i: " << --i << endl;  // 先减少，再使用值 -> 输出5，i变为5</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 建议</strong>
+                    <p>在复杂表达式中，建议单独使用 ++i 或 i++，避免依赖求值顺序导致的行为不一致。</p>
+                </div>
+
+                <h3>赋值运算符</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int x = 10;
+
+x += 5;   // 等价于 x = x + 5，x变为15
+x -= 3;   // 等价于 x = x - 3，x变为12
+x *= 2;   // 等价于 x = x * 2，x变为24
+x /= 4;   // 等价于 x = x / 4，x变为6
+x %= 4;   // 等价于 x = x % 4，x变为2
+
+cout << "最终结果: " << x << endl;</code></pre>
+                </div>
+            </section>
+
+            <section id="condition">
+                <h2>条件语句</h2>
+
+                <h3>if-else 语句</h3>
+                <p>if-else 是最基本的条件判断语句，根据条件的真假来决定执行哪段代码。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int score = 85;
+
+if (score >= 90) {
+    cout << "优秀" << endl;
+} else if (score >= 70) {
+    cout << "良好" << endl;
+} else if (score >= 60) {
+    cout << "及格" << endl;
+} else {
+    cout << "不及格" << endl;
+}
+
+// 简化写法（适合简单情况）
+string result = (score >= 60) ? "及格" : "不及格";
+cout << "结果: " << result << endl;</code></pre>
+                </div>
+                <div class="output-block">
+                    良好<br>
+                    结果: 及格
+                </div>
+
+                <h3>switch-case 语句</h3>
+                <p>当需要根据一个变量的值选择多个分支时，switch 语句比多个 if-else 更清晰。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int day = 3;
+
+switch (day) {
+    case 1:
+        cout << "今天是星期一" << endl;
+        break;    // 不要忘记 break，否则会继续执行下一个 case
+    case 2:
+        cout << "今天是星期二" << endl;
+        break;
+    case 3:
+        cout << "今天是星期三" << endl;
+        break;
+    case 4:
+        cout << "今天是星期四" << endl;
+        break;
+    case 5:
+        cout << "今天是星期五" << endl;
+        break;
+    case 6:
+    case 7:
+        cout << "今天是周末" << endl;
+        break;    // case 6 和 case 7 执行相同的代码
+    default:
+        cout << "无效的星期" << endl;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    今天是星期三
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 switch 注意事项</strong>
+                    <ul>
+                        <li>switch 括号中必须是整数、字符或枚举类型</li>
+                        <li>每个 case 后通常要加 break，否则会"贯穿"到下一个 case</li>
+                        <li>default 是可选的，用于处理所有未匹配的情况</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="loop">
+                <h2>循环语句</h2>
+
+                <h3>for 循环</h3>
+                <p>for 循环是最常用的循环结构，适合已知循环次数的情况。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 打印 1 到 5
+for (int i = 1; i <= 5; i++) {
+    cout << i << " ";
+}
+cout << endl;
+
+// 计算 1 到 10 的和
+int sum = 0;
+for (int i = 1; i <= 10; i++) {
+    sum += i;
+}
+cout << "1+2+...+10 = " << sum << endl;
+
+// 遍历数组
+int arr[] = {10, 20, 30, 40, 50};
+for (int i = 0; i < 5; i++) {
+    cout << "arr[" << i << "] = " << arr[i] << endl;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    1 2 3 4 5 <br>
+                    1+2+...+10 = 55<br>
+                    arr[0] = 10<br>
+                    arr[1] = 20<br>
+                    arr[2] = 30<br>
+                    arr[3] = 40<br>
+                    arr[4] = 50
+                </div>
+
+                <h3>while 循环</h3>
+                <p>while 循环在条件为 true 时重复执行代码块，适合循环次数不确定的情况。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 计算 1+2+3+... 直到和超过 100
+int sum = 0;
+int i = 1;
+while (sum <= 100) {
+    sum += i;
+    i++;
+}
+cout << "累加到 " << i-1 << " 时和超过100，和为 " << sum << endl;
+
+// 猜数字游戏
+int secret = 7;
+int guess;
+cout << "请猜一个 1-10 的数字: ";
+cin >> guess;
+while (guess != secret) {
+    if (guess < secret)
+        cout << "太小了，再试一次: ";
+    else
+        cout << "太大了，再试一次: ";
+    cin >> guess;
+}
+cout << "恭喜你猜对了！" << endl;</code></pre>
+                </div>
+
+                <h3>do-while 循环</h3>
+                <p>do-while 循环会先执行一次循环体，然后再检查条件，确保循环体至少执行一次。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 菜单选择示例
+int choice;
+do {
+    cout << "\n===== 菜单 =====" << endl;
+    cout << "1. 开始游戏" << endl;
+    cout << "2. 加载存档" << endl;
+    cout << "3. 退出" << endl;
+    cout << "请选择: ";
+    cin >> choice;
+
+    switch (choice) {
+        case 1: cout << "开始新游戏..." << endl; break;
+        case 2: cout << "加载存档中..." << endl; break;
+        case 3: cout << "再见！" << endl; break;
+        default: cout << "无效选择，请重新输入" << endl;
+    }
+} while (choice != 3);</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 何时使用哪种循环</strong>
+                    <ul>
+                        <li><strong>for</strong>：循环次数已知时</li>
+                        <li><strong>while</strong>：循环次数不确定，需要先判断条件</li>
+                        <li><strong>do-while</strong>：需要先执行一次再判断</li>
+                    </ul>
+                </div>
+
+                <h3>范围 for 循环（C++11）</h3>
+                <p>范围 for 循环是 C++11 引入的便捷语法，用于遍历容器或数组。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;vector&gt;
+#include &lt;string&gt;
+using namespace std;
+
+vector&lt;string&gt; fruits = {"苹果", "香蕉", "橙子", "葡萄"};
+
+// 遍历 vector（只读）
+cout << "水果列表: ";
+for (const string& fruit : fruits) {
+    cout << fruit << " ";
+}
+cout << endl;
+
+// 遍历数组
+int nums[] = {1, 2, 3, 4, 5};
+int sum = 0;
+for (int n : nums) {
+    sum += n;
+}
+cout << "数组元素和: " << sum << endl;
+
+// 修改元素（需要引用）
+vector&lt;int&gt; scores = {60, 70, 80};
+for (int& score : scores) {
+    score += 10;  // 每人加10分
+}
+cout << "加分后: ";
+for (int s : scores) cout << s << " ";
+cout << endl;</code></pre>
+                </div>
+                <div class="output-block">
+                    水果列表: 苹果 香蕉 橙子 葡萄 <br>
+                    数组元素和: 15<br>
+                    加分后: 70 80 90
+                </div>
+
+                <h3>循环控制：break 和 continue</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// break：跳出整个循环
+cout << "break 示例 - 找到第一个大于10的数: ";
+for (int i = 1; i <= 20; i++) {
+    if (i > 10) {
+        cout << i << endl;
+        break;  // 跳出循环，不再继续
+    }
+}
+
+// continue：跳过本次循环，继续下一次
+cout << "continue 示例 - 打印1-10的奇数: ";
+for (int i = 1; i <= 10; i++) {
+    if (i % 2 == 0) {
+        continue;  // 跳过偶数
+    }
+    cout << i << " ";
+}
+cout << endl;</code></pre>
+                </div>
+                <div class="output-block">
+                    break 示例 - 找到第一个大于10的数: 11<br>
+                    continue 示例 - 打印1-10的奇数: 1 3 5 7 9
+                </div>
+            </section>
+
+            <section id="function-basic">
+                <h2>函数基础</h2>
+
+                <h3>函数定义和调用</h3>
+                <p>函数是一段可以重复使用的代码块，通过函数名来调用执行。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;cmath&gt;
+using namespace std;
+
+// 函数声明（定义在 main 之后时需要）
+int maxOfThree(int a, int b, int c);
+double calculateArea(double radius);
+
+// 函数定义
+int maxOfThree(int a, int b, int c) {
+    int max = a;
+    if (b > max) max = b;
+    if (c > max) max = c;
+    return max;
+}
+
+double calculateArea(double radius) {
+    return M_PI * radius * radius;
+}
+
+int main() {
+    int m = maxOfThree(10, 25, 15);
+    cout << "最大值: " << m << endl;
+
+    double area = calculateArea(5.0);
+    cout << "半径5的圆面积: " << area << endl;
+
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    最大值: 25<br>
+                    半径5的圆面积: 78.5398
+                </div>
+
+                <h3>函数重载</h3>
+                <p>函数重载允许使用相同函数名但不同参数列表的多个函数，编译器会根据参数类型和数量来确定调用哪个。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>using namespace std;
+
+// 同一个函数名，不同参数类型
+int add(int a, int b) {
+    cout << "整数相加" << endl;
+    return a + b;
+}
+
+double add(double a, double b) {
+    cout << "浮点数相加" << endl;
+    return a + b;
+}
+
+string add(string a, string b) {
+    cout << "字符串相加" << endl;
+    return a + b;
+}
+
+// 不同参数个数
+int add(int a, int b, int c) {
+    cout << "三个整数相加" << endl;
+    return a + b + c;
+}
+
+int main() {
+    cout << add(1, 2) << endl;           // 调用 int 版本
+    cout << add(1.5, 2.5) << endl;       // 调用 double 版本
+    cout << add("Hello, ", "World!") << endl;  // 调用 string 版本
+    cout << add(1, 2, 3) << endl;        // 调用三个参数的版本
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    整数相加<br>
+                    3<br>
+                    浮点数相加<br>
+                    4<br>
+                    字符串相加<br>
+                    Hello, World!<br>
+                    三个整数相加<br>
+                    6
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 函数重载的规则</strong>
+                    <ul>
+                        <li>函数名必须相同</li>
+                        <li>参数个数、类型或顺序必须不同</li>
+                        <li>返回类型不能作为重载依据</li>
+                    </ul>
+                </div>
+
+                <h3>默认参数</h3>
+                <p>默认参数允许在函数声明时为参数指定默认值，调用时可以省略这些参数。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>using namespace std;
+
+// 默认参数必须放在参数列表的右侧
+void printInfo(string name, int age = 18, string city = "北京") {
+    cout << name << "，" << age << "岁，来自" << city << endl;
+}
+
+double calculatePrice(double price, int quantity = 1, double discount = 0.0) {
+    double total = price * quantity;
+    return total * (1 - discount);
+}
+
+int main() {
+    // 使用默认参数
+    printInfo("张三");
+    printInfo("李四", 25);
+    printInfo("王五", 30, "上海");
+
+    cout << "总价: " << calculatePrice(100) << endl;          // 100
+    cout << "总价: " << calculatePrice(100, 3) << endl;        // 300
+    cout << "总价: " << calculatePrice(100, 3, 0.1) << endl;   // 270（9折）
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    张三，18岁，来自北京<br>
+                    李四，25岁，来自北京<br>
+                    王五，30岁，来自上海<br>
+                    总价: 100<br>
+                    总价: 300<br>
+                    总价: 270
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 默认参数注意</strong>
+                    <p>默认参数必须从右向左依次指定，不能跳跃。例如 <code>void f(int a, int b = 5, int c)</code> 是错误的。</p>
+                </div>
+
+                <h3>内联函数</h3>
+                <p>内联函数使用 <code>inline</code> 关键字声明，建议编译器将函数体直接插入到调用处，避免函数调用的开销，适合简短的函数。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>using namespace std;
+
+// 内联函数：适合简短的计算函数
+inline int square(int x) {
+    return x * x;
+}
+
+inline double max(double a, double b) {
+    return (a > b) ? a : b;
+}
+
+// 普通函数（不适合内联）
+// 注意：递归函数、包含循环或复杂逻辑的函数不适合内联
+int fibonacci(int n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+int main() {
+    // 内联函数调用
+    cout << "5的平方: " << square(5) << endl;
+    cout << "较大值: " << max(3.14, 2.71) << endl;
+
+    // 循环中使用内联函数
+    int sum = 0;
+    for (int i = 1; i <= 10; i++) {
+        sum += square(i);  // 编译器会尝试内联展开
+    }
+    cout << "1^2+2^2+...+10^2 = " << sum << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    5的平方: 25<br>
+                    较大值: 3.14<br>
+                    1^2+2^2+...+10^2 = 385
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 何时使用内联函数</strong>
+                    <p>内联函数适合函数体很小、被频繁调用的情况。对于复杂的递归函数或包含大量代码的函数，编译器可能会忽略 inline 建议。</p>
+                </div>
+            </section>
+
+            <section id="array">
+                <h2>数组</h2>
+
+                <h3>一维数组</h3>
+                <p>数组是一组相同类型元素的集合，通过索引（从0开始）来访问每个元素。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>using namespace std;
+
+int main() {
+    // 定义数组
+    int scores[5] = {90, 85, 77, 92, 88};  // 声明时初始化
+    string names[] = {"张三", "李四", "王五"};  // 自动确定大小
+
+    // 访问数组元素（索引从0开始）
+    cout << "第一个成绩: " << scores[0] << endl;
+    cout << "第二个姓名: " << names[1] << endl;
+
+    // 修改数组元素
+    scores[0] = 95;
+    cout << "修改后第一个成绩: " << scores[0] << endl;
+
+    // 遍历数组
+    cout << "所有成绩: ";
+    for (int i = 0; i < 5; i++) {
+        cout << scores[i] << " ";
+    }
+    cout << endl;
+
+    // 计算平均分
+    int sum = 0;
+    for (int i = 0; i < 5; i++) {
+        sum += scores[i];
+    }
+    cout << "平均分: " << sum / 5.0 << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    第一个成绩: 90<br>
+                    第二个姓名: 李四<br>
+                    修改后第一个成绩: 95<br>
+                    所有成绩: 95 85 77 92 88 <br>
+                    平均分: 87.4
+                </div>
+
+                <h3>二维数组</h3>
+                <p>二维数组可以看作是一张表格，有行和列。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>using namespace std;
+
+int main() {
+    // 定义 3行4列 的二维数组
+    int matrix[3][4] = {
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10, 11, 12}
+    };
+
+    // 访问元素
+    cout << "第2行第3列: " << matrix[1][2] << endl;
+
+    // 遍历二维数组
+    cout << "矩阵内容:" << endl;
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 4; j++) {
+            cout << matrix[i][j] << "\t";
+        }
+        cout << endl;
+    }
+
+    // 初始化时部分赋值，其余默认为0
+    int arr[5] = {1, 2};  // {1, 2, 0, 0, 0}
+    cout << "部分初始化: ";
+    for (int i = 0; i < 5; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    第2行第3列: 7<br>
+                    矩阵内容:<br>
+                    1	2	3	4	<br>
+                    5	6	7	8	<br>
+                    9	10	11	12	<br>
+                    部分初始化: 1 2 0 0 0
+                </div>
+
+                <h3>C++11 array 容器</h3>
+                <p><code>std::array</code> 是 C++11 引入的固定大小数组，比传统数组更安全，提供成员函数如 <code>size()</code>、<code>at()</code> 等。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;array&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int main() {
+    array&lt;int, 5&gt; arr = {30, 10, 40, 20, 50};
+
+    // 使用迭代器遍历
+    cout << "数组内容: ";
+    for (auto it = arr.begin(); it != arr.end(); it++) {
+        cout << *it << " ";
+    }
+    cout << endl;
+
+    // 使用范围 for
+    cout << "数组内容: ";
+    for (int x : arr) cout << x << " ";
+    cout << endl;
+
+    // 安全访问 at() 会检查边界
+    cout << "at(2): " << arr.at(2) << endl;
+    // cout << "at(10): " << arr.at(10) << endl;  // 会抛出异常
+
+    // 其他成员函数
+    cout << "大小: " << arr.size() << endl;
+    cout << "首个: " << arr.front() << endl;
+    cout << "末个: " << arr.back() << endl;
+
+    // 排序
+    sort(arr.begin(), arr.end());
+    cout << "排序后: ";
+    for (int x : arr) cout << x << " ";
+    cout << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    数组内容: 30 10 40 20 50 <br>
+                    数组内容: 30 10 40 20 50 <br>
+                    at(2): 40<br>
+                    大小: 5<br>
+                    首个: 30<br>
+                    末个: 50<br>
+                    排序后: 10 20 30 40 50
+                </div>
+
+                <h3>vector 动态数组（进阶）</h3>
+                <p><code>vector</code> 是可以动态增长和缩小的序列容器，比数组更灵活。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int main() {
+    // 创建 vector
+    vector&lt;int&gt; v1;                    // 空 vector
+    vector&lt;int&gt; v2(5);                 // 大小为5，元素为0
+    vector&lt;int&gt; v3(5, 10);            // 大小为5，元素都是10
+    vector&lt;int&gt; v4 = {1, 2, 3, 4, 5}; // 初始化列表
+
+    // 添加和删除元素
+    vector&lt;string&gt; names;
+    names.push_back("张三");   // 尾部添加
+    names.push_back("李四");
+    names.push_back("王五");
+
+    cout << "大小: " << names.size() << endl;
+    cout << "容量: " << names.capacity() << endl;  // 容量可能大于大小
+
+    // 访问元素
+    cout << "第一个: " << names[0] << endl;
+    cout << "第一个: " << names.front() << endl;
+    cout << "最后一个: " << names.back() << endl;
+
+    // 删除元素
+    names.pop_back();  // 删除最后一个
+    cout << "删除后大小: " << names.size() << endl;
+
+    // 插入元素
+    names.insert(names.begin() + 1, "赵六");  // 在位置1插入
+    cout << "插入后: ";
+    for (const string& name : names) {
+        cout << name << " ";
+    }
+    cout << endl;
+
+    // 排序
+    vector&lt;int&gt; nums = {5, 2, 8, 1, 9};
+    sort(nums.begin(), nums.end(), greater&lt;int&gt;());  // 降序
+    cout << "降序排序: ";
+    for (int n : nums) cout << n << " ";
+    cout << endl;
+
+    // 清空
+    nums.clear();
+    cout << "清空后大小: " << nums.size() << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    大小: 3<br>
+                    容量: 3<br>
+                    第一个: 张三<br>
+                    第一个: 张三<br>
+                    最后一个: 王五<br>
+                    删除后大小: 2<br>
+                    插入后: 张三 赵六 李四 <br>
+                    降序排序: 9 8 5 2 1 <br>
+                    清空后大小: 0
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 array vs vector</strong>
+                    <ul>
+                        <li><strong>array</strong>：固定大小，栈上分配，性能好，适合大小固定的场景</li>
+                        <li><strong>vector</strong>：动态大小，堆上分配，灵活，适合大小变化的场景</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="string">
+                <h2>string 字符串</h2>
+
+                <h3>创建和初始化字符串</h3>
+                <p>C++ 的 <code>string</code> 是处理文本的强大工具，比 C 风格字符数组更安全、更方便。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    // 多种初始化方式
+    string s1;                    // 空字符串
+    string s2 = "Hello";          // C风格字符串赋值
+    string s3("World");           // 构造函数方式
+    string s4 = s2 + " " + s3;    // 字符串拼接
+    string s5(5, 'a');            // 重复字符： "aaaaa"
+    string s6 = {"Hello"};        // 列表初始化
+
+    cout << "s4: " << s4 << endl;
+    cout << "s5: " << s5 << endl;
+
+    // 输入输出
+    string name;
+    cout << "请输入你的名字: ";
+    getline(cin, name);           // 读取整行，包含空格
+    cout << "你好，" << name << "！" << endl;
+
+    return 0;
+}</code></pre>
+                </div>
+
+                <h3>字符串操作</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>using namespace std;
+
+int main() {
+    string s1 = "Hello";
+    string s2 = "World";
+
+    // 拼接
+    string s3 = s1 + " " + s2;
+    cout << "拼接: " << s3 << endl;
+
+    // 比较（按字典序）
+    cout << boolalpha;
+    cout << "s1 == s2: " << (s1 == s2) << endl;
+    cout << "s1 < s2: " << (s1 < s2) << endl;  // H < W
+
+    // 长度和是否为空
+    cout << "s1长度: " << s1.length() << endl;  // 或 s1.size()
+    cout << "空字符串: " << string().empty() << endl;
+
+    // 访问字符
+    cout << "s1[0]: " << s1[0] << endl;      // H
+    cout << "s1.at(1): " << s1.at(1) << endl;  // e（带边界检查）
+
+    // 遍历字符串
+    cout << "遍历 s1: ";
+    for (char c : s1) {
+        cout << c << "-";
+    }
+    cout << endl;
+
+    // 修改字符串
+    string s = "Hello";
+    s[0] = 'h';                    // 修改字符
+    s += " World";                // 追加
+    cout << "修改后: " << s << endl;
+
+    // 转换为 C 风格字符串
+    const char* cstr = s.c_str();
+    cout << "C风格字符串: " << cstr << endl;
+
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    拼接: Hello World<br>
+                    s1 == s2: false<br>
+                    s1 < s2: true<br>
+                    s1长度: 5<br>
+                    空字符串: true<br>
+                    s1[0]: H<br>
+                    s1.at(1): e<br>
+                    遍历 s1: H-e-l-l-o-<br>
+                    修改后: hello World
+                </div>
+
+                <h3>常用字符串函数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>using namespace std;
+
+int main() {
+    string email = "user@example.com";
+
+    // 查找子串
+    cout << "查找 '@': " << email.find('@') << endl;  // 4
+    cout << "查找 '.': " << email.find('.') << endl;  // 11
+
+    // 提取子串
+    string username = email.substr(0, 4);      // 从0开始，长度4
+    string domain = email.substr(5);           // 从5开始到末尾
+    cout << "用户名: " << username << endl;
+    cout << "域名: " << domain << endl;
+
+    // 替换
+    string s = "Hello World";
+    s.replace(6, 5, "C++");                   // 从位置6开始，替换5个字符
+    cout << "替换后: " << s << endl;
+
+    // 插入和删除
+    string str = "Hello";
+    str.insert(5, " World");                  // 在位置5插入
+    cout << "插入后: " << str << endl;
+
+    str.erase(5, 6);                           // 从位置5删除6个字符
+    cout << "删除后: " << str << endl;
+
+    // 分割字符串示例
+    string path = "C:/Users/Documents/file.txt";
+    size_t lastSlash = path.find_last_of('/');
+    string filename = path.substr(lastSlash + 1);
+    cout << "文件名: " << filename << endl;
+
+    // 大小写转换
+    string word = "Hello";
+    for (char& c : word) {
+        c = toupper(c);
+    }
+    cout << "大写: " << word << endl;
+
+    for (char& c : word) {
+        c = tolower(c);
+    }
+    cout << "小写: " << word << endl;
+
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    查找 '@': 4<br>
+                    查找 '.': 11<br>
+                    用户名: user<br>
+                    域名: example.com<br>
+                    替换后: Hello C++<br>
+                    插入后: Hello World<br>
+                    删除后: Hello<br>
+                    文件名: file.txt<br>
+                    大写: HELLO<br>
+                    小写: hello
+                </div>
+
+                <h3>字符串与其他类型转换</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;sstream&gt;
+using namespace std;
+
+// 数字转字符串
+string intToString(int n) {
+    return to_string(n);
+}
+
+string doubleToString(double d) {
+    return to_string(d);
+}
+
+// 字符串转数字
+int stringToInt(const string& s) {
+    return stoi(s);
+}
+
+double stringToDouble(const string& s) {
+    return stod(s);
+}
+
+int main() {
+    // 数字 -> 字符串
+    string si = to_string(12345);
+    string sd = to_string(3.14159);
+    cout << "整数转字符串: " << si << endl;
+    cout << "浮点转字符串: " << sd << endl;
+
+    // 字符串 -> 数字
+    cout << "字符串转整数: " << stoi("100") << endl;
+    cout << "字符串转浮点: " << stod("3.14") << endl;
+
+    // 使用 stringstream 进行复杂转换
+    stringstream ss;
+    ss << 100 << " " << 3.14 << " " << "hello";
+    int num;
+    double pi;
+    string word;
+    ss >> num >> pi >> word;
+    cout << "解析: " << num << ", " << pi << ", " << word << endl;
+
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    整数转字符串: 12345<br>
+                    浮点转字符串: 3.141590<br>
+                    字符串转整数: 100<br>
+                    字符串转浮点: 3.14<br>
+                    解析: 100, 3.14, hello
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 string 常用函数速查</strong>
+                    <ul>
+                        <li><code>length()</code> / <code>size()</code>：返回长度</li>
+                        <li><code>empty()</code>：判断是否为空</li>
+                        <li><code>find()</code>：查找子串位置</li>
+                        <li><code>substr()</code>：提取子串</li>
+                        <li><code>replace()</code>：替换</li>
+                        <li><code>insert()</code> / <code>erase()</code>：插入删除</li>
+                        <li><code>c_str()</code>：转C风格字符串</li>
+                    </ul>
                 </div>
             </section>
 

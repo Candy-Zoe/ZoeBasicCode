@@ -68,6 +68,7 @@
                     <li><a href="#loop">循环语句</a></li>
                     <li><a href="#function">函数</a></li>
                     <li><a href="#array">数组和指针</a></li>
+                    <li><a href="#string">字符串操作</a></li>
                     <li><a href="#struct">结构体</a></li>
                     <li><a href="#file">文件操作</a></li>
                 </ul>
@@ -244,8 +245,137 @@ int y = 3;  // 二进制: 0011
 printf("按位与: x & y = %d\n", x & y);  // 0010 = 2
 printf("按位或: x | y = %d\n", x | y);  // 0111 = 7
 printf("按位异或: x ^ y = %d\n", x ^ y); // 0101 = 5
+printf("按位取反: ~x = %d\n", ~x);      // ...11111001
 printf("左移: x << 1 = %d\n", x << 1);  // 1100 = 12
 printf("右移: x >> 1 = %d\n", x >> 1);  // 0011 = 3</code></pre>
+                </div>
+                <div class="output-block">
+                    按位与: x & y = 2<br>
+                    按位或: x | y = 7<br>
+                    按位异或: x ^ y = 5<br>
+                    左移: x << 1 = 12<br>
+                    右移: x >> 1 = 3
+                </div>
+
+                <h3>比较运算符</h3>
+                <p>比较运算符用于比较两个值，返回真（1）或假（0）。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int a = 10, b = 20;
+    
+    printf("%d == %d : %d\n", a, b, a == b);  // 等于
+    printf("%d != %d : %d\n", a, b, a != b);  // 不等于
+    printf("%d > %d  : %d\n", a, b, a > b);   // 大于
+    printf("%d < %d  : %d\n", a, b, a < b);   // 小于
+    printf("%d >= %d : %d\n", a, b, a >= b);  // 大于等于
+    printf("%d <= %d : %d\n", a, b, a <= b);  // 小于等于
+    
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    10 == 20 : 0<br>
+                    10 != 20 : 1<br>
+                    10 > 20  : 0<br>
+                    10 < 20  : 1<br>
+                    10 >= 20 : 0<br>
+                    10 <= 20 : 1
+                </div>
+
+                <h3>逻辑运算符</h3>
+                <p>逻辑运算符用于组合多个条件，常用于 if 语句和循环条件中。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int age = 20;
+    int score = 85;
+    
+    // 逻辑与：所有条件都为真时结果为真
+    if (age >= 18 && score >= 60) {
+        printf("条件成立：年龄达标且成绩合格\n");
+    }
+    
+    // 逻辑或：任意一个条件为真时结果为真
+    if (age < 18 || score >= 90) {
+        printf("享受优惠：未成年或高分学生\n");
+    }
+    
+    // 逻辑非：将真变为假，假变为真
+    if (!(age < 18)) {
+        printf("已成年\n");
+    }
+    
+    // 短路求值
+    int x = 0;
+    if (x != 0 && 10 / x > 1) {  // x 为 0，短路求值，不会执行除法
+        printf("不会执行到这里\n");
+    }
+    printf("安全结束\n");
+    
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    条件成立：年龄达标且成绩合格<br>
+                    已成年<br>
+                    安全结束
+                </div>
+                <div class="tip-box warning">
+                    <strong>⚠️ 易错点</strong>
+                    <ul>
+                        <li>不要混淆 <code>==</code>（比较）和 <code>=</code>（赋值）</li>
+                        <li>逻辑与 <code>&&</code> 和逻辑或 <code>||</code> 具有短路特性</li>
+                        <li>C 语言中，非零值视为真，零视为假</li>
+                    </ul>
+                </div>
+
+                <h3>赋值运算符</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int a = 10;
+a += 5;   // 等价于 a = a + 5，现在 a = 15
+a -= 3;   // 等价于 a = a - 3，现在 a = 12
+a *= 2;   // 等价于 a = a * 2，现在 a = 24
+a /= 4;   // 等价于 a = a / 4，现在 a = 6
+a %= 4;   // 等价于 a = a % 4，现在 a = 2
+
+printf("a = %d\n", a);</code></pre>
+                </div>
+                <div class="output-block">
+                    a = 2
+                </div>
+
+                <h3>运算符优先级</h3>
+                <div class="tip-box info">
+                    <strong>💡 优先级顺序（从高到低）</strong>
+                    <ul>
+                        <li>第一级：<code>()</code> <code>[]</code> <code>.</code> <code>-></code></li>
+                        <li>第二级：<code>!</code> <code>~</code> <code>++</code> <code>--</code> <code>*</code> <code>&</code></li>
+                        <li>第三级：<code>*</code> <code>/</code> <code>%</code></li>
+                        <li>第四级：<code>+</code> <code>-</code></li>
+                        <li>第五级：<code><<</code> <code>>></code></li>
+                        <li>第六级：<code><</code> <code><=</code> <code>></code> <code>>=</code></li>
+                        <li>第七级：<code>==</code> <code>!=</code></li>
+                        <li>第八级：<code>&</code></li>
+                        <li>第九级：<code>^</code></li>
+                        <li>第十级：<code>|</code></li>
+                        <li>第十一级：<code>&&</code></li>
+                        <li>第十二级：<code>||</code></li>
+                    </ul>
                 </div>
             </section>
 
@@ -541,6 +671,365 @@ printf("使用指针遍历数组:\n");
 for (int i = 0; i < 5; i++) {
     printf("*(p + %d) = %d\n", i, *(p + i));
 }</code></pre>
+                </div>
+            </section>
+
+            <section id="string">
+                <h2>字符串操作</h2>
+                <p>C 语言中的字符串是字符数组，以空字符 <code>'\0'</code> 结尾。C 语言提供了一系列字符串处理函数，方便我们对字符串进行各种操作。</p>
+
+                <h3>字符串声明和初始化</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    // 方式1：字符数组（可修改）
+    char str1[] = {'H', 'e', 'l', 'l', 'o', '\0'};
+    char str2[] = "Hello";  // 简写形式
+    char str3[10] = "Hi";    // 指定数组大小
+    
+    // 方式2：字符指针（指向字符串常量，不可修改）
+    char *str4 = "World";
+    
+    printf("str1: %s\n", str1);
+    printf("str2: %s\n", str2);
+    printf("str3: %s\n", str3);
+    printf("str4: %s\n", str4);
+    
+    // 使用 strlen 获取字符串长度（不含终止符）
+    printf("str2 长度: %lu\n", strlen(str2));
+    
+    // 使用 sizeof 获取数组大小（含终止符）
+    printf("str2 数组大小: %lu\n", sizeof(str2));
+    
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    str1: Hello<br>
+                    str2: Hello<br>
+                    str3: Hi<br>
+                    str4: World<br>
+                    str2 长度: 5<br>
+                    str2 数组大小: 6
+                </div>
+                <div class="tip-box warning">
+                    <strong>⚠️ 重要区别</strong>
+                    <ul>
+                        <li><code>strlen()</code> - 返回字符串实际长度（不含 '\0'）</li>
+                        <li><code>sizeof()</code> - 返回数组总大小（含 '\0'）</li>
+                        <li>字符指针指向的字符串常量不能修改，否则会导致段错误</li>
+                    </ul>
+                </div>
+
+                <h3>字符串输入输出</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    char name[50];
+    char language[30];
+    
+    // 使用 scanf 读取字符串（遇到空格停止）
+    printf("请输入您的姓名: ");
+    scanf("%s", name);
+    printf("您好，%s！\n", name);
+    
+    // 使用 fgets 读取整行（包含空格）
+    printf("请输入您喜欢的编程语言: ");
+    fgets(language, sizeof(language), stdin);
+    // 去除换行符
+    language[strcspn(language, "\n")] = '\0';
+    printf("您喜欢: %s\n", language);
+    
+    return 0;
+}</code></pre>
+                </div>
+                <div class="tip-box info">
+                    <strong>💡 输入函数选择</strong>
+                    <ul>
+                        <li><code>scanf("%s")</code> - 简单高效，但遇到空格停止</li>
+                        <li><code>fgets()</code> - 可以读取包含空格的整行，更安全</li>
+                        <li>使用 <code>fgets()</code> 时，记得处理结尾的换行符</li>
+                    </ul>
+                </div>
+
+                <h3>字符串连接和复制</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main() {
+    char src[50] = "Hello";
+    char dest[50] = "World";
+    char temp[100];
+    
+    // strcpy - 复制字符串
+    strcpy(temp, src);
+    printf("复制后: %s\n", temp);
+    
+    // strncpy - 指定长度复制（更安全）
+    strncpy(temp, "Testing123", 5);
+    temp[5] = '\0';  // 确保字符串正确终止
+    printf("截断复制: %s\n", temp);
+    
+    // strcat - 连接字符串
+    strcpy(temp, src);  // 先重置
+    strcat(temp, ", ");  // 连接逗号
+    strcat(temp, dest);  // 连接 World
+    printf("连接后: %s\n", temp);
+    
+    // strncat - 指定长度连接
+    strcpy(temp, "prefix");
+    strncat(temp, "_suffix_is_long", 7);
+    printf("部分连接: %s\n", temp);
+    
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    复制后: Hello<br>
+                    截断复制: Testi<br>
+                    连接后: Hello, World<br>
+                    部分连接: prefix_suffi
+                </div>
+                <div class="tip-box warning">
+                    <strong>⚠️ 安全提醒</strong>
+                    <ul>
+                        <li>使用 <code>strcpy</code> 和 <code>strcat</code> 时，确保目标字符串有足够空间</li>
+                        <li>推荐使用 <code>strncpy</code> 和 <code>strncat</code> 限制复制/连接长度</li>
+                        <li>使用后记得添加字符串终止符 <code>'\0'</code></li>
+                    </ul>
+                </div>
+
+                <h3>字符串比较</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main() {
+    char str1[] = "Apple";
+    char str2[] = "Banana";
+    char str3[] = "apple";
+    
+    // strcmp - 比较两个字符串
+    printf("Apple vs Banana: %d\n", strcmp(str1, str2));  // 负数，'A' < 'B'
+    printf("Banana vs Apple: %d\n", strcmp(str2, str1));  // 正数，'B' > 'A'
+    printf("Apple vs Apple: %d\n", strcmp(str1, str1));  // 0，相等
+    
+    // strncmp - 指定长度比较
+    printf("Apple vs apple (前1字符): %d\n", strncmp(str1, str3, 1));  // 0
+    printf("Apple vs apple (全部): %d\n", strncmp(str1, str3, 5));  // 负数，小写 > 大写
+    
+    // 模拟不区分大小写的比较
+    printf("\n不区分大小写比较 Apple vs apple:\n");
+    for (int i = 0; i < strlen(str1); i++) {
+        char c1 = (str1[i] >= 'A' && str1[i] <= 'Z') ? str1[i] + 32 : str1[i];
+        char c3 = (str3[i] >= 'A' && str3[i] <= 'Z') ? str3[i] + 32 : str3[i];
+        printf("  %c vs %c: %d\n", str1[i], str3[i], c1 - c3);
+    }
+    
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    Apple vs Banana: -1<br>
+                    Banana vs Apple: 1<br>
+                    Apple vs Apple: 0<br>
+                    Apple vs apple (前1字符): 0<br>
+                    Apple vs apple (全部): -32<br><br>
+                    不区分大小写比较 Apple vs apple:<br>
+                    字符值差: 0<br>
+                    ...
+                </div>
+
+                <h3>字符串查找和分割</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main() {
+    char email[] = "user@example.com";
+    char path[] = "/usr/local/bin/program";
+    char *ptr;
+    
+    // strchr - 查找字符首次出现位置
+    ptr = strchr(email, '@');
+    if (ptr) {
+        printf("邮箱域名: %s\n", ptr + 1);
+    }
+    
+    // strrchr - 查找字符最后一次出现位置
+    char filename[] = "document.tar.gz";
+    ptr = strrchr(filename, '.');
+    printf("最后一个扩展名: %s\n", ptr);
+    
+    // strstr - 查找子串
+    ptr = strstr(path, "/bin/");
+    if (ptr) {
+        printf("找到 bin 目录: %s\n", ptr);
+    }
+    
+    // strtok - 分割字符串
+    printf("\n分割路径 %s:\n", path);
+    char path_copy[100];
+    strcpy(path_copy, path);
+    ptr = strtok(path_copy, "/");
+    while (ptr != NULL) {
+        printf("  - %s\n", ptr);
+        ptr = strtok(NULL, "/");
+    }
+    
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    邮箱域名: example.com<br>
+                    最后一个扩展名: .gz<br>
+                    找到 bin 目录: /bin/program<br><br>
+                    分割路径 /usr/local/bin/program:<br>
+                    - usr<br>
+                    - local<br>
+                    - bin<br>
+                    - program
+                </div>
+                <div class="tip-box info">
+                    <strong>💡 strtok 使用注意</strong>
+                    <ul>
+                        <li><code>strtok</code> 会修改原字符串，使用前记得复制</li>
+                        <li>第一次调用传入原字符串，后续调用传入 NULL</li>
+                        <li>连续的分隔符会被跳过（不会产生空字符串）</li>
+                    </ul>
+                </div>
+
+                <h3>字符串转换函数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+int main() {
+    char num_str[] = "42";
+    char float_str[] = "3.14159";
+    char *end;
+    
+    // atoi - 字符串转整数
+    int num = atoi(num_str);
+    printf("atoi(\"42\") = %d\n", num);
+    
+    // atof - 字符串转浮点数
+    double pi = atof(float_str);
+    printf("atof(\"3.14159\") = %.5f\n", pi);
+    
+    // strtol / strtod - 更安全的转换（带错误检查）
+    long large_num = strtol("1234567890", &end, 10);
+    printf("strtol: %ld (剩余: %s)\n", large_num, end);
+    
+    double more precise = strtod("3.14159extra", &end);
+    printf("strtod: %f (剩余: %s)\n", precise, end);
+    
+    // sprintf - 将数值格式化为字符串
+    char buffer[100];
+    sprintf(buffer, "整数: %d, 浮点: %.2f", 100, 2.5);
+    printf("sprintf: %s\n", buffer);
+    
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    atoi("42") = 42<br>
+                    atof("3.14159") = 3.14159<br>
+                    strtol: 1234567890 (剩余: )<br>
+                    strtod: 3.141590 (剩余: extra)<br>
+                    sprintf: 整数: 100, 浮点: 2.50
+                </div>
+
+                <h3>综合示例：字符串处理</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;ctype.h&gt;
+
+int main() {
+    char sentence[] = "   Hello World!   ";
+    char result[100];
+    int j = 0;
+    
+    // 去除首尾空格
+    printf("原字符串: \"%s\"\n", sentence);
+    printf("原长度: %lu\n", strlen(sentence));
+    
+    // 跳过开头空格
+    int i = 0;
+    while (sentence[i] == ' ') i++;
+    
+    // 复制非空格字符
+    while (sentence[i] != '\0') {
+        result[j++] = sentence[i++];
+    }
+    
+    // 去除尾部空格
+    while (j > 0 && result[j-1] == ' ') {
+        j--;
+    }
+    result[j] = '\0';
+    
+    printf("处理后: \"%s\"\n", result);
+    printf("处理后长度: %lu\n", strlen(result));
+    
+    // 首字母大写
+    if (strlen(result) > 0) {
+        result[0] = toupper(result[0]);
+    }
+    printf("首字母大写: \"%s\"\n", result);
+    
+    // 统计字母和数字
+    int letters = 0, digits = 0, spaces = 0;
+    for (int i = 0; result[i]; i++) {
+        if (isalpha(result[i])) letters++;
+        else if (isdigit(result[i])) digits++;
+        else if (result[i] == ' ') spaces++;
+    }
+    printf("统计: 字母=%d, 数字=%d, 空格=%d\n", letters, digits, spaces);
+    
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    原字符串: "   Hello World!   "<br>
+                    原长度: 18<br>
+                    处理后: "Hello World!"<br>
+                    处理后长度: 12<br>
+                    首字母大写: "Hello World!"<br>
+                    统计: 字母=10, 数字=0, 空格=1
                 </div>
             </section>
 

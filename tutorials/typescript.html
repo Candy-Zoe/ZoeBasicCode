@@ -58,9 +58,15 @@
                 <ul>
                     <li><a href="#intro">简介</a></li>
                     <li><a href="#type">类型系统</a></li>
+                    <li><a href="#operator">运算符</a></li>
+                    <li><a href="#condition">条件语句</a></li>
+                    <li><a href="#loop">循环语句</a></li>
+                    <li><a href="#function">函数</a></li>
                     <li><a href="#interface">接口</a></li>
+                    <li><a href="#type-alias">类型别名</a></li>
                     <li><a href="#class">类与继承</a></li>
                     <li><a href="#generic">泛型</a></li>
+                    <li><a href="#generic-constraint">泛型约束</a></li>
                     <li><a href="#advanced">高级类型</a></li>
                     <li><a href="#enum">枚举与装饰器</a></li>
                 </ul>
@@ -155,48 +161,1040 @@ let strLength2: number = (someValue as string).length;</code></pre>
                 </div>
             </section>
 
+            <section id="operator">
+                <h2>运算符</h2>
+                <p>运算符用于对数据进行计算和比较。TypeScript 支持多种类型的运算符，与 JavaScript 基本一致。</p>
+
+                <h3>算术运算符</h3>
+                <p>算术运算符用于执行数学计算，如加法、减法、乘法、除法等。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>let a: number = 10;
+let b: number = 3;
+
+// 加法：两个数相加
+console.log("a + b =", a + b);  // 13
+
+// 减法：两个数相减
+console.log("a - b =", a - b);  // 7
+
+// 乘法：两个数相乘
+console.log("a * b =", a * b);  // 30
+
+// 除法：两个数相除
+console.log("a / b =", a / b);  // 3.3333333333333335
+
+// 取余：返回除法的余数
+console.log("a % b =", a % b);  // 1
+
+// 自增：变量值加1
+let c: number = 5;
+console.log("++c =", ++c);  // 6，先加1再返回值
+console.log("c++ =", c++);  // 6，先返回值再加1
+
+// 自减：变量值减1
+let d: number = 5;
+console.log("--d =", --d);  // 4，先减1再返回值
+console.log("d-- =", d--);  // 4，先返回值再减1</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 提示</strong>
+                    <ul>
+                        <li><code>++a</code> 是前自增，先增加后使用</li>
+                        <li><code>a++</code> 是后自增，先使用后增加</li>
+                        <li>在复杂表达式中，建议分开写以提高可读性</li>
+                    </ul>
+                </div>
+
+                <h3>比较运算符</h3>
+                <p>比较运算符用于比较两个值的大小或相等性，返回布尔值（true 或 false）。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>let x: number = 5;
+let y: number = 10;
+let name1: string = "Alice";
+let name2: string = "alice";
+
+// 相等比较（值相等，不比较类型）
+console.log("5 == '5' =", 5 == '5');   // true，字符串'5'自动转为数字5
+console.log("5 != '5' =", 5 != '5');   // false
+
+// 严格相等比较（值和类型都必须相等）
+console.log("5 === '5' =", 5 === '5'); // false，类型不同
+console.log("5 !== '5' =", 5 !== '5'); // true
+
+// 大小比较
+console.log("x > y =", x > y);         // false
+console.log("x < y =", x < y);         // true
+console.log("x >= 5 =", x >= 5);       // true
+console.log("y <= 10 =", y <= 10);     // true
+
+// 字符串比较（按字典顺序）
+console.log("name1 > name2 =", name1 > name2); // true，'A'的ASCII码大于'a'</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意</strong>
+                    <ul>
+                        <li>尽量使用严格相等 <code>===</code> 和 <code>!==</code></li>
+                        <li>普通相等会进行类型转换，可能导致意外结果</li>
+                    </ul>
+                </div>
+
+                <h3>逻辑运算符</h3>
+                <p>逻辑运算符用于组合多个条件表达式，返回布尔值结果。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>let isAdult: boolean = true;
+let hasLicense: boolean = false;
+let age: number = 25;
+
+// 逻辑与（AND）：所有条件都为true时返回true
+console.log("isAdult && hasLicense =", isAdult && hasLicense); // false
+
+// 逻辑或（OR）：任意一个条件为true就返回true
+console.log("isAdult || hasLicense =", isAdult || hasLicense); // true
+
+// 逻辑非（NOT）：取反操作
+console.log("!isAdult =", !isAdult); // false
+
+// 短路运算：遇到false就停止
+function canEnter(): boolean {
+    console.log("检查年龄...");
+    return age >= 18;
+}
+function showID(): boolean {
+    console.log("检查身份证...");
+    return false;
+}
+let result: boolean = canEnter() && showID(); // 只输出"检查年龄..."
+
+// 逻辑中断：遇到true就停止
+result = false || canEnter(); // 输出"检查年龄..."
+
+// 非布尔值逻辑运算（返回实际值）
+console.log("5 && 'hello' =", 5 && 'hello');  // 'hello'
+console.log("0 && 'hello' =", 0 && 'hello');  // 0
+console.log("5 || 'hello' =", 5 || 'hello');  // 5
+console.log("0 || 'hello' =", 0 || 'hello');  // 'hello'</code></pre>
+                </div>
+
+                <h3>赋值运算符</h3>
+                <p>赋值运算符用于给变量赋值，同时可以结合运算。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>let num: number = 10;
+
+// 基本赋值
+num = 20;
+console.log("num =", num);  // 20
+
+// 加法赋值
+num += 5;   // 等同于 num = num + 5
+console.log("num += 5 =", num);  // 25
+
+// 减法赋值
+num -= 3;   // 等同于 num = num - 3
+console.log("num -= 3 =", num);  // 22
+
+// 乘法赋值
+num *= 2;   // 等同于 num = num * 2
+console.log("num *= 2 =", num);  // 44
+
+// 除法赋值
+num /= 4;   // 等同于 num = num / 4
+console.log("num /= 4 =", num);  // 11
+
+// 取余赋值
+num %= 3;   // 等同于 num = num % 3
+console.log("num %= 3 =", num);  // 2</code></pre>
+                </div>
+            </section>
+
+            <section id="condition">
+                <h2>条件语句</h2>
+                <p>条件语句用于根据不同的条件执行不同的代码块，实现程序的分支逻辑。</p>
+
+                <h3>if-else 语句</h3>
+                <p>if-else 是最基本的选择结构，根据条件的真假决定执行哪段代码。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>let score: number = 85;
+
+// 简单 if 语句
+if (score >= 60) {
+    console.log("及格了！");
+}
+
+// if-else 语句
+if (score >= 90) {
+    console.log("优秀");
+} else {
+    console.log("需要继续努力");
+}
+
+// if-else if-else 多重判断
+if (score >= 90) {
+    console.log("等级：A");
+} else if (score >= 80) {
+    console.log("等级：B");
+} else if (score >= 70) {
+    console.log("等级：C");
+} else if (score >= 60) {
+    console.log("等级：D");
+} else {
+    console.log("等级：F，不及格");
+}
+
+// 嵌套 if 语句
+let age: number = 20;
+let hasTicket: boolean = true;
+
+if (age >= 18) {
+    if (hasTicket) {
+        console.log("可以进入电影院");
+    } else {
+        console.log("需要购买门票");
+    }
+} else {
+    console.log("未满18岁，需要家长陪同");
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 编码建议</strong>
+                    <ul>
+                        <li>保持 if-else 嵌套层级不超过 3 层</li>
+                        <li>复杂条件可以使用变量命名提高可读性</li>
+                    </ul>
+                </div>
+
+                <h3>switch 语句</h3>
+                <p>switch 语句用于根据变量的值匹配不同的 case 分支，比多个 if-else 更清晰。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>let day: number = new Date().getDay();
+// 获取当前星期几，0代表星期日，1代表星期一，以此类推
+
+switch (day) {
+    case 0:
+        console.log("今天是星期日");
+        break;  // 重要：每个case后通常需要break
+    case 1:
+        console.log("今天是星期一");
+        break;
+    case 2:
+        console.log("今天是星期二");
+        break;
+    case 3:
+        console.log("今天是星期三");
+        break;
+    case 4:
+        console.log("今天是星期四");
+        break;
+    case 5:
+        console.log("今天是星期五");
+        break;
+    case 6:
+        console.log("今天是星期六");
+        break;
+    default:
+        console.log("无效的日期");
+}
+
+// 多个case共享同一代码块（周末统一处理）
+switch (day) {
+    case 0:
+    case 6:
+        console.log("周末休息日");
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        console.log("工作日");
+        break;
+}
+
+// 字符串switch
+let fruit: string = "apple";
+switch (fruit) {
+    case "apple":
+        console.log("这是苹果");
+        break;
+    case "banana":
+        console.log("这是香蕉");
+        break;
+    case "orange":
+        console.log("这是橙子");
+        break;
+    default:
+        console.log("未知水果");
+}</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意</strong>
+                    <ul>
+                        <li>每个 case 后要加 <code>break</code>，否则会"贯穿"执行下一个 case</li>
+                        <li><code>default</code> 分支处理所有不匹配的情况</li>
+                    </ul>
+                </div>
+
+                <h3>三元表达式</h3>
+                <p>三元表达式是 if-else 的简洁写法，适合简单的条件判断。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 基本语法：条件 ? 值1 : 值2
+// 如果条件为true，返回值1；否则返回值2
+
+let age: number = 20;
+let status: string = age >= 18 ? "成年人" : "未成年人";
+console.log(status);  // "成年人"
+
+// 嵌套三元表达式（谨慎使用，可能影响可读性）
+let score: number = 85;
+let grade: string = score >= 90 ? "A" :
+                   score >= 80 ? "B" :
+                   score >= 70 ? "C" :
+                   score >= 60 ? "D" : "F";
+console.log(grade);  // "B"
+
+// 常见用法：给变量设置默认值
+let userName: string = "";
+let displayName: string = userName ? userName : "匿名用户";
+console.log(displayName);  // "匿名用户"
+
+// 等价于
+let displayName2: string = userName || "匿名用户";
+
+// 三元表达式赋值
+let isVIP: boolean = true;
+let discount: number = isVIP ? 0.8 : 1.0;
+let price: number = 100;
+let finalPrice: number = price * discount;
+console.log("最终价格：", finalPrice);  // 80</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 使用场景</strong>
+                    <ul>
+                        <li>简单的二选一赋值</li>
+                        <li>函数返回值</li>
+                        <li>避免占用多行的简单判断</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="loop">
+                <h2>循环语句</h2>
+                <p>循环语句用于重复执行一段代码，直到满足特定条件为止。TypeScript 支持多种循环类型。</p>
+
+                <h3>for 循环</h3>
+                <p>for 循环是最传统的循环结构，适合已知循环次数的场景。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 基本 for 循环
+// 语法：for (初始化; 条件; 更新) { 循环体 }
+for (let i: number = 0; i < 5; i++) {
+    console.log("第", i + 1, "次循环");
+}
+
+// 计算 1~100 的和
+let sum: number = 0;
+for (let i: number = 1; i <= 100; i++) {
+    sum += i;
+}
+console.log("1+2+...+100 =", sum);  // 5050
+
+// 遍历数组
+let fruits: string[] = ["苹果", "香蕉", "橙子"];
+for (let i: number = 0; i < fruits.length; i++) {
+    console.log("水果", i + 1, ":", fruits[i]);
+}
+
+// 遍历数组（更简洁的方式）
+for (let i = 0; i < fruits.length; i++) {
+    console.log(fruits[i]);
+}
+
+// 双重循环：打印九九乘法表
+console.log("九九乘法表：");
+for (let i: number = 1; i <= 9; i++) {
+    let row: string = "";
+    for (let j: number = 1; j <= i; j++) {
+        row += `${j}×${i}=${i * j}\t`;
+    }
+    console.log(row);
+}
+
+// for 循环的变体：多个变量
+for (let i = 0, j = 10; i < j; i++, j--) {
+    console.log("i =", i, ", j =", j);
+}</code></pre>
+                </div>
+
+                <h3>while 循环</h3>
+                <p>while 循环在条件为 true 时重复执行，适合循环次数不确定的场景。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 基本 while 循环
+// 语法：while (条件) { 循环体 }
+// 先判断条件，再执行循环体
+
+let count: number = 0;
+while (count < 5) {
+    console.log("while 循环第", count + 1, "次");
+    count++;  // 别忘了更新计数器，否则会无限循环
+}
+
+// 使用 while 找到第一个能被 7 整除的数
+let num: number = 1;
+while (num <= 100) {
+    if (num % 7 === 0) {
+        console.log("第一个能被7整除的数是：", num);
+        break;  // 找到后退出循环
+    }
+    num++;
+}
+
+// do-while 循环
+// 语法：do { 循环体 } while (条件)
+// 先执行一次循环体，再判断条件（至少执行一次）
+
+let num2: number = 1;
+do {
+    console.log("do-while 执行第", num2, "次");
+    num2++;
+} while (num2 <= 3);
+
+// 模拟用户登录尝试
+let attempts: number = 0;
+let maxAttempts: number = 3;
+let success: boolean = false;
+
+do {
+    attempts++;
+    console.log("尝试登录第", attempts, "次");
+    if (attempts === 2) {
+        success = true;  // 假设第二次尝试成功
+    }
+} while (!success && attempts < maxAttempts);
+
+console.log(success ? "登录成功！" : "登录失败");</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 重要</strong>
+                    <ul>
+                        <li>while 循环要确保条件最终会变为 false，否则会无限循环</li>
+                        <li>使用 <code>break</code> 可以提前退出循环</li>
+                        <li>使用 <code>continue</code> 跳过本次循环继续下一次</li>
+                    </ul>
+                </div>
+
+                <h3>forEach 循环</h3>
+                <p>forEach 是数组的高阶方法，用于遍历数组中的每个元素。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 基本 forEach 用法
+// array.forEach((element, index, array) => { ... })
+
+let numbers: number[] = [10, 20, 30, 40, 50];
+
+// 遍历所有元素
+numbers.forEach((num) => {
+    console.log("数值：", num);
+});
+
+// 同时获取索引
+numbers.forEach((num, index) => {
+    console.log("索引", index, "对应的值：", num);
+});
+
+// 获取完整信息（元素、索引、原始数组）
+numbers.forEach((num, index, arr) => {
+    console.log(`数组[${index}] = ${num}, 数组长度 = ${arr.length}`);
+});
+
+// 遍历字符串数组
+let fruits: string[] = ["苹果", "香蕉", "橙子"];
+fruits.forEach((fruit) => {
+    console.log("我喜欢吃", fruit);
+});
+
+// 累加数组所有元素
+let sum: number = 0;
+numbers.forEach((n) => {
+    sum += n;
+});
+console.log("数组元素总和：", sum);  // 150
+
+// forEach 不能使用 break 或 continue（会报错）
+// 如果需要提前退出循环，应使用 for 循环
+console.log("使用 for 循环实现 break 效果：");
+for (let i = 0; i < numbers.length; i++) {
+    if (numbers[i] === 30) {
+        console.log("遇到30，停止遍历");
+        break;
+    }
+    console.log("处理数字：", numbers[i]);
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 forEach vs for 循环</strong>
+                    <ul>
+                        <li>forEach 更简洁，适合不需要提前退出的遍历</li>
+                        <li>for 循环支持 break 和 continue</li>
+                        <li>forEach 无法修改数组本身（但可以修改元素属性）</li>
+                    </ul>
+                </div>
+
+                <h3>for...of 循环</h3>
+                <p>for...of 是 ES6 引入的新语法，比 for 循环更简洁，适合遍历可迭代对象。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 基本 for...of 用法
+// for (let element of iterable) { ... }
+
+let fruits: string[] = ["苹果", "香蕉", "橙子"];
+
+// 遍历数组元素
+for (let fruit of fruits) {
+    console.log("水果：", fruit);
+}
+
+// 同时获取索引（需要使用 entries()）
+for (let [index, fruit] of fruits.entries()) {
+    console.log(`索引 ${index}: ${fruit}`);
+}
+
+// 遍历字符串
+let message: string = "Hello";
+for (let char of message) {
+    console.log("字符：", char);
+}
+
+// 遍历 Set（集合）
+let uniqueNumbers: Set&lt;number&gt; = new Set([1, 2, 3, 2, 1]);
+for (let num of uniqueNumbers) {
+    console.log("Set 中的值：", num);  // 1, 2, 3（去重后）
+}
+
+// 遍历 Map（映射）
+let userMap: Map&lt;string, number&gt; = new Map([
+    ["Alice", 25],
+    ["Bob", 30],
+    ["Charlie", 35]
+]);
+for (let [name, age] of userMap) {
+    console.log(`${name} 的年龄是 ${age}`);
+}
+
+// for...of vs for...in
+let arr: number[] = [10, 20, 30];
+arr.customProperty = "自定义属性";  // 添加一个非数字属性
+
+console.log("for...in 遍历（会遍历所有可枚举属性）：");
+for (let index in arr) {
+    console.log("  index:", index);
+}
+
+console.log("for...of 遍历（只遍历值）：");
+for (let value of arr) {
+    console.log("  value:", value);
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 for...of 与 for...in 的区别</strong>
+                    <ul>
+                        <li>for...of：遍历值，适用于数组、字符串、Set、Map 等可迭代对象</li>
+                        <li>for...in：遍历键（索引），会遍历所有可枚举属性</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="function">
+                <h2>函数</h2>
+                <p>函数是一段可重复使用的代码块，用于实现特定功能。TypeScript 为 JavaScript 函数添加了完整的类型支持。</p>
+
+                <h3>函数声明</h3>
+                <p>函数声明使用 function 关键字，可以指定参数类型和返回值类型。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 基本函数声明
+// 语法：function 函数名(参数: 类型): 返回类型 { ... }
+
+function greet(name: string): string {
+    return "你好，" + name + "！";
+}
+console.log(greet("小明"));  // "你好，小明！"
+
+// 带多个参数的函数
+function add(a: number, b: number): number {
+    return a + b;
+}
+console.log("3 + 5 =", add(3, 5));  // 8
+
+// 无返回值的函数
+function sayHello(name: string): void {
+    console.log("Hello,", name);
+}
+
+// 函数可以作为一个值（赋值给变量）
+let multiply = function(x: number, y: number): number {
+    return x * y;
+};
+console.log("4 × 6 =", multiply(4, 6));  // 24
+
+// 函数作为另一个函数的参数（回调函数）
+function calculate(a: number, b: number, operation: (x: number, y: number) =&gt; number): number {
+    return operation(a, b);
+}
+let result = calculate(10, 5, (x, y) =&gt; x + y);
+console.log("10 + 5 =", result);  // 15
+
+result = calculate(10, 5, (x, y) =&gt; x * y);
+console.log("10 × 5 =", result);  // 50
+
+// 可选参数
+function buildName(firstName: string, lastName?: string): string {
+    if (lastName) {
+        return firstName + " " + lastName;
+    }
+    return firstName;
+}
+console.log(buildName("张", "三"));   // "张 三"
+console.log(buildName("李"));         // "李"
+
+// 默认参数
+function setColor(car: string, color: string = "白色"): void {
+    console.log(`${car} 的颜色是 ${color}`);
+}
+setColor("特斯拉");       // "特斯拉 的颜色是 白色"
+setColor("比亚迪", "红色"); // "比亚迪 的颜色是 红色"
+
+// 剩余参数
+function sum(...numbers: number[]): number {
+    let total = 0;
+    for (let n of numbers) {
+        total += n;
+    }
+    return total;
+}
+console.log("sum(1,2,3) =", sum(1, 2, 3));           // 6
+console.log("sum(1,2,3,4,5) =", sum(1, 2, 3, 4, 5)); // 15</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 函数类型注解</strong>
+                    <ul>
+                        <li>参数必须添加类型注解（除非是 any 类型）</li>
+                        <li>返回值类型可以省略，TypeScript 会自动推断</li>
+                        <li>使用 <code>?</code> 表示可选参数</li>
+                        <li>使用 <code>= 值</code> 设置默认参数</li>
+                        <li>使用 <code>...rest</code> 处理剩余参数</li>
+                    </ul>
+                </div>
+
+                <h3>箭头函数</h3>
+                <p>箭头函数是 ES6 引入的简洁函数写法，使用 <code>=&gt;</code> 符号，语法更简洁，且不绑定自己的 this。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 基本箭头函数
+// 语法：(参数) =&gt; { 函数体 }
+// 或者：(参数) =&gt; 表达式（单行返回值可省略大括号）
+
+// 完整写法
+let add1 = (a: number, b: number): number =&gt; {
+    return a + b;
+};
+
+// 简写：单行函数体可省略大括号和 return
+let add2 = (a: number, b: number): number =&gt; a + b;
+
+// 单个参数可省略括号
+let double = (n: number): number =&gt; n * 2;
+
+// 无参数函数
+let getRandom = (): number =&gt; Math.random();
+
+// 箭头函数作为回调函数
+let numbers: number[] = [1, 2, 3, 4, 5];
+
+// 传统写法
+numbers.map(function(n) {
+    return n * 2;
+});
+
+// 箭头函数写法
+let doubled = numbers.map(n =&gt; n * 2);
+console.log("加倍后的数组：", doubled);  // [2, 4, 6, 8, 10]
+
+// 过滤数组
+let evens = numbers.filter(n =&gt; n % 2 === 0);
+console.log("偶数：", evens);  // [2, 4]
+
+// 箭头函数与 this
+// 箭头函数不绑定自己的 this，会继承外层的 this
+
+class Timer {
+    time: string = "00:00";
+
+    // 传统函数会创建自己的 this
+    startOld() {
+        setTimeout(function() {
+            console.log("Old this.time =", this.time);  // undefined
+        }, 100);
+    }
+
+    // 箭头函数继承外层的 this
+    startArrow() {
+        setTimeout(() =&gt; {
+            console.log("Arrow this.time =", this.time);  // "00:00"
+        }, 100);
+    }
+}
+
+let timer = new Timer();
+// timer.startOld();    // this.time 无法访问
+// timer.startArrow();  // 正常访问 this.time</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 箭头函数特点</strong>
+                    <ul>
+                        <li>语法简洁，适合短函数</li>
+                        <li>不创建自己的 this，适合回调函数</li>
+                        <li>不能用作构造函数（不能用 new 调用）</li>
+                        <li>没有 arguments 对象</li>
+                    </ul>
+                </div>
+
+                <h3>泛型函数</h3>
+                <p>泛型函数使用类型变量，让函数可以支持多种类型，同时保持类型安全。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 基本泛型函数
+// 语法：function 函数名&lt;T&gt;(参数: T): T { ... }
+// T 是类型变量，代表某种类型
+
+function identity&lt;T&gt;(arg: T): T {
+    return arg;
+}
+
+// 使用时指定类型
+let output1 = identity&lt;string&gt;("Hello");
+let output2 = identity&lt;number&gt;(123);
+
+// 也可以让 TypeScript 自动推断类型
+let output3 = identity("World");  // 自动推断为 string
+let output4 = identity(456);      // 自动推断为 number
+
+// 泛型函数处理多个参数
+function pair&lt;T, U&gt;(first: T, second: U): [T, U] {
+    return [first, second];
+}
+let p1 = pair&lt;string, number&gt;("年龄", 25);
+let p2 = pair("姓名", "小明");  // 自动推断
+console.log(p1);  // ["年龄", 25]
+console.log(p2);  // ["姓名", "小明"]
+
+// 泛型函数用于数组
+function firstElement&lt;T&gt;(arr: T[]): T | undefined {
+    return arr[0];
+}
+let nums = [1, 2, 3, 4, 5];
+let strs = ["a", "b", "c"];
+console.log("第一个数字：", firstElement(nums));  // 1
+console.log("第一个字符串：", firstElement(strs)); // "a"
+
+// 泛型函数用于对象
+function merge&lt;T extends object, U extends object&gt;(target: T, source: U): T &amp; U {
+    return { ...target, ...source };
+}
+let obj1 = { name: "张三" };
+let obj2 = { age: 25, city: "北京" };
+let merged = merge(obj1, obj2);
+console.log("合并对象：", merged);  // { name: "张三", age: 25, city: "北京" }
+
+// 泛型约束：限制类型变量必须具有某些属性
+function getProperty&lt;T, K extends keyof T&gt;(obj: T, key: K): T[K] {
+    return obj[key];
+}
+
+let person = {
+    name: "李四",
+    age: 30,
+    gender: "男"
+};
+
+let nameValue = getProperty(person, "name");   // string
+let ageValue = getProperty(person, "age");      // number
+// getProperty(person, "height");  // 错误：height 不在 person 中</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 泛型函数的优势</strong>
+                    <ul>
+                        <li>代码复用：一套函数实现支持多种类型</li>
+                        <li>类型安全：编译器检查类型错误</li>
+                        <li>灵活组合：可以约束类型必须具有特定属性</li>
+                    </ul>
+                </div>
+            </section>
+
             <section id="interface">
                 <h2>接口 Interface</h2>
+                <p>接口用于定义对象的结构（属性和方法），是 TypeScript 实现类型约束的核心特性之一。</p>
 
                 <h3>基本接口</h3>
                 <div class="code-block">
                     <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
-                    <pre><code>interface Person {
-    firstName: string;
-    lastName: string;
-    age?: number;           // 可选属性
-    readonly id: number;    // 只读属性
+                    <pre><code>// 定义一个人的接口
+interface Person {
+    firstName: string;    // 必填属性
+    lastName: string;     // 必填属性
+    age?: number;         // 可选属性（带问号）
+    readonly id: number;  // 只读属性（只能在初始化时赋值）
 }
 
+// 使用接口
 function greeter(person: Person): string {
     return `Hello, ${person.firstName} ${person.lastName}`;
 }
 
-let user: Person = { firstName: "Jane", lastName: "User", id: 1 };
-console.log(greeter(user));</code></pre>
+let user: Person = {
+    firstName: "Jane",
+    lastName: "User",
+    id: 1
+};
+console.log(greeter(user));  // "Hello, Jane User"
+
+// 只读属性的特点
+let user2: Person = {
+    firstName: "张",
+    lastName: "三",
+    id: 2
+};
+// user2.id = 3;  // 错误：Cannot assign to 'id' because it is a read-only property
+
+// 可选属性的特点
+let user3: Person = {
+    firstName: "李",
+    lastName: "四",
+    // age 未提供也没关系
+    id: 3
+};</code></pre>
                 </div>
 
                 <h3>函数类型接口</h3>
                 <div class="code-block">
                     <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
-                    <pre><code>interface SearchFunc {
+                    <pre><code>// 定义函数类型接口
+interface SearchFunc {
+    // 参数类型列表 + 返回值类型
     (source: string, subString: string): boolean;
 }
 
+// 使用函数类型接口
 let mySearch: SearchFunc = function(src, sub) {
+    // TypeScript 会自动推断参数类型为 string
     return src.search(sub) > -1;
-};</code></pre>
+};
+
+console.log("查找 'World' 在 'Hello World' 中：", mySearch("Hello World", "World"));  // true
+console.log("查找 'abc' 在 'Hello World' 中：", mySearch("Hello World", "abc"));       // false</code></pre>
                 </div>
 
                 <h3>可索引类型</h3>
                 <div class="code-block">
                     <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
-                    <pre><code>interface StringArray {
-    [index: number]: string;
+                    <pre><code>// 定义字符串数组接口（数字索引）
+interface StringArray {
+    [index: number]: string;  // 数字索引返回字符串
 }
 
 let myArray: StringArray = ["Bob", "Fred"];
-let myStr: string = myArray[0];</code></pre>
+let firstElement: string = myArray[0];  // "Bob"
+console.log("第一个元素：", firstElement);
+
+// 字符串索引签名（更多用于字典/映射）
+interface Dictionary {
+    [key: string]: number;  // 字符串键，数字值
+}
+
+let scores: Dictionary = {
+    "数学": 95,
+    "语文": 88,
+    "英语": 92
+};
+console.log("数学成绩：", scores["数学"]);  // 95
+
+// 混合使用：同时支持数字和字符串索引
+interface Hybrid {
+    [key: string]: string | number;  // 值可以是字符串或数字
+    length: number;                  // 特定属性
+    name: string;                    // 特定属性
+}
+
+let hybrid: Hybrid = {
+    length: 10,
+    name: "混合对象",
+    "额外属性": 100  // 字符串索引
+};</code></pre>
+                </div>
+
+                <h3>接口继承</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 基接口
+interface Shape {
+    color: string;
+}
+
+// 继承单个接口
+interface Square extends Shape {
+    sideLength: number;
+}
+
+let square: Square = {
+    color: "蓝色",
+    sideLength: 10
+};
+console.log("正方形：", square);
+
+// 继承多个接口
+interface Colorful {
+    color: string;
+}
+
+interface Printable {
+    print(): void;
+}
+
+interface Document extends Colorful, Printable {
+    title: string;
+}
+
+let doc: Document = {
+    color: "红色",
+    title: "我的文档",
+    print() {
+        console.log("打印文档：" + this.title);
+    }
+};
+doc.print();  // "打印文档：我的文档"</code></pre>
+                </div>
+            </section>
+
+            <section id="type-alias">
+                <h2>类型别名</h2>
+                <p>类型别名用于给一个类型起一个新名字，适合复杂类型或需要多次使用的类型。</p>
+
+                <h3>基本用法</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 基本类型别名
+type Name = string;
+type Age = number;
+type Callback = () =&gt; void;
+
+// 给对象类型起别名
+type Point = {
+    x: number;
+    y: number;
+};
+
+function printPoint(point: Point): void {
+    console.log(`坐标：(${point.x}, ${point.y})`);
+}
+printPoint({ x: 10, y: 20 });  // "坐标：(10, 20)"
+
+// 给联合类型起别名
+type Status = "pending" | "approved" | "rejected";
+type ID = string | number;
+
+let orderStatus: Status = "approved";
+let userId: ID = 12345;   // 可以是数字
+let adminId: ID = "admin"; // 也可以是字符串
+
+// 给元组起别名
+type RGB = [number, number, number];
+type RGBA = [number, number, number, number];
+
+let red: RGB = [255, 0, 0];
+let redTransparent: RGBA = [255, 0, 0, 0.5];
+
+// 给函数类型起别名
+type LogFunction = (message: string, level?: string) =&gt; void;
+
+const log: LogFunction = (message, level = "INFO") =&gt; {
+    console.log(`[${level}] ${message}`);
+};
+log("应用启动成功");
+log("连接失败", "ERROR");</code></pre>
+                </div>
+
+                <h3>类型别名 vs 接口</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 接口的特点
+interface Animal {
+    name: string;
+}
+interface Animal {
+    age: number;  // 可以添加新属性（声明合并）
+}
+// Animal 实际变成：{ name: string; age: number; }
+
+// 类型别名的特点
+type AnimalType = {
+    name: string;
+} &amp; {
+    age: number;  // 通过交叉类型组合
+};
+
+// 何时使用接口
+// 1. 定义对象的结构
+interface User {
+    name: string;
+    email: string;
+}
+
+// 2. 需要被类实现
+class UserClass implements User {
+    name = "默认用户";
+    email = "default@example.com";
+}
+
+// 何时使用类型别名
+// 1. 联合类型
+type Result = SuccessResponse | ErrorResponse;
+
+// 2. 元组类型
+type Coordinates = [number, number, number];
+
+// 3. 函数类型
+type Handler = (event: Event) =&gt; void;
+
+// 4. 复杂类型组合
+type Config = {
+    [key: string]: string | number | boolean;
+};</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 选择建议</strong>
+                    <ul>
+                        <li>大多数情况下可以互换使用</li>
+                        <li>需要声明合并时使用 <code>interface</code></li>
+                        <li>联合类型、元组、函数类型用 <code>type</code></li>
+                    </ul>
                 </div>
             </section>
 
@@ -299,21 +1297,146 @@ let output2 = identity("myString");  // 类型推断</code></pre>
 let myGenericNumber = new GenericNumber&lt;number&gt;(0, (x, y) =&gt; x + y);
 console.log(myGenericNumber.add(5, 3));  // 8</code></pre>
                 </div>
+            </section>
 
-                <h3>泛型约束</h3>
+            <section id="generic-constraint">
+                <h2>泛型约束</h2>
+                <p>泛型约束用于限制泛型类型的范围，确保类型具有必要的属性或方法。</p>
+
+                <h3>使用 extends 约束</h3>
                 <div class="code-block">
                     <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
-                    <pre><code>interface Lengthwise {
-    length: number;
+                    <pre><code>// 定义一个约束接口
+interface Lengthwise {
+    length: number;  // 必须具有 length 属性
 }
 
+// 约束泛型 T 必须具有 length 属性
 function loggingIdentity&lt;T extends Lengthwise&gt;(arg: T): T {
-    console.log(arg.length);
+    console.log("长度：", arg.length);
     return arg;
 }
 
-loggingIdentity("hello");  // 5
-loggingIdentity([1, 2, 3]);  // 3</code></pre>
+// 字符串有 length 属性，可以传入
+loggingIdentity("hello");  // 长度：5
+
+// 数组有 length 属性，可以传入
+loggingIdentity([1, 2, 3]);  // 长度：3
+
+// 对象有 length 属性，可以传入
+loggingIdentity({ length: 10, value: "test" });  // 长度：10
+
+// 数字没有 length 属性，会报错
+// loggingIdentity(123);  // 错误：number 不具有 length 属性</code></pre>
+                </div>
+
+                <h3>约束多个属性</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 约束 T 必须同时具有 x 和 y 属性
+function printCoordinates&lt;T extends { x: number; y: number }&gt;(point: T): void {
+    console.log(`坐标：(${point.x}, ${point.y})`);
+}
+
+printCoordinates({ x: 10, y: 20 });  // 正常
+printCoordinates({ x: 10, y: 20, z: 30 });  // 正常，可以有额外属性
+
+// 错误：缺少 y 属性
+// printCoordinates({ x: 10 });  // 错误
+
+// 错误：x 是字符串不是数字
+// printCoordinates({ x: "10", y: 20 });  // 错误</code></pre>
+                </div>
+
+                <h3>使用 keyof 约束</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// keyof 创建一个类型，它是另一个类型的所有属性名的联合类型
+
+interface Person {
+    name: string;
+    age: number;
+    gender: string;
+}
+
+// PersonKeys = "name" | "age" | "gender"
+type PersonKeys = keyof Person;
+
+// 约束 K 必须是 Person 的某个属性名
+function getProperty&lt;T, K extends keyof T&gt;(obj: T, key: K): T[K] {
+    return obj[key];
+}
+
+let person: Person = {
+    name: "张三",
+    age: 25,
+    gender: "男"
+};
+
+// 返回值类型会自动推断
+let nameValue: string = getProperty(person, "name");   // string
+let ageValue: number = getProperty(person, "age");      // number
+
+// 错误：'height' 不是 Person 的属性
+// let height = getProperty(person, "height");  // 错误</code></pre>
+                </div>
+
+                <h3>泛型约束的实际应用</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 泛型约束用于创建更安全的 API
+
+// 1. 确保对象具有 ID
+interface withID {
+    id: number;
+}
+
+function findById&lt;T extends withID&gt;(items: T[], id: number): T | undefined {
+    return items.find(item =&gt; item.id === id);
+}
+
+interface User {
+    id: number;
+    name: string;
+}
+
+let users: User[] = [
+    { id: 1, name: "张三" },
+    { id: 2, name: "李四" },
+    { id: 3, name: "王五" }
+];
+
+let user = findById(users, 2);
+console.log("找到的用户：", user);  // { id: 2, name: "李四" }
+
+// 2. 确保数组非空
+function first&lt;T&gt;(arr: T[]): T {
+    return arr[0];
+}
+
+// 约束数组长度必须大于 0
+function firstNonEmpty&lt;T&gt;(arr: T[]): T {
+    if (arr.length === 0) {
+        throw new Error("数组不能为空");
+    }
+    return arr[0];
+}
+
+// 3. 泛型约束用于 Mixin 模式
+function withTimestamp&lt;T extends new (...args: any[]) =&gt; {}&gt;(Base: T) {
+    return class extends Base {
+        timestamp = Date.now();
+    };
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 泛型约束要点</strong>
+                    <ul>
+                        <li>使用 <code>extends</code> 关键字约束类型</li>
+                        <li>使用 <code>keyof</code> 获取类型的所有属性名</li>
+                        <li>约束让 API 更安全，错误提前到编译期</li>
+                    </ul>
                 </div>
             </section>
 

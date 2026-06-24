@@ -58,10 +58,15 @@
                 <ul>
                     <li><a href="#intro">简介</a></li>
                     <li><a href="#variable">变量与类型</a></li>
+                    <li><a href="#operator">运算符</a></li>
                     <li><a href="#function">函数</a></li>
-                    <li><a href="#control">流程控制</a></li>
+                    <li><a href="#condition">条件语句</a></li>
+                    <li><a href="#loop">循环</a></li>
                     <li><a href="#class">类与对象</a></li>
+                    <li><a href="#data-class">数据类</a></li>
+                    <li><a href="#sealed-class">密封类</a></li>
                     <li><a href="#null">空安全</a></li>
+                    <li><a href="#collection">集合操作</a></li>
                     <li><a href="#generic">泛型</a></li>
                     <li><a href="#scope">作用域函数</a></li>
                 </ul>
@@ -166,6 +171,172 @@ fun main() {
                 </div>
             </section>
 
+            <section id="operator">
+                <h2>运算符</h2>
+                <p>Kotlin 支持多种运算符，用于执行算术、比较、逻辑等操作。</p>
+
+                <h3>算术运算符</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val a = 10
+    val b = 3
+
+    // 基本算术运算
+    println("加法: a + b = ${a + b}")      // 13
+    println("减法: a - b = ${a - b}")      // 7
+    println("乘法: a * b = ${a * b}")      // 30
+    println("除法: a / b = ${a / b}")      // 3（整数除法）
+    println("取余: a % b = ${a % b}")      // 1
+
+    // 浮点数除法
+    val c = 10.0
+    println("浮点除法: c / b = ${c / b}")  // 3.333...
+
+    // 复合赋值运算符
+    var x = 5
+    x += 3    // x = x + 3 = 8
+    println("x += 3: $x")
+    x -= 2    // x = x - 2 = 6
+    println("x -= 2: $x")
+    x *= 2    // x = x * 2 = 12
+    println("x *= 2: $x")
+    x /= 3    // x = x / 3 = 4
+    println("x /= 3: $x")
+    x %= 3    // x = x % 3 = 1
+    println("x %= 3: $x")
+
+    // 一元运算符
+    var y = 5
+    println("y++: ${y++}")   // 先返回值(5)，再自增
+    println("++y: ${++y}")   // 先自增(7)，再返回值
+    println("y--: ${y--}")   // 先返回值(7)，再自减
+    println("--y: ${--y}")   // 先自减(5)，再返回值
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 整数除法注意</strong>
+                    <p>在 Kotlin 中，两个整数相除结果仍是整数（截断小数部分）。如果需要浮点结果，请将任一操作数转为 Double 或 Float。</p>
+                </div>
+
+                <h3>比较运算符</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val a = 10
+    val b = 20
+    val c = 10
+
+    // 基本比较
+    println("a == c: ${a == c}")   // true（值相等）
+    println("a != b: ${a != b}")   // true（值不等）
+    println("a > b: ${a > b}")     // false
+    println("a < b: ${a < b}")     // true
+    println("a >= c: ${a >= c}")   // true
+    println("a <= c: ${a <= c}")  // true
+
+    // 字符串比较
+    val str1 = "Hello"
+    val str2 = "hello"
+    println("\"Hello\" == \"hello\": ${str1 == str2}")   // false
+    println("\"Hello\".equals(\"hello\", ignoreCase = true): ${str1.equals(str2, ignoreCase = true)}")  // true
+
+    // Kotlin 的 == 比较的是值（类似 equals），=== 比较的是引用
+    val str3 = "Hello"
+    println("str1 == str3: ${str1 == str3}")  // true（值相同）
+    println("str1 === str3: ${str1 === str3}") // true（可能同一对象，字符串驻留）
+
+    val list1 = listOf(1, 2, 3)
+    val list2 = listOf(1, 2, 3)
+    println("list1 == list2: ${list1 == list2}")  // true（值相同）
+    println("list1 === list2: ${list1 === list2}") // false（不同对象）
+
+    // 区间检查
+    val score = 85
+    println("score in 60..100: ${score in 60..100}")  // true
+    println("score !in 0..59: ${score !in 0..59}")    // true
+}</code></pre>
+                </div>
+
+                <h3>逻辑运算符</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val a = true
+    val b = false
+
+    // 逻辑运算
+    println("a && b: ${a && b}")   // false（与：两者都为 true 才为 true）
+    println("a || b: ${a || b}")   // true（或：至少一个为 true 就为 true）
+    println("!a: ${!a}")           // false（非：取反）
+
+    // 短路求值
+    // && 和 || 都会短路：如果第一个条件能确定结果，就不再计算第二个
+    fun check1(): Boolean {
+        println("check1 被调用")
+        return true
+    }
+    fun check2(): Boolean {
+        println("check2 被调用")
+        return false
+    }
+
+    println("\n短路求值示例:")
+    println("result = ${check1() && check2()}")  // check2 不会被调用
+    println("---")
+    println("result = ${check2() || check1()}")  // check1 会被调用
+
+    // 区间与范围
+    val age = 25
+    println("\nage 在 18-60 之间: ${age in 18..60}")
+    println("age 在 0-17 或 61-100: ${age < 18 || age > 60}")
+
+    // 字符范围
+    val ch = 'c'
+    println("'c' 在 'a'..'z': ${ch in 'a'..'z'}")
+}</code></pre>
+                </div>
+
+                <h3>位运算符</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val x = 0b1100   // 12 的二进制: 00001100
+    val y = 0b1010   // 10 的二进制: 00001010
+
+    println("x = $x, y = $y")
+    println("x and y = ${x and y}")   // 8  (00001000)
+    println("x or y = ${x or y}")     // 14 (00001110)
+    println("x xor y = ${x xor y}")   // 6  (00000110)
+    println("x.inv() = ${x.inv()}")   // -13 (按位取反)
+
+    // 移位操作
+    val shift = 1
+    println("\n移位操作 (基于 $shift):")
+    println("x shl 2 = ${x shl 2}")   // 左移 2 位: 48
+    println("x shr 1 = ${x shr 1}")   // 右移 1 位: 6
+    println("x ushr 2 = ${x ushr 2}") // 无符号右移 2 位: 3
+
+    // 常用技巧
+    println("\n常用技巧:")
+    // 判断奇偶
+    val num = 7
+    println("$num 是奇数: ${num and 1 == 1}")
+    println("$num 是偶数: ${num and 1 == 0}")
+
+    // 快速乘除 2 的幂
+    println("$num * 2 = ${num shl 1}")
+    println("$num / 2 = ${num shr 1}")
+}</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意</strong>
+                    <p>Kotlin 没有三目运算符 (a ? b : c)，而是使用 if-else 表达式代替。</p>
+                </div>
+            </section>
+
             <section id="function">
                 <h2>函数</h2>
 
@@ -235,96 +406,418 @@ fun main() {
                 </div>
             </section>
 
-            <section id="control">
-                <h2>流程控制</h2>
+            <section id="condition">
+                <h2>条件语句</h2>
+                <p>条件语句用于根据不同条件执行不同代码分支。</p>
+
+                <h3>if-else 表达式</h3>
+                <p>在 Kotlin 中，if-else 是表达式，可以返回值（类似三目运算符）。</p>
 
                 <div class="code-block">
                     <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
                     <pre><code>fun main() {
-    // if 表达式
+    // 基本 if-else
     val score = 85
-    val grade = if (score &gt;= 90) {
+    if (score >= 90) {
+        println("优秀")
+    } else if (score >= 80) {
+        println("良好")
+    } else if (score >= 60) {
+        println("及格")
+    } else {
+        println("不及格")
+    }
+
+    // if-else 作为表达式（返回值）
+    val grade = if (score >= 90) {
         "优秀"
-    } else if (score &gt;= 80) {
+    } else if (score >= 80) {
         "良好"
-    } else if (score &gt;= 60) {
+    } else if (score >= 60) {
         "及格"
     } else {
         "不及格"
     }
     println("成绩等级: $grade")
 
-    // when 表达式
+    // 简化写法（单行可用）
+    val result = if (score >= 60) "及格" else "不及格"
+    println("简化: $result")
+
+    // if-else 嵌套
+    val num = 10
+    if (num > 0) {
+        if (num % 2 == 0) {
+            println("$num 是正偶数")
+        } else {
+            println("$num 是正奇数")
+        }
+    } else {
+        println("$num 不是正数")
+    }
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 提示</strong>
+                    <p>在 Kotlin 中，if-else 是表达式而非语句，这意味着它可以有返回值。这是 Kotlin 优于 Java 的一点。</p>
+                </div>
+
+                <h3>when 表达式</h3>
+                <p>when 是 Kotlin 强大的条件表达式，可以匹配各种类型的值。</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // 基本 when - 匹配值
     val day = "周一"
     val dayType = when (day) {
-        "周一", "周二", "周三", "周四", "周五" -&gt; "工作日"
-        "周六", "周日" -&gt; "周末"
-        else -&gt; "无效日期"
+        "周一", "周二", "周三", "周四", "周五" -> "工作日"
+        "周六", "周日" -> "周末"
+        else -> "无效日期"
     }
     println("$day 是 $dayType")
 
-    // when 不带参数
-    val x = 15
+    // when 作为表达式（返回值）
+    val score = 85
     val result = when {
-        x &lt; 10 -&gt; "小于10"
-        x &lt; 20 -&gt; "小于20"
-        else -&gt; "大于等于20"
+        score >= 90 -> "优秀"
+        score >= 80 -> "良好"
+        score >= 70 -> "中等"
+        score >= 60 -> "及格"
+        else -> "不及格"
     }
-    println("x = $x, $result")
+    println("分数 $score: $result")
 
-    // for 循环
-    println("for 循环:")
+    // 匹配类型
+    fun describe(obj: Any): String = when (obj) {
+        1 -> "数字 1"
+        "Hello" -> "字符串 Hello"
+        is Long -> "Long 类型，值: $obj"
+        !is String -> "不是字符串"
+        else -> "未知"
+    }
+    println(describe(1))
+    println(describe("Hello"))
+    println(describe(100L))
+    println(describe(3.14))
+
+    // 区间和集合检查
+    val x = 15
+    when (x) {
+        in 1..10 -> println("$x 在 1-10 之间")
+        in 11..20 -> println("$x 在 11-20 之间")
+        !in 1..20 -> println("$x 不在 1-20 之间")
+    }
+
+    // when 携带多个条件
+    val ch = 'a'
+    when (ch) {
+        'a', 'e', 'i', 'o', 'u' -> println("$ch 是元音字母")
+        in 'a'..'z' -> println("$ch 是辅音字母")
+        in '0'..'9' -> println("$ch 是数字")
+        else -> println("$ch 是其他字符")
+    }
+
+    // 捕获 when 参数
+    val tuple = Pair(1, 2)
+    when {
+        tuple.first > 0 && tuple.second > 0 -> println("第一象限")
+        tuple.first < 0 && tuple.second > 0 -> println("第二象限")
+        tuple.first < 0 && tuple.second < 0 -> println("第三象限")
+        tuple.first > 0 && tuple.second < 0 -> println("第四象限")
+        else -> println("在坐标轴上")
+    }
+}</code></pre>
+                </div>
+
+                <h3>when 的高级用法</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>// when 匹配密封类（编译器会检查是否覆盖所有情况）
+sealed class Result {
+    data class Success(val data: String) : Result()
+    data class Error(val message: String) : Result()
+    object Loading : Result()
+}
+
+fun handleResult(result: Result) = when (result) {
+    is Result.Success -> println("成功: ${result.data}")
+    is Result.Error -> println("错误: ${result.message}")
+    Result.Loading -> println("加载中...")
+    // 编译器知道这里没有其他情况，不需要 else
+}
+
+// when 枚举值
+enum class Color { RED, GREEN, BLUE }
+
+fun getColorName(color: Color) = when (color) {
+    Color.RED -> "红色"
+    Color.GREEN -> "绿色"
+    Color.BLUE -> "蓝色"
+    // 同样，编译器知道覆盖了所有情况
+}
+
+// when 代替 if-else 链
+fun maxOf(a: Int, b: Int) = when {
+    a > b -> a
+    else -> b
+}
+
+fun main() {
+    handleResult(Result.Success("数据加载成功"))
+    handleResult(Result.Error("网络连接失败"))
+    handleResult(Result.Loading)
+
+    println("颜色: ${getColorName(Color.RED)}")
+    println("最大值: ${maxOf(10, 20)}")
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="loop">
+                <h2>循环</h2>
+                <p>循环用于重复执行代码块，Kotlin 提供了多种循环结构。</p>
+
+                <h3>for 循环</h3>
+                <p>for 循环是 Kotlin 最常用的循环结构，用于遍历区间、集合等。</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // 闭区间循环 1..3（包含 1 和 3）
+    println("闭区间 1..3:")
     for (i in 1..3) {
-        println("  $i")
+        println("  i = $i")
     }
 
-    println("downTo:")
-    for (i in 3 downTo 1) {
-        println("  $i")
-    }
-
-    println("step:")
-    for (i in 1..5 step 2) {
-        println("  $i")
-    }
-
-    println("until (不包含上限):")
+    // 半开区间 1 until 3（包含 1，不包含 3）
+    println("半开区间 1 until 3:")
     for (i in 1 until 3) {
-        println("  $i")
+        println("  i = $i")
     }
 
-    // 遍历
-    val fruits = listOf("苹果", "香蕉", "橙子")
-    println("遍历列表:")
-    for ((index, fruit) in fruits.withIndex()) {
-        println("  $index. $fruit")
+    // 倒序 downTo
+    println("倒序 3 downTo 1:")
+    for (i in 3 downTo 1) {
+        println("  i = $i")
     }
 
+    // 步长 step
+    println("step 2 (1, 3, 5):")
+    for (i in 1..5 step 2) {
+        println("  i = $i")
+    }
+
+    // 遍历字符串
+    val str = "Kotlin"
+    println("遍历字符串:")
+    for (ch in str) {
+        println("  字符: $ch")
+    }
+
+    // 遍历数组
+    val arr = arrayOf("苹果", "香蕉", "橙子")
+    println("遍历数组:")
+    for (item in arr) {
+        println("  $item")
+    }
+
+    // 遍历带索引
+    println("遍历带索引:")
+    for ((index, item) in arr.withIndex()) {
+        println("  $index: $item")
+    }
+
+    // 遍历 Map
+    val map = mapOf("语文" to 90, "数学" to 85, "英语" to 88)
+    println("遍历 Map:")
+    for ((key, value) in map) {
+        println("  $key: $value")
+    }
+
+    // 使用 indices 遍历索引
+    println("使用 indices:")
+    for (i in arr.indices) {
+        println("  arr[$i] = ${arr[i]}")
+    }
+}</code></pre>
+                </div>
+
+                <h3>while 循环</h3>
+                <p>while 循环在条件为 true 时重复执行代码块。</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
     // while 循环
-    var i = 1
     println("while 循环:")
-    while (i &lt;= 3) {
-        println("  $i")
+    var i = 1
+    while (i <= 3) {
+        println("  i = $i")
         i++
     }
 
-    // do-while 循环
-    i = 1
+    // do-while 循环（至少执行一次）
     println("do-while 循环:")
+    var j = 1
     do {
-        println("  $i")
-        i++
-    } while (i &lt;= 3)
+        println("  j = $j")
+        j++
+    } while (j <= 3)
 
-    // return / break / continue
-    println("break/continue:")
-    loop@ for (i in 1..3) {
-        for (j in 1..3) {
-            if (j == 2) continue
-            if (i == 3) break@loop
-            println("  i=$i, j=$j")
+    // 条件在前，先判断再执行
+    println("先判断后执行:")
+    var count = 0
+    while (count < 3) {
+        println("  count = $count")
+        count++
+    }
+
+    // 可能一次都不执行
+    println("while 条件初始为 false:")
+    while (false) {
+        println("  这行不会执行")
+    }
+    println("  (while 循环体未执行)")
+
+    // do-while 至少执行一次
+    println("do-while 条件初始为 false:")
+    do {
+        println("  do-while 会执行一次")
+    } while (false)
+}</code></pre>
+                </div>
+
+                <h3>repeat 循环</h3>
+                <p>repeat 是 Kotlin 特有的循环，用于执行固定次数的循环。</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // 基本用法：重复 3 次，索引从 0 开始
+    println("repeat(3):")
+    repeat(3) { index ->
+        println("  第 ${index + 1} 次，index = $index")
+    }
+
+    // 指定起始索引
+    println("\n从 1 开始:")
+    repeat(3) { index ->
+        println("  ${index + 1}")
+    }
+
+    // 倒序打印
+    println("\n倒序打印:")
+    repeat(3) { index ->
+        val num = 3 - index
+        println("  $num")
+    }
+
+    // repeat 用于初始化
+    println("\n创建列表:")
+    val list = mutableListOf<Int>()
+    repeat(5) { i ->
+        list.add(i * i)  // 添加 0, 1, 4, 9, 16
+    }
+    println("  $list")
+
+    // repeat 嵌套
+    println("\n打印乘法表:")
+    repeat(5) { i ->
+        repeat(5) { j ->
+            print("${(i + 1) * (j + 1)}\t")
+        }
+        println()
+    }
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 repeat 小技巧</strong>
+                    <p>repeat 是 Kotlin 特有的语法，比传统的 for (i in 0..n-1) 更简洁。如果不需要索引参数，可以省略。</p>
+                </div>
+
+                <h3>循环控制</h3>
+                <p>break 用于跳出循环，continue 用于跳过当前迭代。</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // break - 完全跳出循环
+    println("break 示例（找到第一个偶数）:")
+    for (i in 1..10) {
+        if (i % 2 == 0) {
+            println("  找到第一个偶数: $i")
+            break
         }
     }
+
+    // continue - 跳过当前迭代
+    println("\ncontinue 示例（只打印奇数）:")
+    for (i in 1..7) {
+        if (i % 2 == 0) {
+            continue  // 跳过偶数
+        }
+        println("  奇数: $i")
+    }
+
+    // 嵌套循环中使用标签（break/continue 指定目标）
+    println("\n嵌套循环中使用 break@loop:")
+    outer@ for (i in 1..3) {
+        inner@ for (j in 1..3) {
+            println("  i=$i, j=$j")
+            if (j == 2) {
+                println("    跳过 i=$i 的剩余内循环")
+                continue@inner
+            }
+            if (i == 2 && j == 1) {
+                println("    完全跳出外循环")
+                break@outer
+            }
+        }
+    }
+
+    // 使用 break/continue 的好习惯
+    println("\n查找第一个平方大于 50 的数:")
+    for (n in 1..10) {
+        val square = n * n
+        if (square > 50) {
+            println("  找到: n=$n, square=$square")
+            break
+        }
+    }
+}</code></pre>
+                </div>
+
+                <h3>循环的返回值</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // for 循环本身没有返回值，结果是 Unit
+    val loopResult = for (i in 1..3) {
+        println(i)
+    }
+    println("for 循环返回值: $loopResult")  // kotlin.Unit
+
+    // 如果需要返回值，可以使用其他方式
+    // 方法1：使用 map
+    val squares = (1..5).map { it * it }
+    println("平方: $squares")
+
+    // 方法2：使用 buildList
+    val evenNums = buildList {
+        for (i in 1..10) {
+            if (i % 2 == 0) add(i)
+        }
+    }
+    println("偶数: $evenNums")
+
+    // 方法3：使用 generateSequence
+    val fibonacci = generateSequence(Pair(0, 1)) {
+        Pair(it.second, it.first + it.second)
+    }.map { it.first }.take(10).toList()
+    println("斐波那契: $fibonacci")
 }</code></pre>
                 </div>
             </section>
@@ -340,9 +833,6 @@ class Person(val name: String, var age: Int) {
         println("你好，我是$name，$age 岁")
     }
 }
-
-// 数据类
-data class User(val id: Int, val name: String, val email: String)
 
 // 枚举类
 enum class Direction {
@@ -407,35 +897,11 @@ class Circle(val radius: Double) : Drawable {
     }
 }
 
-// 密封类
-sealed class Result {
-    data class Success(val data: String) : Result()
-    data class Error(val message: String) : Result()
-    object Loading : Result()
-}
-
-fun handleResult(result: Result) {
-    when (result) {
-        is Result.Success -&gt; println("成功: ${result.data}")
-        is Result.Error -&gt; println("错误: ${result.message}")
-        is Result.Loading -&gt; println("加载中...")
-    }
-}
-
 fun main() {
     val p = Person("张三", 25)
     p.greet()
     p.age = 26
     println("修改后年龄: ${p.age}")
-
-    val user1 = User(1, "李四", "lisi@example.com")
-    val user2 = User(1, "李四", "lisi@example.com")
-    println("user1: $user1")
-    println("user1 == user2: ${user1 == user2}")
-
-    // 解构声明
-    val (id, name, email) = user1
-    println("解构: id=$id, name=$name, email=$email")
 
     println("方向: ${Direction.NORTH}")
     println("红色: ${Color.RED}, 16进制: ${Color.RED.toHex()}")
@@ -450,50 +916,590 @@ fun main() {
     val circle = Circle(5.0)
     circle.draw()
     circle.info()
+}</code></pre>
+                </div>
+            </section>
 
-    handleResult(Result.Success("数据已加载"))
-    handleResult(Result.Error("网络错误"))
+            <section id="data-class">
+                <h2>数据类</h2>
+                <p>数据类是一种特殊的类，专门用于保存数据。Kotlin 会自动生成 equals()、hashCode()、toString()、copy() 等方法。</p>
+
+                <h3>基本用法</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 定义数据类
+data class User(val id: Int, val name: String, val email: String)
+
+fun main() {
+    // 创建数据类实例
+    val user1 = User(1, "张三", "zhangsan@example.com")
+    val user2 = User(2, "李四", "lisi@example.com")
+
+    // 自动生成的 toString()
+    println("user1: $user1")
+    // 输出: User(id=1, name=张三, email=zhangsan@example.com)
+
+    // 自动生成的 equals()（比较属性值）
+    val user3 = User(1, "张三", "zhangsan@example.com")
+    println("user1 == user3: ${user1 == user3}")  // true
+    println("user1 === user3: ${user1 === user3}")  // false（不同对象）
+
+    // 自动生成的 hashCode()
+    println("user1.hashCode() == user3.hashCode(): ${user1.hashCode() == user3.hashCode()}")
+
+    // 自动生成的 copy()（复制并修改属性）
+    val user4 = user1.copy(name = "王五")
+    println("copy 后: $user4")
+    println("copy 整个对象: ${user1.copy()}")
+
+    // 解构声明
+    val (id, name, email) = user1
+    println("解构: id=$id, name=$name, email=$email")
+
+    // 在集合中使用
+    val users = listOf(user1, user2, user3)
+    println("包含 user1: ${users.contains(user1)}")
+    println("查找 id=2: ${users.find { it.id == 2 }}")
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 数据类要求</strong>
+                    <ul>
+                        <li>主构造函数至少有一个参数</li>
+                        <li>所有主构造函数的参数必须用 val 或 var 声明</li>
+                        <li>数据类不能是 abstract、open、sealed、inner</li>
+                        <li>如果需要无参构造函数，给所有参数提供默认值</li>
+                    </ul>
+                </div>
+
+                <h3>带默认值的构造函数</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>data class Config(
+    val host: String = "localhost",
+    val port: Int = 8080,
+    val debug: Boolean = false
+)
+
+fun main() {
+    // 全部使用默认值
+    val config1 = Config()
+    println("默认值: $config1")
+
+    // 只修改部分值
+    val config2 = Config(debug = true)
+    println("debug=true: $config2")
+
+    // 全部自定义
+    val config3 = Config("example.com", 443, true)
+    println("全部自定义: $config3")
+}</code></pre>
+                </div>
+
+                <h3>copy 与不可变性</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>data class Point(var x: Int, var y: Int)
+
+fun main() {
+    val p1 = Point(1, 2)
+    println("原始: $p1")
+
+    // copy 默认是浅拷贝
+    val p2 = p1.copy()
+    println("拷贝: $p2")
+    println("p1 == p2: ${p1 == p2}")  // true
+    println("p1 === p2: ${p1 === p2}") // false
+
+    // copy 可以修改属性
+    val p3 = p1.copy(x = 10)
+    println("修改 x 后: $p3")
+    println("p1 不变: $p1")
+
+    // 注意：如果属性是引用类型，copy 是浅拷贝
+    data class Data(var list: MutableList<Int>)
+    val d1 = Data(mutableListOf(1, 2))
+    val d2 = d1.copy()
+    d2.list.add(3)
+    println("d1.list: ${d1.list}")  // [1, 2, 3] - 被影响！
+    println("d2.list: ${d2.list}")  // [1, 2, 3]
+}</code></pre>
+                </div>
+
+                <h3>数据类的应用场景</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>// DTO（数据对象）
+data class UserDto(
+    val id: Long,
+    val username: String,
+    val avatarUrl: String?
+)
+
+// API 响应
+data class ApiResponse<T>(
+    val code: Int,
+    val message: String,
+    val data: T?
+)
+
+// 事件
+data class LoginEvent(
+    val userId: String,
+    val timestamp: Long,
+    val success: Boolean
+)
+
+// 配置
+data class ServerConfig(
+    val host: String,
+    val port: Int,
+    val ssl: Boolean = false
+)
+
+fun main() {
+    // JSON 序列化
+    println("DTO: ${UserDto(1, "Alice", "https://example.com/avatar.png")}")
+
+    // API 响应
+    val response = ApiResponse(200, "success", mapOf("name" to "test"))
+    println("API: $response")
+
+    // 事件传递
+    val event = LoginEvent("user123", System.currentTimeMillis(), true)
+    println("Event: $event")
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="sealed-class">
+                <h2>密封类</h2>
+                <p>密封类用于表示受限的类层次结构，所有子类必须在定义时已知。这非常适合用于状态管理和结果处理。</p>
+
+                <h3>基本用法</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 定义密封类
+sealed class Result {
+    // 子类必须是嵌套类或在同一个文件中
+    data class Success(val data: String) : Result()
+    data class Error(val message: String) : Result()
+    object Loading : Result()
+}
+
+// 处理不同情况
+fun handleResult(result: Result) {
+    when (result) {
+        is Result.Success -> println("成功: ${result.data}")
+        is Result.Error -> println("错误: ${result.message}")
+        Result.Loading -> println("加载中...")
+    }
+}
+
+fun main() {
+    val success = Result.Success("数据加载成功")
+    val error = Result.Error("网络错误")
+    val loading = Result.Loading
+
+    handleResult(success)
+    handleResult(error)
+    handleResult(loading)
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 密封类特点</strong>
+                    <ul>
+                        <li>密封类的子类型是有限的、固定的</li>
+                        <li>when 表达式可以覆盖所有子类型，编译器会检查是否完整</li>
+                        <li>子类型可以是数据类、对象声明或普通类</li>
+                        <li>子类型必须在同一文件内定义</li>
+                    </ul>
+                </div>
+
+                <h3>使用表达式返回值</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>sealed class Operation {
+    data class Add(val value: Int) : Operation()
+    data class Subtract(val value: Int) : Operation()
+    data class Multiply(val value: Int) : Operation()
+    object Divide : Operation()
+    object SquareRoot : Operation()
+}
+
+// 使用 when 表达式返回结果
+fun calculate(current: Int, op: Operation): Int = when (op) {
+    is Operation.Add -> current + op.value
+    is Operation.Subtract -> current - op.value
+    is Operation.Multiply -> current * op.value
+    Operation.Divide -> current / 2  // 简化的除法
+    Operation.SquareRoot -> (current * current)
+}
+
+fun main() {
+    var result = 10
+    result = calculate(result, Operation.Add(5))   // 15
+    println("加 5: $result")
+    result = calculate(result, Operation.Multiply(2))  // 30
+    println("乘 2: $result")
+    result = calculate(result, Operation.SquareRoot)   // 900
+    println("平方: $result")
+    result = calculate(result, Operation.Subtract(100))  // 800
+    println("减 100: $result")
+}</code></pre>
+                </div>
+
+                <h3>密封类与枚举类的区别</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 枚举类：所有实例是单例，固定数量
+enum class Color {
+    RED, GREEN, BLUE
+}
+
+// 密封类：子类可以有不同属性和行为
+sealed class Shape {
+    data class Circle(val radius: Double) : Shape()
+    data class Rectangle(val width: Double, val height: Double) : Shape()
+    data class Triangle(val base: Double, val height: Double) : Shape()
+}
+
+// 计算面积
+fun area(shape: Shape): Double = when (shape) {
+    is Shape.Circle -> Math.PI * shape.radius * shape.radius
+    is Shape.Rectangle -> shape.width * shape.height
+    is Shape.Triangle -> 0.5 * shape.base * shape.height
+}
+
+fun main() {
+    println("圆形面积: ${area(Shape.Circle(5.0))}")
+    println("矩形面积: ${area(Shape.Rectangle(4.0, 6.0))}")
+    println("三角形面积: ${area(Shape.Triangle(3.0, 4.0))}")
+}</code></pre>
+                </div>
+
+                <h3>实战：网络请求状态</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 定义不同状态的密封类
+sealed class NetworkResult<out T> {
+    data class Success<T>(val data: T) : NetworkResult<T>()
+    data class Error(val code: Int, val message: String) : NetworkResult<Nothing>()
+    object Loading : NetworkResult<Nothing>()
+}
+
+// 模拟网络请求
+fun fetchUser(id: Int): NetworkResult<User> {
+    return when {
+        id > 0 -> NetworkResult.Success(User(id, "用户$id"))
+        id == 0 -> NetworkResult.Error(404, "用户不存在")
+        else -> NetworkResult.Error(400, "无效的请求")
+    }
+}
+
+data class User(val id: Int, val name: String)
+
+fun main() {
+    // 模拟不同请求结果
+    val result1 = fetchUser(1)
+    val result2 = fetchUser(0)
+    val result3 = fetchUser(-1)
+
+    // 处理结果
+    result1.let {
+        when (it) {
+            is NetworkResult.Success -> println("获取用户: ${it.data.name}")
+            is NetworkResult.Error -> println("错误: ${it.message}")
+            NetworkResult.Loading -> println("加载中...")
+        }
+    }
+}</code></pre>
+                </div>
+
+                <h3>嵌套密封类</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>sealed class Outer {
+    sealed class Inner {
+        data class CaseA(val value: String) : Inner()
+        object CaseB : Inner()
+    }
+}
+
+fun handle(inner: Outer.Inner) = when (inner) {
+    is Outer.Inner.CaseA -> println("CaseA: ${inner.value}")
+    Outer.Inner.CaseB -> println("CaseB")
+}
+
+fun main() {
+    handle(Outer.Inner.CaseA("hello"))
+    handle(Outer.Inner.CaseB)
 }</code></pre>
                 </div>
             </section>
 
             <section id="null">
                 <h2>空安全</h2>
-                <p>这是 Kotlin 最著名的特性之一，有效避免空指针异常。</p>
+                <p>空安全是 Kotlin 最著名的特性之一，从语法层面避免了空指针异常（NPE）。在 Kotlin 中，类型系统区分可空类型和非空类型。</p>
 
+                <h3>可空类型与非空类型</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
                     <pre><code>fun main() {
-    // 可空类型（?）
-    var nullableStr: String? = "Hello"
-    println("nullableStr = $nullableStr")
-    nullableStr = null
-    println("nullableStr = $nullableStr")
+    // 非空类型（不能存 null）
+    val name: String = "Kotlin"
+    // name = null  // 编译错误！
 
-    // 安全调用（?.）
-    val len = nullableStr?.length
-    println("长度: $len")
+    // 可空类型（可以存 null）
+    var nullableName: String? = "Kotlin"
+    nullableName = null  // 正常
 
-    // 非空断言（!!）
-    val notNull = "Hello"
-    println("长度: ${notNull!!.length}")
+    println("name: $name")
+    println("nullableName: $nullableName")
+}</code></pre>
+                </div>
 
-    // Elvis 操作符（?:）
+                <h3>安全调用操作符（?.）</h3>
+                <p>如果对象不为 null，则调用方法；否则返回 null。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val str: String? = "Hello"
+
+    // 安全调用
+    println("str?.length = ${str?.length}")  // 5
+
+    // 为 null 时返回 null
+    val nullStr: String? = null
+    println("nullStr?.length = ${nullStr?.length}")  // null
+
+    // 链式调用
+    val person = Person("张三", null)
+    println("邮编: ${person.address?.city?.zipCode}")
+
+    // 安全调用 + let
+    str?.let {
+        println("字符串长度: ${it.length}")
+    }
+}
+
+data class Address(val city: City?)
+data class City(val zipCode: String?)
+data class Person(val name: String, val address: Address?)</code></pre>
+                </div>
+
+                <h3>Elvis 操作符（?:）</h3>
+                <p>如果左侧值为 null，则返回右侧默认值。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
     val name: String? = null
-    val displayName = name ?: "未知"
-    println("显示名称: $displayName")
 
-    // 安全转换（as?）
+    // 基本用法
+    val displayName = name ?: "匿名用户"
+    println("显示名称: $displayName")  // 匿名用户
+
+    // 链式使用
+    val person = Person("张三", null)
+    val city = person.address?.city?.name ?: "未知城市"
+    println("城市: $city")
+
+    // 与安全调用组合
+    val length = person.name?.length ?: 0
+    println("名字长度: $length")
+
+    // Elvis 操作符可以链式
+    val result: String? = null
+    val finalResult = result ?: name ?: "默认值"
+    println("最终结果: $finalResult")
+
+    // 用于抛出异常
+    val notNull = name ?: throw IllegalArgumentException("名称不能为空")
+}
+
+data class Person(val name: String?, val address: Address?)
+data class Address(val city: City?)
+data class City(val name: String?)</code></pre>
+                </div>
+
+                <h3>非空断言（!!）</h3>
+                <p>强制转换为非空类型，如果值为 null 则抛出 NPE。请谨慎使用！</p>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val str: String? = "Hello"
+
+    // 使用断言
+    println("str!!.length = ${str!!.length}")  // 5
+
+    // null 值会抛出异常
+    val nullStr: String? = null
+    // nullStr!!.length  // 这行会抛出 KotlinNullPointerException
+}
+
+fun processString(str: String?) {
+    // 不推荐用法：使用 !! 断言非空
+    // val len = str!!.length  // 如果 str 为 null，程序崩溃
+
+    // 推荐用法：使用安全调用
+    val safeLen = str?.length ?: 0
+    println("安全长度: $safeLen")
+}</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 警告</strong>
+                    <p>尽量避免使用 !! 操作符。它就像一颗定时炸弹，不知道什么时候会爆炸。如果程序崩溃了，那一定是你的问题。</p>
+                </div>
+
+                <h3>安全转换（as?）</h3>
+                <p>尝试转换类型，如果转换失败返回 null 而非抛出异常。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
     val obj: Any = "Hello"
-    val str: String? = obj as? String
-    println("安全转换: $str")
 
-    // let 函数
-    val str2: String? = "Hello"
-    str2?.let {
-        println("let: 字符串长度 = ${it.length}")
+    // 安全转换
+    val str: String? = obj as? String
+    println("转换结果: $str")  // Hello
+
+    // 转换失败返回 null
+    val num: Int? = obj as? Int
+    println("数字转换: $num")  // null
+
+    // 结合 Elvis 操作符
+    val length = (obj as? String)?.length ?: 0
+    println("字符串长度: $length")
+}
+
+open class Animal(val name: String)
+class Dog(name: String) : Animal(name)
+
+fun castAnimal(animal: Animal?): Dog? {
+    // 安全转换
+    return animal as? Dog
+}</code></pre>
+                </div>
+
+                <h3>空安全在函数参数中</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // 非空参数
+    greet("张三")  // 你好，张三
+    // greet(null)  // 编译错误
+
+    // 可空参数
+    printLength("Hello")  // 长度: 5
+    printLength(null)     // 字符串为空或 null
+
+    // 可空 receiver
+    val str: String? = "Kotlin"
+    str.printInfo()  // 长度: 6
+    null.printInfo() // 没有打印
+}
+
+// 非空参数
+fun greet(name: String) {
+    println("你好，$name")
+}
+
+// 可空参数 + 默认值
+fun printLength(str: String?) {
+    println("长度: ${str?.length ?: "字符串为空或 null"}")
+}
+
+// 扩展函数处理可空 receiver
+fun String?.printInfo() {
+    if (this != null) {
+        println("长度: $length")
     }
 }</code></pre>
+                </div>
+
+                <h3>延迟初始化与 lateinit</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val controller = UserController()
+    // println(controller.user)  // 未初始化会报错
+
+    controller.init()
+    println(controller.getUser())
+}
+
+// 使用 lateinit 延迟初始化（只能用于 var）
+class UserController {
+    lateinit var user: User
+
+    fun init() {
+        user = User("张三")
+    }
+
+    fun getUser(): String {
+        // 使用前需要检查或确保已初始化
+        return if (::user.isInitialized) {
+            user.name
+        } else {
+            "未初始化"
+        }
+    }
+}
+
+// 可空类型 vs lateinit
+class Example {
+    // 可空类型：可以为 null
+    var nullable: String? = null
+
+    // lateinit：非空，但延迟初始化
+    lateinit var lateInit: String
+}
+
+// 使用 by lazy（委托延迟初始化，只用于 val）
+class Person(val name: String) {
+    val address: String by lazy {
+        println("正在初始化地址...")
+        "北京市朝阳区"
+    }
+}</code></pre>
+                </div>
+
+                <h3>平台类型</h3>
+                <p>当 Kotlin 调用 Java 代码时，可能遇到没有空检查的类型，称为平台类型。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // Java 方法可能返回 null
+    // val result = javaMethod()  // 平台类型 String!
+
+    // Kotlin 中处理平台类型
+    // 方案1：转为可空类型
+    // val safe: String? = javaMethod()
+
+    // 方案2：使用 !! 断言
+    // val unsafe: String = javaMethod()!!
+
+    // 方案3：使用安全调用
+    // javaMethod()?.length
+}
+
+class JavaClass {
+    // Java 中的 @Nullable 和 @NotNull 注解
+    // 会被 Kotlin 识别为空安全提示
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 空安全最佳实践</strong>
+                    <ul>
+                        <li>优先使用非空类型（不加 ?）</li>
+                        <li>必须 nullable 时，用安全调用（?.）和 Elvis（?:）</li>
+                        <li>尽量避免使用 !!</li>
+                        <li>使用 lateinit 延迟初始化 var</li>
+                        <li>使用 by lazy 延迟初始化 val</li>
+                    </ul>
                 </div>
             </section>
 
@@ -503,26 +1509,26 @@ fun main() {
                 <div class="code-block">
                     <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
                     <pre><code>// 泛型函数
-fun &lt;T&gt; identity(value: T): T = value
+fun <T> identity(value: T): T = value
 
 // 泛型类
-class Box&lt;T&gt;(var content: T) {
+class Box<T>(var content: T) {
     fun get(): T = content
     fun set(value: T) { content = value }
 }
 
 // 泛型约束
-fun &lt;T : Comparable&lt;T&gt;&gt; max(a: T, b: T): T {
-    return if (a &gt; b) a else b
+fun <T : Comparable<T>> max(a: T, b: T): T {
+    return if (a > b) a else b
 }
 
 // 协变 out（生产者）
-interface Producer&lt;out T&gt; {
+interface Producer<out T> {
     fun produce(): T
 }
 
 // 逆变 in（消费者）
-interface Consumer&lt;in T&gt; {
+interface Consumer<in T> {
     fun consume(item: T)
 }
 
@@ -538,6 +1544,425 @@ fun main() {
 
     println("max(10, 20) = ${max(10, 20)}")
     println("max(\"a\", \"z\") = ${max("a", "z")}")
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="collection">
+                <h2>集合操作</h2>
+                <p>Kotlin 提供了强大的集合操作API，支持函数式编程风格。集合包括 List、Set、Map 以及它们的可变版本。</p>
+
+                <h3>创建集合</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // 只读集合
+    val numbers = listOf(1, 2, 3, 4, 5)           // 列表
+    val fruits = setOf("苹果", "香蕉", "橙子")      // 集合
+    val scores = mapOf("语文" to 90, "数学" to 85) // 映射
+
+    // 可变集合
+    val mutableNumbers = mutableListOf(1, 2, 3)
+    val mutableFruits = mutableSetOf("苹果", "香蕉")
+    val mutableScores = mutableMapOf("语文" to 90)
+
+    // 空集合
+    val emptyList = emptyList<String>()
+    val emptyMap = emptyMap<Int, String>()
+
+    // 数组
+    val arr = arrayOf(1, 2, 3)
+    val intArray = intArrayOf(1, 2, 3)
+
+    // 区间转列表
+    val rangeList = (1..5).toList()
+
+    println("只读列表: $numbers")
+    println("只读集合: $fruits")
+    println("只读映射: $scores")
+    println("可变列表: $mutableNumbers")
+}</code></pre>
+                </div>
+
+                <h3>遍历集合</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val fruits = listOf("苹果", "香蕉", "橙子", "西瓜")
+
+    // 基本遍历
+    println("基本遍历:")
+    for (fruit in fruits) {
+        println("  $fruit")
+    }
+
+    // 带索引遍历
+    println("\n带索引:")
+    for ((index, fruit) in fruits.withIndex()) {
+        println("  $index: $fruit")
+    }
+
+    // forEach
+    println("\nforEach:")
+    fruits.forEach { println("  $it") }
+
+    // forEach 带索引
+    fruits.forEachIndexed { index, fruit ->
+        println("  $index: $fruit")
+    }
+
+    // Map 遍历
+    val scores = mapOf("语文" to 90, "数学" to 85, "英语" to 88)
+    println("\nMap 遍历:")
+    for ((key, value) in scores) {
+        println("  $key: $value")
+    }
+
+    // 只遍历值或键
+    scores.keys.forEach { println("科目: $it") }
+    scores.values.forEach { println("分数: $it") }
+}</code></pre>
+                </div>
+
+                <h3>转换操作</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val numbers = listOf(1, 2, 3, 4, 5)
+
+    // map - 转换每个元素
+    val squares = numbers.map { it * it }
+    println("平方: $squares")
+
+    // filter - 过滤元素
+    val evens = numbers.filter { it % 2 == 0 }
+    println("偶数: $evens")
+
+    // map + filter 链式
+    val evenSquares = numbers.filter { it % 2 == 0 }.map { it * it }
+    println("偶数平方: $evenSquares")
+
+    // flatMap - 扁平化
+    val words = listOf("hello", "world")
+    val chars = words.flatMap { it.toList() }
+    println("所有字符: $chars")
+
+    // mapNotNull - 转换并过滤 null
+    val numbers2 = listOf(1, 2, null, 3, null, 4)
+    val nonNull = numbers2.mapNotNull { it }
+    println("非空: $nonNull")
+
+    // groupBy - 分组
+    val names = listOf("Alice", "Bob", "Anna", "Andrew")
+    val grouped = names.groupBy { it.first() }
+    println("按首字母分组: $grouped")
+
+    // partition - 分割为两个集合
+    val (passed, failed) = numbers.partition { it >= 3 }
+    println("及格: $passed")
+    println("不及格: $failed")
+}</code></pre>
+                </div>
+
+                <h3>聚合操作</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val numbers = listOf(1, 2, 3, 4, 5)
+
+    // count - 计数
+    println("总数: ${numbers.count()}")
+    println("偶数个数: ${numbers.count { it % 2 == 0 }}")
+
+    // sum / average
+    println("总和: ${numbers.sum()}")
+    println("平均值: ${numbers.average()}")
+
+    // max / min
+    println("最大值: ${numbers.max()}")
+    println("最小值: ${numbers.min()}")
+    println("最大元素: ${numbers.maxBy { -it }}")  // 最小值
+    println("最小元素: ${numbers.minBy { -it }}")  // 最大值
+
+    // fold / reduce
+    println("累加: ${numbers.fold(0) { acc, n -> acc + n }}")
+    println("连乘: ${numbers.reduce { acc, n -> acc * n }}")
+
+    // 自定义聚合
+    val words = listOf("hello", "world", "kotlin")
+    val longest = words.reduce { acc, word -> if (word.length > acc.length) word else acc }
+    println("最长单词: $longest")
+
+    // 检查条件
+    println("全部大于0: ${numbers.all { it > 0 }}")
+    println("存在偶数: ${numbers.any { it % 2 == 0 }}")
+    println("没有负数: ${numbers.none { it < 0 }}")
+}</code></pre>
+                </div>
+
+                <h3>元素查找</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val fruits = listOf("苹果", "香蕉", "橙子", "香蕉", "葡萄")
+
+    // first / last
+    println("第一个: ${fruits.first()}")
+    println("最后一个: ${fruits.last()}")
+    println("第一个偶数: ${listOf(1, 2, 3, 4).first { it % 2 == 0 }}")
+
+    // find / lastFind
+    println("找到香蕉: ${fruits.find { it == "香蕉" }}")
+    println("最后找到香蕉: ${fruits.findLast { it == "香蕉" }}")
+
+    // indexOf / lastIndexOf
+    println("香蕉索引: ${fruits.indexOf("香蕉")}")
+    println("香蕉最后索引: ${fruits.lastIndexOf("香蕉")}")
+
+    // contains / in
+    println("包含橙子: ${fruits.contains("橙子")}")
+    println("\"橙子\" in 列表: ${"橙子" in fruits}")
+
+    // elementAt（越界抛异常）vs elementAtOrElse / elementAtOrNull
+    println("索引2: ${fruits.elementAt(2)}")
+    println("索引10: ${fruits.elementAtOrNull(10) ?: "越界"}")
+    println("索引10: ${fruits.elementAtOrElse(10) { "默认值: $it" }}")
+
+    // take / drop
+    println("前3个: ${fruits.take(3)}")
+    println("去掉前2个: ${fruits.drop(2)}")
+    println("最后2个: ${fruits.takeLast(2)}")
+    println("去掉最后2个: ${fruits.dropLast(2)}")
+}</code></pre>
+                </div>
+
+                <h3>集合运算</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val list1 = listOf(1, 2, 3, 4)
+    val list2 = listOf(3, 4, 5, 6)
+
+    // 并集
+    println("并集: ${list1.union(list2)}")
+    println("去重并集: ${(list1 + list2).distinct()}")
+
+    // 交集
+    println("交集: ${list1.intersect(list2)}")
+
+    // 差集
+    println("差集: ${list1.subtract(list2)}")
+
+    // 集合操作
+    println("list1 - list2: ${list1 - list2.toSet()}")
+
+    // zip - 合并为对
+    val names = listOf("Alice", "Bob", "Charlie")
+    val scores = listOf(90, 85, 92)
+    val pairs = names.zip(scores)
+    println("配对: $pairs")
+
+    // unzip - 拆分
+    val (zs, ns) = pairs.unzip()
+    println("姓名: $zs, 分数: $ns")
+
+    // 关联
+    val ids = listOf(1, 2, 3)
+    val users = ids.associate { it to "用户$it" }
+    println("关联: $users")
+}</code></pre>
+                </div>
+
+                <h3>排序与打乱</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val numbers = listOf(3, 1, 4, 1, 5, 9, 2, 6)
+
+    // 排序（返回新列表）
+    println("升序: ${numbers.sorted()}")
+    println("降序: ${numbers.sortedDescending()}")
+    println("原列表不变: $numbers")
+
+    // 自然排序（字符串）
+    val words = listOf("banana", "apple", "cherry")
+    println("字符串升序: ${words.sorted()}")
+    println("按长度排序: ${words.sortedBy { it.length }}")
+
+    // 降序变体
+    println("按长度降序: ${words.sortedByDescending { it.length }}")
+
+    // 排序可变列表（原地排序）
+    val mutable = mutableListOf(3, 1, 2)
+    mutable.sort()
+    println("原地排序: $mutable")
+
+    // reversed
+    println("反转: ${numbers.reversed()}")
+
+    // shuffled
+    println("打乱: ${numbers.shuffled()}")
+
+    // 自定义排序
+    data class Student(val name: String, val score: Int)
+    val students = listOf(
+        Student("张三", 85),
+        Student("李四", 92),
+        Student("王五", 78)
+    )
+    println("按分数排序: ${students.sortedBy { it.score }}")
+    println("按分数降序: ${students.sortedByDescending { it.score }}")
+}</code></pre>
+                </div>
+
+                <h3>取子集合</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val numbers = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+    // slice - 切片
+    println("索引 2-5: ${numbers.slice(2..5)}")
+    println("索引 0,2,4: ${numbers.slice(listOf(0, 2, 4))}")
+
+    // take / drop
+    println("前3个: ${numbers.take(3)}")
+    println("后3个: ${numbers.takeLast(3)}")
+    println("去掉前3个: ${numbers.drop(3)}")
+    println("去掉后3个: ${numbers.dropLast(3)}")
+
+    // takeWhile / dropWhile
+    println("取到第一个偶数前: ${numbers.takeWhile { it % 2 != 0 }}")
+    println("去掉到第一个偶数前: ${numbers.dropWhile { it % 2 != 0 }}")
+
+    // chunked - 分块
+    println("每3个一组: ${numbers.chunked(3)}")
+    println("分块并求和: ${numbers.chunked(3) { it.sum() }}")
+
+    // windowed - 滑动窗口
+    println("滑动窗口(大小3): ${numbers.windowed(3)}")
+    println("滑动窗口(3,步长2): ${numbers.windowed(3, step = 2)}")
+    println("带索引窗口: ${numbers.windowed(3) { it.sum() }}")
+
+    // distinct - 去重
+    println("去重: ${listOf(1, 2, 2, 3, 1, 3).distinct()}")
+
+    // distinctBy
+    println("按长度去重: ${listOf("ab", "a", "bc", "b").distinctBy { it.length }}")
+}</code></pre>
+                </div>
+
+                <h3>Map 操作</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    val scores = mutableMapOf(
+        "语文" to 90,
+        "数学" to 85,
+        "英语" to 88
+    )
+
+    // 访问值
+    println("数学分数: ${scores["数学"]}")
+    println("化学分数: ${scores["化学"]}")  // null
+    println("化学分数: ${scores.getOrDefault("化学", 0)}")
+
+    // 添加/修改
+    scores["化学"] = 92
+    scores.putIfAbsent("物理", 95)  // 不存在才添加
+    println("添加后: $scores")
+
+    // 删除
+    scores.remove("英语")
+    println("删除后: $scores")
+
+    // 遍历
+    println("遍历键值对:")
+    for ((key, value) in scores) {
+        println("  $key: $value")
+    }
+
+    // map 操作
+    val names = listOf("Alice", "Bob", "Charlie")
+    val lengths = names.associate { it to it.length }
+    println("名字长度映射: $lengths")
+
+    // toMap
+    val keys = listOf("a", "b", "c")
+    val mapFromList = keys.associateWith { it.uppercase() }
+    println("键值反转: $mapFromList")
+
+    val values = listOf(1, 2, 3)
+    val mapValues = values.associateBy { "key$it" }
+    println("指定键: $mapValues")
+
+    // map.filter / map.map
+    println("过滤分数>90: ${scores.filter { it.value > 90 }}")
+    println("键大写: ${scores.mapKeys { it.key.uppercase() }}")
+    println("分数+5: ${scores.mapValues { it.value + 5 }}")
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 集合选择建议</strong>
+                    <ul>
+                        <li>只读操作用 List/Set/Map（listOf 等）</li>
+                        <li>需要修改集合用 MutableList/MutableSet/MutableMap</li>
+                        <li>链式操作返回新集合，原集合不变</li>
+                        <li>大数据集注意性能，优先用序列（Sequence）</li>
+                    </ul>
+                </div>
+
+                <h3>序列（Sequence）</h3>
+                <p>对于大数据集，序列可以提高性能，因为它使用惰性计算。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // 创建序列
+    val numbers = sequenceOf(1, 2, 3, 4, 5)
+
+    // 从列表转序列
+    val list = listOf(1, 2, 3, 4, 5)
+    val seq = list.asSequence()
+
+    // generateSequence - 生成无限序列
+    val fibonacci = generateSequence(Pair(0, 1)) {
+        Pair(it.second, it.first + it.second)
+    }.map { it.first }.take(10)
+
+    println("斐波那契: ${fibonacci.toList()}")
+
+    // 序列操作
+    val result = sequenceOf(1, 2, 3, 4, 5)
+        .map { it * it }      // 转换
+        .filter { it > 10 }   // 过滤
+        .take(2)              // 取前2个
+        .toList()
+    println("序列操作结果: $result")
+
+    // 比较：列表每次操作都创建新集合
+    // 序列只在最终操作时才计算（惰性求值）
+    println("性能对比:")
+    val largeList = (1..100000).toList()
+
+    // 列表：每个操作都创建新列表
+    val listTime = measureTime {
+        largeList.map { it * 2 }.filter { it > 1000 }.take(10)
+    }
+
+    // 序列：只在最后才计算
+    val seqTime = measureTime {
+        largeList.asSequence().map { it * 2 }.filter { it > 1000 }.take(10).toList()
+    }
+
+    println("列表耗时: ${listTime}ms")
+    println("序列耗时: ${seqTime}ms")
+}
+
+fun measureTime(block: () -> Unit): Long {
+    val start = System.currentTimeMillis()
+    block()
+    return System.currentTimeMillis() - start
 }</code></pre>
                 </div>
             </section>

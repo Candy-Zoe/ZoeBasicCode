@@ -58,9 +58,14 @@
                 <ul>
                     <li><a href="#intro">简介</a></li>
                     <li><a href="#variable">变量与类型</a></li>
+                    <li><a href="#operator">运算符</a></li>
+                    <li><a href="#condition">条件语句</a></li>
+                    <li><a href="#loop">循环语句</a></li>
                     <li><a href="#ownership">所有权与借用</a></li>
                     <li><a href="#struct">结构体与枚举</a></li>
+                    <li><a href="#collection">集合</a></li>
                     <li><a href="#match">模式匹配</a></li>
+                    <li><a href="#option-result">Option 与 Result</a></li>
                     <li><a href="#trait">Trait 与泛型</a></li>
                     <li><a href="#lifetime">生命周期</a></li>
                     <li><a href="#error">错误处理</a></li>
@@ -92,14 +97,19 @@
                     <pre><code># 安装（Linux/Mac）
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
+# Windows 安装后使用 rustup-init.exe
+
 # 编译运行
 rustc hello.rs -o hello
 ./hello
 
-# 使用 cargo
+# 使用 cargo（推荐）
 cargo new myproject
 cd myproject
-cargo run</code></pre>
+cargo run
+
+# 更新 Rust
+rustup update</code></pre>
                 </div>
             </section>
 
@@ -110,66 +120,662 @@ cargo run</code></pre>
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
                     <pre><code>fn main() {
-    // 不可变变量（默认）
+    // 不可变变量（默认）- 推荐优先使用
     let x = 5;
-    // x = 6;  // 错误！
+    // x = 6;  // 编译错误！x 是不可变的
 
-    // 可变变量
+    // 可变变量 - 需要明确声明
     let mut y = 5;
-    y = 6;
+    y = 6;  // 正确，可以修改
 
-    // 常量
+    // 常量 - 编译时确定，始终不可变
     const MAX_POINTS: u32 = 100_000;
+    // const MAX_POINTS: u32 = get_value(); // 错误！常量不能是函数返回值
 
-    // 变量遮蔽
-    let spaces = "   ";
-    let spaces = spaces.len();
+    // 变量遮蔽 - 可以用 let 重新声明同名的变量
+    let spaces = "   ";       // 这是一个字符串
+    let spaces = spaces.len(); // 这是一个数字，遮蔽了前面的 spaces
 }</code></pre>
                 </div>
 
-                <h3>数据类型</h3>
-                <div class="code-block">
-                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
-                    <pre><code>// 标量类型
-let guess: u32 = 42;   // 无符号整数
-let x: i32 = -10;      // 有符号整数
-let f: f64 = 3.14;     // 浮点数
-let b: bool = true;    // 布尔
-let c: char = '😻';    // 字符
-
-// 复合类型
-let tup: (i32, f64, u8) = (500, 6.4, 1);  // 元组
-let (x, y, z) = tup;                        // 解构
-
-let arr: [i32; 5] = [1, 2, 3, 4, 5];       // 数组
-let a = [3; 5];  // [3, 3, 3, 3, 3]</code></pre>
+                <div class="tip-box info">
+                    <strong>💡 变量遮蔽 vs 可变变量</strong>
+                    <ul>
+                        <li>变量遮蔽：可以用 let 声明新变量，可以改变类型</li>
+                        <li>可变性：使用 mut 修改现有变量的值，类型不能变</li>
+                        <li>推荐优先使用变量遮蔽，因为更安全</li>
+                    </ul>
                 </div>
 
-                <h3>函数与控制流</h3>
+                <h3>基本数据类型</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
-                    <pre><code>fn add(a: i32, b: i32) -&gt; i32 {
-    a + b  // 表达式，无分号
-}
+                    <pre><code>fn main() {
+    // 整数类型
+    let a: i32 = 42;        // 32位有符号整数，范围: -2^31 ~ 2^31-1
+    let b: u64 = 100;       // 64位无符号整数，范围: 0 ~ 2^64-1
+    let c: isize = -10;    // 指针大小的有符号整数
+    let d: usize = 10;      // 指针大小的无符号整数
 
-fn main() {
-    // if 表达式
-    let number = if true { 5 } else { 6 };
+    // 浮点数类型
+    let f1: f64 = 3.14159;  // 64位浮点，默认类型
+    let f2: f32 = 2.5f32;   // 32位浮点
 
-    // loop 循环
-    let mut count = 0;
-    let result = loop {
-        count += 1;
-        if count == 10 { break count * 2; }
+    // 布尔类型
+    let is_rust_awesome: bool = true;
+    let is_hard: bool = false;
+
+    // 字符类型 - Unicode 标量值
+    let c1: char = 'a';        // 英文字母
+    let c2: char = '中';       // 中文字符
+    let c3: char = '😻';       // emoji 表情
+
+    // 单元类型 - 表示"没有返回值"
+    let unit: () = ();
+}</code></pre>
+                </div>
+
+                <h3>复合类型</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // 元组 - 固定长度，可以存放不同类型
+    let tup: (i32, f64, u8) = (500, 6.4, 1);
+    let (x, y, z) = tup;                    // 解构元组
+    let first = tup.0;                      // 通过索引访问
+    let second = tup.1;
+
+    // 数组 - 固定长度，只能存放相同类型
+    let arr: [i32; 5] = [1, 2, 3, 4, 5];
+    let first_element = arr[0];             // 通过索引访问
+    let repeated = [3; 5];                  // [3, 3, 3, 3, 3]，重复5次3
+
+    // 字符串类型
+    let s1: &str = "Hello, world!";         // 字符串切片（借用）
+    let s2: String = String::from("你好");  // 可变字符串
+    let s3: String = "Rust".to_string();    // 另一种创建方式
+}</code></pre>
+                </div>
+
+                <h3>类型转换</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // 显式类型转换使用 as 关键字
+    let decimal: f64 = 65.4321;
+    let integer: u8 = decimal as u8;              // 65.4321 -> 65（截断）
+    let character: char = integer as char;        // 65 -> 'A'
+
+    // 整数之间的转换
+    let large: i32 = 300;
+    let small: u8 = large as u8;                   // 300 -> 44（溢出）
+
+    // 布尔转换
+    let t: bool = true;
+    let f: bool = false;
+    let from_bool: i32 = t as i32;                 // true -> 1
+    let from_bool2: i32 = f as i32;                // false -> 0
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="operator">
+                <h2>运算符</h2>
+
+                <p>Rust 支持多种运算符，与其他编程语言类似，但有一些独特之处。</p>
+
+                <h3>算术运算符</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    let a = 10;
+    let b = 3;
+
+    // 加法
+    let sum = a + b;           // 13
+
+    // 减法
+    let difference = a - b;   // 7
+
+    // 乘法
+    let product = a * b;      // 30
+
+    // 除法（整数除法向零取整）
+    let quotient = a / b;     // 3
+
+    // 取模（余数）
+    let remainder = a % b;    // 1
+
+    // 浮点数运算
+    let f1 = 10.0;
+    let f2 = 3.0;
+    let f_div = f1 / f2;      // 3.333...
+
+    // 负数
+    let negative = -5;
+    let abs_value = i32::abs(-5);  // 5
+
+    println!("算术运算: {} + {} = {}", a, b, sum);
+    println!("除法: {} / {} = {}", a, b, quotient);
+    println!("取模: {} % {} = {}", a, b, remainder);
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 整数除法特点</strong>
+                    <p>Rust 的整数除法向零取整：-5 / 2 = -2（不是 -3）</p>
+                </div>
+
+                <h3>比较运算符</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    let a = 5;
+    let b = 10;
+
+    // 相等
+    let is_equal = a == b;        // false
+
+    // 不相等
+    let is_not_equal = a != b;    // true
+
+    // 大于
+    let greater = a > b;          // false
+
+    // 小于
+    let less = a < b;              // true
+
+    // 大于等于
+    let greater_or_equal = a >= b; // false
+
+    // 小于等于
+    let less_or_equal = a <= b;    // true
+
+    // 比较运算符返回布尔值
+    println!("5 == 10: {}", is_equal);
+    println!("5 != 10: {}", is_not_equal);
+    println!("5 > 10: {}", greater);
+
+    // 链式比较（Rust 2021+ 支持）
+    let x = 5;
+    // let chained = 1 < x < 10;  // 错误！需要用 && 连接
+    let chained = 1 < x && x < 10; // true
+    println!("1 < {} && {} < 10: {}", x, x, chained);
+}</code></pre>
+                </div>
+
+                <h3>逻辑运算符</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    let p = true;
+    let q = false;
+
+    // 逻辑与（AND）- 两者都为 true 时结果为 true
+    let and_result = p && q;       // false
+    let and_result2 = p && true;  // true
+
+    // 逻辑或（OR）- 至少有一个为 true 时结果为 true
+    let or_result = p || q;        // true
+    let or_result2 = false || false; // false
+
+    // 逻辑非（NOT）- 取反
+    let not_result = !p;           // false
+    let not_result2 = !q;          // true
+
+    // 短路求值
+    // 表达式从左到右计算，遇到可以确定结果的值就停止
+    let short_circuit = false && {
+        println!("这行不会执行！"); // 不会打印
+        true
     };
 
-    // while 循环
-    let mut n = 3;
-    while n != 0 { n -= 1; }
+    println!("true && false = {}", and_result);
+    println!("true || false = {}", or_result);
+    println!("!true = {}", not_result);
 
-    // for 循环
-    for i in 1..4 { println!("{}", i); }
-    for i in (1..4).rev() { println!("{}", i); }
+    // 逻辑运算符优先级
+    // ! > && > ||
+    let demo = !false && true || false && true;
+    // 等价于: ((!false) && true) || (false && true)
+    // = (true && true) || (false && true)
+    // = true || false
+    // = true
+    println!("!false && true || false && true = {}", demo);
+}</code></pre>
+                </div>
+
+                <h3>位运算符</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    let a: u8 = 0b11110010;  // 二进制: 11110010
+    let b: u8 = 0b00111100;  // 二进制: 00111100
+
+    // 按位与 - 对应位都为1时结果为1
+    let bit_and = a & b;     // 00110010 = 50
+
+    // 按位或 - 对应位至少有一个为1时结果为1
+    let bit_or = a | b;      // 11111110 = 254
+
+    // 按位异或 - 对应位不同时结果为1
+    let bit_xor = a ^ b;     // 11000100 = 196
+
+    // 按位取反 - 0变1，1变0
+    let bit_not = !a;        // 00001101 = 13（假设u8溢出）
+
+    // 左移 - 将位向左移动指定位数
+    let shift_left = a << 2; // 11001000 = 200
+
+    // 右移 - 将位向右移动指定位数
+    let shift_right = a >> 2; // 00111100 = 60
+
+    println!("a & b = {}", bit_and);
+    println!("a | b = {}", bit_or);
+    println!("a ^ b = {}", bit_xor);
+    println!("a << 2 = {}", shift_left);
+    println!("a >> 2 = {}", shift_right);
+
+    // 常用技巧
+    // 判断奇偶
+    let num = 7;
+    let is_odd = (num & 1) == 1;  // true（奇数）
+    println!("{} 是奇数: {}", num, is_odd);
+
+    // 2的幂次判断
+    let power_of_two = 16;
+    let is_power = (power_of_two & (power_of_two - 1)) == 0;
+    println!("{} 是2的幂: {}", power_of_two, is_power);
+}</code></pre>
+                </div>
+
+                <h3>赋值与复合赋值运算符</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    let mut x = 10;
+
+    // 基本赋值
+    x = 20;
+
+    // 复合赋值运算符
+    let mut a = 10;
+    a += 5;     // a = a + 5  -> 15
+    a -= 3;     // a = a - 3  -> 12
+    a *= 2;     // a = a * 2  -> 24
+    a /= 4;     // a = a / 4  -> 6
+    a %= 4;     // a = a % 4  -> 2
+
+    // 位运算复合赋值
+    let mut b: u8 = 0b11110010;
+    b &= 0b00111100;  // b = b & 0b00111100
+    b |= 0b00000001;  // b = b | 0b00000001
+    b ^= 0b00000001;  // b = b ^ 0b00000001
+    b <<= 2;          // b = b << 2
+    b >>= 1;          // b = b >> 1
+
+    println!("a = {}", a);
+    println!("b = {}", b);
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="condition">
+                <h2>条件语句</h2>
+
+                <p>Rust 的条件语句用于根据表达式的真假来选择执行不同的代码路径。</p>
+
+                <h3>if-else 表达式</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    let number = 7;
+
+    // 基本的 if 语句
+    if number < 5 {
+        println!("数字小于 5");
+    } else if number < 10 {
+        println!("数字在 5 到 9 之间");
+    } else {
+        println!("数字大于等于 10");
+    }
+
+    // if 是表达式，可以赋值
+    let condition = true;
+    let value = if condition { 1 } else { 2 };
+    println!("value = {}", value);
+
+    // 多分支 if-else-if
+    let score = 85;
+    let grade = if score >= 90 {
+        "A"
+    } else if score >= 80 {
+        "B"
+    } else if score >= 70 {
+        "C"
+    } else if score >= 60 {
+        "D"
+    } else {
+        "F"
+    };
+    println!("分数 {} 的等级是: {}", score, grade);
+
+    // 注意：if 和 else 的返回值类型必须兼容
+    let number = 3;
+    // let result = if number > 0 { "positive" } else { -1 }; // 错误！类型不匹配
+    let result = if number > 0 { "positive" } else if number < 0 { "negative" } else { "zero" };
+    println!("{} 是 {}", number, result);
+}</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ if-else 分支类型</strong>
+                    <p>所有分支的返回值类型必须相同！例如，不能一个分支返回 <code>i32</code>，另一个分支返回 <code>&amp;str</code>。</p>
+                </div>
+
+                <h3>if let 语法</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // if let 用于匹配单一模式，比 match 更简洁
+
+    // 匹配 Option
+    let some_value: Option<i32> = Some(42);
+
+    // 使用 if let 简化
+    if let Some(value) = some_value {
+        println!("值为: {}", value);
+    } else {
+        println!("没有值");
+    }
+
+    // 配合 else 使用
+    if let Some(value) = some_value {
+        println!("获取到值: {}", value);
+    }
+
+    // 匹配枚举
+    enum Message {
+        Quit,
+        Move { x: i32, y: i32 },
+        Write(String),
+        ChangeColor(u8, u8, u8),
+    }
+
+    let msg = Message::Move { x: 10, y: 20 };
+
+    if let Message::Move { x, y } = msg {
+        println!("移动到坐标: ({}, {})", x, y);
+    }
+
+    // while let 循环
+    let mut stack = vec![1, 2, 3];
+    while let Some(top) = stack.pop() {
+        println!("弹出: {}", top);
+    }
+
+    // let else 语法（Rust 1.65+）
+    let some_value: Option<i32> = Some(42);
+    let value = else { 100 } if let Some(v) = some_value { v };
+    println!("value = {}", value);
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 if let vs match</strong>
+                    <ul>
+                        <li>当只需要匹配一个模式时，用 <code>if let</code> 更简洁</li>
+                        <li>当需要匹配多个模式时，用 <code>match</code> 更清晰</li>
+                        <li><code>if let</code> 可以看作 <code>match</code> 的简化语法</li>
+                    </ul>
+                </div>
+
+                <h3>match 条件分支</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // match 是 Rust 强大的模式匹配工具
+
+    let number = 13;
+
+    match number {
+        1 => println!("数字是 1"),
+        2 | 3 => println!("数字是 2 或 3"),          // 匹配多个值
+        4..=6 => println!("数字在 4 到 6 之间"),     // 范围匹配
+        7..=10 if number % 2 == 0 => {              // 带条件的匹配
+            println!("数字是 7-10 之间的偶数");
+        }
+        _ => println!("其他数字"),                    // 通配符
+    }
+
+    // match 作为表达式返回值
+    let result = match number {
+        1 => "一",
+        2 => "二",
+        3 => "三",
+        n if n < 10 => "个位数",
+        n if n < 100 => "两位数",
+        _ => "大数字",
+    };
+    println!("{} 是 {}", number, result);
+
+    // 匹配元组
+    let point = (2, 5);
+    match point {
+        (0, 0) => println!("原点"),
+        (x, 0) => println!("在 x 轴上，x = {}", x),
+        (0, y) => println!("在 y 轴上，y = {}", y),
+        (x, y) => println!("在 ({}, {})", x, y),
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="loop">
+                <h2>循环语句</h2>
+
+                <p>Rust 提供了三种循环方式：loop（无限循环）、while（条件循环）和 for（遍历循环）。</p>
+
+                <h3>loop 无限循环</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // loop 会无限循环，直到遇到 break
+    let mut count = 0;
+
+    let result = loop {
+        count += 1;
+        if count == 10 {
+            // break 可以返回值
+            break count * 2;
+        }
+    };
+    println!("loop 结果: {}", result);  // 20
+
+    // 嵌套循环使用标签
+    let mut outer = 0;
+    'outer_loop: loop {
+        outer += 1;
+        let mut inner = 0;
+        loop {
+            inner += 1;
+            if inner == 3 && outer == 2 {
+                break 'outer_loop;  // 跳出外层循环
+            }
+            if inner > 5 {
+                break;  // 只跳出内层循环
+            }
+        }
+    }
+    println!("外部循环次数: {}", outer);
+
+    // continue 跳过本次循环
+    let mut i = 0;
+    loop {
+        i += 1;
+        if i % 2 == 0 {
+            continue;  // 跳过偶数
+        }
+        if i > 10 {
+            break;
+        }
+        print!("{} ", i);  // 打印奇数: 1 3 5 7 9
+    }
+    println!();
+}</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ loop 标签的使用</strong>
+                    <p>在嵌套循环中，可以使用标签（如 <code>'outer_loop</code>）来明确指定要 break 或 continue 的是哪一层循环。</p>
+                </div>
+
+                <h3>while 条件循环</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // while 循环在条件为 true 时继续执行
+
+    // 基本用法
+    let mut number = 3;
+    while number != 0 {
+        println!("倒计时: {}!", number);
+        number -= 1;
+    }
+    println!("发射！");
+
+    // 遍历数组（不推荐，推荐用 for）
+    let arr = [10, 20, 30, 40, 50];
+    let mut index = 0;
+    while index < arr.len() {
+        println!("arr[{}] = {}", index, arr[index]);
+        index += 1;
+    }
+
+    // while let 循环
+    let mut stack = vec![1, 2, 3];
+    while let Some(top) = stack.pop() {
+        println!("弹出: {}", top);
+    }
+
+    // 无限循环替代 while true
+    let mut i = 0;
+    while {
+        i += 1;
+        if i > 5 {
+            break true;  // 返回值
+        }
+        false
+    } {
+        println!("循环中...");
+    }
+}</code></pre>
+                </div>
+
+                <h3>for 遍历循环</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // for 是 Rust 中最常用的循环方式
+
+    // 遍历范围
+    for i in 1..=5 {           // 1, 2, 3, 4, 5（包含5）
+        println!("i = {}", i);
+    }
+
+    // 遍历数组
+    let arr = [10, 20, 30];
+    for element in arr {
+        println!("element = {}", element);
+    }
+
+    // 使用 iter() 遍历数组（不获取所有权）
+    let arr = [1, 2, 3];
+    for element in &arr {
+        println!("值: {}", element);
+    }
+    println!("数组仍然可用: {:?}", arr);
+
+    // 使用 enumerate 获取索引
+    let names = ["Alice", "Bob", "Charlie"];
+    for (index, name) in names.iter().enumerate() {
+        println!("{}. {}", index + 1, name);
+    }
+
+    // rev() 反向遍历
+    for i in (1..=3).rev() {
+        print!("{} ", i);  // 3 2 1
+    }
+    println!();
+
+    // 遍历 Vec
+    let fruits = vec!["苹果", "香蕉", "橙子"];
+    for fruit in &fruits {
+        println!("喜欢: {}", fruit);
+    }
+
+    // zip 合并遍历
+    let names = ["Alice", "Bob"];
+    let scores = [90, 85];
+    for (name, score) in names.iter().zip(scores.iter()) {
+        println!("{}: {}分", name, score);
+    }
+}</code></pre>
+                </div>
+
+                <div class="tip-box success">
+                    <strong>✅ 推荐使用 for 循环</strong>
+                    <ul>
+                        <li>for 循环在 Rust 中是最安全、最高效的循环方式</li>
+                        <li>编译器会对 for 循环进行优化</li>
+                        <li>避免使用索引遍历数组，减少边界检查错误</li>
+                    </ul>
+                </div>
+
+                <h3>循环的返回值与标签</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // 循环可以作为表达式返回值
+    let mut counter = 0;
+    let result = loop {
+        counter += 1;
+        if counter == 10 {
+            break counter;  // 返回 counter 的值
+        }
+    };
+    println!("result = {}", result);
+
+    // 多层嵌套循环的标签
+    let mut mat = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+    ];
+    'outer: for i in 0..3 {
+        for j in 0..3 {
+            if mat[i][j] == 5 {
+                println!("找到5，位置: ({}, {})", i, j);
+                break 'outer;  // 直接跳出外层循环
+            }
+        }
+    }
+
+    // continue 的标签使用
+    let mut sum = 0;
+    'outer_sum: for i in 1..=3 {
+        for j in 1..=3 {
+            if i == j {
+                continue;  // 跳过 i == j 的情况
+            }
+            sum += i * j;
+        }
+    }
+    println!("sum = {}", sum);
+    // i=1: 跳过 j=1, 加 1*2 + 1*3 = 5
+    // i=2: 跳过 j=2, 加 2*1 + 2*3 = 8
+    // i=3: 跳过 j=3, 加 3*1 + 3*2 = 9
+    // sum = 5 + 8 + 9 = 22
 }</code></pre>
                 </div>
             </section>
@@ -180,9 +786,9 @@ fn main() {
                 <div class="tip-box warning">
                     <strong>⚠️ 所有权三大规则</strong>
                     <ol>
-                        <li>每个值都有一个所有者</li>
+                        <li>每个值都有一个所有者（Owner）</li>
                         <li>值在任一时刻只能有一个所有者</li>
-                        <li>当所有者离开作用域，值将被丢弃</li>
+                        <li>当所有者离开作用域，值将被丢弃（Drop）</li>
                     </ol>
                 </div>
 
@@ -190,179 +796,1250 @@ fn main() {
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
                     <pre><code>fn main() {
-    let s1 = String::from("hello");
-    let s2 = s1;  // s1 的所有权转移给 s2
-    // println!("{}", s1);  // 错误！s1 已失效
+    // 所有权转移示例
+    let s1 = String::from("hello");  // s1 拥有字符串的所有权
+    let s2 = s1;                     // 所有权从 s1 转移到 s2
+    // println!("{}", s1);            // 编译错误！s1 已经无效
+
+    // 基本类型实现了 Copy trait，直接复制值
+    let x = 5;
+    let y = x;                       // x 和 y 都是有效的
+    println!("x = {}, y = {}", x, y);
 
     // clone 深拷贝
     let s1 = String::from("hello");
-    let s2 = s1.clone();
+    let s2 = s1.clone();             // 显式深拷贝
+    println!("s1 = {}, s2 = {}", s1, s2);  // 两个都有效
 
-    // 基本类型实现了 Copy，不转移
+    // 函数中的所有权转移
+    let s = String::from("hello");
+    take_ownership(s);               // 所有权转移给函数
+    // println!("{}", s);            // 编译错误！s 已经无效
+
+    // 基本类型作为参数会复制
     let x = 5;
-    let y = x;  // x 仍然可用
+    makes_copy(x);
+    println!("x 仍然有效: {}", x);   // 正确！i32 实现了 Copy
+
+    // 返回值转移所有权
+    let s1 = String::from("hello");
+    let s2 = take_and_return(s1);   // s1 转移到函数，又返回给 s2
+    println!("s2: {}", s2);
+}
+
+fn take_ownership(s: String) {
+    println!("获得所有权: {}", s);
+}  // s 离开作用域，字符串被丢弃
+
+fn makes_copy(x: i32) {
+    println!("复制了值: {}", x);
+}  // x 离开作用域，因为是 Copy 类型，什么也不发生
+
+fn take_and_return(s: String) -> String {
+    s  // 返回值转移所有权给调用者
 }</code></pre>
                 </div>
 
                 <h3>引用与借用</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
-                    <pre><code>fn calculate_length(s: &amp;String) -&gt; usize {
-    s.len()
-}  // s 离开作用域，但因为没有所有权，什么也不做
-
-fn main() {
+                    <pre><code>fn main() {
+    // 借用：不取得所有权，只"借用"值的引用
     let s1 = String::from("hello");
-    let len = calculate_length(&amp;s1);  // 借用，不转移所有权
-    println!("'{}' 的长度是 {}", s1, len);
+    let len = calculate_length(&s1);  // & 表示引用
+    println!("'{}' 的长度是 {}", s1, len);  // s1 仍然有效
 
     // 可变引用
     let mut s = String::from("hello");
-    change(&amp;mut s);
+    change(&mut s);
+    println!("修改后的字符串: {}", s);
+
+    // 可变引用的规则
+    let mut s = String::from("hello");
 
     // 同一时间只能有一个可变引用
-    // 或多个不可变引用
+    let r1 = &mut s;
+    // let r2 = &mut s;  // 编译错误！不能同时有两个可变引用
+    println!("r1: {}", r1);
+    // r1 在这里不再使用，所以可以创建新的可变引用
+    let r2 = &mut s;  // 正确！r1 已经不再使用
+    println!("r2: {}", r2);
+
+    // 不可变引用可以在有不可变引用时创建
+    let s = String::from("hello");
+    let r1 = &s;      // 第一个不可变引用
+    let r2 = &s;      // 第二个不可变引用（可以同时有多个）
+    // let r3 = &mut s;  // 编译错误！有不可变引用时不能有可变引用
+    println!("r1: {}, r2: {}", r1, r2);
 }
 
-fn change(some_string: &amp;mut String) {
+fn calculate_length(s: &String) -> usize {
+    s.len()
+}  // s 是引用，离开作用域不会丢弃值
+
+fn change(some_string: &mut String) {
     some_string.push_str(", world");
 }</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 借用规则总结</strong>
+                    <ul>
+                        <li>任意时刻，只能有：一个可变引用 OR 多个不可变引用</li>
+                        <li>引用必须总是有效的（悬垂引用编译时防止）</li>
+                        <li>使用引用作为参数称为"借用"</li>
+                    </ul>
                 </div>
 
                 <h3>切片 Slice</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
-                    <pre><code>let s = String::from("hello world");
+                    <pre><code>fn main() {
+    // 字符串切片 - 对字符串的部分引用
+    let s = String::from("hello world");
 
-let hello = &amp;s[0..5];   // "hello"
-let world = &amp;s[6..11];  // "world"
-let entire = &amp;s[..];    // 整个字符串
+    let hello = &s[0..5];       // "hello"
+    let world = &s[6..11];      // "world"
+    let entire = &s[..];       // 整个字符串
 
-let a = [1, 2, 3, 4, 5];
-let slice = &amp;a[1..3];   // [2, 3]</code></pre>
+    println!("hello: {}, world: {}", hello, world);
+
+    // 切片的第一个索引是字节位置，要小心 UTF-8 字符
+    let s = "你好世界";
+    let ni = &s[0..3];          // "你"
+    // let error_slice = &s[0..1]; // 错误！UTF-8 中文字符占3个字节
+
+    // 数组切片
+    let arr = [1, 2, 3, 4, 5];
+    let slice = &arr[1..4];     // [2, 3, 4]
+
+    // 函数参数使用切片
+    let v = vec![1, 2, 3, 4, 5];
+    let average = average(&v);
+    println!("平均值: {}", average);
+
+    // 字符串切片的实际应用
+    let sentence = String::from("The quick brown fox");
+    let first_word = first_word(&sentence);
+    println!("第一个单词: {}", first_word);
+
+    // 切片作为返回值
+    let s = String::from("hello world");
+    let word = extract_word(&s, 0, 5);
+    println!("提取的词: {}", word);
+}
+
+fn average(arr: &[i32]) -> f64 {
+    let sum: i32 = arr.iter().sum();
+    sum as f64 / arr.len() as f64
+}
+
+fn first_word(s: &str) -> &str {
+    let bytes = s.as_bytes();
+    for (i, &byte) in bytes.iter().enumerate() {
+        if byte == b' ' {
+            return &s[0..i];
+        }
+    }
+    s
+}
+
+fn extract_word(s: &str, start: usize, end: usize) -> &str {
+    &s[start..end]
+}</code></pre>
                 </div>
             </section>
 
             <section id="struct">
                 <h2>结构体与枚举</h2>
 
-                <h3>结构体</h3>
+                <h3>结构体定义与实例化</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
-                    <pre><code>struct User {
-    username: String,
-    email: String,
-    sign_in_count: u64,
-    active: bool,
+                    <pre><code>// 定义结构体
+struct User {
+    username: String,     // 用户名
+    email: String,        // 邮箱
+    sign_in_count: u64,  // 登录次数
+    active: bool,         // 是否活跃
 }
 
-// 元组结构体
-struct Color(i32, i32, i32);
-struct Point(i32, i32, i32);
-
-// 类单元结构体
+// 单元结构体（没有字段）
 struct AlwaysEqual;
 
+// 元组结构体 - 类似元组，但有类型名
+struct Color(i32, i32, i32);   // RGB 颜色
+struct Point(i32, i32, i32);   // 3D 点
+
 fn main() {
+    // 创建 User 实例
     let user1 = User {
-        email: String::from("a@b.com"),
-        username: String::from("user1"),
+        email: String::from("user@example.com"),
+        username: String::from("user123"),
         active: true,
         sign_in_count: 1,
     };
 
-    // 结构体更新语法
-    let user2 = User {
-        email: String::from("c@d.com"),
-        username: String::from("user2"),
+    // 访问结构体字段
+    println!("用户名: {}", user1.username);
+    println!("邮箱: {}", user1.email);
+
+    // 可变实例
+    let mut user2 = User {
+        email: String::from("another@example.com"),
+        username: String::from("another"),
+        active: false,
+        sign_in_count: 0,
+    };
+    user2.active = true;  // 修改字段
+    user2.sign_in_count += 1;
+
+    // 结构体更新语法（类似浅拷贝）
+    let user3 = User {
+        email: String::from("new@example.com"),
+        username: String::from("newuser"),
         ..user1  // 其余字段从 user1 复制
     };
+
+    // 元组结构体实例化
+    let black = Color(0, 0, 0);
+    let origin = Point(0, 0, 0);
+    let r = black.0;  // 访问元组结构体的字段
+    println!("黑色 RGB: ({}, {}, {})", black.0, black.1, black.2);
+
+    // 单元结构体实例化
+    let _always_equal = AlwaysEqual;
 }</code></pre>
                 </div>
 
-                <h3>方法</h3>
+                <h3>结构体方法</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
-                    <pre><code>struct Rectangle {
+                    <pre><code>// 矩形结构体
+struct Rectangle {
     width: u32,
     height: u32,
 }
 
+// 为结构体实现方法
 impl Rectangle {
-    // 方法
-    fn area(&amp;self) -&gt; u32 {
+    // 方法 - 第一个参数是 self
+    fn area(&self) -> u32 {
         self.width * self.height
     }
 
-    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
-        self.width &gt; other.width &amp;&amp; self.height &gt; other.height
+    // 可变方法 - 需要 &mut self
+    fn set_size(&mut self, width: u32, height: u32) {
+        self.width = width;
+        self.height = height;
     }
 
-    // 关联函数（类似静态方法）
-    fn square(size: u32) -&gt; Rectangle {
+    // 接收另一个 Rectangle 作为参数
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+
+    // 关联函数 - 不需要 self 参数，类似静态方法
+    fn square(size: u32) -> Rectangle {
         Rectangle { width: size, height: size }
+    }
+
+    // 获取宽度的方法
+    fn width(&self) -> u32 {
+        self.width
+    }
+}
+
+fn main() {
+    let rect = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    // 调用方法
+    println!("矩形面积: {}", rect.area());
+    println!("矩形宽度: {}", rect.width());
+
+    // 调用关联函数
+    let sq = Rectangle::square(20);
+    println!("正方形面积: {}", sq.area());
+
+    // can_hold 方法
+    let rect2 = Rectangle {
+        width: 10,
+        height: 40,
+    };
+    println!("rect 能容纳 rect2: {}", rect.can_hold(&rect2));
+
+    // 多个 impl 块（功能分组）
+    impl Rectangle {
+        fn new(width: u32, height: u32) -> Rectangle {
+            Rectangle { width, height }
+        }
+    }
+    let rect3 = Rectangle::new(100, 200);
+    println!("新矩形: {}x{}", rect3.width, rect3.height);
+}</code></pre>
+                </div>
+
+                <h3>枚举定义与使用</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 简单枚举
+enum Direction {
+    Up,      // 上
+    Down,    // 下
+    Left,    // 左
+    Right,   // 右
+}
+
+// 带数据的枚举
+enum IpAddr {
+    V4(u8, u8, u8, u8),      // IPv4 地址
+    V6(String),              // IPv6 地址
+}
+
+// 带命名字段的枚举
+enum Message {
+    Quit,                           // 无数据
+    Move { x: i32, y: i32 },        // 移动消息
+    Write(String),                  // 写入消息
+    ChangeColor(i32, i32, i32),     // 改变颜色
+}
+
+// 枚举方法
+impl Message {
+    fn call(&self) {
+        match self {
+            Message::Quit => println!("退出程序"),
+            Message::Move { x, y } => println!("移动到 ({}, {})", x, y),
+            Message::Write(text) => println!("写入: {}", text),
+            Message::ChangeColor(r, g, b) => println!("改变颜色: RGB({}, {}, {})", r, g, b),
+        }
+    }
+}
+
+fn main() {
+    // 使用简单枚举
+    let direction = Direction::Up;
+    match direction {
+        Direction::Up => println!("向上"),
+        Direction::Down => println!("向下"),
+        Direction::Left => println!("向左"),
+        Direction::Right => println!("向右"),
+    }
+
+    // 使用带数据的枚举
+    let home = IpAddr::V4(127, 0, 0, 1);
+    let loopback = IpAddr::V6(String::from("::1"));
+
+    // 使用带命名字段的枚举
+    let msg = Message::Write(String::from("你好，世界！"));
+    msg.call();
+
+    let m = Message::Move { x: 10, y: 20 };
+    m.call();
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 枚举 vs 结构体</strong>
+                    <ul>
+                        <li>结构体：将相关字段组合在一起</li>
+                        <li>枚举：表示一个值可以是几种不同类型之一</li>
+                        <li>枚举的每个变体可以携带不同类型和数量的数据</li>
+                    </ul>
+                </div>
+
+                <h3>Option 枚举（标准库）</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>// Option 是 Rust 标准库定义的枚举
+// pub enum Option<T> {
+//     None,           // 没有值
+//     Some(T),        // 有值，类型为 T
+// }
+
+fn main() {
+    // Some - 有值
+    let some_number: Option<i32> = Some(5);
+    let some_string: Option<&str> = Some("a string");
+    let absent_number: Option<i32> = None;  // 没有值
+
+    // 使用 match 处理 Option
+    let x = Some(5);
+    match x {
+        None => println!("没有值"),
+        Some(n) => println!("值为 {}", n),
+    }
+
+    // if let 简化单一模式匹配
+    if let Some(n) = some_number {
+        println!("some_number 有值: {}", n);
+    }
+
+    // unwrap_or 提供默认值
+    let x: Option<i32> = None;
+    let y = x.unwrap_or(0);  // x 是 None，返回默认值 0
+    println!("y = {}", y);
+
+    // map 转换内部值
+    let x = Some(5);
+    let y = x.map(|n| n * 2);  // Some(10)
+    println!("y = {:?}", y);
+
+    // and_then 链式调用
+    let x = Some(5);
+    let y = x.and_then(|n| if n > 0 { Some(n * 2) } else { None });
+    println!("y = {:?}", y);
+
+    // is_some 和 is_none 检查
+    let x: Option<i32> = Some(2);
+    println!("x.is_some() = {}", x.is_some());  // true
+    println!("x.is_none() = {}", x.is_none());    // false
+
+    // Option 作为函数返回值
+    fn find_char(s: &str, c: char) -> Option<usize> {
+        s.find(c)  // 找到返回索引，找不到返回 None
+    }
+
+    let idx = find_char("hello", 'e');
+    if let Some(i) = idx {
+        println!("找到 'e' 在位置 {}", i);
     }
 }</code></pre>
                 </div>
 
-                <h3>枚举</h3>
+                <h3>Result 枚举（标准库）</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
-                    <pre><code>enum IpAddr {
-    V4(u8, u8, u8, u8),
-    V6(String),
-}
+                    <pre><code>// Result 是 Rust 标准库定义的枚举，用于错误处理
+// pub enum Result<T, E> {
+//     Ok(T),   // 成功，持有成功值
+//     Err(E),  // 错误，持有错误值
+// }
 
-enum Message {
-    Quit,
-    Move { x: i32, y: i32 },
-    Write(String),
-    ChangeColor(i32, i32, i32),
-}
+use std::fs::File;
+use std::io::Error;
 
-// Option 枚举（标准库）
-let some_number = Some(5);
-let some_string = Some("a string");
-let absent_number: Option&lt;i32&gt; = None;</code></pre>
+fn main() {
+    // 使用 match 处理 Result
+    let f = File::open("hello.txt");
+    match f {
+        Ok(file) => println!("文件打开成功: {:?}", file),
+        Err(error) => println!("文件打开失败: {:?}", error),
+    }
+
+    // ? 运算符简化错误传播
+    // fn read_file() -> Result<String, Error> { ... }
+
+    // unwrap 和 expect
+    // let f = File::open("hello.txt").unwrap();  // 失败时 panic
+    // let f = File::open("hello.txt").expect("文件打开失败");  // 自定义错误信息
+
+    // Result 的常用方法
+    let x: Result<i32, &str> = Ok(5);
+    let y: Result<i32, &str> = Err("错误信息");
+
+    // is_ok 和 is_err
+    println!("x.is_ok() = {}", x.is_ok());  // true
+    println!("y.is_err() = {}", y.is_err());  // true
+
+    // unwrap_or 提供默认值
+    let ok: Result<i32, &str> = Ok(5);
+    let err: Result<i32, &str> = Err("出错了");
+    println!("ok.unwrap_or(0) = {}", ok.unwrap_or(0));  // 5
+    println!("err.unwrap_or(0) = {}", err.unwrap_or(0)); // 0
+
+    // map 转换成功值
+    let ok = Ok(5);
+    let transformed = ok.map(|n| n * 2);  // Ok(10)
+    println!("transformed = {:?}", transformed);
+
+    // and_then 链式调用
+    let x = Ok::<i32, &str>(5);
+    let y = x.and_then(|n| Ok::<i32, &str>(n * 2));  // Ok(10)
+    println!("y = {:?}", y);
+
+    // or_else 处理错误
+    let err: Result<i32, &str> = Err("error");
+    let recovered = err.or_else(|_| Ok::<i32, &str>(0));  // Ok(0)
+    println!("recovered = {:?}", recovered);
+
+    // collect 收集多个 Result
+    let results = vec![Ok(1), Ok(2), Err("error"), Ok(4)];
+    let collected: Result<Vec<i32>, &str> = results.into_iter().collect();
+    println!("collected = {:?}", collected);
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="collection">
+                <h2>集合</h2>
+
+                <p>Rust 标准库提供了多种集合类型，最常用的是 Vec（动态数组）和 HashMap（哈希映射）。</p>
+
+                <h3>Vec 动态数组</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // 创建 Vec
+    let v1: Vec<i32> = Vec::new();           // 空 Vec
+    let v2 = vec![1, 2, 3, 4, 5];             // 使用 vec! 宏
+    let v3: Vec<i32> = vec![0; 5];            // [0, 0, 0, 0, 0]，重复5次
+
+    // 添加元素
+    let mut v = Vec::new();
+    v.push(1);      // 添加到末尾
+    v.push(2);
+    v.push(3);
+    v.push(4);
+    println!("v = {:?}", v);
+
+    // 使用 extend 扩展
+    v.extend([5, 6, 7]);
+    println!("扩展后: {:?}", v);
+
+    // 访问元素
+    let third = v[2];              // 索引访问（可能 panic）
+    let third = v.get(2);          // Option 获取，不存在返回 None
+    let first = v.first();         // Option 获取第一个元素
+    let last = v.last();           // Option 获取最后一个元素
+
+    println!("第三个元素: {:?}", third);
+    println!("第一个元素: {:?}", first);
+
+    // 修改元素
+    let mut v = vec![1, 2, 3];
+    v[0] = 10;
+    println!("修改后: {:?}", v);
+
+    // 删除元素
+    let mut v = vec![1, 2, 3, 4, 5];
+    let removed = v.pop();         // 移除并返回最后一个元素
+    println!("移除: {:?}, 剩余: {:?}", removed, v);
+
+    let removed = v.remove(0);      // 移除指定索引的元素
+    println!("移除索引0: {:?}, 剩余: {:?}", removed, v);
+
+    // vec 是否为空
+    let mut v = vec![1, 2, 3];
+    while !v.is_empty() {
+        println!("弹出: {}", v.pop().unwrap());
+    }
+
+    // 遍历 Vec
+    let v = vec![1, 2, 3, 4, 5];
+    for i in &v {
+        print!("{} ", i);
+    }
+    println!();
+
+    // 可变遍历
+    let mut v = vec![1, 2, 3];
+    for i in &mut v {
+        *i *= 2;  // 解引用后修改
+    }
+    println!("翻倍后: {:?}", v);
+
+    // 使用 enumerate 获取索引
+    let v = vec!["a", "b", "c"];
+    for (index, value) in v.iter().enumerate() {
+        println!("v[{}] = {}", index, value);
+    }
+
+    // 存储多种类型 - 使用枚举
+    enum SpreadsheetCell {
+        Int(i32),
+        Float(f64),
+        Text(String),
+    }
+
+    let row = vec![
+        SpreadsheetCell::Int(3),
+        SpreadsheetCell::Text(String::from("blue")),
+        SpreadsheetCell::Float(10.12),
+    ];
+    println!("枚举 Vec: {:?}", row);
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 Vec 性能特点</strong>
+                    <ul>
+                        <li>索引访问：O(1) 时间复杂度</li>
+                        <li>在末尾添加：均摊 O(1)</li>
+                        <li>在中间插入/删除：O(n)</li>
+                        <li>Vec&lt;T&gt; 要求元素类型实现 Clone trait</li>
+                    </ul>
+                </div>
+
+                <h3>HashMap 哈希映射</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>use std::collections::HashMap;
+
+fn main() {
+    // 创建 HashMap
+    let mut scores: HashMap<String, i32> = HashMap::new();
+
+    // 使用 from 创建一个 HashMap
+    let mut map = HashMap::from([
+        ("apple", 3),
+        ("banana", 5),
+    ]);
+
+    // 插入键值对
+    scores.insert(String::from("Alice"), 100);
+    scores.insert(String::from("Bob"), 85);
+    scores.insert(String::from("Charlie"), 92);
+
+    println!("分数表: {:?}", scores);
+
+    // 访问值
+    let name = String::from("Alice");
+    let score = scores.get(&name);  // Option<i32>
+    println!("Alice 的分数: {:?}", score);
+
+    // 更新值
+    // 1. 直接覆盖
+    scores.insert(String::from("Alice"), 105);
+    println!("Alice 新分数: {:?}", scores.get(&String::from("Alice")));
+
+    // 2. 仅在键不存在时插入
+    scores.entry(String::from("David")).or_insert(88);
+    scores.entry(String::from("Alice")).or_insert(50);  // 不覆盖
+    println!("使用 entry: {:?}", scores);
+
+    // 3. 根据旧值更新
+    let text = "hello world wonderful world";
+    let mut word_count = HashMap::new();
+    for word in text.split_whitespace() {
+        let count = word_count.entry(word).or_insert(0);
+        *count += 1;
+    }
+    println!("词频统计: {:?}", word_count);
+
+    // 删除键值对
+    scores.remove(&String::from("Bob"));
+    println!("删除 Bob 后: {:?}", scores);
+
+    // 检查键是否存在
+    println!("是否有 Alice: {}", scores.contains_key(&String::from("Alice")));
+    println!("是否有 Bob: {}", scores.contains_key(&String::from("Bob")));
+
+    // 遍历 HashMap
+    for (key, value) in &scores {
+        println!("{}: {}", key, value);
+    }
+
+    // 只遍历键或只遍历值
+    for key in scores.keys() {
+        print!("{} ", key);
+    }
+    println!();
+    for value in scores.values() {
+        print!("{} ", value);
+    }
+    println!();
+
+    // 使用元组收集
+    let students = vec!["Alice", "Bob", "Charlie"];
+    let scores_vec = vec![90, 85, 92];
+    let student_scores: HashMap<_, _> = students
+        .into_iter()
+        .zip(scores_vec.into_iter())
+        .collect();
+    println!("学生分数: {:?}", student_scores);
+}</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ HashMap 所有权</strong>
+                    <p>HashMap 的键必须是实现了 <code>Eq</code> 和 <code>Hash</code> trait 的类型。</p>
+                    <p>当键值对插入 HashMap 后，所有权会转移给 HashMap（对于实现了 Copy 的类型如 i32，会复制；对于 String 等类型，会移动）。</p>
+                </div>
+
+                <h3>其他常用集合</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>use std::collections::{HashSet, BTreeMap, BTreeSet};
+
+fn main() {
+    // HashSet - 无序不重复集合
+    let mut set: HashSet<i32> = HashSet::new();
+    set.insert(1);
+    set.insert(2);
+    set.insert(3);
+    set.insert(2);  // 重复，不会添加
+    println!("HashSet: {:?}", set);
+
+    // 集合运算
+    let a: HashSet<i32> = vec![1, 2, 3].into_iter().collect();
+    let b: HashSet<i32> = vec![2, 3, 4].into_iter().collect();
+
+    let union: HashSet<_> = a.union(&b).collect();        // 并集
+    let intersection: HashSet<_> = a.intersection(&b).collect();  // 交集
+    let difference: HashSet<_> = a.difference(&b).collect();      // 差集
+
+    println!("并集: {:?}", union);       // {1, 2, 3, 4}
+    println!("交集: {:?}", intersection); // {2, 3}
+    println!("差集: {:?}", difference);   // {1}
+
+    // BTreeMap - 有序键值对
+    let mut btree: BTreeMap<&str, i32> = BTreeMap::new();
+    btree.insert("zhang", 90);
+    btree.insert("li", 85);
+    btree.insert("wang", 92);
+    println!("BTreeMap (按键排序): {:?}", btree);
+
+    // BTreeSet - 有序不重复集合
+    let mut btree_set: BTreeSet<i32> = BTreeSet::new();
+    btree_set.insert(3);
+    btree_set.insert(1);
+    btree_set.insert(2);
+    btree_set.insert(1);  // 重复，不会添加
+    println!("BTreeSet (排序): {:?}", btree_set);  // {1, 2, 3}
+
+    // VecDeque - 双端队列
+    use std::collections::VecDeque;
+    let mut deque: VecDeque<i32> = VecDeque::new();
+    deque.push_front(1);  // 从前面添加
+    deque.push_back(2);  // 从后面添加
+    deque.push_front(0);
+    deque.push_back(3);
+    println!("VecDeque: {:?}", deque);
+    println!("pop_front: {:?}", deque.pop_front());  // Some(0)
+    println!("pop_back: {:?}", deque.pop_back());     // Some(3)
+
+    // 链式集合选择
+    println!("\n集合类型选择建议:");
+    println!("  - Vec: 首选，适合大多数场景");
+    println!("  - HashMap: 需要快速查找键值对");
+    println!("  - HashSet: 需要快速查找去重");
+    println!("  - BTreeMap/Set: 需要按键排序");
+    println!("  - VecDeque: 需要高效的两端操作");
+}</code></pre>
+                </div>
+
+                <h3>字符串与集合转换</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>use std::collections::HashMap;
+
+fn main() {
+    // String 转 Vec<char>
+    let s = String::from("hello");
+    let chars: Vec<char> = s.chars().collect();
+    println!("字符 Vec: {:?}", chars);
+
+    // String 转 Vec&lt;u8&gt; (字节)
+    let bytes: Vec<u8> = s.into_bytes();
+    println!("字节 Vec: {:?}", bytes);
+
+    // Vec 转 String
+    let chars = vec!['h', 'e', 'l', 'l', 'o'];
+    let s: String = chars.into_iter().collect();
+    println!("从 Vec<char>: {}", s);
+
+    // 字符串分割转 Vec
+    let line = "hello world rust";
+    let words: Vec<&str> = line.split_whitespace().collect();
+    println!("单词 Vec: {:?}", words);
+
+    let csv = "apple,banana,cherry";
+    let items: Vec<&str> = csv.split(',').collect();
+    println!("CSV Vec: {:?}", items);
+
+    // Vec 转为 HashMap（计数）
+    let text = "the quick brown fox jumps over the lazy dog";
+    let mut word_count: HashMap<&str, i32> = HashMap::new();
+    for word in text.split_whitespace() {
+        *word_count.entry(word).or_insert(0) += 1;
+    }
+    println!("词频: {:?}", word_count);
+
+    // 数组切片
+    let arr = [1, 2, 3, 4, 5];
+    let slice: &[i32] = &arr[..3];  // &[1, 2, 3]
+    println!("切片: {:?}", slice);
+
+    // String 与 &str 转换
+    let s1: String = String::from("hello");
+    let s2: &str = &s1;        // String -> &str
+    let s3: String = s2.to_string();  // &str -> String
+    let s4: String = s2.to_owned();    // &str -> String
+    println!("s2: {}, s3: {}, s4: {}", s2, s3, s4);
+
+    // 字符串格式化
+    let name = "Alice";
+    let age = 30;
+    let s = format!("{} is {} years old", name, age);
+    println!("格式化: {}", s);
+}</code></pre>
                 </div>
             </section>
 
             <section id="match">
                 <h2>模式匹配</h2>
 
+                <p>match 是 Rust 最强大的控制流结构，可以匹配各种模式。</p>
+
+                <h3>match 基本用法</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
-                    <pre><code>enum Coin {
-    Penny,
-    Nickel,
-    Dime,
-    Quarter,
-}
+                    <pre><code>fn main() {
+    // match 必须穷尽所有可能
+    let number = 13;
 
-fn value_in_cents(coin: Coin) -&gt; u8 {
-    match coin {
-        Coin::Penny =&gt; {
-            println!("幸运便士！");
-            1
-        }
-        Coin::Nickel =&gt; 5,
-        Coin::Dime =&gt; 10,
-        Coin::Quarter =&gt; 25,
+    match number {
+        1 => println!("数字是 1"),
+        2 => println!("数字是 2"),
+        3 => println!("数字是 3"),
+        4 | 5 | 6 => println!("数字是 4、5 或 6"),  // 匹配多个值
+        7..=10 => println!("数字在 7 到 10 之间"),   // 范围匹配（包含两端）
+        _ => println!("其他数字"),                    // 通配符（处理其余情况）
     }
-}
 
-// 匹配 Option
-fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+    // match 作为表达式返回值
+    let result = match number {
+        1 => "一",
+        2 => "二",
+        3 => "三",
+        n if n < 10 => "个位数",
+        n if n < 100 => "两位数",
+        _ => "大数字",
+    };
+    println!("{} 是 {}", number, result);
+
+    // 匹配元组
+    let point = (2, 5);
+    match point {
+        (0, 0) => println!("原点"),
+        (x, 0) => println!("在 x 轴上，x = {}", x),
+        (0, y) => println!("在 y 轴上，y = {}", y),
+        (x, y) => println!("坐标 ({}, {})", x, y),
+    }
+
+    // 匹配数组/slice
+    let arr = [1, 2, 3];
+    match arr {
+        [a, b, c] => println!("数组: [{}, {}, {}]", a, b, c),
+    }
+
+    // 匹配嵌套结构
+    #[derive(Debug)]
+    enum Message {
+        Quit,
+        Move { x: i32, y: i32 },
+        Write(String),
+    }
+
+    let msg = Message::Move { x: 10, y: 20 };
+    match msg {
+        Message::Quit => println!("退出"),
+        Message::Move { x, y } => println!("移动到 ({}, {})", x, y),
+        Message::Write(text) => println!("写入: {}", text),
+    }
+}</code></pre>
+                </div>
+
+                <h3>带条件的模式匹配</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // match 守卫（match guard）
+    let x = 5;
     match x {
-        None =&gt; None,
-        Some(i) =&gt; Some(i + 1),
+        n if n > 0 && n < 10 => println!("{} 在 1-9 之间", n),
+        n if n == 0 => println!("{} 是零", n),
+        n => println!("{} 是负数或很大", n),
+    }
+
+    // 匹配枚举
+    enum E {
+        A(i32),
+        B(i32),
+        C,
+    }
+
+    let e = E::A(5);
+    match e {
+        E::A(n) if n > 10 => println!("A: 大于 10"),
+        E::A(n) if n > 0 => println!("A: 正数"),
+        E::A(n) => println!("A: {}", n),
+        E::B(n) => println!("B: {}", n),
+        E::C => println!("C"),
+    }
+
+    // @ 绑定（Rust 1.56+）
+    #[derive(Debug)]
+    struct Point {
+        x: i32,
+        y: i32,
+    }
+
+    let p = Point { x: 10, y: 20 };
+    match p {
+        Point { x, y } if x == y => println!("对角线上的点: ({}, {})", x, y),
+        Point { x, y } => println!("普通点: ({}, {})", x, y),
+    }
+
+    // 使用 @ 捕获值
+    match 42 {
+        n @ 1..=100 => println!("{} 在 1-100 范围内", n),
+        n => println!("{} 超出范围", n),
+    }
+
+    // 匹配字面量时使用 @
+    match 'x' {
+        c @ 'a'..='z' => println!("小写字母: {}", c),
+        c @ 'A'..='Z' => println!("大写字母: {}", c),
+        c => println!("其他字符: {}", c),
+    }
+}</code></pre>
+                </div>
+
+                <h3>if let 和 while let</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // if let - 简化单一模式匹配
+
+    // 匹配 Option
+    let some_value: Option<i32> = Some(42);
+
+    // 传统 match
+    match some_value {
+        Some(v) => println!("值是 {}", v),
+        None => println!("没有值"),
+    }
+
+    // if let 简化
+    if let Some(v) = some_value {
+        println!("值是 {}", v);
+    }
+
+    // 配合 else
+    if let Some(v) = some_value {
+        println!("有值: {}", v);
+    } else {
+        println!("没有值");
+    }
+
+    // 匹配 Result
+    let result: Result<i32, &str> = Ok(42);
+    if let Ok(v) = result {
+        println!("成功: {}", v);
+    } else if let Err(e) = result {
+        println!("错误: {}", e);
+    }
+
+    // while let - 条件循环
+    let mut stack = vec![1, 2, 3];
+    while let Some(top) = stack.pop() {
+        println!("弹出: {}", top);
+    }
+
+    // for 循环中的模式匹配
+    let v = vec![1, 2, 3, 4, 5];
+    for (index, value) in v.iter().enumerate() {
+        if value % 2 == 0 {
+            println!("索引 {} 的偶数值: {}", index, value);
+        }
+    }
+
+    // let 模式匹配
+    let (a, b) = (1, 2);
+    println!("a = {}, b = {}", a, b);
+
+    // 元组解构
+    let pair = (3, 'a');
+    let (num, ch) = pair;
+    println!("num = {}, ch = {}", num, ch);
+
+    // slice 模式
+    let arr = [1, 2, 3, 4, 5];
+    match arr {
+        [first, middle @ .., last] => {
+            println!("首: {}, 中间: {:?}, 尾: {}", first, middle, last);
+        }
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="option-result">
+                <h2>Option 与 Result</h2>
+
+                <p>Option 和 Result 是 Rust 中最重要的枚举类型，用于处理可能不存在或有错误的情况。</p>
+
+                <h3>Option 深入</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>// Option 标准库定义
+// enum Option<T> {
+//     None,
+//     Some(T),
+// }
+
+fn main() {
+    // Option 创建
+    let some: Option<i32> = Some(42);
+    let none: Option<i32> = None;
+
+    // 常用方法
+    let x = Some(5);
+
+    // unwrap - 获取内部值，None 时 panic
+    // let v = x.unwrap();  // 5
+
+    // unwrap_or - 提供默认值
+    let none: Option<i32> = None;
+    let v = none.unwrap_or(0);  // 0
+
+    // unwrap_or_else - 使用闭包提供默认值
+    let v = none.unwrap_or_else(|| {
+        println!("计算默认值...");
+        expensive_calculation()
+    });
+
+    // map - 转换内部值
+    let x = Some(5);
+    let y = x.map(|n| n * 2);           // Some(10)
+    let z = none.map(|n| n * 2);        // None
+
+    // and_then - 链式操作
+    let x = Some(5);
+    let y = x.and_then(|n| Some(n + 1));  // Some(6)
+    let z = x.and_then(|_| None);         // None
+
+    // filter - 保留满足条件的值
+    let x = Some(8);
+    let y = x.filter(|n| n % 2 == 0);    // Some(8)，因为 8 是偶数
+    let z = x.filter(|n| n % 2 != 0);    // None，因为 8 不是奇数
+
+    // or 和 or_else - 提供替代值
+    let x = Some(5);
+    let y = None;
+    println!("or: {:?}", x.or(y));          // Some(5)
+    println!("or_else: {:?}", y.or_else(|| Some(10)));  // Some(10)
+
+    // xor - 互斥或
+    let x = Some(5);
+    let y = Some(6);
+    println!("xor: {:?}", x.xor(y));        // None，两者都有值
+
+    let x = Some(5);
+    let y: Option<i32> = None;
+    println!("xor: {:?}", x.xor(y));        // Some(5)
+
+    // flatten - 嵌套 Option 展平
+    let nested: Option<Option<i32>> = Some(Some(5));
+    println!("flatten: {:?}", nested.flatten());  // Some(5)
+
+    // 使用 match 处理
+    let x = Some(5);
+    match x {
+        Some(n) if n > 0 => println!("正数: {}", n),
+        Some(n) => println!("非正数: {}", n),
+        None => println!("没有值"),
+    }
+
+    // Option 在数组索引中的应用
+    let arr = [1, 2, 3, 4, 5];
+    let index = 10;
+    match arr.get(index) {
+        Some(value) => println!("arr[{}] = {}", index, value),
+        None => println!("索引 {} 超出范围", index),
     }
 }
 
-// if let 简洁匹配
-let some_u8_value = Some(3u8);
-if let Some(3) = some_u8_value {
-    println!("three");
+fn expensive_calculation() -> i32 {
+    42
+}</code></pre>
+                </div>
+
+                <h3>Result 深入</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>use std::fs::File;
+use std::io::{self, Read};
+
+fn main() {
+    // Result 标准库定义
+    // enum Result<T, E> {
+    //     Ok(T),   // 成功，持有 T 类型的值
+    //     Err(E),  // 失败，持有 E 类型的错误
+    // }
+
+    // 基本用法
+    let f = File::open("hello.txt");
+    match f {
+        Ok(file) => println!("文件打开成功"),
+        Err(e) => println!("打开失败: {:?}", e),
+    }
+
+    // ? 运算符 - 错误传播
+    // 使用 ? 可以简化错误处理
+    let content = read_file_simple().unwrap_or(String::from("default"));
+    println!("文件内容: {}", content);
+
+    // map 和 and_then
+    let f = File::open("hello.txt");
+    let file_size = f.map(|file| file.metadata().map(|m| m.len()));
+    println!("文件大小: {:?}", file_size);
+
+    // 自定义错误类型
+    #[derive(Debug)]
+    enum MyError {
+        IoError(io::Error),
+        ParseError(std::num::ParseIntError),
+        Custom(String),
+    }
+
+    impl From<io::Error> for MyError {
+        fn from(err: io::Error) -> Self {
+            MyError::IoError(err)
+        }
+    }
+
+    impl From<std::num::ParseIntError> for MyError {
+        fn from(err: std::num::ParseIntError) -> Self {
+            MyError::ParseError(err)
+        }
+    }
+
+    // Result 组合器链式调用
+    fn parse_and_double(s: &str) -> Result<i32, MyError> {
+        let num: i32 = s.trim().parse::<i32>()?;
+        Ok(num * 2)
+    }
+
+    match parse_and_double("42") {
+        Ok(n) => println!("结果: {}", n),
+        Err(e) => println!("错误: {:?}", e),
+    }
+
+    match parse_and_double("abc") {
+        Ok(n) => println!("结果: {}", n),
+        Err(e) => println!("错误: {:?}", e),
+    }
+
+    // unwrap 和 expect
+    let ok: Result<i32, &str> = Ok(5);
+    // let v = ok.unwrap();  // 5
+    // let v = ok.expect("应该是 Ok");  // 5
+
+    let err: Result<i32, &str> = Err("error");
+    // let v = err.unwrap();  // panic!
+    // let v = err.expect("应该是 Ok");  // panic! 显示 "应该是 Ok"
+
+    // is_ok, is_err
+    println!("ok.is_ok() = {}", ok.is_ok());      // true
+    println!("ok.is_err() = {}", ok.is_err());    // false
+    println!("err.is_ok() = {}", err.is_ok());     // false
+    println!("err.is_err() = {}", err.is_err());   // true
+
+    // ok_or 和 ok_or_else
+    let x: Option<i32> = Some(5);
+    let y: Option<i32> = None;
+    println!("x.ok_or(0) = {:?}", x.ok_or(0));  // Ok(5)
+    println!("y.ok_or(0) = {:?}", y.ok_or(0));  // Err(0)
+
+    // Result 转换为 Option
+    println!("ok.ok() = {:?}", ok.ok());  // Some(5)
+    println!("err.ok() = {:?}", err.ok()); // None
+
+    // unwrap_or_default
+    let err: Result<i32, &str> = Err("error");
+    println!("err.unwrap_or_default() = {}", err.unwrap_or_default()); // 0
+}
+
+fn read_file_simple() -> Result<String, io::Error> {
+    let mut file = File::open("hello.txt")?;
+    let mut content = String::new();
+    file.read_to_string(&mut content)?;
+    Ok(content)
+}</code></pre>
+                </div>
+
+                <div class="tip-box success">
+                    <strong>✅ 最佳实践</strong>
+                    <ul>
+                        <li>优先使用 <code>?</code> 运算符进行错误传播</li>
+                        <li>为自定义类型实现 <code>From</code> trait 以简化错误转换</li>
+                        <li>在库中使用具体错误类型，在应用中使用 <code>Box&lt;dyn Error&gt;</code></li>
+                        <li>使用 <code>anyhow</code> crate 简化应用开发中的错误处理</li>
+                    </ul>
+                </div>
+
+                <h3>综合示例：错误处理流程</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>use std::num::ParseIntError;
+
+fn main() {
+    // 模拟一个配置解析流程
+    let config = "42";
+
+    match parse_config(config) {
+        Ok(value) => println!("配置解析成功: {}", value),
+        Err(e) => {
+            eprintln!("配置解析失败: {}", e);
+            std::process::exit(1);
+        }
+    }
+
+    // 链式验证
+    let numbers = vec!["1", "2", "3", "four", "5"];
+    for num_str in numbers {
+        match parse_and_validate(num_str) {
+            Ok(n) => println!("{} -> {}", num_str, n),
+            Err(e) => println!("{} -> 错误: {}", num_str, e),
+        }
+    }
+
+    // 使用 collect 收集多个 Result
+    let results: Vec<Result<i32, ParseIntError>> = vec![
+        Ok(1),
+        Ok(2),
+        Err("not a number".parse::<i32>().unwrap_err()),
+        Ok(4),
+    ];
+
+    // 收集成功的结果
+    let successes: Vec<i32> = results
+        .iter()
+        .filter_map(|r| r.as_ref().ok())
+        .cloned()
+        .collect();
+    println!("成功的值: {:?}", successes);
+
+    // 全部成功才通过
+    let all: Result<Vec<i32>, ParseIntError> = results.into_iter().collect();
+    println!("全部收集: {:?}", all);
+}
+
+fn parse_config(s: &str) -> Result<i32, ParseIntError> {
+    let value = s.trim().parse::<i32>()?;
+    if value < 0 {
+        return Err(ParseIntError::from(
+            std::num::IntErrorKind::Negative
+        ));
+    }
+    Ok(value)
+}
+
+fn parse_and_validate(s: &str) -> Result<i32, String> {
+    let num = s.parse::<i32>().map_err(|e| e.to_string())?;
+    if num < 0 {
+        Err("负数无效".to_string())
+    } else if num > 100 {
+        Err("超过最大值 100".to_string())
+    } else {
+        Ok(num)
+    }
 }</code></pre>
                 </div>
             </section>
@@ -370,34 +2047,139 @@ if let Some(3) = some_u8_value {
             <section id="trait">
                 <h2>Trait 与泛型</h2>
 
-                <h3>Trait</h3>
+                <h3>Trait 定义与实现</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
-                    <pre><code>pub trait Summary {
-    fn summarize(&amp;self) -&gt; String;
+                    <pre><code>// 定义 trait
+trait Summary {
+    // 方法签名
+    fn summarize(&self) -> String;
 
-    // 默认实现
-    fn summarize_author(&amp;self) -&gt; String {
-        String::from("(Read more...)")
+    // 带默认实现的方法
+    fn summarize_author(&self) -> String {
+        String::from("(查看更多...)")
     }
 }
 
-struct Tweet { username: String, content: String }
+// 为结构体实现 trait
+struct Article {
+    title: String,
+    author: String,
+    content: String,
+}
+
+impl Summary for Article {
+    fn summarize(&self) -> String {
+        format!("{} by {}", self.title, self.author)
+    }
+
+    // 使用默认实现
+    // fn summarize_author(&self) -> String { ... }
+}
+
+struct Tweet {
+    username: String,
+    content: String,
+}
 
 impl Summary for Tweet {
-    fn summarize(&amp;self) -&gt; String {
-        format!("{}: {}", self.username, self.content)
+    fn summarize(&self) -> String {
+        format!("@{}: {}", self.username, self.content)
+    }
+
+    fn summarize_author(&self) -> String {
+        format!("@{}", self.username)
     }
 }
 
-// trait 作为参数
-fn notify(item: &amp;impl Summary) {
-    println!("突发新闻! {}", item.summarize());
+fn main() {
+    let tweet = Tweet {
+        username: String::from("rustlang"),
+        content: String::from("Rust 是一门很棒的语言！"),
+    };
+
+    println!("推文摘要: {}", tweet.summarize());
+    println!("作者: {}", tweet.summarize_author());
+
+    let article = Article {
+        title: String::from("Rust 入门"),
+        author: String::from("张三"),
+        content: String::from("Rust 是一门注重安全的语言..."),
+    };
+
+    println!("文章摘要: {}", article.summarize());
+    println!("作者: {}", article.summarize_author());
+}</code></pre>
+                </div>
+
+                <h3>Trait 作为参数</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 定义 trait
+trait Printable {
+    fn print(&self);
 }
 
-// trait 边界
-fn notify2&lt;T: Summary&gt;(item: &amp;T) {
-    println!("突发新闻! {}", item.summarize());
+struct Point { x: i32, y: i32 }
+struct Circle { radius: f64 }
+
+impl Printable for Point {
+    fn print(&self) {
+        println!("点: ({}, {})", self.x, self.y);
+    }
+}
+
+impl Printable for Circle {
+    fn print(&self) {
+        println!("圆: 半径 = {:.2}", self.radius);
+    }
+}
+
+// 方式1: impl Trait 语法
+fn print_item(item: &impl Printable) {
+    item.print();
+}
+
+// 方式2: trait bound 语法
+fn print_item2<T: Printable>(item: &T) {
+    item.print();
+}
+
+// 方式3: 多个 trait bound
+use std::fmt::{Debug, Display};
+
+fn print_debug_display(item: &(impl Debug + Display)) {
+    println!("Debug: {:?}", item);
+    println!("Display: {}", item);
+}
+
+// 方式4: where 子句（复杂情况下更清晰）
+fn some_function<T, U>(t: &T, u: &U)
+where
+    T: Display + Clone,
+    U: Clone + Debug,
+{
+    println!("T: {}", t);
+    println!("U: {:?}", u);
+}
+
+// 返回实现 trait 的类型
+fn returns_summarizable() -> impl Summary {
+    Tweet {
+        username: String::from("example"),
+        content: String::from("内容"),
+    }
+}
+
+fn main() {
+    let p = Point { x: 10, y: 20 };
+    let c = Circle { radius: 5.0 };
+
+    print_item(&p);
+    print_item(&c);
+
+    let tweet = returns_summarizable();
+    println!("返回的摘要: {}", tweet.summarize());
 }</code></pre>
                 </div>
 
@@ -405,10 +2187,10 @@ fn notify2&lt;T: Summary&gt;(item: &amp;T) {
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
                     <pre><code>// 泛型函数
-fn largest&lt;T: PartialOrd&gt;(list: &amp;[T]) -&gt; &amp;T {
-    let mut largest = &amp;list[0];
+fn largest<T: PartialOrd>(list: &[T]) -> &T {
+    let mut largest = &list[0];
     for item in list {
-        if item &gt; largest {
+        if item > largest {
             largest = item;
         }
     }
@@ -416,16 +2198,140 @@ fn largest&lt;T: PartialOrd&gt;(list: &amp;[T]) -&gt; &amp;T {
 }
 
 // 泛型结构体
-struct Point&lt;T, U&gt; {
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+struct Point2<T, U> {
     x: T,
     y: U,
 }
 
-// 泛型方法
-impl&lt;T, U&gt; Point&lt;T, U&gt; {
-    fn x(&amp;self) -&gt; &amp;T {
-        &amp;self.x
+// 泛型枚举（标准库中的例子）
+enum Option<T> {
+    Some(T),
+    None,
+}
+
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+
+// 为泛型结构体实现方法
+impl<T> Point<T> {
+    fn x(&self) -> &T {
+        &self.x
     }
+}
+
+impl<T, U> Point2<T, U> {
+    fn mixup<V, W>(self, other: Point2<V, W>) -> Point2<T, W> {
+        Point2 {
+            x: self.x,
+            y: other.y,
+        }
+    }
+}
+
+fn main() {
+    let numbers = vec![34, 50, 25, 100, 65];
+    let result = largest(&numbers);
+    println!("最大数: {}", result);
+
+    let chars = vec!['y', 'm', 'a', 'q'];
+    let result = largest(&chars);
+    println!("最大的字符: {}", result);
+
+    // 泛型结构体实例化
+    let p1 = Point { x: 5, y: 10 };
+    let p2 = Point { x: 1.0, y: 4.0 };
+
+    println!("p1.x = {}", p1.x());
+    println!("p2.x = {}", p2.x());
+
+    // 不同类型的 Point
+    let p3 = Point2 { x: 5, y: 10.5 };
+    println!("混合类型: x = {}, y = {}", p3.x, p3.y);
+
+    // mixup 方法
+    let p4 = Point2 { x: 5, y: 10 };
+    let p5 = Point2 { x: "hello", y: 'c' };
+    let p6 = p4.mixup(p5);
+    println!("p6.x = {}, p6.y = {}", p6.x, p6.y);
+}</code></pre>
+                </div>
+
+                <h3>trait 限定（Bounds）</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>use std::fmt::{Display, Debug};
+
+fn main() {
+    // trait 对象 vs 泛型限定
+
+    // 泛型限定：静态分发，代码膨胀但无性能损失
+    fn print<T: Display>(item: &T) {
+        println!("Display: {}", item);
+    }
+
+    // trait 对象：动态分发，节省代码但有少量性能损失
+    fn print_dyn(item: &dyn Display) {
+        println!("Display: {}", item);
+    }
+
+    // 多个 trait 限定
+    fn print_both<T: Display + Debug>(item: &T) {
+        println!("Debug: {:?}", item);
+        println!("Display: {}", item);
+    }
+
+    // where 子句
+    fn function<T, U>(t: &T, u: &U)
+    where
+        T: Display + Debug,
+        U: Display + Clone,
+    {
+        println!("T: {:?}", t);
+        println!("U: {}", u);
+    }
+
+    // 常用标准库 trait
+    // Clone - 深拷贝
+    #[derive(Clone, Debug)]
+    struct Foo { x: i32 }
+
+    let foo = Foo { x: 1 };
+    let foo2 = foo.clone();
+
+    // Copy - 浅拷贝（隐式）
+    // 所有基本类型都实现了 Copy
+
+    // PartialEq - 相等比较
+    #[derive(PartialEq, Debug)]
+    struct Bar { x: i32 }
+
+    let b1 = Bar { x: 1 };
+    let b2 = Bar { x: 1 };
+    let b3 = Bar { x: 2 };
+    println!("b1 == b2: {}", b1 == b2);  // true
+    println!("b1 == b3: {}", b1 == b3);  // false
+
+    // Default - 默认值
+    #[derive(Default, Debug)]
+    struct Config { timeout: u64, verbose: bool }
+
+    let config = Config::default();
+    println!("默认配置: {:?}", config);
+
+    // Iterator trait
+    let v = vec![1, 2, 3];
+    let mut iter = v.iter();
+    println!("iter.next(): {:?}", iter.next());
+    println!("iter.next(): {:?}", iter.next());
+    println!("iter.next(): {:?}", iter.next());
+    println!("iter.next(): {:?}", iter.next());
 }</code></pre>
                 </div>
             </section>
@@ -433,72 +2339,283 @@ impl&lt;T, U&gt; Point&lt;T, U&gt; {
             <section id="lifetime">
                 <h2>生命周期</h2>
 
+                <p>生命周期是 Rust 用来确保引用始终有效的机制。</p>
+
+                <h3>生命周期标注</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
-                    <pre><code>// 函数生命周期注解
-fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
-    if x.len() &gt; y.len() { x } else { y }
+                    <pre><code>// 生命周期标注语法
+// &'a str      - 带有生命周期 'a 的不可变引用
+// &'a mut str  - 带有生命周期 'a 的可变引用
+
+// 函数生命周期标注
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    // 返回的引用的生命周期与两个输入参数中较短的那个相同
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
 }
 
-// 结构体生命周期注解
-struct ImportantExcerpt&lt;'a&gt; {
-    part: &amp;'a str,
+// 为什么要标注生命周期？
+// Rust 需要知道返回的引用指向哪个参数
+fn longest_no_annot(x: &str, y: &str) -> &str {
+    // 编译错误！Rust 不知道返回哪个引用
+    // if x.len() > y.len() { x } else { y }
+    x  // 假设总是返回 x
+}
+
+fn main() {
+    let s1 = String::from("hello");
+    let s2 = String::from("world!");
+
+    let result = longest(&s1, &s2);
+    println!("较长的字符串: '{}'", result);
+
+    // 生命周期确保 result 不会在 s1 和 s2 失效后使用
+    let s3 = String::from("short");
+    let result2 = longest(&s3, &s2);
+    println!("'{}' 和 '{}' 中较长的: '{}'", s3, s2, result2);
+}</code></pre>
+                </div>
+
+                <h3>结构体中的生命周期</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 结构体中持有引用时需要标注生命周期
+struct ImportantExcerpt<'a> {
+    part: &'a str,  // 这个引用必须比结构体活得更久
+}
+
+impl<'a> ImportantExcerpt<'a> {
+    // 带生命周期的方法
+    fn level(&self) -> i32 {
+        3
+    }
+
+    // 返回引用
+    fn announce_and_return(&self, announcement: &str) -> &str {
+        println!("公告: {}", announcement);
+        self.part
+    }
 }
 
 fn main() {
     let novel = String::from("Call me Ishmael. Some years ago...");
-    let first_sentence = novel.split('.').next().expect("没找到");
-    let i = ImportantExcerpt { part: first_sentence };
+    let first_sentence = novel.split('.').next().expect("没找到句号");
+
+    let i = ImportantExcerpt {
+        part: first_sentence,
+    };
+
+    println!("引用片段: {}", i.part);
+
+    // 方法调用
+    println!("级别: {}", i.level());
+    println!("返回: {}", i.announce_and_return("注意！"));
 }</code></pre>
                 </div>
 
                 <div class="tip-box success">
                     <strong>✅ 生命周期省略规则</strong>
-                    <p>当函数满足以下情况时，Rust 可以自动推断生命周期，无需手动标注：</p>
-                    <ul>
-                        <li>输入生命周期都一样</li>
-                        <li>只有一个引用参数</li>
-                        <li>方法中 self 的生命周期赋给所有输出</li>
-                    </ul>
+                    <p>编译器会自动推断以下情况的生命周期，无需手动标注：</p>
+                    <ol>
+                        <li>每个引用参数都有自己独立的生命周期</li>
+                        <li>如果只有一个输入生命周期，它赋给所有输出</li>
+                        <li>如果有 <code>&amp;self</code> 或 <code>&amp;mut self</code>，self 的生命周期赋给所有输出</li>
+                    </ol>
+                </div>
+
+                <h3>静态生命周期</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // 'static 生命周期表示程序整个运行期间都有效
+
+    // 字符串字面量天然是 'static
+    let s: &'static str = "我可以存活到程序结束";
+    println!("静态字符串: {}", s);
+
+    // 错误信息通常是 'static
+    // let s2: &'static str = &String::from("不是 static").to_string();
+    // 错误！String 不是 'static
+
+    // 使用 const 创建 'static 字符串
+    const GREETING: &str = "你好，世界！";
+    println!("常量字符串: {}", GREETING);
+
+    // 生命周期标注 'a 的使用
+    let string1 = String::from("long string");
+    let result;
+    {
+        let string2 = String::from("xyz");
+        result = longest(&string1, &string2);
+        println!("最长的: '{}'", result);
+    }
+    // println!("最长的: '{}'", result);  // 错误！result 可能无效
+
+    // &'static 在 trait bound 中
+    fn print_if_static<T: ?static + Display>(item: &T) {
+        println!("{}", item);
+    }
+}</code></pre>
                 </div>
             </section>
 
             <section id="error">
                 <h2>错误处理</h2>
 
+                <h3>panic! 不可恢复错误</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // panic! - 用于不可恢复的错误
+    // panic!("这行代码出错了！");
+
+    // unwrap 和 expect
+    let result: Result<i32, &str> = Ok(42);
+    // let value = result.unwrap();  // Ok(42)
+
+    let result: Result<i32, &str> = Err("error");
+    // let value = result.unwrap();  // panic!
+
+    let result: Result<i32, &str> = Ok(42);
+    // let value = result.expect("应该是 Ok");  // 42，带自定义信息
+
+    // panic 的两种触发方式
+    // 1. 直接调用 panic!
+    // panic!("直接 panic");
+
+    // 2. 数组越界访问
+    // let arr = [1, 2, 3];
+    // let _ = arr[10];  // panic!
+
+    // 设置 panic 时输出详细信息
+    // RUST_BACKTRACE=1 cargo run
+}</code></pre>
+                </div>
+
+                <h3>Result 可恢复错误</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
                     <pre><code>use std::fs::File;
 use std::io::{self, Read};
 
-// panic! - 不可恢复错误
-// panic!("crash and burn");
-
-// Result - 可恢复错误
 fn main() {
+    // 打开文件
     let f = File::open("hello.txt");
     let f = match f {
-        Ok(file) =&gt; file,
-        Err(error) =&gt; panic!("打开文件失败: {:?}", error),
+        Ok(file) => file,
+        Err(error) => {
+            eprintln!("无法打开文件: {:?}", error);
+            return;
+        }
     };
-}
 
-// ? 运算符 - 传播错误
-fn read_username_from_file() -&gt; Result&lt;String, io::Error&gt; {
-    let mut s = String::new();
-    File::open("hello.txt")?.read_to_string(&amp;mut s)?;
-    Ok(s)
-}
+    // 简化写法
+    let f = File::open("hello.txt").unwrap();  // 失败会 panic
+    let f = File::open("hello.txt").expect("文件打开失败");  // 带错误信息
 
-// 自定义错误
-#[derive(Debug)]
-struct MyError { message: String }
+    // ? 运算符 - 错误传播
+    fn read_username() -> Result<String, io::Error> {
+        let mut file = File::open("hello.txt")?;
+        // ? 等价于:
+        // let mut file = match File::open("hello.txt") {
+        //     Ok(f) => f,
+        //     Err(e) => return Err(e),
+        // };
 
-impl std::fmt::Display for MyError {
-    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter) -&gt; std::fmt::Result {
-        write!(f, "{}", self.message)
+        let mut s = String::new();
+        file.read_to_string(&mut s)?;
+        // ? 等价于:
+        // match file.read_to_string(&mut s) {
+        //     Ok(_) => {},
+        //     Err(e) => return Err(e),
+        // };
+        Ok(s)
+    }
+
+    // 链式 ? 运算符
+    fn read_username_chain() -> Result<String, io::Error> {
+        let mut s = String::new();
+        File::open("hello.txt")?.read_to_string(&mut s)?;
+        Ok(s)
+    }
+
+    // 使用 match 处理各种错误
+    match read_username() {
+        Ok(content) => println!("文件内容: {}", content),
+        Err(e) => eprintln!("读取失败: {:?}", e),
     }
 }</code></pre>
+                </div>
+
+                <h3>自定义错误类型</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>use std::fmt;
+use std::num::ParseIntError;
+
+#[derive(Debug)]
+struct MyError {
+    message: String,
+}
+
+// 实现 Display trait
+impl fmt::Display for MyError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "错误: {}", self.message)
+    }
+}
+
+// 实现 Error trait
+impl std::error::Error for MyError {}
+
+// From<ParseIntError> 实现错误转换
+impl From<ParseIntError> for MyError {
+    fn from(err: ParseIntError) -> Self {
+        MyError {
+            message: format!("数字解析错误: {}", err),
+        }
+    }
+}
+
+fn parse_and_double(s: &str) -> Result<i32, MyError> {
+    let num: i32 = s.trim().parse()?;  // 使用 ? 自动转换错误类型
+    Ok(num * 2)
+}
+
+fn main() {
+    match parse_and_double("42") {
+        Ok(n) => println!("结果: {}", n),
+        Err(e) => println!("错误: {}", e),
+    }
+
+    match parse_and_double("abc") {
+        Ok(n) => println!("结果: {}", n),
+        Err(e) => println!("错误: {}", e),
+    }
+
+    // 使用 ? 运算符链式调用
+    fn process() -> Result<i32, MyError> {
+        let num = parse_and_double("10")?;
+        let num = Ok(num + 1)?;
+        Ok(num)
+    }
+
+    println!("process: {:?}", process());
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 错误处理策略</strong>
+                    <ul>
+                        <li>使用 <code>Result</code> 处理可恢复错误</li>
+                        <li>使用 <code>panic!</code> 处理程序无法恢复的错误</li>
+                        <li>使用 <code>?</code> 运算符简化错误传播</li>
+                        <li>库函数应返回具体错误类型，应用可使用 <code>Box&lt;dyn Error&gt;</code></li>
+                    </ul>
                 </div>
             </section>
 

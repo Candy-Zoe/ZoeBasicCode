@@ -180,7 +180,9 @@ echo "姓名: ${person[name]}"</code></pre>
 
             <section id="operator">
                 <h2>运算符</h2>
+                <p>Shell 中的运算符包括算术运算、比较运算、逻辑运算和文件测试运算符。</p>
 
+                <h3>算术运算符</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
                     <pre><code>#!/bin/bash
@@ -188,60 +190,160 @@ echo "姓名: ${person[name]}"</code></pre>
 a=10
 b=3
 
-# 算术运算
-echo "$a + $b = $((a + b))"
-echo "$a - $b = $((a - b))"
-echo "$a * $b = $((a * b))"
-echo "$a / $b = $((a / b))"
-echo "$a % $b = $((a % b))"
+# 算术运算（使用 $(( )) 双括号）
+echo "$a + $b = $((a + b))"    # 加法：13
+echo "$a - $b = $((a - b))"    # 减法：7
+echo "$a * $b = $((a * b))"    # 乘法：30
+echo "$a / $b = $((a / b))"    # 整数除法：3（取整）
+echo "$a % $b = $((a % b))"    # 取模：1
+echo "$a ** $b = $((a ** b))"  # 幂运算：1000（10的3次方）
 
-# 关系运算（[ ] 中两边要有空格）
+# 复合赋值
+((a += 5))   # a = a + 5 = 15
+echo "a += 5 后: $a"
+((a *= 2))   # a = a * 2 = 30
+echo "a *= 2 后: $a"
+
+# 自增自减
+((a++))      # 后置自增
+echo "a++ 后: $a"
+((++a))      # 前置自增
+echo "++a 后: $a"</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 算术运算注意事项</strong>
+                    <ul>
+                        <li><b>$(( ))</b> 是用于算术运算的表达式，结果会自动替换</li>
+                        <li>变量前不需要加 <code>$</code> 符号（内部会自动解析）</li>
+                        <li>除法是整数除法，不保留小数</li>
+                        <li>如果需要小数，使用 <code>bc</code> 或 <code>awk</code></li>
+                    </ul>
+                </div>
+
+                <h3>比较运算符</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+a=10
+b=20
+
+# 整数比较（[ ] 中使用 -gt、-lt 等）
 if [ $a -gt $b ]; then
-    echo "$a 大于 $b"
+    echo "$a > $b"
+else
+    echo "$a <= $b"
 fi
 
-# 常用关系运算符：
-# -eq 等于    -ne 不等于
-# -gt 大于    -lt 小于
-# -ge 大于等于 -le 小于等于
+# 常用整数比较运算符：
+# -eq  等于（Equal）           -ne  不等于（Not Equal）
+# -gt  大于（Greater Than）     -lt  小于（Less Than）
+# -ge  大于等于（Greater or Equal）  -le  小于等于（Less or Equal）
 
 # 字符串比较
 str1="hello"
 str2="world"
+str3="hello"
+
+# = 或 ==  等于    !=  不等于
+if [ "$str1" = "$str3" ]; then
+    echo "str1 等于 str3"
+fi
+
+# < 小于（ASCII码比较，需转义）  > 大于
 if [ "$str1" \< "$str2" ]; then
-    echo "$str1 &lt; $str2"
+    echo "hello 在 world 前面"
 fi
 
-# = 等于  != 不等于  -z 长度为0  -n 长度不为0
-
-# 逻辑运算
-if [ $a -gt 5 ] && [ $b -lt 10 ]; then
-    echo "a > 5 且 b < 10"
+# -z 字符串长度为0    -n 字符串长度不为0
+name=""
+if [ -z "$name" ]; then
+    echo "name 是空字符串"
 fi
 
-if [ $a -gt 5 ] || [ $b -gt 10 ]; then
-    echo "a > 5 或 b > 10"
+# 文件测试运算符
+file="test.txt"
+if [ -f "$file" ]; then
+    echo "$file 是普通文件"
 fi
 
-# 文件测试
-if [ -f "test.txt" ]; then
-    echo "文件存在"
+if [ -d "/home" ]; then
+    echo "/home 是目录"
 fi
 
-# -f 文件  -d 目录  -r 可读  -w 可写  -x 可执行  -e 存在</code></pre>
+# 更多文件测试：
+# -e 文件存在   -f 普通文件   -d 目录
+# -r 可读       -w 可写       -x 可执行
+# -s 文件大小大于0   -L 符号链接</code></pre>
+                </div>
+
+                <h3>逻辑运算符</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+a=10
+b=20
+
+# && 逻辑与（AND）- 两个条件都为真才为真
+if [ $a -gt 5 ] && [ $b -lt 30 ]; then
+    echo "a > 5 且 b < 30"
+fi
+
+# || 逻辑或（OR）- 任意一个条件为真就为真
+if [ $a -gt 15 ] || [ $b -lt 30 ]; then
+    echo "a > 15 或 b < 30"
+fi
+
+# ! 逻辑非（NOT）- 取反
+if [ ! $a -eq $b ]; then
+    echo "a 不等于 b"
+fi
+
+# 组合逻辑
+age=25
+income=5000
+
+if [ $age -ge 18 ] && [ $age -le 60 ] && [ $income -gt 3000 ]; then
+    echo "符合贷款条件"
+fi</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 常见错误</strong>
+                    <ul>
+                        <li><b>[ ] 与变量之间要有空格</b>：<code>[ $a -gt $b ]</code> 而不是 <code>[$a -gt $b]</code></li>
+                        <li><b>字符串比较时加引号</b>：<code>[ "$str" = "hello" ]</code> 防止空字符串导致语法错误</li>
+                        <li><b>使用 <code>[[ ]]</code> 更安全</b>：支持更多特性，如 <code>[[ ]] && [[ ]]</code></li>
+                    </ul>
                 </div>
             </section>
 
             <section id="control">
                 <h2>流程控制</h2>
 
-                <h3>if 语句</h3>
+                <h3>if 条件语句</h3>
+                <p>if 语句用于根据条件执行不同的代码块。</p>
                 <div class="code-block">
                     <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
                     <pre><code>#!/bin/bash
 
+# 基础 if 语法
 score=85
 
+if [ $score -ge 90 ]; then
+    echo "成绩等级：优秀"
+fi
+
+# if-else 二选一
+if [ $score -ge 60 ]; then
+    echo "及格了！"
+else
+    echo "不及格，需要努力！"
+fi
+
+# if-elif-else 多选一
 if [ $score -ge 90 ]; then
     echo "优秀"
 elif [ $score -ge 80 ]; then
@@ -250,122 +352,371 @@ elif [ $score -ge 60 ]; then
     echo "及格"
 else
     echo "不及格"
+fi
+
+# 注意事项：[ ] 前后要有空格，变量要加引号
+# 错误写法：[$score -ge 90]  或  [ "$score"-ge 90 ]
+# 正确写法：[ $score -ge 90 ]  或  [ "$score" -ge 90 ]
+
+# 字符串比较示例
+name="Alice"
+if [ "$name" = "Alice" ]; then
+    echo "欢迎，Alice！"
+elif [ "$name" = "Bob" ]; then
+    echo "欢迎，Bob！"
+else
+    echo "访客，你好！"
 fi</code></pre>
                 </div>
 
-                <h3>case 语句</h3>
+                <h3>case 多分支语句</h3>
+                <p>case 语句类似于 if-elif，用于多值匹配，比写多个 if 更清晰。</p>
                 <div class="code-block">
                     <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
                     <pre><code>#!/bin/bash
 
+# case 语法：匹配模式，执行对应的命令
 day="周一"
 
 case $day in
     "周一"|"周二"|"周三"|"周四"|"周五")
-        echo "工作日"
+        echo "今天是工作日"
         ;;
     "周六"|"周日")
-        echo "周末"
+        echo "今天是周末"
         ;;
     *)
-        echo "无效日期"
+        echo "无效的日期"
+        ;;
+esac
+
+# 模式匹配说明：
+# *           匹配任意字符
+# ?           匹配单个任意字符
+# [abc]       匹配 a、b、c 任一字符
+# [0-9]       匹配任一数字
+
+# 实际应用：判断用户输入
+echo "请输入一个选项 (a/b/c)："
+read choice
+
+case $choice in
+    a|A)
+        echo "你选择了选项 A"
+        ;;
+    b|B)
+        echo "你选择了选项 B"
+        ;;
+    c|C)
+        echo "你选择了选项 C"
+        ;;
+    *)
+        echo "无效选择"
+        ;;
+esac
+
+# 文件类型判断
+file="/path/to/somefile.txt"
+
+case $file in
+    *.txt)
+        echo "文本文件"
+        ;;
+    *.jpg|*.png|*.gif)
+        echo "图片文件"
+        ;;
+    *.sh)
+        echo "Shell 脚本"
+        ;;
+    *)
+        echo "未知类型"
         ;;
 esac</code></pre>
                 </div>
 
-                <h3>循环</h3>
+                <div class="tip-box info">
+                    <strong>💡 if 与 case 的选择</strong>
+                    <ul>
+                        <li><b>if</b>：适合判断表达式、条件组合（如 <code>[ $a -gt 5 ] && [ $b -lt 10 ]</code>）</li>
+                        <li><b>case</b>：适合匹配固定值、模式（通配符），代码更简洁</li>
+                    </ul>
+                </div>
+
+                <h3>for 循环</h3>
+                <p>for 循环用于遍历列表或执行固定次数的迭代。</p>
                 <div class="code-block">
                     <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
                     <pre><code>#!/bin/bash
 
-# for 循环
+# 遍历列表
+echo "遍历列表："
 for i in 1 2 3 4 5; do
-    echo "for: $i"
+    echo "  第 $i 项"
 done
 
-# C 风格 for
-for ((i=1; i&lt;=5; i++)); do
-    echo "C风格: $i"
+# 遍历字符串
+echo "遍历字符串："
+for word in hello world; do
+    echo "  单词: $word"
+done
+
+# 遍历数组
+echo "遍历数组："
+fruits=("苹果" "香蕉" "橙子" "葡萄")
+for fruit in "${fruits[@]}"; do
+    echo "  喜欢: $fruit"
+done
+
+# C 风格 for 循环（类似 Java/C）
+echo "C 风格循环："
+for ((i=1; i<=5; i++)); do
+    echo "  i = $i"
+done
+
+# 步长循环
+echo "步长为 2："
+for ((i=0; i<10; i+=2)); do
+    echo "  i = $i"
 done
 
 # 遍历文件
+echo "当前目录的 txt 文件："
 for file in *.txt; do
-    echo "文件: $file"
+    echo "  发现文件: $file"
 done
 
-# while 循环
+# 遍历目录
+echo "子目录列表："
+for dir in */; do
+    echo "  目录: $dir"
+done</code></pre>
+                </div>
+
+                <h3>while 循环</h3>
+                <p>while 循环在条件为真时重复执行，适合不知道循环次数的场景。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+# 基础 while 循环
+echo "while 循环示例："
 count=1
 while [ $count -le 5 ]; do
-    echo "while: $count"
-    count=$((count + 1))
+    echo "  count = $count"
+    count=$((count + 1))  # 注意：表达式在 (()) 中，变量不加 $
 done
 
-# until 循环（条件为假时执行）
+# 读取文件行
+echo "读取文件内容："
+# 创建示例文件
+echo -e "第一行\n第二行\n第三行" > temp_file.txt
+
+while read -r line; do
+    echo "  行内容: $line"
+done < temp_file.txt
+rm -f temp_file.txt
+
+# 无限循环（配合 break 使用）
+echo "无限循环示例："
+i=1
+while true; do
+    echo "  第 $i 次"
+    if [ $i -ge 3 ]; then
+        echo "  退出循环"
+        break
+    fi
+    i=$((i + 1))
+done
+
+# until 循环（条件为假时执行，与 while 相反）
+echo "until 循环示例："
 count=1
 until [ $count -gt 5 ]; do
-    echo "until: $count"
+    echo "  count = $count"
     count=$((count + 1))
-done
+done</code></pre>
+                </div>
 
-# break 和 continue
+                <div class="tip-box warning">
+                    <strong>⚠️ 循环中的 break 和 continue</strong>
+                    <ul>
+                        <li><b>break</b>：立即退出整个循环</li>
+                        <li><b>continue</b>：跳过本次循环，继续下一次</li>
+                        <li>多层循环时可用 <code>break 2</code> 退出多层</li>
+                    </ul>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+# break 和 continue 示例
+echo "break 和 continue 示例："
 for i in 1 2 3 4 5; do
-    if [ $i -eq 3 ]; then
-        continue  # 跳过本次
+    if [ $i -eq 2 ]; then
+        echo "  跳过 i = $i"
+        continue  # 跳过本次，不执行后面的 echo
     fi
-    if [ $i -eq 5 ]; then
-        break     # 退出循环
+    if [ $i -eq 4 ]; then
+        echo "  遇到 4，退出循环"
+        break  # 退出整个循环
     fi
-    echo "循环: $i"
+    echo "  处理: i = $i"
 done</code></pre>
                 </div>
             </section>
 
             <section id="function">
-                <h2>函数</h2>
+                <h2>函数定义</h2>
+                <p>函数是一段可重复使用的代码块，用于组织脚本结构和提高代码复用。</p>
 
+                <h3>函数基础</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
                     <pre><code>#!/bin/bash
 
-# 定义函数
-say_hello() {
+# 定义函数（两种方式都可以）
+function say_hello {
     echo "Hello, World!"
 }
 
-# 带参数的函数
 greet() {
-    echo "你好, $1!"
-}
-
-# 返回值（只能返回 0-255 的整数）
-add() {
-    return $(($1 + $2))
+    echo "你好，世界！"
 }
 
 # 调用函数
 say_hello
-greet "张三"
+greet</code></pre>
+                </div>
 
-add 5 3
-echo "5 + 3 = $?"
+                <h3>函数参数与返回值</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
 
-# 局部变量
-test_local() {
-    local var="局部变量"
-    echo "函数内: $var"
+# 带参数的函数
+# 参数通过 $1, $2, ... $9 获取，$0 是脚本名
+greet() {
+    echo "你好, $1!"
+    echo "今天是 $2"
 }
 
-# 递归函数
+greet "张三" "周一"  # 调用，传入两个参数
+# 输出：
+# 你好, 张三!
+# 今天是 周一
+
+# 计算两个数的和
+add() {
+    local sum=$(($1 + $2))  # local 声明局部变量
+    echo $sum  # 通过 echo 返回
+}
+
+result=$(add 5 3)  # 获取返回值
+echo "5 + 3 = $result"
+
+# 返回值（return 语句）
+is_even() {
+    if (($1 % 2 == 0)); then
+        return 0  # 返回 0 表示真（成功）
+    else
+        return 1  # 返回非 0 表示假（失败）
+    fi
+}
+
+is_even 4
+if [ $? -eq 0 ]; then
+    echo "4 是偶数"
+fi</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 参数说明</strong>
+                    <ul>
+                        <li><b>$1-$9</b>：第 1-9 个参数</li>
+                        <li><b>${10}</b>：第 10 个参数（需用大括号）</li>
+                        <li><b>$#</b>：参数个数</li>
+                        <li><b>$@</b>：所有参数（作为独立字符串）</li>
+                        <li><b>$*</b>：所有参数（作为单个字符串）</li>
+                    </ul>
+                </div>
+
+                <h3>函数示例</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+# 局部变量 vs 全局变量
+demo_var() {
+    local local_var="局部变量"  # 局部变量
+    global_var="全局变量"       # 全局变量
+    echo "函数内 - local_var: $local_var"
+    echo "函数内 - global_var: $global_var"
+}
+
+demo_var
+echo "函数外 - global_var: $global_var"
+# echo "函数外 - local_var: $local_var"  # 这里会输出空
+
+# 递归函数：计算阶乘
 factorial() {
     if [ $1 -le 1 ]; then
         echo 1
     else
-        local prev=$(factorial $(( $1 - 1 )))
-        echo $(( $1 * prev ))
+        local prev=$(factorial $(($1 - 1)))
+        echo $(($1 * prev))
     fi
 }
 
-echo "5! = $(factorial 5)"</code></pre>
+echo "5! = $(factorial 5)"  # 输出 120
+
+# 函数库示例：常用工具函数
+log() {
+    local level=$1
+    shift
+    echo "[$level] $*"
+}
+
+log "INFO" "程序开始运行"
+log "ERROR" "文件不存在"
+log "DEBUG" "变量 x = $x"</code></pre>
+                </div>
+
+                <h3>函数与数组</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+# 接收数组参数
+print_array() {
+    local arr=("$@")  # 将参数转为数组
+    echo "数组长度: ${#arr[@]}"
+    for i in "${!arr[@]}"; do
+        echo "  [$i] = ${arr[$i]}"
+    done
+}
+
+fruits=("苹果" "香蕉" "橙子")
+print_array "${fruits[@]}"
+
+# 返回数组
+get_colors() {
+    local colors=("红色" "绿色" "蓝色")
+    echo "${colors[@]}"
+}
+
+color_array=($(get_colors))  # 捕获返回的数组
+echo "颜色: ${color_array[1]}"</code></pre>
+                </div>
+
+                <div class="tip-box success">
+                    <strong>✅ 函数最佳实践</strong>
+                    <ul>
+                        <li>函数名用小写，多个单词用下划线分隔（如 <code>check_file_exists</code>）</li>
+                        <li>函数内部变量用 <code>local</code> 声明，避免污染全局环境</li>
+                        <li>复杂脚本将函数分离到单独文件，用 <code>source</code> 引入</li>
+                        <li>为函数编写注释说明参数和返回值</li>
+                    </ul>
                 </div>
             </section>
 

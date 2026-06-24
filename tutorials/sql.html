@@ -219,130 +219,321 @@ TRUNCATE TABLE students;</code></pre>
             <section id="select">
                 <h2>查询语句 SELECT</h2>
 
+                <p>SELECT 是 SQL 中最强大、最常用的语句，用于从数据库中查询数据。完整的 SELECT 语句执行顺序如下：</p>
+
+                <div class="tip-box info">
+                    <strong>💡 SELECT 语句执行顺序</strong>
+                    <ol style="margin: 10px 0 0 20px;">
+                        <li>FROM - 确定数据来源表</li>
+                        <li>WHERE - 筛选满足条件的行</li>
+                        <li>GROUP BY - 对结果分组</li>
+                        <li>HAVING - 筛选分组后的结果</li>
+                        <li>SELECT - 选择要显示的列</li>
+                        <li>ORDER BY - 对结果排序</li>
+                        <li>LIMIT - 限制返回行数</li>
+                    </ol>
+                </div>
+
                 <h3>基础查询</h3>
                 <div class="code-block">
                     <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
-                    <pre><code>-- 查询所有列
+                    <pre><code>-- 查询所有列（* 不推荐在生产环境使用）
 SELECT * FROM students;
 
--- 查询指定列
+-- 查询指定列（推荐，明确知道要什么）
 SELECT name, age, email FROM students;
 
--- 别名
-SELECT name AS 姓名, age AS 年龄 FROM students;
+-- 别名：让列名更易读
+SELECT name AS 姓名, age AS 年龄, email AS 邮箱 FROM students;
 
--- 去重
+-- 去重：消除重复行
 SELECT DISTINCT grade FROM students;
 
--- 限制行数
-SELECT * FROM students LIMIT 10;       -- 前10条
-SELECT * FROM students LIMIT 10, 5;    -- 跳过10条，取5条</code></pre>
+-- 限制行数（不同数据库语法略有不同）
+SELECT * FROM students LIMIT 10;       -- MySQL: 前10条
+SELECT * FROM students LIMIT 10, 5;     -- MySQL: 跳过10条，取5条
+SELECT * FROM students FETCH FIRST 10 ROWS ONLY;  -- Oracle/SQL Server</code></pre>
                 </div>
 
-                <h3>WHERE 条件</h3>
+                <h3>WHERE 条件查询</h3>
+                <p>WHERE 子句用于筛选满足条件的记录，是 SELECT 中最常用的过滤方式。</p>
                 <div class="code-block">
                     <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
-                    <pre><code>-- 比较运算符
-SELECT * FROM students WHERE age &gt; 17;
-SELECT * FROM students WHERE age &lt;= 18;
+                    <pre><code>-- 比较运算符：= > < >= <= <> !=
+SELECT * FROM students WHERE age > 17;      -- 大于
+SELECT * FROM students WHERE age <= 18;     -- 小于等于
+SELECT * FROM students WHERE grade <> '高三'; -- 不等于
 
--- 逻辑运算符
-SELECT * FROM students WHERE grade = '高三' AND age &gt;= 18;
-SELECT * FROM students WHERE age = 17 OR age = 18;
-SELECT * FROM students WHERE NOT active = 0;
+-- 逻辑运算符：AND、OR、NOT
+SELECT * FROM students WHERE grade = '高三' AND age >= 18;  -- 两个条件都满足
+SELECT * FROM students WHERE age = 17 OR age = 18;         -- 满足任一条件
+SELECT * FROM students WHERE NOT grade = '高三';              -- 取反
 
--- 范围查询
-SELECT * FROM students WHERE age BETWEEN 16 AND 18;
+-- 范围查询：BETWEEN...AND
+SELECT * FROM students WHERE age BETWEEN 16 AND 18;  -- 包含两端
 
--- IN 查询
-SELECT * FROM students WHERE grade IN ('高三', '高二');
+-- IN 查询：在列表中
+SELECT * FROM students WHERE grade IN ('高三', '高二', '高一');
 
--- 模糊查询
-SELECT * FROM students WHERE name LIKE '张%';   -- 张开头
-SELECT * FROM students WHERE name LIKE '%三%';  -- 包含三
+-- 模糊查询：LIKE（% 匹配任意字符，_ 匹配单个字符）
+SELECT * FROM students WHERE name LIKE '张%';    -- 张开头（张三、张三丰）
+SELECT * FROM students WHERE name LIKE '%三%';   -- 包含三
+SELECT * FROM students WHERE name LIKE '张_';    -- 张后面一个字（张飞、张三）
+SELECT * FROM students WHERE name LIKE '%三';    -- 以三结尾
 
--- 空值判断
-SELECT * FROM students WHERE email IS NULL;
-SELECT * FROM students WHERE email IS NOT NULL;</code></pre>
+-- 空值判断：IS NULL / IS NOT NULL
+SELECT * FROM students WHERE email IS NULL;      -- 邮箱为空
+SELECT * FROM students WHERE email IS NOT NULL;  -- 邮箱不为空
+
+-- 组合示例：综合查询
+SELECT name, grade, age
+FROM students
+WHERE grade IN ('高三', '高二')
+  AND age >= 17
+  AND name LIKE '张%'
+ORDER BY grade ASC, age DESC
+LIMIT 20;</code></pre>
                 </div>
 
-                <h3>排序 ORDER BY</h3>
+                <h3>ORDER BY 排序</h3>
+                <p>ORDER BY 用于对查询结果进行排序，ASC 升序（默认），DESC 降序。</p>
                 <div class="code-block">
                     <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
-                    <pre><code>-- 升序（默认）
+                    <pre><code>-- 升序排列（可以省略 ASC，默认就是升序）
 SELECT * FROM students ORDER BY age ASC;
+SELECT * FROM students ORDER BY age;  -- 效果相同
 
--- 降序
+-- 降序排列
 SELECT * FROM students ORDER BY age DESC;
 
--- 多字段排序
-SELECT * FROM students ORDER BY grade ASC, age DESC;</code></pre>
+-- 多字段排序：先按第一个字段排，相同时按第二个字段排
+SELECT * FROM students ORDER BY grade ASC, age DESC;
+
+-- 按表达式排序
+SELECT name, score, score * 1.1 AS 加分后 FROM scores ORDER BY 加分后 DESC;
+
+-- 按列位置排序（不推荐，可读性差）
+SELECT name, grade, age FROM students ORDER BY 2 ASC, 3 DESC;</code></pre>
                 </div>
 
-                <h3>聚合函数与分组</h3>
+                <h3>LIMIT 分页查询</h3>
+                <p>LIMIT 用于限制返回的行数，常用于分页查询。</p>
                 <div class="code-block">
                     <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
-                    <pre><code>-- 聚合函数
-SELECT COUNT(*) AS 总人数 FROM students;
-SELECT AVG(age) AS 平均年龄 FROM students;
-SELECT MAX(score) AS 最高分 FROM scores;
-SELECT MIN(score) AS 最低分 FROM scores;
-SELECT SUM(score) AS 总分 FROM scores WHERE student_id = 1;
+                    <pre><code>-- 前 N 条记录
+SELECT * FROM students LIMIT 10;
 
--- GROUP BY 分组
+-- 分页查询（每页 10 条，获取第 1 页）
+SELECT * FROM students ORDER BY id LIMIT 10 OFFSET 0;
+
+-- 分页查询（每页 10 条，获取第 2 页）
+SELECT * FROM students ORDER BY id LIMIT 10 OFFSET 10;
+
+-- 分页查询（每页 10 条，获取第 3 页）
+SELECT * FROM students ORDER BY id LIMIT 10 OFFSET 20;
+
+-- 获取成绩最高的前 5 名
+SELECT student_id, score
+FROM scores
+ORDER BY score DESC
+LIMIT 5;</code></pre>
+                </div>
+
+                <div class="tip-box success">
+                    <strong>💡 分页查询优化建议</strong>
+                    <ul>
+                        <li>分页查询一定要有 ORDER BY，确保结果稳定</li>
+                        <li>大偏移量时性能下降，可用子查询优化</li>
+                        <li>记录总数可以用 SQL_CALC_FOUND_ROWS（MySQL）或窗口函数</li>
+                    </ul>
+                </div>
+
+                <h3>聚合函数与 GROUP BY 分组</h3>
+                <p>聚合函数用于对一组值进行计算，返回单个值。常与 GROUP BY 一起使用。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 常用聚合函数
+SELECT COUNT(*) AS 总人数 FROM students;           -- 计数
+SELECT AVG(age) AS 平均年龄 FROM students;          -- 平均值
+SELECT MAX(score) AS 最高分 FROM scores;           -- 最大值
+SELECT MIN(score) AS 最低分 FROM scores;           -- 最小值
+SELECT SUM(score) AS 总分 FROM scores WHERE student_id = 1;  -- 求和
+SELECT ROUND(AVG(score), 2) AS 平均分 FROM scores; -- 四舍五入
+
+-- GROUP BY 分组：按年级统计人数
 SELECT grade, COUNT(*) AS 人数
 FROM students
 GROUP BY grade;
 
--- HAVING 分组后过滤
+-- 多字段分组
+SELECT grade, gender, COUNT(*) AS 人数
+FROM students
+GROUP BY grade, gender;
+
+-- GROUP_CONCAT：合并分组内的值
+SELECT grade, GROUP_CONCAT(name) AS 班级同学
+FROM students
+GROUP BY grade;</code></pre>
+                </div>
+
+                <h3>HAVING 分组后过滤</h3>
+                <p>HAVING 与 WHERE 的区别：WHERE 在分组前过滤，HAVING 在分组后过滤。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- HAVING：筛选平均分大于 90 的学生
 SELECT student_id, AVG(score) AS 平均分
 FROM scores
 GROUP BY student_id
-HAVING AVG(score) &gt; 90;</code></pre>
+HAVING AVG(score) > 90;
+
+-- WHERE vs HAVING 的区别
+-- WHERE：在分组前过滤（先筛选，后分组）
+SELECT grade, COUNT(*) AS 人数
+FROM students
+WHERE age > 17
+GROUP BY grade;
+
+-- HAVING：在分组后过滤（先分组，后筛选）
+SELECT grade, COUNT(*) AS 人数
+FROM students
+GROUP BY grade
+HAVING COUNT(*) > 5;
+
+-- 综合示例：统计各年级平均分，筛选平均分大于 85 的年级
+SELECT
+    s.grade AS 年级,
+    COUNT(*) AS 人数,
+    ROUND(AVG(sc.score), 2) AS 平均分
+FROM students s
+INNER JOIN scores sc ON s.id = sc.student_id
+GROUP BY s.grade
+HAVING AVG(sc.score) > 85
+ORDER BY 平均分 DESC;</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 重要区别</strong>
+                    <ul>
+                        <li><b>WHERE</b>：过滤原始数据，在 GROUP BY 之前执行</li>
+                        <li><b>HAVING</b>：过滤分组后的聚合数据，在 GROUP BY 之后执行</li>
+                        <li>聚合函数（SUM、AVG、COUNT 等）不能用在 WHERE 中，需要用 HAVING</li>
+                    </ul>
                 </div>
             </section>
 
             <section id="join">
                 <h2>连接查询 JOIN</h2>
+                <p>JOIN 用于将多个表中的数据根据条件组合在一起，是关系型数据库的核心操作。</p>
 
                 <div class="code-block">
                     <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
-                    <pre><code>-- INNER JOIN 内连接（两边都匹配）
-SELECT s.name, c.course_name, sc.score
+                    <pre><code>-- INNER JOIN 内连接（两边都匹配才返回）
+-- 查询学生姓名、课程名称、成绩
+SELECT s.name AS 学生姓名, c.course_name AS 课程名称, sc.score AS 成绩
 FROM scores sc
 INNER JOIN students s ON sc.student_id = s.id
 INNER JOIN courses c ON sc.course_id = c.id;
 
--- LEFT JOIN 左连接（左表全部，右表匹配）
-SELECT s.name, AVG(sc.score) AS 平均分
+-- LEFT JOIN 左连接（以左表为主，右表没有匹配则为 NULL）
+-- 查询所有学生及其平均分（包括没有成绩的学生）
+SELECT s.name AS 学生姓名,
+       COALESCE(AVG(sc.score), 0) AS 平均分  -- COALESCE 处理 NULL 值
 FROM students s
 LEFT JOIN scores sc ON s.id = sc.student_id
-GROUP BY s.id;
+GROUP BY s.id, s.name;
 
--- RIGHT JOIN 右连接
-SELECT c.course_name, COUNT(sc.id) AS 选课人数
+-- RIGHT JOIN 右连接（以右表为主，左表没有匹配则为 NULL）
+-- 查询所有课程及选课人数（包括没人选的课）
+SELECT c.course_name AS 课程名称, COUNT(sc.id) AS 选课人数
 FROM scores sc
 RIGHT JOIN courses c ON sc.course_id = c.id
-GROUP BY c.id;
+GROUP BY c.id, c.course_name;
 
--- 自连接
-SELECT a.name, b.name
-FROM students a, students b
-WHERE a.grade = b.grade AND a.id &lt;&gt; b.id;</code></pre>
+-- FULL OUTER JOIN 全连接（两边所有记录）
+-- MySQL 不直接支持，可用 UNION 模拟
+SELECT s.name, c.course_name
+FROM students s
+LEFT JOIN scores sc ON s.id = sc.student_id
+LEFT JOIN courses c ON sc.course_id = c.id
+UNION
+SELECT s.name, c.course_name
+FROM students s
+RIGHT JOIN scores sc ON s.id = sc.student_id
+RIGHT JOIN courses c ON sc.course_id = c.id;</code></pre>
                 </div>
 
-                <table>
-                    <thead>
-                        <tr><th>连接类型</th><th>说明</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>INNER JOIN</td><td>只返回两边都匹配的行</td></tr>
-                        <tr><td>LEFT JOIN</td><td>返回左表所有行，右表匹配的行</td></tr>
-                        <tr><td>RIGHT JOIN</td><td>返回右表所有行，左表匹配的行</td></tr>
-                        <tr><td>FULL JOIN</td><td>返回两边所有行（部分数据库支持）</td></tr>
-                        <tr><td>CROSS JOIN</td><td>笛卡尔积，所有组合</td></tr>
-                    </tbody>
-                </table>
+                <h3>自连接</h3>
+                <p>自连接是表与自身的连接，常用于处理层次结构数据（如员工表、分类表）。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 假设有员工表 employees，包含员工ID、姓名、上级ID
+CREATE TABLE employees (
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    manager_id INT,
+    FOREIGN KEY (manager_id) REFERENCES employees(id)
+);
+
+-- 查询每个员工及其上级姓名
+SELECT e.name AS 员工, m.name AS 上级
+FROM employees e
+LEFT JOIN employees m ON e.manager_id = m.id;
+
+-- 查询同一班级的所有学生（排除自己）
+SELECT a.name AS 学生1, b.name AS 学生2, a.grade AS 年级
+FROM students a, students b
+WHERE a.grade = b.grade AND a.id < b.id;</code></pre>
+                </div>
+
+                <h3>多表查询</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 三表连接：学生、课程、成绩综合查询
+SELECT
+    s.name AS 学生姓名,
+    s.grade AS 年级,
+    c.course_name AS 课程名称,
+    c.teacher AS 任课老师,
+    sc.score AS 成绩,
+    CASE
+        WHEN sc.score >= 90 THEN 'A'
+        WHEN sc.score >= 80 THEN 'B'
+        WHEN sc.score >= 70 THEN 'C'
+        WHEN sc.score >= 60 THEN 'D'
+        ELSE 'F'
+    END AS 等级
+FROM students s
+INNER JOIN scores sc ON s.id = sc.student_id
+INNER JOIN courses c ON sc.course_id = c.id
+WHERE s.grade = '高三'
+ORDER BY s.name, c.course_name;</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 JOIN 类型对比</strong>
+                    <table>
+                        <thead>
+                            <tr><th>连接类型</th><th>说明</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>INNER JOIN</td><td>只返回两边都匹配的行</td></tr>
+                            <tr><td>LEFT JOIN</td><td>返回左表所有行，右表匹配的返回，不匹配则为 NULL</td></tr>
+                            <tr><td>RIGHT JOIN</td><td>返回右表所有行，左表匹配的返回，不匹配则为 NULL</td></tr>
+                            <tr><td>FULL JOIN</td><td>返回两边所有行，不匹配则为 NULL</td></tr>
+                            <tr><td>CROSS JOIN</td><td>笛卡尔积，所有组合（慎用）</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 连接查询注意事项</strong>
+                    <ul>
+                        <li>连接字段要有索引，否则大表连接会很慢</li>
+                        <li>避免大表之间的 CROSS JOIN，会产生海量数据</li>
+                        <li>多表连接时注意表的别名，提高可读性</li>
+                        <li> LEFT JOIN 左边不要加 WHERE 条件到右表列上，会降级为 INNER JOIN</li>
+                    </ul>
+                </div>
             </section>
 
             <section id="subquery">

@@ -59,7 +59,14 @@
                 <ul>
                     <li><a href="#intro">简介</a></li>
                     <li><a href="#variable">变量和数据类型</a></li>
+                    <li><a href="#operator">运算符</a></li>
+                    <li><a href="#condition">条件语句</a></li>
+                    <li><a href="#loop">循环语句</a></li>
+                    <li><a href="#array">数组和切片</a></li>
+                    <li><a href="#map">Map 字典</a></li>
                     <li><a href="#function">函数</a></li>
+                    <li><a href="#error">错误处理</a></li>
+                    <li><a href="#package">包和模块</a></li>
                     <li><a href="#struct">结构体</a></li>
                     <li><a href="#interface">接口</a></li>
                     <li><a href="#goroutine">并发</a></li>
@@ -148,6 +155,818 @@ func main() {
                 </table>
             </section>
 
+            <section id="operator">
+                <h2>运算符</h2>
+
+                <h3>算术运算符</h3>
+                <p>Go 语言支持基本的算术运算，用于数值计算。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    a, b := 10, 3
+
+    fmt.Printf("a + b = %d  (加法)\n", a+b)
+    fmt.Printf("a - b = %d  (减法)\n", a-b)
+    fmt.Printf("a * b = %d  (乘法)\n", a*b)
+    fmt.Printf("a / b = %d  (整数除法)\n", a/b)
+    fmt.Printf("a %% b = %d  (取余)\n", a%b)
+
+    // 自增和自减（Go 只有后置版本）
+    c := 5
+    c++
+    fmt.Printf("c++ 后 c = %d\n", c)
+    c--
+    fmt.Printf("c-- 后 c = %d\n", c)
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    a + b = 13  (加法)<br>
+                    a - b = 7  (减法)<br>
+                    a * b = 30  (乘法)<br>
+                    a / b = 3  (整数除法)<br>
+                    a % b = 1  (取余)<br>
+                    c++ 后 c = 6<br>
+                    c-- 后 c = 5
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 整数除法</strong>
+                    Go 中整数相除结果还是整数，会截断小数部分。如 10/3 = 3，而不是 3.333...
+                </div>
+
+                <h3>比较运算符</h3>
+                <p>用于比较两个值的大小关系，返回布尔类型。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    a, b := 5, 10
+
+    fmt.Printf("a == b: %t  (等于)\n", a == b)
+    fmt.Printf("a != b: %t  (不等于)\n", a != b)
+    fmt.Printf("a < b:  %t  (小于)\n", a < b)
+    fmt.Printf("a > b:  %t  (大于)\n", a > b)
+    fmt.Printf("a <= b: %t  (小于等于)\n", a <= b)
+    fmt.Printf("a >= b: %t  (大于等于)\n", a >= b)
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    a == b: false  (等于)<br>
+                    a != b: true  (不等于)<br>
+                    a < b:  true  (小于)<br>
+                    a > b:  false  (大于)<br>
+                    a <= b: true  (小于等于)<br>
+                    a >= b: false  (大于等于)
+                </div>
+
+                <h3>逻辑运算符</h3>
+                <p>用于组合多个布尔条件。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    x, y := true, false
+
+    // && 逻辑与（两者都为 true 才为 true）
+    fmt.Printf("x && y = %t  (逻辑与)\n", x && y)
+
+    // || 逻辑或（两者有一个为 true 就为 true）
+    fmt.Printf("x || y = %t  (逻辑或)\n", x || y)
+
+    // ! 逻辑非（取反）
+    fmt.Printf("!x = %t  (逻辑非)\n", !x)
+
+    // 短路求值
+    age := 20
+    if age >= 18 && age <= 60 {
+        fmt.Println("年龄在 18-60 之间，可以工作")
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    x && y = false  (逻辑与)<br>
+                    x || y = true  (逻辑或)<br>
+                    !x = false  (逻辑非)<br>
+                    年龄在 18-60 之间，可以工作
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 短路求值</strong>
+                    Go 的 && 和 || 具有短路特性：如果左边条件已经能确定结果，右边表达式不会执行。
+                </div>
+
+                <h3>位运算符</h3>
+                <p>用于直接操作二进制位，常用于系统编程和性能优化。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    a, b := 12, 10  // 二进制: 1100 & 1010
+
+    fmt.Printf("a & b  = %d  (按位与)\n", a & b)   // 8  (1000)
+    fmt.Printf("a | b  = %d  (按位或)\n", a | b)    // 14 (1110)
+    fmt.Printf("a ^ b  = %d  (按位异或)\n", a ^ b)   // 6  (0110)
+    fmt.Printf("a << 2 = %d  (左移2位)\n", a << 2)   // 48 (110000)
+    fmt.Printf("a >> 2 = %d  (右移2位)\n", a >> 2)   // 3  (0011)
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    a & b  = 8  (按位与)<br>
+                    a | b  = 14  (按位或)<br>
+                    a ^ b  = 6  (按位异或)<br>
+                    a << 2 = 48  (左移2位)<br>
+                    a >> 2 = 3  (右移2位)
+                </div>
+
+                <h3>赋值运算符</h3>
+                <p>用于给变量赋值或进行运算后赋值。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    a := 10
+
+    a += 5   // a = a + 5
+    fmt.Printf("a += 5 后: %d\n", a)
+
+    a -= 3   // a = a - 3
+    fmt.Printf("a -= 3 后: %d\n", a)
+
+    a *= 2   // a = a * 2
+    fmt.Printf("a *= 2 后: %d\n", a)
+
+    a /= 4   // a = a / 4
+    fmt.Printf("a /= 4 后: %d\n", a)
+
+    a %= 3   // a = a % 3
+    fmt.Printf("a %%= 3 后: %d\n", a)
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    a += 5 后: 15<br>
+                    a -= 3 后: 12<br>
+                    a *= 2 后: 24<br>
+                    a /= 4 后: 6<br>
+                    a %= 3 后: 0
+                </div>
+            </section>
+
+            <section id="condition">
+                <h2>条件语句</h2>
+
+                <h3>if 语句</h3>
+                <p>if 语句用于判断条件是否为 true，决定是否执行代码块。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    age := 20
+
+    // 基本 if 语句
+    if age >= 18 {
+        fmt.Println("已成年，可以投票")
+    }
+
+    // if-else 语句
+    if age >= 18 {
+        fmt.Println("已成年")
+    } else {
+        fmt.Println("未成年")
+    }
+
+    // if-else if-else 链
+    score := 85
+    if score >= 90 {
+        fmt.Println("优秀")
+    } else if score >= 70 {
+        fmt.Println("良好")
+    } else if score >= 60 {
+        fmt.Println("及格")
+    } else {
+        fmt.Println("不及格")
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    已成年，可以投票<br>
+                    已成年<br>
+                    良好
+                </div>
+
+                <h3>if 特殊用法（初始化语句）</h3>
+                <p>在 if 语句中可以先执行一个初始化语句，常见用于错误检查。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import (
+    "fmt"
+    "strings"
+)
+
+func main() {
+    // 初始化语句中的作用域只在 if-else 内有效
+    if name := "  Go语言  "; strings.TrimSpace(name) != "" {
+        fmt.Printf("名字不空: %s\n", name)
+    }
+
+    // 常见用法：检查错误
+    // if err := doSomething(); err != nil {
+    //     fmt.Println("出错了:", err)
+    // }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    名字不空:   Go语言  
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 作用域注意</strong>
+                    if 初始化语句中声明的变量只在该 if-else 语句块内可见，外部无法访问。
+                </div>
+
+                <h3>switch 语句</h3>
+                <p>switch 用于匹配多个可能的值，比多个 if-else 更清晰。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    day := 3
+
+    // 基本 switch
+    switch day {
+    case 1:
+        fmt.Println("星期一")
+    case 2:
+        fmt.Println("星期二")
+    case 3:
+        fmt.Println("星期三")
+    case 4:
+        fmt.Println("星期四")
+    case 5:
+        fmt.Println("星期五")
+    default:
+        fmt.Println("周末")
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    星期三
+                </div>
+
+                <h3>switch 多种匹配</h3>
+                <p>一个 case 可以匹配多个值，用逗号分隔。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    char := 'e'
+
+    switch char {
+    case 'a', 'e', 'i', 'o', 'u':
+        fmt.Println("是元音字母")
+    case 'b', 'c', 'd', 'f', 'g':
+        fmt.Println("是辅音字母")
+    default:
+        fmt.Println("其他字符")
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    是元音字母
+                </div>
+
+                <h3>switch 无条件</h3>
+                <p>没有表达式的 switch 等同于 switch true，可以替代长的 if-else 链。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    age := 25
+
+    switch {
+    case age < 0:
+        fmt.Println("无效年龄")
+    case age < 18:
+        fmt.Println("未成年")
+    case age < 65:
+        fmt.Println("工作年龄")
+    default:
+        fmt.Println("退休年龄")
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    工作年龄
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ switch 特性</strong>
+                    Go 的 switch 每个 case 默认 break，不会贯穿执行。如果需要贯穿，使用 fallthrough 关键字。
+                </div>
+            </section>
+
+            <section id="loop">
+                <h2>循环语句</h2>
+
+                <h3>for 循环</h3>
+                <p>Go 语言只有 for 一种循环语句，但非常灵活，可以实现各种循环模式。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    // 基本 for 循环（类似 C/Java）
+    fmt.Println("基本 for 循环:")
+    for i := 0; i < 5; i++ {
+        fmt.Printf("i = %d\n", i)
+    }
+
+    // 省略初始值和递增表达式（类似 while）
+    fmt.Println("\n类似 while 循环:")
+    j := 0
+    for j < 5 {
+        fmt.Printf("j = %d\n", j)
+        j++
+    }
+
+    // 无限循环
+    fmt.Println("\n无限循环（使用 break 退出）:")
+    count := 0
+    for {
+        fmt.Printf("count = %d\n", count)
+        count++
+        if count >= 3 {
+            break
+        }
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    基本 for 循环:<br>
+                    i = 0<br>
+                    i = 1<br>
+                    i = 2<br>
+                    i = 3<br>
+                    i = 4<br>
+                    <br>
+                    类似 while 循环:<br>
+                    j = 0<br>
+                    j = 1<br>
+                    j = 2<br>
+                    j = 3<br>
+                    j = 4<br>
+                    <br>
+                    无限循环（使用 break 退出）:<br>
+                    count = 0<br>
+                    count = 1<br>
+                    count = 2
+                </div>
+
+                <h3>for-range 遍历</h3>
+                <p>for-range 是 Go 特有的遍历方式，可以遍历数组、切片、字符串、map 和 channel。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    // 遍历数组/切片
+    fmt.Println("遍历数组:")
+    arr := []int{10, 20, 30}
+    for index, value := range arr {
+        fmt.Printf("索引: %d, 值: %d\n", index, value)
+    }
+
+    // 遍历字符串（按 Unicode 码点）
+    fmt.Println("\n遍历字符串:")
+    str := "Go语言"
+    for i, ch := range str {
+        fmt.Printf("位置: %d, 字符: %c\n", i, ch)
+    }
+
+    // 遍历 map
+    fmt.Println("\n遍历 map:")
+    m := map[string]int{"苹果": 5, "香蕉": 3}
+    for key, value := range m {
+        fmt.Printf("key: %s, value: %d\n", key, value)
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    遍历数组:<br>
+                    索引: 0, 值: 10<br>
+                    索引: 1, 值: 20<br>
+                    索引: 2, 值: 30<br>
+                    <br>
+                    遍历字符串:<br>
+                    位置: 0, 字符: G<br>
+                    位置: 1, 字符: o<br>
+                    位置: 3, 字符: 语<br>
+                    位置: 6, 字符: 言<br>
+                    <br>
+                    遍历 map:<br>
+                    key: 苹果, value: 5<br>
+                    key: 香蕉, value: 3
+                </div>
+
+                <h3>break 和 continue</h3>
+                <p>break 用于退出循环，continue 用于跳过本次循环进入下一次。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    // break：跳出循环
+    fmt.Println("break 示例:")
+    for i := 0; i < 10; i++ {
+        if i == 5 {
+            break  // 遇到 5 就退出循环
+        }
+        fmt.Printf("%d ", i)
+    }
+
+    // continue：跳过本次循环
+    fmt.Println("\n\ncontinue 示例:")
+    for i := 0; i < 5; i++ {
+        if i == 2 {
+            continue  // 跳过 2，继续下一次
+        }
+        fmt.Printf("%d ", i)
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    break 示例:<br>
+                    0 1 2 3 4 <br>
+                    <br>
+                    continue 示例:<br>
+                    0 1 3 4 
+                </div>
+
+                <h3>嵌套循环和标签</h3>
+                <p>可以使用标签（label）从内层循环直接跳出外层循环。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("嵌套循环使用标签:")
+outer:
+    for i := 0; i < 3; i++ {
+        for j := 0; j < 3; j++ {
+            if i == 1 && j == 1 {
+                break outer  // 直接跳出外层循环
+            }
+            fmt.Printf("(%d,%d) ", i, j)
+        }
+        fmt.Println()
+    }
+    fmt.Println("\n跳出外层循环")
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    嵌套循环使用标签:<br>
+                    (0,0) (0,1) (0,2) <br>
+                    (1,0) <br>
+                    跳出外层循环
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 Go 只有 for 循环</strong>
+                    与其他语言不同，Go 没有 while、do-while、foreach 等关键字，都通过 for 实现。
+                </div>
+            </section>
+
+            <section id="array">
+                <h2>数组和切片</h2>
+
+                <h3>数组</h3>
+                <p>数组是固定长度的同类型元素序列，创建后长度不能改变。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    // 声明数组（指定长度）
+    var arr1 [5]int
+    fmt.Printf("arr1: %v\n", arr1)
+
+    // 声明并初始化
+    arr2 := [3]int{10, 20, 30}
+    fmt.Printf("arr2: %v\n", arr2)
+
+    // 使用索引初始化
+    arr3 := [5]int{1: 10, 3: 30}  // 索引 1=10, 索引 3=30，其余为 0
+    fmt.Printf("arr3: %v\n", arr3)
+
+    // 获取数组长度
+    fmt.Printf("arr2 长度: %d\n", len(arr2))
+
+    // 遍历数组
+    fmt.Print("arr2 元素: ")
+    for i := 0; i < len(arr2); i++ {
+        fmt.Printf("%d ", arr2[i])
+    }
+    fmt.Println()
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    arr1: [0 0 0 0 0]<br>
+                    arr2: [10 20 30]<br>
+                    arr3: [0 10 0 30 0]<br>
+                    arr2 长度: 3<br>
+                    arr2 元素: 10 20 30 
+                </div>
+
+                <h3>切片（slice）</h3>
+                <p>切片是数组的视图，长度可以动态变化，是 Go 中最常用的数据结构。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    // 创建切片的几种方式
+
+    // 1. 直接创建
+    s1 := []int{1, 2, 3, 4, 5}
+    fmt.Printf("s1: %v\n", s1)
+
+    // 2. 从数组创建切片（切片表达式）
+    arr := [10]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+    s2 := arr[2:5]   // 索引 2,3,4（左闭右开）
+    fmt.Printf("s2 (arr[2:5]): %v\n", s2)
+
+    // 3. 使用 make 创建
+    s3 := make([]int, 3)     // 长度 3，初始值为 0
+    fmt.Printf("s3 (make): %v\n", s3)
+
+    s4 := make([]int, 3, 10) // 长度 3，容量 10
+    fmt.Printf("s4 (make 容量): %v, 长度: %d, 容量: %d\n", s4, len(s4), cap(s4))
+
+    // 切片属性
+    fmt.Printf("\ns1 长度: %d\n", len(s1))
+    fmt.Printf("s1 容量: %d\n", cap(s1))
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    s1: [1 2 3 4 5]<br>
+                    s2 (arr[2:5]): [2 3 4]<br>
+                    s3 (make): [0 0 0]<br>
+                    s4 (make 容量): [0 0 0], 长度: 3, 容量: 10<br>
+                    <br>
+                    s1 长度: 5<br>
+                    s1 容量: 5
+                </div>
+
+                <h3>切片的追加和拷贝</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    // append 添加元素
+    s := []int{1, 2, 3}
+    fmt.Printf("原始切片: %v\n", s)
+
+    s = append(s, 4, 5)  // 追加元素
+    fmt.Printf("追加后: %v\n", s)
+
+    s = append(s, s...) // 追加另一个切片（... 解包）
+    fmt.Printf("追加自身后: %v\n", s)
+
+    // copy 拷贝切片
+    s2 := []int{10, 20}
+    s3 := make([]int, len(s2))
+    copy(s3, s2)  // copy(目标, 源)
+    fmt.Printf("拷贝后 s3: %v\n", s3)
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    原始切片: [1 2 3]<br>
+                    追加后: [1 2 3 4 5]<br>
+                    追加自身后: [1 2 3 4 5 1 2 3 4 5]<br>
+                    拷贝后 s3: [10 20]
+                </div>
+
+                <h3>切片的删除操作</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    s := []int{1, 2, 3, 4, 5}
+    fmt.Printf("原始: %v\n", s)
+
+    // 删除索引为 2 的元素
+    index := 2
+    s = append(s[:index], s[index+1:]...)
+    fmt.Printf("删除索引 %d 后: %v\n", index, s)
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    原始: [1 2 3 4 5]<br>
+                    删除索引 2 后: [1 2 4 5]
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 切片原理</strong>
+                    切片包含三部分：指针（指向底层数组）、长度（当前元素数）、容量（底层数组能容纳的元素数）。修改切片会影响底层数组。
+                </div>
+            </section>
+
+            <section id="map">
+                <h2>Map 字典</h2>
+
+                <h3>Map 的创建和基本操作</h3>
+                <p>Map 是键值对的无序集合，通过键可以快速查找值。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    // 使用 make 创建 map
+    ages := make(map[string]int)
+    ages["张三"] = 25
+    ages["李四"] = 30
+    ages["王五"] = 28
+    fmt.Printf("ages: %v\n", ages)
+
+    // 字面量创建
+    scores := map[string]int{
+        "数学": 90,
+        "语文": 85,
+        "英语": 92,
+    }
+    fmt.Printf("scores: %v\n", scores)
+
+    // 访问 map
+    fmt.Printf("张三的年龄: %d\n", ages["张三"])
+
+    // 判断键是否存在
+    if age, ok := ages["赵六"]; ok {
+        fmt.Printf("赵六的年龄: %d\n", age)
+    } else {
+        fmt.Println("赵六不在 map 中")
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    ages: map[张三:25 李四:30 王五:28]<br>
+                    scores: map[数学:90 语文:85 英语:92]<br>
+                    张三的年龄: 25<br>
+                    赵六不在 map 中
+                </div>
+
+                <h3>Map 的增删改查</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    m := map[string]int{"苹果": 5, "香蕉": 3}
+
+    // 增加/修改
+    m["橙子"] = 8      // 新增
+    m["苹果"] = 6      // 修改
+    fmt.Printf("修改后: %v\n", m)
+
+    // 删除
+    delete(m, "香蕉")
+    fmt.Printf("删除后: %v\n", m)
+
+    // 遍历
+    fmt.Println("遍历 map:")
+    for key, value := range m {
+        fmt.Printf("  %s: %d\n", key, value)
+    }
+
+    // 获取长度
+    fmt.Printf("map 长度: %d\n", len(m))
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    修改后: map[苹果:6 橙子:8 香蕉:3]<br>
+                    删除后: map[苹果:6 橙子:8]<br>
+                    遍历 map:<br>
+                      橙子: 8<br>
+                      苹果: 6<br>
+                    map 长度: 2
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ Map 引用类型</strong>
+                    Map 是引用类型，赋值给另一个变量或传递给函数时，不会复制数据，它们共享底层数据。
+                </div>
+            </section>
+
             <section id="function">
                 <h2>函数</h2>
 
@@ -176,7 +995,7 @@ func divide(a, b int) (quotient, remainder int) {
 func main() {
     sum, product := calculate(10, 3)
     fmt.Printf("和: %d, 积: %d\n", sum, product)
-    
+
     q, r := divide(10, 3)
     fmt.Printf("商: %d, 余数: %d\n", q, r)
 }</code></pre>
@@ -229,6 +1048,254 @@ func main() {
                     结束<br>
                     延迟执行2<br>
                     延迟执行1
+                </div>
+            </section>
+
+            <section id="error">
+                <h2>错误处理</h2>
+
+                <h3>Go 的错误处理哲学</h3>
+                <p>Go 使用返回错误值的方式处理错误，而不是异常机制。这种设计让错误处理显式化。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import (
+    "errors"
+    "fmt"
+)
+
+// 自定义错误
+func divide(a, b int) (int, error) {
+    if b == 0 {
+        return 0, errors.New("除数不能为零")
+    }
+    return a / b, nil  // nil 表示没有错误
+}
+
+func main() {
+    // 正常情况
+    result, err := divide(10, 2)
+    if err != nil {
+        fmt.Println("错误:", err)
+    } else {
+        fmt.Printf("10 / 2 = %d\n", result)
+    }
+
+    // 除以零的情况
+    result, err = divide(10, 0)
+    if err != nil {
+        fmt.Println("错误:", err)
+    } else {
+        fmt.Printf("10 / 0 = %d\n", result)
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    10 / 2 = 5<br>
+                    错误: 除数不能为零
+                </div>
+
+                <h3>错误链和格式化</h3>
+                <p>使用 fmt.Errorf 和 %w 动词可以创建错误链。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import (
+    "errors"
+    "fmt"
+)
+
+func level1() error {
+    return errors.New("底层错误")
+}
+
+func level2() error {
+    err := level1()
+    if err != nil {
+        return fmt.Errorf("中层出错: %w", err)  // %w 包装错误
+    }
+    return nil
+}
+
+func main() {
+    err := level2()
+    if err != nil {
+        fmt.Println("最终错误:", err)
+        // 使用 errors.Is 检查错误链
+        if errors.Is(err, errors.New("底层错误")) {
+            fmt.Println("包含底层错误")
+        }
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    最终错误: 中层出错: 底层错误<br>
+                    包含底层错误
+                </div>
+
+                <h3>defer 确保资源释放</h3>
+                <p>使用 defer 确保文件、网络连接等资源在使用后被正确关闭。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+// 模拟打开和关闭资源
+func openResource() *string {
+    fmt.Println("打开资源")
+    name := "数据库连接"
+    return &name
+}
+
+func closeResource(r *string) {
+    fmt.Printf("关闭资源: %s\n", *r)
+}
+
+func main() {
+    r := openResource()
+    defer closeResource(r)  // 即使出错，也会执行关闭
+
+    fmt.Println("使用资源...")
+    fmt.Println("函数结束")
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    打开资源<br>
+                    使用资源...<br>
+                    函数结束<br>
+                    关闭资源: 数据库连接
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 错误处理规范</strong>
+                    Go 程序员习惯检查每个可能出错的函数返回值。不要忽略错误（使用 _ 忽略），至少要记录或处理它。
+                </div>
+            </section>
+
+            <section id="package">
+                <h2>包和模块</h2>
+
+                <h3>包的概念</h3>
+                <p>Go 代码组织在包中，每个包是目录中的一组文件。包名通常与目录名相同。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 文件: utils/math.go
+package utils
+
+// 包级别变量（私有，只能在 utils 包内访问）
+var version = "1.0"
+
+// Calc 是导出的函数（首字母大写，可被其他包访问）
+func Calc(a, b int) int {
+    return a + b
+}
+
+// helper 是未导出的函数（首字母小写）
+func helper() {
+    // 内部使用
+}</code></pre>
+                </div>
+
+                <h3>init 函数</h3>
+                <p>每个包可以有 init 函数，在包被导入时自动执行。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+var initVar string
+
+// init 在包初始化时自动调用
+func init() {
+    initVar = "初始化完成"
+    fmt.Println("init 函数被执行")
+}
+
+func main() {
+    fmt.Println("main 函数开始:", initVar)
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    init 函数被执行<br>
+                    main 函数开始: 初始化完成
+                </div>
+
+                <h3>模块（module）</h3>
+                <p>Go 模块是包的集合，通过 go.mod 文件管理依赖。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>go.mod</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>module mymodule
+
+go 1.21
+
+require (
+    github.com/pkg/errors v0.9.1
+)</code></pre>
+                </div>
+
+                <h3>导入包</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import (
+    "fmt"        // 标准库
+    "mymodule/utils"  // 自定义包
+)
+
+func main() {
+    result := utils.Calc(10, 20)
+    fmt.Printf("计算结果: %d\n", result)
+}</code></pre>
+                </div>
+
+                <h3>包别名和点导入</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import (
+    fmt2 "fmt"      // 别名导入
+    . "fmt"         // 点导入（不推荐），直接使用 Println
+)
+
+func main() {
+    fmt2.Println("使用别名导入")
+    Println("使用点导入直接调用")  // 不需要 fmt 前缀
+}</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 最佳实践</strong>
+                    Go 的包名应简洁、简短，与目录名一致。导入路径应该完整，从模块名开始。
                 </div>
             </section>
 

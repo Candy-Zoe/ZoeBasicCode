@@ -112,32 +112,32 @@ print("Hello, World!")</code></pre>
 
                 <div class="code-block">
                     <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
-                    <pre><code>-- 变量（默认是全局的）
+                    <pre><code>-- 变量（默认是全局的，推荐使用局部变量）
 name = "张三"
 age = 25
 print("姓名: " .. name .. ", 年龄: " .. age)
 
--- 局部变量（推荐使用 local）
+-- 局部变量（推荐！避免污染全局环境）
 local x = 10
 local y = 20
 
 -- 数据类型
-print(type(nil))          -- nil
-print(type(123))          -- number
-print(type("Hello"))      -- string
-print(type(true))         -- boolean
-print(type({}))           -- table
-print(type(function() end)) -- function
-print(type(coroutine.create(function() end))) -- thread
-print(type(io.stdin))     -- userdata
+print(type(nil))          -- nil，空值
+print(type(123))          -- number，数字
+print(type("Hello"))      -- string，字符串
+print(type(true))         -- boolean，布尔值
+print(type({}))           -- table，表
+print(type(function() end)) -- function，函数
+print(type(coroutine.create(function() end))) -- thread，线程
+print(type(io.stdin))     -- userdata，用户数据
 
 -- 字符串
 str = "Hello World"
 print("长度: " .. #str)
-print(string.upper(str))
-print(string.lower(str))
-print(string.sub(str, 1, 5))
-print(string.format("姓名: %s, 年龄: %d", "张三", 25))
+print(string.upper(str))        -- 转大写
+print(string.lower(str))        -- 转小写
+print(string.sub(str, 1, 5))    -- 截取子串
+print(string.format("姓名: %s, 年龄: %d", "张三", 25))  -- 格式化
 
 -- 多行字符串
 multi = [[
@@ -148,98 +148,346 @@ multi = [[
 print(multi)
 
 -- 类型转换
-tonumber("123")
-tostring(456)
+tonumber("123")  -- 转数字
+tostring(456)    -- 转字符串</code></pre>
+                </div>
 
--- 运算符
+                <h3>运算符</h3>
+                <p>Lua 支持丰富的运算符，包括算术、关系和逻辑运算符。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 算术运算符
 a, b = 10, 3
-print(a + b)     -- 加
-print(a - b)     -- 减
-print(a * b)     -- 乘
-print(a / b)     -- 除
-print(a % b)     -- 模
-print(a ^ b)     -- 幂
-print(-a)        -- 取负
+print("a = " .. a .. ", b = " .. b)
+print("a + b = " .. (a + b))     -- 加法：13
+print("a - b = " .. (a - b))     -- 减法：7
+print("a * b = " .. (a * b))     -- 乘法：30
+print("a / b = " .. (a / b))     -- 除法：3.333...
+print("a % b = " .. (a % b))      -- 取模：1
+print("a ^ b = " .. (a ^ b))      -- 幂：1000
+print("-a = " .. (-a))           -- 取负：-10
 
--- 关系运算
-print(a &gt; b)     -- 大于
-print(a &lt; b)     -- 小于
-print(a == b)    -- 等于
-print(a ~= b)    -- 不等于
+-- 关系运算符（返回 true 或 false）
+print("a > b  = " .. (a > b))    -- 大于：true
+print("a < b  = " .. (a < b))    -- 小于：false
+print("a == b = " .. (a == b))   -- 等于：false
+print("a ~= b = " .. (a ~= b))   -- 不等于：true
+print("a >= b = " .. (a >= b))   -- 大于等于：true
+print("a <= b = " .. (a <= b))   -- 小于等于：false
 
--- 逻辑运算
-print(true and false)  -- and
-print(true or false)   -- or
-print(not true)        -- not
+-- 逻辑运算符
+print("true and false = " .. (true and false))  -- and：false
+print("true or false  = " .. (true or false))   -- or：true
+print("not true       = " .. (not true))        -- not：false
 
--- Lua 的 and/or 短路规则很有用
-x = x or 0  -- x 为 nil 时设为 0（类似默认值）</code></pre>
+-- Lua 的短路求值
+x = x or 0  -- x 为 nil 时设为 0（类似默认值）
+print("x or 0 = " .. x)
+
+-- 三目运算符替代方案
+local result = (age >= 18) and "成年" or "未成年"
+print("年龄判断: " .. result)
+
+-- 位运算符（Lua 5.3+）
+print("5 & 3  = " .. (5 & 3))    -- 位与：1
+print("5 | 3  = " .. (5 | 3))    -- 位或：7
+print("5 ~ 3  = " .. (5 ~ 3))    -- 位异或：6
+print("~5     = " .. (~5))        -- 位非
+print("2 << 1 = " .. (2 << 1))   -- 左移：4
+print("4 >> 1 = " .. (4 >> 1))   -- 右移：2</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 运算符优先级（从高到低）</strong>
+                    <ul>
+                        <li><b>^</b>（幂运算，右结合）</li>
+                        <li><b>not # - ~</b>（一元运算符）</li>
+                        <li><b>* / %</b>（乘除取模）</li>
+                        <li><b>+ -</b>（加减）</li>
+                        <li><b>..</b>（字符串连接）</li>
+                        <li><b>&lt; &gt; &lt;= &gt;= ~= ==</b>（比较）</li>
+                        <li><b>and</b></li>
+                        <li><b>or</b></li>
+                    </ul>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意</strong>
+                    <ul>
+                        <li>Lua 中字符串连接用 <code>..</code>，不是 <code>+</code></li>
+                        <li>比较运算符两边不需要空格，但建议加上增加可读性</li>
+                        <li><code>nil</code> 和 <code>false</code> 在逻辑判断中为"假"，其他都为"真"</li>
+                    </ul>
                 </div>
             </section>
 
             <section id="table">
-                <h2>Table 表</h2>
-                <p>Table 是 Lua 中唯一的数据结构，可以表示数组、字典、对象、集合等。</p>
+                <h2>Table 表（完整操作）</h2>
+                <p>Table 是 Lua 中唯一的数据结构，可以表示数组、字典、对象、集合等。掌握 table 的操作是 Lua 编程的基础。</p>
 
+                <h3>创建 table</h3>
                 <div class="code-block">
                     <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
-                    <pre><code>-- 数组（数字索引，从 1 开始！）
+                    <pre><code>-- 创建空表
+empty = {}
+print("空表长度: " .. #empty)
+
+-- 数组：数字索引，从 1 开始
 fruits = {"苹果", "香蕉", "橙子"}
-print(fruits[1])      -- 第一个元素（不是 0！）
-print(#fruits)        -- 长度
+print("水果数量: " .. #fruits)
+print("第一个水果: " .. fruits[1])  -- 注意：索引从 1 开始！
 
--- 遍历数组
-for i, v in ipairs(fruits) do
-    print(i .. ". " .. v)
-end
-
--- 字典（字符串索引）
+-- 字典：字符串索引
 person = {
     name = "张三",
     age = 25,
     city = "北京"
 }
-print(person.name)
-print(person["age"])
+print("姓名: " .. person.name)
+print("年龄: " .. person["age"])
+
+-- 混合表（数组+字典）
+mixed = {
+    10, 20, 30,           -- 数组部分
+    name = "test",        -- 字典部分
+    40, 50                -- 继续数组部分
+}
+print("mixed[1]=" .. mixed[1] .. ", mixed.name=" .. mixed.name)
+
+-- 嵌套表
+students = {
+    {name = "张三", score = 95},
+    {name = "李四", score = 88},
+    {name = "王五", score = 92}
+}
+print("第二个学生: " .. students[2].name .. ", 分数: " .. students[2].score)</code></pre>
+                </div>
+
+                <h3>访问与修改</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 访问元素
+fruits = {"苹果", "香蕉", "橙子"}
+print("第二种水果: " .. fruits[2])
+print("第三种水果: " .. fruits[3])
+
+-- 修改元素
+fruits[1] = "红苹果"
+print("修改后第一种: " .. fruits[1])
+
+-- 添加元素
+fruits[4] = "葡萄"
+print("添加后长度: " .. #fruits)
+
+-- 删除元素（设为 nil）
+fruits[2] = nil
+print("删除后长度: " .. #fruits)  -- 长度不会自动减小！
+
+-- 字典操作
+person = {name = "张三", age = 25}
+person.city = "北京"         -- 添加
+person.age = 26              -- 修改
+person.name = nil            -- 删除
+
+-- 检测元素是否存在
+if person.age ~= nil then
+    print("年龄存在: " .. person.age)
+end</code></pre>
+                </div>
+
+                <h3>table 库函数</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- table.insert 在指定位置插入
+fruits = {"苹果", "香蕉", "橙子"}
+table.insert(fruits, "葡萄")           -- 末尾插入
+print("插入后: " .. table.concat(fruits, ", "))
+
+table.insert(fruits, 2, "西瓜")       -- 在位置 2 插入
+print("在位置2插入后: " .. table.concat(fruits, ", "))
+
+-- table.remove 删除并返回元素
+removed = table.remove(fruits)        -- 删除末尾
+print("删除: " .. removed)
+print("删除后: " .. table.concat(fruits, ", "))
+
+removed = table.remove(fruits, 1)     -- 删除位置 1
+print("删除位置1: " .. removed)
+
+-- table.sort 排序
+nums = {3, 1, 4, 1, 5, 9, 2, 6}
+table.sort(nums)
+print("排序后: " .. table.concat(nums, ", "))
+
+-- 自定义排序
+fruits = {"香蕉", "苹果", "橙子"}
+table.sort(fruits, function(a, b)
+    return a > b  -- 降序排列
+end)
+print("降序: " .. table.concat(fruits, ", "))
+
+-- table.concat 连接为字符串
+fruits = {"苹果", "香蕉", "橙子"}
+print("连接: " .. table.concat(fruits, ", "))
+print("连接2-3: " .. table.concat(fruits, ", ", 2, 3))</code></pre>
+                </div>
+
+                <h3>数组操作</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 获取数组长度（# 操作符）
+arr = {10, 20, 30}
+print("长度: " .. #arr)
+
+-- 注意：# 只返回连续的数组部分长度
+arr2 = {1, 2, nil, 4, 5}
+print("#arr2 = " .. #arr2)  -- 可能不是 5，因为有 nil
+
+-- 安全的数组长度获取方法
+function array_size(arr)
+    local count = 0
+    for i in ipairs(arr) do
+        count = i
+    end
+    return count
+end
+print("安全获取: " .. array_size(arr2))
+
+-- 遍历数组
+arr = {"a", "b", "c"}
+for i, v in ipairs(arr) do
+    print("arr[" .. i .. "] = " .. v)
+end
+
+-- 反向遍历
+for i = #arr, 1, -1 do
+    print("反向: arr[" .. i .. "] = " .. arr[i])
+end
+
+-- 数组切片
+function slice(arr, start, ending)
+    local result = {}
+    for i = start, ending do
+        table.insert(result, arr[i])
+    end
+    return result
+end
+
+nums = {1, 2, 3, 4, 5}
+sliced = slice(nums, 2, 4)
+print("切片[2-4]: " .. table.concat(sliced, ", "))</code></pre>
+                </div>
+
+                <h3>字典操作</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 创建字典
+person = {
+    name = "张三",
+    age = 25,
+    city = "北京"
+}
 
 -- 遍历字典
 for k, v in pairs(person) do
     print(k .. ": " .. v)
 end
 
--- 混合表
-mixed = {
-    10,
-    20,
-    name = "test",
-    value = 100
-}
-print(mixed[1])
-print(mixed.name)
+-- 获取所有键
+function get_keys(dict)
+    local keys = {}
+    for k in pairs(dict) do
+        table.insert(keys, k)
+    end
+    return keys
+end
 
--- table 库
-table.insert(fruits, "葡萄")     -- 添加
-table.remove(fruits, 1)          -- 删除
-table.sort(fruits)               -- 排序
-table.concat(fruits, ", ")       -- 连接
+-- 获取所有值
+function get_values(dict)
+    local values = {}
+    for _, v in pairs(dict) do
+        table.insert(values, v)
+    end
+    return values
+end
 
--- 多维表
+keys = get_keys(person)
+print("所有键: " .. table.concat(keys, ", "))
+
+values = get_values(person)
+print("所有值: " .. table.concat(values, ", "))
+
+-- 复制字典
+function copy_dict(orig)
+    local copy = {}
+    for k, v in pairs(orig) do
+        copy[k] = v
+    end
+    return copy
+end
+
+person2 = copy_dict(person)
+person2.name = "李四"
+print("原person.name: " .. person.name)
+print("复制.name: " .. person2.name)</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 table 库常用函数</strong>
+                    <ul>
+                        <li><b>table.insert(t, pos, val)</b>：在 pos 位置插入 val，默认末尾</li>
+                        <li><b>table.remove(t, pos)</b>：删除 pos 位置元素，默认末尾</li>
+                        <li><b>table.sort(t, comp)</b>：排序，可选自定义比较函数</li>
+                        <li><b>table.concat(t, sep, i, j)</b>：连接为字符串</li>
+                        <li><b>table.unpack</b>：展开数组为多个返回值</li>
+                        <li><b>table.pack</b>：打包多个参数为数组</li>
+                    </ul>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ table 重要注意事项</strong>
+                    <ul>
+                        <li>Lua 数组索引从 <b>1</b> 开始，不是 0！</li>
+                        <li><code>#</code> 操作符只对连续数组有效，有 nil 间隔时不准确</li>
+                        <li>删除元素用 <code>t[k] = nil</code>，而不是 <code>table.remove</code></li>
+                        <li>字典遍历用 <code>pairs</code>，数组遍历用 <code>ipairs</code></li>
+                    </ul>
+                </div>
+
+                <h3>多维表</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 多维数组（矩阵）
 matrix = {
     {1, 2, 3},
     {4, 5, 6},
     {7, 8, 9}
 }
-print(matrix[2][3])  -- 6</code></pre>
-                </div>
+print("第2行第3列: " .. matrix[2][3])  -- 6
 
-                <div class="tip-box warning">
-                    <strong>⚠️ 注意</strong>
-                    <ul>
-                        <li>Lua 数组索引从 <b>1</b> 开始，不是 0！</li>
-                        <li>ipairs 只遍历连续的数字索引</li>
-                        <li>pairs 遍历所有键值对，顺序不确定</li>
-                        <li># 操作符只对数组部分有效</li>
-                    </ul>
+-- 遍历矩阵
+for i = 1, #matrix do
+    for j = 1, #matrix[i] do
+        io.write(matrix[i][j] .. " ")
+    end
+    print()
+end
+
+-- 创建 3x3 零矩阵
+function new_matrix(rows, cols, init)
+    init = init or 0
+    local m = {}
+    for i = 1, rows do
+        m[i] = {}
+        for j = 1, cols do
+            m[i][j] = init
+        end
+    end
+    return m
+end
+
+m = new_matrix(3, 3, 0)
+print("零矩阵[2][2]: " .. m[2][2])  -- 0</code></pre>
                 </div>
             </section>
 
@@ -310,71 +558,174 @@ print(c())  -- 3</code></pre>
             <section id="control">
                 <h2>流程控制</h2>
 
+                <h3>if 条件语句</h3>
+                <p>if 语句用于根据条件执行不同的代码块。</p>
                 <div class="code-block">
                     <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
-                    <pre><code>-- if 语句
+                    <pre><code>-- 基础 if 语句
 score = 85
-if score &gt;= 90 then
+
+if score >= 90 then
+    print("成绩等级：优秀")
+end
+
+-- if-else 二选一
+if score >= 60 then
+    print("及格了！")
+else
+    print("不及格，需要努力！")
+end
+
+-- if-elseif-else 多选一
+if score >= 90 then
     print("优秀")
-elseif score &gt;= 80 then
+elseif score >= 80 then
     print("良好")
-elseif score &gt;= 60 then
+elseif score >= 60 then
     print("及格")
 else
     print("不及格")
 end
 
--- while 循环
+-- 条件组合
+age = 20
+income = 5000
+
+if age >= 18 and income > 3000 then
+    print("符合贷款条件")
+end
+
+-- 字符串比较
+name = "Alice"
+if name == "Alice" then
+    print("欢迎，Alice！")
+elseif name == "Bob" then
+    print("欢迎，Bob！")
+else
+    print("访客，你好！")
+end</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 条件判断要点</strong>
+                    <ul>
+                        <li><b>then</b> 和 <b>end</b> 是必须的</li>
+                        <li><b>elseif</b> 是一个词，不是 <code>else if</code></li>
+                        <li>关系运算：<code>==</code> 等于，<code>~=</code> 不等于</li>
+                        <li>逻辑运算：<code>and</code> 与，<code>or</code> 或，<code>not</code> 非</li>
+                    </ul>
+                </div>
+
+                <h3>循环</h3>
+                <p>Lua 支持多种循环结构：while、repeat-until、for 循环。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- while 循环：条件为真时重复执行
 i = 1
-while i &lt;= 3 do
-    print("while: " .. i)
+while i <= 3 do
+    print("while 循环: " .. i)
     i = i + 1
 end
 
--- repeat ... until（类似 do-while）
+-- repeat...until：至少执行一次，直到条件为真
 i = 1
 repeat
-    print("repeat: " .. i)
+    print("repeat 循环: " .. i)
     i = i + 1
-until i &gt; 3
+until i > 3
 
--- for 数值循环
+-- for 数值循环：指定次数的迭代
+-- 格式：for 变量 = 初值, 终值, 步长 do ... end
 for i = 1, 3 do
-    print("for: " .. i)
+    print("for 循环: " .. i)
 end
 
-for i = 1, 5, 2 do  -- 步长 2
+-- 步长为 2
+for i = 1, 5, 2 do
     print("步长2: " .. i)
 end
 
-for i = 3, 1, -1 do  -- 倒序
+-- 倒序
+for i = 3, 1, -1 do
     print("倒序: " .. i)
-end
+end</code></pre>
+                </div>
 
--- for 泛型循环 - ipairs（数组）
+                <h3>泛型 for 循环</h3>
+                <p>泛型 for 循环用于遍历数组（ipairs）或字典（pairs）。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- ipairs：遍历数组（数字索引，从 1 开始，连续）
 fruits = {"苹果", "香蕉", "橙子"}
+print("遍历数组：")
 for i, v in ipairs(fruits) do
-    print(i .. ". " .. v)
+    print("  " .. i .. ". " .. v)
 end
 
--- for 泛型循环 - pairs（字典）
-person = {name = "张三", age = 25}
+-- pairs：遍历所有键值对（字典）
+person = {name = "张三", age = 25, city = "北京"}
+print("\n遍历字典：")
 for k, v in pairs(person) do
-    print(k .. " = " .. v)
+    print("  " .. k .. " = " .. v)
 end
 
--- break
+-- 混合表遍历
+mixed = {
+    10, 20, 30,           -- 数组部分
+    name = "test",        -- 字典部分
+    value = 100
+}
+print("\n遍历混合表：")
+for i, v in ipairs(mixed) do
+    print("  [数组]" .. i .. " = " .. v)
+end
+for k, v in pairs(mixed) do
+    if type(k) == "string" then
+        print("  [字典]" .. k .. " = " .. v)
+    end
+end
+
+-- 遍历时获取键值
+print("\n显式获取键值：")
+for i, v in ipairs(fruits) do
+    print("索引: " .. i .. ", 值: " .. v)
+end</code></pre>
+                </div>
+
+                <h3>break 与 return</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- break：退出循环
+print("break 示例：")
 for i = 1, 10 do
-    if i &gt; 3 then
+    if i > 5 then
         break
     end
-    print("break示例: " .. i)
+    print("  i = " .. i)
 end
 
--- goto + 标签（Lua 5.2+）
-::start::
-print("goto 示例")
--- goto start  -- 会无限循环，已注释</code></pre>
+-- return：函数中返回，模块中提前退出
+function find_element(arr, target)
+    for i, v in ipairs(arr) do
+        if v == target then
+            return i  -- 找到就返回索引
+        end
+    end
+    return nil  -- 没找到返回 nil
+end
+
+result = find_element({1, 2, 3, 4, 5}, 3)
+print("元素 3 的索引: " .. result)</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 循环注意事项</strong>
+                    <ul>
+                        <li>Lua 数组索引从 <b>1</b> 开始，不是 0！</li>
+                        <li><b>ipairs</b> 只遍历连续的数字索引，遇到 nil 停止</li>
+                        <li><b>pairs</b> 遍历所有键值对，顺序不确定</li>
+                        <li>循环中用 <code>break</code> 退出，用 <code>return</code> 在函数中退出</li>
+                    </ul>
                 </div>
             </section>
 

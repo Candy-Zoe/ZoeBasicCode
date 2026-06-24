@@ -60,6 +60,12 @@
                 <ul>
                     <li><a href="#intro">简介</a></li>
                     <li><a href="#variable">变量和数据类型</a></li>
+                    <li><a href="#operator">运算符</a></li>
+                    <li><a href="#condition">条件语句</a></li>
+                    <li><a href="#loop">循环语句</a></li>
+                    <li><a href="#function">函数</a></li>
+                    <li><a href="#array">数组</a></li>
+                    <li><a href="#string">字符串</a></li>
                     <li><a href="#oop">面向对象</a></li>
                     <li><a href="#collection">集合框架</a></li>
                     <li><a href="#exception">异常处理</a></li>
@@ -151,6 +157,954 @@ String s3 = s1 + " " + s2;  // 字符串拼接
 System.out.println("s3 = " + s3);
 System.out.println("长度: " + s3.length());
 System.out.println("转大写: " + s3.toUpperCase());</code></pre>
+                </div>
+            </section>
+
+            <section id="operator">
+                <h2>运算符</h2>
+                <p>运算符就是用来做<strong>数学运算</strong>和<strong>逻辑判断</strong>的符号，就像我们平时用的 <code>+</code>（加）、<code>-</code>（减）、<code>=</code>（等于）一样。</p>
+
+                <h3>算术运算符</h3>
+                <p>算术运算符就是数学里常见的加减乘除，但有几个需要注意的点：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int a = 10;
+int b = 3;
+
+// 基本运算
+System.out.println("加法: " + a + " + " + b + " = " + (a + b));  // 10 + 3 = 13
+System.out.println("减法: " + a + " - " + b + " = " + (a - b));  // 10 - 3 = 7
+System.out.println("乘法: " + a + " * " + b + " = " + (a * b));  // 10 × 3 = 30
+System.out.println("除法: " + a + " / " + b + " = " + (a / b));  // 10 ÷ 3 = 3（整数除法取整）
+System.out.println("取余: " + a + " % " + b + " = " + (a % b));  // 10 ÷ 3 = 1（余数）
+
+// 自增自减
+int c = 5;
+System.out.println("c++ = " + c++);  // 先输出再自增，输出5
+System.out.println("++c = " + ++c);  // 先自增再输出，输出7
+System.out.println("c-- = " + c--);  // 先输出再自减，输出7
+System.out.println("--c = " + --c);  // 先自减再输出，输出5</code></pre>
+                </div>
+                <div class="output-block">
+                    加法: 10 + 3 = 13<br>
+                    减法: 10 - 3 = 7<br>
+                    乘法: 10 * 3 = 30<br>
+                    除法: 10 / 3 = 3（整数除法取整）<br>
+                    取余: 10 % 3 = 1（余数）
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 什么时候用 % 和 /？</strong>
+                    <p>想象一下分糖果的场景：</p>
+                    <ul>
+                        <li><code>/</code>（整除）：10颗糖分给3个人，告诉每个人能分到几颗整糖</li>
+                        <li><code>%</code>（取余）：还剩几颗糖不能整分</li>
+                    </ul>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意</strong>
+                    <p>Java 中整数除法会<strong>向下取整</strong>，结果还是整数。如果需要小数结果，分子或分母要变成小数：</p>
+                    <p><code>10 / 3.0</code> 结果是 <code>3.333...</code></p>
+                </div>
+
+                <h3>比较运算符</h3>
+                <p>比较运算符用来<strong>比较两个值的大小</strong>，结果只有 true（真）或 false（假）：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int m = 10;
+int n = 20;
+
+System.out.println(m + " == " + n + ": " + (m == n));  // false（等于）
+System.out.println(m + " != " + n + ": " + (m != n));  // true（不等于）
+System.out.println(m + " > " + n + ": " + (m > n));    // false（大于）
+System.out.println(m + " < " + n + ": " + (m < n));    // true（小于）
+System.out.println(m + " >= " + n + ": " + (m >= n));  // false（大于等于）
+System.out.println(m + " <= " + n + ": " + (m <= n));  // true（小于等于）</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 特别注意</strong>
+                    <p><code>==</code> 是"等于"（比较），<code>=</code> 是"赋值"（存入）。别搞混了！</p>
+                </div>
+
+                <h3>逻辑运算符</h3>
+                <p>逻辑运算符用来组合多个条件，就像说"并且"、"或者"、"不是"：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>boolean p = true;
+boolean q = false;
+
+System.out.println("p && q: " + (p && q));  // false（并且：两个都要真）
+System.out.println("p || q: " + (p || q));  // true（或者：至少一个为真）
+System.out.println("!p: " + (!p));          // false（不是：取反）
+
+// 实际应用示例：判断年龄是否符合条件
+int age = 20;
+boolean isStudent = true;
+// 20岁以上并且是学生
+boolean canDiscount = (age > 18) && isStudent;
+System.out.println("可以打折: " + canDiscount);</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 逻辑运算记忆口诀</strong>
+                    <ul>
+                        <li><strong>&&（与）</strong>：and 就是"和"，要<em>两个都</em>对才返回 true</li>
+                        <li><strong>||（或）</strong>：or 就是"或"，<em>至少一个</em>对就返回 true</li>
+                        <li><strong>!（非）</strong>：not 就是"非"，<em>取反</em>（对的变错，错的变对）</li>
+                    </ul>
+                </div>
+
+                <h3>赋值运算符</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int x = 10;
+
+x += 5;   // 相当于 x = x + 5，结果 x = 15
+x -= 3;   // 相当于 x = x - 3，结果 x = 12
+x *= 2;   // 相当于 x = x * 2，结果 x = 24
+x /= 4;   // 相当于 x = x / 4，结果 x = 6
+x %= 5;   // 相当于 x = x % 5，结果 x = 1
+
+System.out.println("最终结果: " + x);</code></pre>
+                </div>
+            </section>
+
+            <section id="condition">
+                <h2>条件语句</h2>
+                <p>条件语句就像我们日常生活中的<strong>决策</strong>：如果...就...，否则如果...就...，否则就...</p>
+
+                <p>Java 使用 <code>if</code>（如果）、<code>else if</code>（否则如果）、<code>else</code>（否则）来进行条件判断。还有 <code>switch</code> 适合处理多值分支。</p>
+
+                <h3>基本 if 语句</h3>
+                <p>最简单的场景：如果条件满足，就做一件事，否则做另一件事。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int age = 18;
+if (age >= 18) {
+    System.out.println("你已经成年了");
+} else {
+    System.out.println("你还未成年");
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    你已经成年了
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 语法小提示</strong>
+                    <p>注意代码的<strong>大括号 <code>{}</code></strong>！Java 用大括号来区分代码块，每个括号内的代码就是一个整体。</p>
+                </div>
+
+                <h3>多条件判断</h3>
+                <p>生活中经常有多个条件，比如考试成绩判断：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int score = 85;
+char grade;
+
+if (score >= 90) {
+    grade = 'A';       // 90分以上是A
+} else if (score >= 80) {
+    grade = 'B';       // 80-89分是B
+} else if (score >= 60) {
+    grade = 'C';       // 60-79分是C
+} else {
+    grade = 'D';       // 60分以下是D
+}
+
+System.out.println("成绩 " + score + " 分，等级: " + grade);</code></pre>
+                </div>
+                <div class="output-block">
+                    成绩 85 分，等级: B
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 多个条件的判断顺序</strong>
+                    <p>计算机会<strong>从上到下</strong>检查条件，一旦找到满足的条件就执行对应的代码，后面的条件就不会再检查了。</p>
+                    <p>所以要把<strong>更具体的条件放前面</strong>，更宽泛的条件放后面。</p>
+                </div>
+
+                <h3>switch-case 语句</h3>
+                <p>当需要根据一个变量的值选择多个分支时，switch 比 if-else 更清晰：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int day = 3;
+String dayName;
+
+switch (day) {
+    case 1:
+        dayName = "星期一";
+        break;      // 重要！每个 case 后面要加 break
+    case 2:
+        dayName = "星期二";
+        break;
+    case 3:
+        dayName = "星期三";
+        break;
+    case 4:
+        dayName = "星期四";
+        break;
+    case 5:
+        dayName = "星期五";
+        break;
+    case 6:
+        dayName = "星期六";
+        break;
+    case 7:
+        dayName = "星期日";
+        break;
+    default:
+        dayName = "无效的日期";
+}
+
+System.out.println("今天是 " + dayName);</code></pre>
+                </div>
+                <div class="output-block">
+                    今天是 星期三
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 别忘了 break！</strong>
+                    <p>如果 case 后面没有 <code>break</code>，程序会"贯穿"到下一个 case，继续执行后面的代码，直到遇到 break 或 switch 结束。这可能是你想要的，也可能不是！</p>
+                </div>
+
+                <h3>switch 表达式（Java 14+）</h3>
+                <p>新版 Java 提供了更简洁的 switch 语法：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// Java 14+ 支持箭头语法
+int day = 2;
+String dayName = switch (day) {
+    case 1 -> "星期一";
+    case 2 -> "星期二";
+    case 3 -> "星期三";
+    case 4 -> "星期四";
+    case 5 -> "星期五";
+    case 6, 7 -> "周末";     // 多个值可以合并
+    default -> "无效日期";
+};
+
+System.out.println("今天是 " + dayName);</code></pre>
+                </div>
+
+                <h3>三元表达式</h3>
+                <p>如果只想根据条件返回一个值，可以用更简洁的方式：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 格式：条件 ? 值1 : 值2
+int a = 10;
+int b = 20;
+int max = (a > b) ? a : b;  // 如果 a>b 成立，返回 a，否则返回 b
+
+System.out.println(a + " 和 " + b + " 中较大的是: " + max);</code></pre>
+                </div>
+                <div class="output-block">
+                    10 和 20 中较大的是: 20
+                </div>
+            </section>
+
+            <section id="loop">
+                <h2>循环语句</h2>
+                <p>循环就是让计算机<strong>重复做某件事</strong>。想象一下要打印 100 次"你好"，不用循环就要写 100 遍，有了循环就只需要几行代码！</p>
+
+                <h3>for 循环</h3>
+                <p>for 循环就像<strong>按顺序执行</strong>，适合知道循环次数的场景：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 基本的 for 循环
+// 格式：for(初始化; 条件; 更新)
+for (int i = 0; i < 5; i++) {
+    System.out.println("第 " + i + " 次循环");
+}
+
+// 计算 1 到 100 的和
+int sum = 0;
+for (int i = 1; i <= 100; i++) {
+    sum += i;
+}
+System.out.println("1+2+...+100 = " + sum);</code></pre>
+                </div>
+                <div class="output-block">
+                    第 0 次循环<br>
+                    第 1 次循环<br>
+                    第 2 次循环<br>
+                    第 3 次循环<br>
+                    第 4 次循环<br>
+                    1+2+...+100 = 5050
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 for 循环的三个部分</strong>
+                    <ul>
+                        <li><strong>初始化</strong>：<code>int i = 0</code>，只执行一次</li>
+                        <li><strong>条件</strong>：<code>i < 5</code>，每次循环前检查</li>
+                        <li><strong>更新</strong>：<code>i++</code>，每次循环后执行</li>
+                    </ul>
+                </div>
+
+                <h3>while 循环</h3>
+                <p>while 循环就像<strong>满足条件就一直做</strong>：只要条件为真，就一直重复执行。</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int count = 1;
+while (count <= 5) {       // 只要 count <= 5，就一直循环
+    System.out.println("count = " + count);
+    count++;               // 重要！每次循环后递增，否则会无限循环！
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    count = 1<br>
+                    count = 2<br>
+                    count = 3<br>
+                    count = 4<br>
+                    count = 5
+                </div>
+
+                <div class="tip-box danger">
+                    <strong>⚠️ 警告：无限循环！</strong>
+                    <p>使用 while 循环时，<strong>一定要确保循环条件最终会变为 false</strong>，否则程序会一直运行下去，不会停止！</p>
+                    <p>就像热水器，如果忘记关，就会一直烧水，直到...</p>
+                </div>
+
+                <h3>do-while 循环</h3>
+                <p>do-while 和 while 的区别是：<strong>先执行一次，再判断条件</strong>。适合必须执行至少一次的场景：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int num = 1;
+do {
+    System.out.println("先执行一次再说，num = " + num);
+    num++;
+} while (num < 1);    // 即使条件不满足，也会执行一次
+
+System.out.println("循环结束");</code></pre>
+                </div>
+                <div class="output-block">
+                    先执行一次再说，num = 1<br>
+                    循环结束
+                </div>
+
+                <h3>foreach 循环（增强 for 循环）</h3>
+                <p>foreach 专门用来<strong>遍历数组或集合</strong>，不需要关心索引：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>String[] fruits = {"苹果", "香蕉", "橙子", "葡萄"};
+
+// foreach 语法：for (元素类型 变量名 : 数组或集合)
+for (String fruit : fruits) {
+    System.out.println("水果: " + fruit);
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    水果: 苹果<br>
+                    水果: 香蕉<br>
+                    水果: 橙子<br>
+                    水果: 葡萄
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 什么时候用 foreach？</strong>
+                    <ul>
+                        <li><strong>foreach</strong>：适合<em>只需要读取元素</em>，不需要索引的场景</li>
+                        <li><strong>普通 for</strong>：适合<em>需要用索引</em>，或者<em>从后往前遍历</em>的场景</li>
+                    </ul>
+                </div>
+
+                <h3>break 和 continue</h3>
+                <p>有时候我们需要<strong>提前退出循环</strong>或<strong>跳过某次循环</strong>：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// break: 提前退出循环（整个循环结束）
+System.out.println("break 示例:");
+for (int i = 0; i < 10; i++) {
+    if (i == 5) {
+        break;   // 当 i=5 时，退出整个循环
+    }
+    System.out.print(i + " ");
+}
+System.out.println("\n遇到 break，循环结束");
+
+// continue: 跳过当前迭代（进入下一次循环）
+System.out.println("\ncontinue 示例:");
+for (int i = 0; i < 10; i++) {
+    if (i % 2 == 0) {    // 如果是偶数
+        continue;       // 跳过这次循环，继续下一次
+    }
+    System.out.print(i + " ");
+}
+System.out.println("\n只打印了奇数");</code></pre>
+                </div>
+                <div class="output-block">
+                    break 示例:<br>
+                    0 1 2 3 4<br>
+                    遇到 break，循环结束<br>
+                    <br>
+                    continue 示例:<br>
+                    1 3 5 7 9<br>
+                    只打印了奇数
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 break vs continue</strong>
+                    <ul>
+                        <li><strong>break</strong>：<em>提前下班</em>，直接结束整个循环</li>
+                        <li><strong>continue</strong>：<em>跳过这次</em>，但继续下一次循环</li>
+                    </ul>
+                </div>
+
+                <h3>嵌套循环</h3>
+                <p>循环里面还可以再放循环，就像打印乘法表：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 打印 99 乘法表
+for (int i = 1; i <= 9; i++) {
+    for (int j = 1; j <= i; j++) {
+        System.out.print(j + "*" + i + "=" + (i*j) + "\t");
+    }
+    System.out.println();   // 换行
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    1*1=1<br>
+                    1*2=2	2*2=4<br>
+                    1*3=3	2*3=6	3*3=9<br>
+                    ...<br>
+                    1*9=9	2*9=18	3*9=27	...	9*9=81
+                </div>
+            </section>
+
+            <section id="function">
+                <h2>函数</h2>
+                <p>在 Java 中，函数被称为<strong>方法（Method）</strong>。方法就是一段<strong>可以重复使用的代码</strong>，用来完成某个特定的功能。</p>
+
+                <div class="tip-box info">
+                    <strong>💡 为什么需要方法？</strong>
+                    <p>想象一下：你要写 100 遍"计算并打印结果"，还是写一个方法然后调用 100 次？</p>
+                    <p>方法让代码<strong>不重复、更简洁、易维护</strong>。</p>
+                </div>
+
+                <h3>定义方法</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>public class Main {
+
+    // 无返回值、无参数的方法
+    public static void greet() {
+        System.out.println("Hello, World!");
+    }
+
+    // 无返回值、有参数的方法
+    public static void greetUser(String name) {
+        System.out.println("你好，" + name + "！");
+    }
+
+    // 有返回值、有参数的方法
+    public static int add(int a, int b) {
+        return a + b;   // return 返回结果
+    }
+
+    public static void main(String[] args) {
+        greet();
+        greetUser("张三");
+        int result = add(3, 5);
+        System.out.println("3 + 5 = " + result);
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    Hello, World!<br>
+                    你好，张三！<br>
+                    3 + 5 = 8
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 方法的组成</strong>
+                    <ul>
+                        <li><strong>public static</strong>：访问修饰符和静态标志</li>
+                        <li><strong>void</strong> 或<strong>返回类型</strong>：void 表示没有返回值</li>
+                        <li><strong>方法名</strong>：见名知意</li>
+                        <li><strong>(参数)</strong>：方法接受的输入</li>
+                    </ul>
+                </div>
+
+                <h3>带默认参数的方法（重载）</h3>
+                <p>Java 不支持直接给参数默认值，但可以通过<strong>方法重载</strong>实现类似效果：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>public class Main {
+
+    // 计算平方（重载1）
+    public static int power(int base) {
+        return base * base;
+    }
+
+    // 计算指定次方（重载2）
+    public static int power(int base, int exponent) {
+        int result = 1;
+        for (int i = 0; i < exponent; i++) {
+            result *= base;
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("3的平方: " + power(3));         // 使用1个参数
+        System.out.println("3的立方: " + power(3, 3));     // 使用2个参数
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    3的平方: 9<br>
+                    3的立方: 27
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 什么是方法重载？</strong>
+                    <p><strong>重载</strong>就是同一个方法名，但<em>参数个数或类型不同</em>。编译器会根据你传入的参数自动选择对应的方法。</p>
+                    <p>就像一个"老板"，你叫他做事，他根据你给的任务决定怎么做。</p>
+                </div>
+
+                <h3>可变参数</h3>
+                <p>有时候不确定会有多少个参数，用 <code>类型... 参数名</code> 可以接收任意数量：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>public class Main {
+
+    // 可变参数方法
+    public static int sumAll(int... numbers) {
+        int total = 0;
+        for (int num : numbers) {    // 可变参数当作数组使用
+            total += num;
+        }
+        return total;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("sumAll(1, 2, 3) = " + sumAll(1, 2, 3));
+        System.out.println("sumAll(1, 2, 3, 4, 5) = " + sumAll(1, 2, 3, 4, 5));
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    sumAll(1, 2, 3) = 6<br>
+                    sumAll(1, 2, 3, 4, 5) = 15
+                </div>
+
+                <h3>递归方法</h3>
+                <p>递归就是<strong>方法调用自己</strong>，适合处理可以分解为相似子问题的问题：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>public class Main {
+
+    // 计算阶乘：5! = 5 * 4 * 3 * 2 * 1
+    public static int factorial(int n) {
+        if (n <= 1) {       // 递归终止条件
+            return 1;
+        }
+        return n * factorial(n - 1);   // 调用自己
+    }
+
+    // 计算斐波那契数列
+    public static int fibonacci(int n) {
+        if (n <= 1) {
+            return n;
+        }
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("5! = " + factorial(5));     // 120
+        System.out.println("第6个斐波那契数: " + fibonacci(6));  // 8
+    }
+}</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 递归要注意</strong>
+                    <p>递归必须有<strong>终止条件</strong>，否则会无限递归导致栈溢出错误。</p>
+                    <p>递归虽好，但要注意性能问题，能用循环解决的尽量用循环。</p>
+                </div>
+            </section>
+
+            <section id="array">
+                <h2>数组</h2>
+                <p><strong>数组</strong>就像一个<em>固定大小的容器</em>，用来存储多个相同类型的元素。数组的大小在创建时就确定，之后不能改变。</p>
+
+                <div class="tip-box info">
+                    <strong>💡 数组的特点</strong>
+                    <ul>
+                        <li>数组长度<strong>固定</strong>，创建时确定</li>
+                        <li>所有元素<strong>类型相同</strong></li>
+                        <li>元素在内存中<strong>连续存储</strong></li>
+                        <li>可以通过<strong>索引</strong>快速访问（从0开始）</li>
+                    </ul>
+                </div>
+
+                <h3>声明和创建数组</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 方法1：先声明，后创建
+int[] scores = new int[5];      // 创建能存5个整数的数组，默认值0
+
+// 方法2：直接初始化
+int[] numbers = {10, 20, 30, 40, 50};
+
+// 方法3：声明并创建
+String[] names = new String[]{"张三", "李四", "王五"};
+
+// 访问数组元素（索引从0开始）
+System.out.println("第一个成绩: " + scores[0]);
+System.out.println("第二个数字: " + numbers[1]);
+
+// 修改数组元素
+scores[0] = 95;
+System.out.println("修改后第一个成绩: " + scores[0]);
+
+// 获取数组长度
+System.out.println("numbers 长度: " + numbers.length);</code></pre>
+                </div>
+                <div class="output-block">
+                    第一个成绩: 0<br>
+                    第二个数字: 20<br>
+                    修改后第一个成绩: 95<br>
+                    numbers 长度: 5
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 索引从 0 开始！</strong>
+                    <p>在 Java 中，数组的第一个元素索引是 <strong>0</strong>，不是 1。</p>
+                    <p>就像楼层：第 1 层其实是 0 楼（ground floor）。</p>
+                </div>
+
+                <h3>遍历数组</h3>
+                <p>有多种方式遍历数组：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int[] nums = {10, 20, 30, 40, 50};
+
+// 方式1：普通 for 循环（可以获取索引）
+System.out.println("普通 for 循环:");
+for (int i = 0; i < nums.length; i++) {
+    System.out.println("  索引 " + i + ": " + nums[i]);
+}
+
+// 方式2：foreach 增强循环（更简洁）
+System.out.println("\nforeach 循环:");
+for (int num : nums) {
+    System.out.println("  元素: " + num);
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    普通 for 循环:<br>
+                    &nbsp;&nbsp;索引 0: 10<br>
+                    &nbsp;&nbsp;索引 1: 20<br>
+                    &nbsp;&nbsp;索引 2: 30<br>
+                    &nbsp;&nbsp;索引 3: 40<br>
+                    &nbsp;&nbsp;索引 4: 50<br>
+                    <br>
+                    foreach 循环:<br>
+                    &nbsp;&nbsp;元素: 10<br>
+                    &nbsp;&nbsp;元素: 20<br>
+                    &nbsp;&nbsp;元素: 30<br>
+                    &nbsp;&nbsp;元素: 40<br>
+                    &nbsp;&nbsp;元素: 50
+                </div>
+
+                <h3>常见数组操作</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>import java.util.Arrays;   // 需要导入 Arrays 类
+
+int[] arr = {3, 1, 4, 1, 5, 9, 2, 6};
+
+// 排序
+Arrays.sort(arr);
+System.out.println("排序后: " + Arrays.toString(arr));
+
+// 查找元素（返回索引，未找到返回负数）
+int index = Arrays.binarySearch(arr, 5);
+System.out.println("元素5的索引: " + index);
+
+// 填充数组
+int[] arr2 = new int[5];
+Arrays.fill(arr2, 10);
+System.out.println("填充后: " + Arrays.toString(arr2));
+
+// 复制数组
+int[] arr3 = Arrays.copyOf(arr, arr.length * 2);  // 扩大一倍
+System.out.println("复制并扩容: " + Arrays.toString(arr3));</code></pre>
+                </div>
+                <div class="output-block">
+                    排序后: [1, 1, 2, 3, 4, 5, 6, 9]<br>
+                    元素5的索引: 5<br>
+                    填充后: [10, 10, 10, 10, 10]<br>
+                    复制并扩容: [1, 1, 2, 3, 4, 5, 6, 9, 0, 0, 0, 0, 0, 0, 0, 0]
+                </div>
+
+                <h3>二维数组</h3>
+                <p>二维数组就像<em>表格</em>，有行有列：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 创建 3 行 4 列的二维数组
+int[][] matrix = new int[3][4];
+
+// 初始化二维数组
+int[][] scores = {
+    {95, 87, 92},      // 第一行：张三的成绩
+    {88, 95, 90},      // 第二行：李四的成绩
+    {76, 89, 94}       // 第三行：王五的成绩
+};
+
+// 访问元素
+System.out.println("李四的第二门课: " + scores[1][1]);
+
+// 遍历二维数组
+System.out.println("\n成绩表:");
+for (int i = 0; i < scores.length; i++) {        // 遍历行
+    for (int j = 0; j < scores[i].length; j++) {  // 遍历列
+        System.out.print(scores[i][j] + "\t");
+    }
+    System.out.println();
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    李四的第二门课: 95<br>
+                    <br>
+                    成绩表:<br>
+                    95	87	92<br>
+                    88	95	90<br>
+                    76	89	94
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 数组的默认值</strong>
+                    <ul>
+                        <li><strong>整数类型</strong>（byte, short, int, long）：默认 <code>0</code></li>
+                        <li><strong>浮点类型</strong>（float, double）：默认 <code>0.0</code></li>
+                        <li><strong>布尔类型</strong>：默认 <code>false</code></li>
+                        <li><strong>引用类型</strong>（String, 对象等）：默认 <code>null</code></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="string">
+                <h2>字符串</h2>
+                <p>字符串（String）是 Java 中<strong>最常用的类型之一</strong>，用来表示文本。Java 中的字符串是<em>不可变的</em>，这意味着一旦创建，内容就不能改变。</p>
+
+                <div class="tip-box info">
+                    <strong>💡 什么是不可变？</strong>
+                    <p>就像刻在石头上字，你不能修改它，只能重新刻一个新的。这听起来是缺点，但其实有很多好处：</p>
+                    <ul>
+                        <li>线程安全（多线程可以同时读取）</li>
+                        <li>安全性更高（不会被意外修改）</li>
+                        <li>可以共享使用，节省内存</li>
+                    </ul>
+                </div>
+
+                <h3>创建字符串</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 方式1：直接创建（最常用）
+String s1 = "Hello";
+
+// 方式2：使用构造方法
+char[] chars = {'H', 'e', 'l', 'l', 'o'};
+String s2 = new String(chars);
+
+// 字符串拼接
+String s3 = s1 + " " + "World";
+System.out.println("s3 = " + s3);
+
+// 其他类型转字符串
+int num = 123;
+String s4 = String.valueOf(num);
+String s5 = Integer.toString(num);
+System.out.println("数字转字符串: " + s4);</code></pre>
+                </div>
+
+                <h3>字符串常用方法</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>String s = "Hello, World!";
+
+System.out.println("原字符串: " + s);
+System.out.println("长度: " + s.length());                    // 长度
+System.out.println("转大写: " + s.toUpperCase());             // 转大写
+System.out.println("转小写: " + s.toLowerCase());             // 转小写
+System.out.println("获取字符[7]: " + s.charAt(7));            // 获取字符
+System.out.println("获取子串: " + s.substring(0, 5));         // 获取子串
+System.out.println("替换: " + s.replace("World", "Java"));    // 替换
+System.out.println("包含World: " + s.contains("World"));     // 是否包含
+System.out.println("以Hello开头: " + s.startsWith("Hello")); // 是否以...开头
+System.out.println("以!结尾: " + s.endsWith("!"));           // 是否以...结尾
+System.out.println("去除首尾空格: " + "  hi  ".trim());       // 去除空格</code></pre>
+                </div>
+                <div class="output-block">
+                    原字符串: Hello, World!<br>
+                    长度: 13<br>
+                    转大写: HELLO, WORLD!<br>
+                    转小写: hello, world!<br>
+                    获取字符[7]: W<br>
+                    获取子串: Hello<br>
+                    替换: Hello, Java!<br>
+                    包含World: true<br>
+                    以Hello开头: true<br>
+                    以!结尾: true<br>
+                    去除首尾空格: hi
+                </div>
+
+                <h3>字符串分割和连接</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>String s = "apple,banana,orange";
+
+// 分割字符串
+String[] fruits = s.split(",");
+System.out.println("分割结果:");
+for (String fruit : fruits) {
+    System.out.println("  - " + fruit);
+}
+
+// 连接字符串（Java 8）
+String joined = String.join(" | ", fruits);
+System.out.println("连接结果: " + joined);
+
+// StringBuilder 高效拼接（适合大量拼接）
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < 1000; i++) {
+    sb.append(i).append(",");
+}
+String result = sb.toString();</code></pre>
+                </div>
+
+                <h3>字符串比较</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>String s1 = "hello";
+String s2 = "hello";
+String s3 = new String("hello");
+
+// == 比较的是引用（内存地址），不是内容！
+System.out.println("s1 == s2: " + (s1 == s2));    // true（字符串池，共享内存）
+System.out.println("s1 == s3: " + (s1 == s3));    // false（new 创建了新对象）
+
+// equals 比较的是内容（推荐使用！）
+System.out.println("s1.equals(s2): " + s1.equals(s2));  // true
+System.out.println("s1.equals(s3): " + s1.equals(s3));  // true
+
+// 忽略大小写比较
+System.out.println("Hello 和 hello 相同: " + "Hello".equalsIgnoreCase("hello"));  // true</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 字符串比较要使用 equals()</strong>
+                    <p>很多初学者会用 <code>==</code> 比较字符串，这通常是错误的！</p>
+                    <p><code>==</code> 比较的是内存地址（引用），<code>equals()</code> 比较的是内容。</p>
+                </div>
+
+                <h3>字符串查找</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Java</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>String s = "Hello, World! Hello Java!";
+
+// 查找子串位置（找不到返回-1）
+System.out.println("World 首次出现: " + s.indexOf("World"));      // 7
+System.out.println("World 最后出现: " + s.lastIndexOf("World"));  // 13
+
+// 从指定位置开始查找
+System.out.println("从索引10开始查找Hello: " + s.indexOf("Hello", 10));  // 14
+
+// 是否包含
+System.out.println("包含Hello: " + s.contains("Hello"));        // true
+
+// 判空
+System.out.println("字符串为空: " + s.isEmpty());               // false
+System.out.println("空字符串检查: " + "".isEmpty());             // true</code></pre>
                 </div>
             </section>
 
