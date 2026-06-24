@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 高级教程 - 面向对象与高级特性</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python 基础</a></li>
+        <li><a href="python-advanced.html" class="active">Python 高级</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+                <a href="cpp-advanced.html">C++ 高级</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="java-advanced.html">Java 高级</a>
+                <a href="csharp.html">C#</a>
+            </div>
+        </li>
+        <li><a href="javascript.html">JavaScript</a></li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Python 高级</h3>
+                <ul>
+                    <li><a href="#inherit">继承</a></li>
+                    <li><a href="#multiple-inherit">多重继承</a></li>
+                    <li><a href="#polymorphism">多态</a></li>
+                    <li><a href="#abstract">抽象类</a></li>
+                    <li><a href="#magic-method">魔术方法</a></li>
+                    <li><a href="#property">属性装饰器</a></li>
+                    <li><a href="#exception">异常处理</a></li>
+                    <li><a href="#generator">生成器</a></li>
+                    <li><a href="#decorator">装饰器</a></li>
+                    <li><a href="#context">上下文管理器</a></li>
+                    <li><a href="#metaclass">元类</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>Python 高级教程</h1>
+            <p class="tip-box info">本教程涵盖 Python 面向对象编程的高级特性、异常处理、生成器、装饰器等高级内容。</p>
+
+            <section id="inherit">
+                <h2>继承</h2>
+                <p>继承允许我们定义一个类继承另一个类的属性和方法。</p>
+
+                <h3>基本继承</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Animal:
+    def __init__(self, name):
+        self.name = name
+    
+    def speak(self):
+        print(f"{self.name} 发出声音")
+
+class Dog(Animal):
+    def speak(self):
+        print(f"{self.name} 汪汪叫")
+
+class Cat(Animal):
+    def speak(self):
+        print(f"{self.name} 喵喵叫")
+
+# 创建对象
+dog = Dog("旺财")
+cat = Cat("咪咪")
+dog.speak()  # 输出: 旺财 汪汪叫
+cat.speak()  # 输出: 咪咪 喵喵叫</code></pre>
+                </div>
+                <div class="output-block">
+                    旺财 汪汪叫<br>
+                    咪咪 喵喵叫
+                </div>
+
+                <h3>super() 调用父类方法</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    
+    def info(self):
+        print(f"姓名: {self.name}, 年龄: {self.age}")
+
+class Student(Person):
+    def __init__(self, name, age, student_id):
+        super().__init__(name, age)  # 调用父类构造方法
+        self.student_id = student_id
+    
+    def info(self):
+        super().info()  # 调用父类方法
+        print(f"学号: {self.student_id}")
+
+s = Student("张三", 18, "2023001")
+s.info()</code></pre>
+                </div>
+                <div class="output-block">
+                    姓名: 张三, 年龄: 18<br>
+                    学号: 2023001
+                </div>
+            </section>
+
+            <section id="multiple-inherit">
+                <h2>多重继承</h2>
+                <p>Python 支持多重继承，一个类可以继承多个父类。</p>
+
+                <h3>基本多重继承</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Flyable:
+    def fly(self):
+        print("我可以飞")
+
+class Swimmable:
+    def swim(self):
+        print("我可以游泳")
+
+class Duck(Animal, Flyable, Swimmable):
+    pass
+
+duck = Duck("唐老鸭")
+duck.speak()  # 继承自 Animal
+duck.fly()    # 继承自 Flyable
+duck.swim()   # 继承自 Swimmable</code></pre>
+                </div>
+                <div class="output-block">
+                    唐老鸭 发出声音<br>
+                    我可以飞<br>
+                    我可以游泳
+                </div>
+
+                <h3>MRO 方法解析顺序</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class A:
+    def method(self):
+        print("A")
+
+class B(A):
+    def method(self):
+        print("B")
+
+class C(A):
+    def method(self):
+        print("C")
+
+class D(B, C):
+    pass
+
+# 查看 MRO
+print(D.__mro__)
+
+d = D()
+d.method()  # 按照 MRO 顺序调用</code></pre>
+                </div>
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意</strong>
+                    多重继承可能带来方法解析顺序复杂的问题，使用时需谨慎。
+                </div>
+            </section>
+
+            <section id="polymorphism">
+                <h2>多态</h2>
+                <p>多态允许不同类的对象对同一消息做出不同的响应。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Dog:
+    def speak(self):
+        print("汪汪叫")
+
+class Cat:
+    def speak(self):
+        print("喵喵叫")
+
+class Duck:
+    def speak(self):
+        print("嘎嘎叫")
+
+# 统一接口
+def make_speak(animal):
+    animal.speak()
+
+# 多态调用
+animals = [Dog(), Cat(), Duck()]
+for animal in animals:
+    make_speak(animal)</code></pre>
+                </div>
+                <div class="output-block">
+                    汪汪叫<br>
+                    喵喵叫<br>
+                    嘎嘎叫
+                </div>
+            </section>
+
+            <section id="abstract">
+                <h2>抽象类</h2>
+                <p>抽象类不能直接实例化，必须被子类继承并实现抽象方法。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+    
+    @abstractmethod
+    def perimeter(self):
+        pass
+
+class Rectangle(Shape):
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+    
+    def area(self):
+        return self.width * self.height
+    
+    def perimeter(self):
+        return 2 * (self.width + self.height)
+
+class Circle(Shape):
+    def __init__(self, radius):
+        self.radius = radius
+    
+    def area(self):
+        return 3.14159 * self.radius ** 2
+    
+    def perimeter(self):
+        return 2 * 3.14159 * self.radius
+
+# 不能直接实例化抽象类
+# shape = Shape()  # 错误！
+
+rect = Rectangle(4, 5)
+print(f"矩形面积: {rect.area()}")</code></pre>
+                </div>
+                <div class="output-block">
+                    矩形面积: 20
+                </div>
+            </section>
+
+            <section id="magic-method">
+                <h2>魔术方法</h2>
+                <p>魔术方法（双下划线方法）用于实现类的特殊行为。</p>
+
+                <h3>常用魔术方法</h3>
+                <table>
+                    <tr><th>方法</th><th>说明</th></tr>
+                    <tr><td>__init__</td><td>构造方法</td></tr>
+                    <tr><td>__str__</td><td>字符串表示</td></tr>
+                    <tr><td>__repr__</td><td>官方字符串表示</td></tr>
+                    <tr><td>__len__</td><td>长度</td></tr>
+                    <tr><td>__getitem__</td><td>索引访问</td></tr>
+                    <tr><td>__setitem__</td><td>索引赋值</td></tr>
+                    <tr><td>__add__</td><td>加法运算</td></tr>
+                    <tr><td>__eq__</td><td>相等比较</td></tr>
+                </table>
+
+                <h3>示例</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+    
+    def __str__(self):
+        return f"Point({self.x}, {self.y})"
+    
+    def __repr__(self):
+        return f"Point({self.x}, {self.y})"
+    
+    def __add__(self, other):
+        return Point(self.x + other.x, self.y + other.y)
+    
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+p1 = Point(1, 2)
+p2 = Point(3, 4)
+p3 = Point(1, 2)
+
+print(str(p1))           # Point(1, 2)
+print(p1 + p2)           # Point(4, 6)
+print(p1 == p3)          # True</code></pre>
+                </div>
+                <div class="output-block">
+                    Point(1, 2)<br>
+                    Point(4, 6)<br>
+                    True
+                </div>
+            </section>
+
+            <section id="property">
+                <h2>属性装饰器 @property</h2>
+                <p>使用 @property 将方法转换为属性访问。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Circle:
+    def __init__(self, radius):
+        self._radius = radius  # 私有属性
+    
+    @property
+    def radius(self):
+        """获取半径"""
+        return self._radius
+    
+    @radius.setter
+    def radius(self, value):
+        """设置半径（带验证）"""
+        if value < 0:
+            raise ValueError("半径不能为负数")
+        self._radius = value
+    
+    @property
+    def area(self):
+        """计算面积（只读属性）"""
+        return 3.14159 * self._radius ** 2
+
+c = Circle(5)
+print(f"半径: {c.radius}")
+print(f"面积: {c.area}")
+
+c.radius = 10
+print(f"新半径: {c.radius}")
+print(f"新面积: {c.area}")</code></pre>
+                </div>
+            </section>
+
+            <section id="exception">
+                <h2>异常处理</h2>
+
+                <h3>基本异常处理</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>try:
+    result = 10 / 0
+except ZeroDivisionError:
+    print("不能除以零")
+except ValueError as e:
+    print(f"值错误: {e}")
+except Exception as e:
+    print(f"其他错误: {e}")
+else:
+    print("没有异常时执行")
+finally:
+    print("总是执行")</code></pre>
+                </div>
+
+                <h3>抛出异常</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class AgeError(Exception):
+    """自定义异常"""
+    pass
+
+def set_age(age):
+    if age < 0 or age > 150:
+        raise AgeError(f"年龄 {age} 无效")
+    print(f"年龄设置为: {age}")
+
+try:
+    set_age(200)
+except AgeError as e:
+    print(f"捕获异常: {e}")</code></pre>
+                </div>
+
+                <h3>常见异常类型</h3>
+                <table>
+                    <tr><th>异常类型</th><th>说明</th></tr>
+                    <tr><td>ZeroDivisionError</td><td>除数为零</td></tr>
+                    <tr><td>ValueError</td><td>值错误</td></tr>
+                    <tr><td>TypeError</td><td>类型错误</td></tr>
+                    <tr><td>IndexError</td><td>索引越界</td></tr>
+                    <tr><td>KeyError</td><td>字典键不存在</td></tr>
+                    <tr><td>FileNotFoundError</td><td>文件不存在</td></tr>
+                    <tr><td>AttributeError</td><td>属性不存在</td></tr>
+                    <tr><td>TypeError</td><td>类型错误</td></tr>
+                </table>
+            </section>
+
+            <section id="generator">
+                <h2>生成器</h2>
+                <p>生成器是一种特殊的迭代器，用 yield 语句产生值。</p>
+
+                <h3>生成器函数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>def countdown(n):
+    while n > 0:
+        yield n
+        n -= 1
+
+for num in countdown(5):
+    print(num, end=" ")
+print()
+
+# 创建生成器对象
+gen = countdown(3)
+print(next(gen))  # 3
+print(next(gen))  # 2
+print(next(gen))  # 1</code></pre>
+                </div>
+                <div class="output-block">
+                    5 4 3 2 1<br>
+                    3<br>
+                    2<br>
+                    1
+                </div>
+
+                <h3>生成器表达式</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code># 列表推导式（立即生成所有元素）
+squares = [x**2 for x in range(5)]
+
+# 生成器表达式（惰性求值）
+gen = (x**2 for x in range(5))
+print(list(gen))</code></pre>
+                </div>
+            </section>
+
+            <section id="decorator">
+                <h2>装饰器</h2>
+                <p>装饰器可以在不修改原函数的情况下增强函数功能。</p>
+
+                <h3>基本装饰器</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>def my_decorator(func):
+    def wrapper(*args, **kwargs):
+        print("装饰器：函数执行前")
+        result = func(*args, **kwargs)
+        print("装饰器：函数执行后")
+        return result
+    return wrapper
+
+@my_decorator
+def say_hello(name):
+    print(f"你好，{name}！")
+
+say_hello("张三")</code></pre>
+                </div>
+                <div class="output-block">
+                    装饰器：函数执行前<br>
+                    你好，张三！<br>
+                    装饰器：函数执行后
+                </div>
+
+                <h3>带参数的装饰器</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>import time
+
+def timer(seconds):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            start = time.time()
+            result = func(*args, **kwargs)
+            elapsed = time.time() - start
+            print(f"执行时间: {elapsed:.2f}秒")
+            return result
+        return wrapper
+    return decorator
+
+@timer(2)
+def slow_function():
+    time.sleep(0.1)
+    return "完成"
+
+result = slow_function()
+print(result)</code></pre>
+                </div>
+
+                <h3>functools.wraps 保留原函数信息</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>from functools import wraps
+
+def my_decorator(func):
+    @wraps(func)  # 保留原函数信息
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+@my_decorator
+def original_func():
+    """这是原始函数的文档字符串"""
+    pass
+
+print(original_func.__name__)    # original_func
+print(original_func.__doc__)     # 这是原始函数的文档字符串</code></pre>
+                </div>
+            </section>
+
+            <section id="context">
+                <h2>上下文管理器</h2>
+                <p>上下文管理器使用 with 语句，自动管理资源（如文件关闭）。</p>
+
+                <h3>类实现</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class FileManager:
+    def __init__(self, filename, mode):
+        self.filename = filename
+        self.mode = mode
+        self.file = None
+    
+    def __enter__(self):
+        self.file = open(self.filename, self.mode)
+        return self.file
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.file:
+            self.file.close()
+        return False  # 不处理异常
+
+# 使用
+with FileManager("test.txt", "w") as f:
+    f.write("测试内容")
+print("文件已关闭")</code></pre>
+                </div>
+
+                <h3>contextlib 实现</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>from contextlib import contextmanager
+
+@contextmanager
+def my_context():
+    print("进入上下文")
+    try:
+        yield "资源"
+    finally:
+        print("退出上下文")
+
+with my_context() as resource:
+    print(f"使用 {resource}")</code></pre>
+                </div>
+                <div class="output-block">
+                    进入上下文<br>
+                    使用 资源<br>
+                    退出上下文
+                </div>
+            </section>
+
+            <section id="metaclass">
+                <h2>元类</h2>
+                <p>元类用于控制类的创建，是 Python 中比较高级的概念。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Meta(type):
+    def __new__(cls, name, bases, attrs):
+        # 在类创建时添加属性
+        attrs['created_by'] = 'Meta'
+        return super().__new__(cls, name, bases, attrs)
+
+class MyClass(metaclass=Meta):
+    pass
+
+print(MyClass.created_by)  # Meta</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 应用场景</strong>
+                    <ul>
+                        <li>ORM 框架（如 Django ORM）</li>
+                        <li>自动注册类</li>
+                        <li>插件系统</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="python.html">← Python 基础</a>
+                <a href="c.html">C 语言教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode - 多语言编程基础学习项目 | 让编程更简单</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ 高级教程 - 面向对象与STL</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="c-advanced.html">C 高级</a>
+                <a href="cpp.html">C++</a>
+                <a href="cpp-advanced.html" class="active">C++ 高级</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="java-advanced.html">Java 高级</a>
+                <a href="csharp.html">C#</a>
+            </div>
+        </li>
+        <li><a href="python.html">Python</a></li>
+        <li><a href="javascript.html">JavaScript</a></li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>C++ 高级</h3>
+                <ul>
+                    <li><a href="#class-inherit">类的继承</a></li>
+                    <li><a href="#multiple-inherit">多重继承</a></li>
+                    <li><a href="#virtual-function">虚函数</a></li>
+                    <li><a href="#abstract-class">抽象类</a></li>
+                    <li><a href="#override">重写与重载</a></li>
+                    <li><a href="#access-control">访问控制</a></li>
+                    <li><a href="#template">模板</a></li>
+                    <li><a href="#stl-container">STL 容器</a></li>
+                    <li><a href="#stl-algorithm">STL 算法</a></li>
+                    <li><a href="#smart-pointer">智能指针</a></li>
+                    <li><a href="#exception">异常处理</a></li>
+                    <li><a href="#lambda">Lambda 表达式</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>C++ 高级教程</h1>
+            <p class="tip-box info">本教程涵盖 C++ 面向对象编程的高级特性、模板、STL 标准库等。</p>
+
+            <section id="class-inherit">
+                <h2>类的继承</h2>
+                <p>继承允许我们定义一个类继承另一个类的成员和方法。</p>
+
+                <h3>基本继承</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+#include <string>
+using namespace std;
+
+class Animal {
+public:
+    string name;
+
+    Animal(const string& n) : name(n) {}
+
+    void speak() {
+        cout << name << " 发出声音" << endl;
+    }
+};
+
+class Dog : public Animal {
+public:
+    Dog(const string& n) : Animal(n) {}
+
+    void speak() {
+        cout << name << " 汪汪叫" << endl;
+    }
+};
+
+int main() {
+    Dog dog("旺财");
+    dog.speak();  // 调用 Dog::speak()
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    旺财 汪汪叫
+                </div>
+
+                <h3>protected 成员</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+using namespace std;
+
+class Base {
+protected:
+    int protected_data;  // 子类可访问，外部不可访问
+
+public:
+    Base() : protected_data(100) {}
+};
+
+class Derived : public Base {
+public:
+    void show() {
+        cout << "子类访问: " << protected_data << endl;
+    }
+};
+
+int main() {
+    Derived d;
+    d.show();
+    // d.protected_data = 50;  // 错误！不可访问
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    子类访问: 100
+                </div>
+            </section>
+
+            <section id="multiple-inherit">
+                <h2>多重继承</h2>
+                <p>C++ 支持一个类继承多个父类。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+using namespace std;
+
+class Flyable {
+public:
+    void fly() {
+        cout << "我可以飞" << endl;
+    }
+};
+
+class Swimmable {
+public:
+    void swim() {
+        cout << "我可以游泳" << endl;
+    }
+};
+
+class Duck : public Animal, public Flyable, public Swimmable {
+public:
+    Duck(const string& n) : Animal(n) {}
+};
+
+int main() {
+    Duck duck("唐老鸭");
+    duck.speak();
+    duck.fly();
+    duck.swim();
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    唐老鸭 发出声音<br>
+                    我可以飞<br>
+                    我可以游泳
+                </div>
+
+                <h3>菱形继承与虚继承</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+using namespace std;
+
+class Base {
+public:
+    int value;
+};
+
+class A : virtual public Base {};
+class B : virtual public Base {};  // 虚继承，解决菱形继承问题
+
+class C : public A, public B {};
+
+int main() {
+    C obj;
+    obj.value = 42;
+    cout << "value = " << obj.value << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意</strong>
+                    菱形继承会导致基类数据重复，虚继承可以解决此问题。
+                </div>
+            </section>
+
+            <section id="virtual-function">
+                <h2>虚函数</h2>
+                <p>虚函数允许子类重写父类方法，实现多态。</p>
+
+                <h3>基本虚函数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+using namespace std;
+
+class Shape {
+public:
+    virtual void draw() {
+        cout << "绘制图形" << endl;
+    }
+
+    virtual ~Shape() {}  // 虚析构函数
+};
+
+class Circle : public Shape {
+public:
+    void draw() override {
+        cout << "绘制圆形" << endl;
+    }
+};
+
+class Rectangle : public Shape {
+public:
+    void draw() override {
+        cout << "绘制矩形" << endl;
+    }
+};
+
+int main() {
+    Shape *shapes[] = {new Circle(), new Rectangle()};
+
+    for (int i = 0; i < 2; i++) {
+        shapes[i]->draw();  // 多态调用
+    }
+
+    for (int i = 0; i < 2; i++) {
+        delete shapes[i];
+    }
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    绘制圆形<br>
+                    绘制矩形
+                </div>
+
+                <h3>虚表（vtable）原理</h3>
+                <div class="tip-box info">
+                    <strong>💡 原理说明</strong>
+                    每个包含虚函数的类都有一个虚表（vtable），对象中包含指向虚表的指针（vptr）。调用虚函数时，通过 vptr 查找虚表来确定实际调用的函数。
+                </div>
+            </section>
+
+            <section id="abstract-class">
+                <h2>抽象类</h2>
+                <p>包含纯虚函数的类是抽象类，不能直接实例化。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+using namespace std;
+
+class Shape {
+public:
+    virtual double area() const = 0;  // 纯虚函数
+    virtual ~Shape() {}
+};
+
+class Circle : public Shape {
+    double radius;
+public:
+    Circle(double r) : radius(r) {}
+
+    double area() const override {
+        return 3.14159 * radius * radius;
+    }
+};
+
+class Rectangle : public Shape {
+    double width, height;
+public:
+    Rectangle(double w, double h) : width(w), height(h) {}
+
+    double area() const override {
+        return width * height;
+    }
+};
+
+int main() {
+    // Shape s;  // 错误！抽象类不能实例化
+
+    Shape* shapes[] = {new Circle(5), new Rectangle(4, 5)};
+
+    cout << "圆形面积: " << shapes[0]->area() << endl;
+    cout << "矩形面积: " << shapes[1]->area() << endl;
+
+    delete shapes[0];
+    delete shapes[1];
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    圆形面积: 78.5397<br>
+                    矩形面积: 20
+                </div>
+            </section>
+
+            <section id="override">
+                <h2>重写与重载</h2>
+
+                <h3>函数重载</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+using namespace std;
+
+class Calculator {
+public:
+    // 同名不同参数
+    int add(int a, int b) {
+        return a + b;
+    }
+
+    double add(double a, double b) {
+        return a + b;
+    }
+
+    int add(int a, int b, int c) {
+        return a + b + c;
+    }
+};
+
+int main() {
+    Calculator calc;
+    cout << calc.add(1, 2) << endl;
+    cout << calc.add(1.5, 2.5) << endl;
+    cout << calc.add(1, 2, 3) << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    3<br>
+                    4<br>
+                    6
+                </div>
+
+                <h3>运算符重载</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+using namespace std;
+
+class Point {
+public:
+    int x, y;
+
+    Point(int _x = 0, int _y = 0) : x(_x), y(_y) {}
+
+    // 运算符重载
+    Point operator+(const Point& other) const {
+        return Point(x + other.x, y + other.y);
+    }
+
+    bool operator==(const Point& other) const {
+        return x == other.x && y == other.y;
+    }
+};
+
+int main() {
+    Point p1(1, 2);
+    Point p2(3, 4);
+    Point p3 = p1 + p2;
+
+    cout << "p3 = (" << p3.x << ", " << p3.y << ")" << endl;
+    cout << "p1 == p2: " << (p1 == p2) << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    p3 = (4, 6)<br>
+                    p1 == p2: 0
+                </div>
+            </section>
+
+            <section id="access-control">
+                <h2>访问控制</h2>
+
+                <table>
+                    <tr><th>关键字</th><th>类内</th><th>子类</th><th>外部</th></tr>
+                    <tr><td>public</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                    <tr><td>protected</td><td>✓</td><td>✓</td><td>✗</td></tr>
+                    <tr><td>private</td><td>✓</td><td>✗</td><td>✗</td></tr>
+                </table>
+
+                <h3>友元函数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+using namespace std;
+
+class Counter {
+private:
+    int value;
+public:
+    Counter(int v = 0) : value(v) {}
+
+    // 声明友元函数
+    friend void print_value(const Counter& c);
+};
+
+void print_value(const Counter& c) {
+    cout << "值为: " << c.value << endl;  // 可访问 private 成员
+}
+
+int main() {
+    Counter c(100);
+    print_value(c);
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    值为: 100
+                </div>
+            </section>
+
+            <section id="template">
+                <h2>模板</h2>
+                <p>模板支持泛型编程，代码可以适用于多种数据类型。</p>
+
+                <h3>函数模板</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+using namespace std;
+
+template <typename T>
+T maximum(T a, T b) {
+    return (a > b) ? a : b;
+}
+
+int main() {
+    cout << maximum(3, 5) << endl;        // int 版本
+    cout << maximum(3.14, 2.71) << endl;  // double 版本
+    cout << maximum('a', 'z') << endl;    // char 版本
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    5<br>
+                    3.14<br>
+                    z
+                </div>
+
+                <h3>类模板</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+using namespace std;
+
+template <typename T>
+class Stack {
+private:
+    vector<T> elements;
+public:
+    void push(const T& elem) {
+        elements.push_back(elem);
+    }
+
+    T pop() {
+        T top = elements.back();
+        elements.pop_back();
+        return top;
+    }
+
+    bool empty() const {
+        return elements.empty();
+    }
+};
+
+int main() {
+    Stack<int> int_stack;
+    int_stack.push(10);
+    int_stack.push(20);
+    cout << int_stack.pop() << endl;  // 20
+
+    Stack<string> str_stack;
+    str_stack.push("Hello");
+    str_stack.push("World");
+    cout << str_stack.pop() << endl;  // World
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    20<br>
+                    World
+                </div>
+            </section>
+
+            <section id="stl-container">
+                <h2>STL 容器</h2>
+
+                <h3>vector（动态数组）</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> vec = {1, 2, 3};
+
+    vec.push_back(4);
+    vec.push_back(5);
+
+    cout << "大小: " << vec.size() << endl;
+    cout << "元素: ";
+    for (int i = 0; i < vec.size(); i++) {
+        cout << vec[i] << " ";
+    }
+    cout << endl;
+
+    // 迭代器遍历
+    cout << "迭代器: ";
+    for (auto it = vec.begin(); it != vec.end(); it++) {
+        cout << *it << " ";
+    }
+    cout << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    大小: 5<br>
+                    元素: 1 2 3 4 5 <br>
+                    迭代器: 1 2 3 4 5
+                </div>
+
+                <h3>map（映射）</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+#include <map>
+#include <string>
+using namespace std;
+
+int main() {
+    map<string, int> ages;
+
+    ages["张三"] = 25;
+    ages["李四"] = 30;
+    ages["王五"] = 28;
+
+    cout << "张三的年龄: " << ages["张三"] << endl;
+
+    // 遍历
+    for (auto& pair : ages) {
+        cout << pair.first << ": " << pair.second << endl;
+    }
+
+    // 查找
+    auto it = ages.find("李四");
+    if (it != ages.end()) {
+        cout << "找到: " << it->first << endl;
+    }
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    张三的年龄: 25<br>
+                    王五: 28<br>
+                    李四: 30<br>
+                    张三: 25<br>
+                    找到: 李四
+                </div>
+
+                <h3>set（集合）</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+#include <set>
+using namespace std;
+
+int main() {
+    set<int> s = {3, 1, 4, 1, 5, 9, 2, 6};
+
+    // 自动排序去重
+    cout << "set: ";
+    for (int x : s) {
+        cout << x << " ";
+    }
+    cout << endl;
+
+    // 查找
+    if (s.find(5) != s.end()) {
+        cout << "5 在集合中" << endl;
+    }
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    set: 1 2 3 4 5 6 9 <br>
+                    5 在集合中
+                </div>
+            </section>
+
+            <section id="stl-algorithm">
+                <h2>STL 算法</h2>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    vector<int> v = {5, 2, 8, 1, 9, 3};
+
+    // 排序
+    sort(v.begin(), v.end());
+    cout << "排序后: ";
+    for (int x : v) cout << x << " ";
+    cout << endl;
+
+    // 查找
+    auto it = find(v.begin(), v.end(), 8);
+    if (it != v.end()) {
+        cout << "找到 8 在位置 " << (it - v.begin()) << endl;
+    }
+
+    // 统计满足条件的元素
+    int count = count_if(v.begin(), v.end(), [](int x) { return x > 5; });
+    cout << "大于5的元素个数: " << count << endl;
+
+    // transform
+    vector<int> squares(v.size());
+    transform(v.begin(), v.end(), squares.begin(), [](int x) { return x * x; });
+    cout << "平方: ";
+    for (int x : squares) cout << x << " ";
+    cout << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    排序后: 1 2 3 5 8 9 <br>
+                    找到 8 在位置 4<br>
+                    大于5的元素个数: 2<br>
+                    平方: 1 4 9 25 64 81
+                </div>
+            </section>
+
+            <section id="smart-pointer">
+                <h2>智能指针</h2>
+                <p>智能指针自动管理内存，避免内存泄漏。</p>
+
+                <h3>unique_ptr</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+#include <memory>
+using namespace std;
+
+unique_ptr<int> create_value() {
+    return make_unique<int>(42);
+}
+
+int main() {
+    // 创建
+    unique_ptr<int> p1 = make_unique<int>(100);
+
+    // 使用
+    cout << "值: " << *p1 << endl;
+
+    // 移动所有权
+    unique_ptr<int> p2 = move(p1);
+    // cout << *p1 << endl;  // 错误！p1 已为空
+    cout << "新值: " << *p2 << endl;
+
+    // 函数返回
+    auto p3 = create_value();
+    cout << "函数返回: " << *p3 << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    值: 100<br>
+                    新值: 100<br>
+                    函数返回: 42
+                </div>
+
+                <h3>shared_ptr</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+#include <memory>
+using namespace std;
+
+int main() {
+    shared_ptr<int> p1 = make_shared<int>(10);
+    cout << "p1 引用计数: " << p1.use_count() << endl;
+
+    {
+        shared_ptr<int> p2 = p1;
+        cout << "p2 引用计数: " << p1.use_count() << endl;
+        cout << "共享值: " << *p2 << endl;
+    }
+
+    cout << "p1 引用计数: " << p1.use_count() << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    p1 引用计数: 1<br>
+                    p2 引用计数: 2<br>
+                    共享值: 10<br>
+                    p1 引用计数: 1
+                </div>
+            </section>
+
+            <section id="exception">
+                <h2>异常处理</h2>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+#include <stdexcept>
+using namespace std;
+
+class MyException : public exception {
+public:
+    const char* what() const noexcept override {
+        return "自定义异常";
+    }
+};
+
+void divide(int a, int b) {
+    if (b == 0) {
+        throw runtime_error("除数不能为零");
+    }
+    cout << "结果: " << a / b << endl;
+}
+
+int main() {
+    try {
+        divide(10, 2);
+        divide(10, 0);
+    } catch (const runtime_error& e) {
+        cout << "捕获异常: " << e.what() << endl;
+    } catch (...) {
+        cout << "捕获未知异常" << endl;
+    }
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    结果: 5<br>
+                    捕获异常: 除数不能为零
+                </div>
+            </section>
+
+            <section id="lambda">
+                <h2>Lambda 表达式</h2>
+                <p>Lambda 是匿名函数，可以捕获外部变量。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int x = 10;
+    int y = 20;
+
+    // 值捕获 [x]
+    // 引用捕获 [&y]
+    // 全部捕获 [=] [&]
+
+    auto add = [x, y]() {
+        return x + y;
+    };
+
+    cout << "和: " << add() << endl;
+
+    // 可变 lambda（修改捕获的变量）
+    auto increment = [x]() mutable {
+        x += 10;
+        return x;
+    };
+
+    cout << "增量: " << increment() << endl;
+    cout << "原值: " << x << endl;  // x 未改变
+
+    // 带参数的 lambda
+    vector<int> v = {3, 1, 4, 1, 5, 9, 2};
+    sort(v.begin(), v.end(), [](int a, int b) {
+        return a > b;  // 降序
+    });
+    cout << "降序: ";
+    for (int n : v) cout << n << " ";
+    cout << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    和: 30<br>
+                    增量: 20<br>
+                    原值: 10<br>
+                    降序: 9 5 4 3 2 1 1
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="c-advanced.html">← C 高级</a>
+                <a href="java-advanced.html">Java 高级教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode - 多语言编程基础学习项目 | 让编程更简单</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

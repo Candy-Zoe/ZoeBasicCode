@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go 语言高级教程 - 接口与并发编程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="csharp.html">C#</a>
+            </div>
+        </li>
+        <li><a href="javascript.html">JavaScript</a></li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html" class="active">Go</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Go 高级</h3>
+                <ul>
+                    <li><a href="#interface">接口</a></li>
+                    <li><a href="#struct-advance">结构体高级</a></li>
+                    <li><a href="#goroutine">goroutine</a></li>
+                    <li><a href="#channel">channel</a></li>
+                    <li><a href="#select">select</a></li>
+                    <li><a href="#mutex">并发安全</a></li>
+                    <li><a href="#context">context</a></li>
+                    <li><a href="#error">错误处理</a></li>
+                    <li><a href="#generic">泛型</a></li>
+                    <li><a href="#reflect">反射</a></li>
+                    <li><a href="#defer">defer 高级</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>Go 语言高级教程</h1>
+            <p class="tip-box info">本教程涵盖 Go 语言接口、并发编程（goroutine/channel）、错误处理、泛型等高级内容。</p>
+
+            <section id="interface">
+                <h2>接口</h2>
+                <p>Go 的接口是隐式实现，不需要显式声明 implements。</p>
+
+                <h3>基本接口</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+type Writer interface {
+    Write([]byte) (int, error)
+}
+
+type ConsoleWriter struct{}
+
+func (c ConsoleWriter) Write(data []byte) (int, error) {
+    n := fmt.Println(string(data))
+    return n, nil
+}
+
+func main() {
+    var w Writer = ConsoleWriter{}
+    w.Write([]byte("Hello, World!"))
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    Hello, World!
+                </div>
+
+                <h3>多接口实现</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>type Reader interface {
+    Read([]byte) (int, error)
+}
+
+type Closer interface {
+    Close() error
+}
+
+// 组合接口
+type ReadCloser interface {
+    Reader
+    Closer
+}
+
+// 空接口
+func printAny(v interface{}) {
+    fmt.Printf("值: %v, 类型: %T\n", v, v)
+}</code></pre>
+                </div>
+
+                <h3>接口类型断言</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>var i interface{} = "hello"
+
+// 类型断言
+s, ok := i.(string)
+if ok {
+    fmt.Println("是字符串:", s)
+}
+
+// 类型 switch
+switch v := i.(type) {
+case string:
+    fmt.Println("字符串:", v)
+case int:
+    fmt.Println("整数:", v)
+default:
+    fmt.Println("其他类型")
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="struct-advance">
+                <h2>结构体高级</h2>
+
+                <h3>方法接收者</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>type Rectangle struct {
+    Width, Height float64
+}
+
+// 值接收者 - 不修改原对象
+func (r Rectangle) AreaValue() float64 {
+    r.Width *= 2  // 不影响原对象
+    return r.Width * r.Height
+}
+
+// 指针接收者 - 修改原对象
+func (r *Rectangle) AreaPointer() float64 {
+    r.Width *= 2  // 影响原对象
+    return r.Width * r.Height
+}
+
+func main() {
+    r := Rectangle{Width: 4, Height: 5}
+    fmt.Println(r.AreaValue())   // 40（宽度被复制，不影响 r）
+    fmt.Println(r.Width)        // 4
+    
+    fmt.Println(r.AreaPointer()) // 80（宽度被修改）
+    fmt.Println(r.Width)        // 8
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    40<br>
+                    4<br>
+                    80<br>
+                    8
+                </div>
+
+                <h3>结构体嵌套</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>type Person struct {
+    Name string
+    Age  int
+}
+
+type Student struct {
+    Person  // 匿名字段（组合）
+    School  string
+    Grade   float64
+}
+
+func main() {
+    s := Student{
+        Person: Person{Name: "张三", Age: 18},
+        School: "北京大学",
+        Grade:  95.5,
+    }
+    
+    fmt.Println(s.Name)      // 直接访问（提升字段）
+    fmt.Println(s.Person.Name)  // 完整路径
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="goroutine">
+                <h2>goroutine</h2>
+                <p>goroutine 是 Go 的轻量级线程，由 Go 运行时管理。</p>
+
+                <h3>基本用法</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func say(s string) {
+    for i := 0; i < 3; i++ {
+        fmt.Println(s)
+    }
+}
+
+func main() {
+    // 同步执行
+    say("同步")
+    
+    // 异步执行
+    go say("异步1")
+    go say("异步2")
+    
+    // 等待 goroutine 完成
+    time.Sleep(time.Second)
+    fmt.Println("主程序结束")
+}</code></pre>
+                </div>
+
+                <h3>匿名 goroutine</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>func main() {
+    // 匿名函数作为 goroutine
+    go func() {
+        fmt.Println("匿名 goroutine")
+    }()
+    
+    // 匿名函数带参数
+    msg := "你好"
+    go func(s string) {
+        fmt.Println(s)
+    }(msg)
+    
+    time.Sleep(time.Millisecond)
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="channel">
+                <h2>channel 通道</h2>
+                <p>channel 用于 goroutine 之间的通信和同步。</p>
+
+                <h3>基本用法</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>func main() {
+    // 创建通道
+    ch := make(chan string)
+    
+    // 发送数据
+    go func() {
+        ch <- "数据1"
+        ch <- "数据2"
+        close(ch)  // 关闭通道
+    }()
+    
+    // 接收数据
+    for msg := range ch {
+        fmt.Println("收到:", msg)
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    收到: 数据1<br>
+                    收到: 数据2
+                </div>
+
+                <h3>通道方向</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 只发送通道
+func sender(ch chan<- string) {
+    ch <- "hello"
+}
+
+// 只接收通道
+func receiver(ch <-chan string) {
+    msg := <-ch
+    fmt.Println(msg)
+}</code></pre>
+                </div>
+
+                <h3>缓冲通道</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 无缓冲通道 - 必须同时有发送和接收
+ch1 := make(chan int)
+
+// 有缓冲通道 - 缓冲区满时才阻塞
+ch2 := make(chan int, 3)
+
+ch2 <- 1
+ch2 <- 2
+fmt.Println(len(ch2))  // 2，缓冲区中元素数量</code></pre>
+                </div>
+            </section>
+
+            <section id="select">
+                <h2>select 多路复用</h2>
+                <p>select 用于同时监听多个通道的操作。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>func main() {
+    ch1 := make(chan string)
+    ch2 := make(chan string)
+
+    go func() {
+        time.Sleep(time.Second)
+        ch1 <- "通道1"
+    }()
+
+    go func() {
+        time.Sleep(500 * time.Millisecond)
+        ch2 <- "通道2"
+    }()
+
+    for i := 0; i < 2; i++ {
+        select {
+        case msg := <-ch1:
+            fmt.Println("收到:", msg)
+        case msg := <-ch2:
+            fmt.Println("收到:", msg)
+        case <-time.After(time.Second):
+            fmt.Println("超时")
+        }
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    收到: 通道2<br>
+                    收到: 通道1
+                </div>
+            </section>
+
+            <section id="mutex">
+                <h2>并发安全</h2>
+                <p>使用互斥锁（Mutex）保护共享资源。</p>
+
+                <h3>sync.Mutex</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import (
+    "fmt"
+    "sync"
+)
+
+type Counter struct {
+    count int
+    mu    sync.Mutex
+}
+
+func (c *Counter) Inc() {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    c.count++
+}
+
+func (c *Counter) Value() int {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    return c.count
+}
+
+func main() {
+    var c Counter
+    var wg sync.WaitGroup
+    
+    for i := 0; i < 1000; i++ {
+        wg.Add(1)
+        go func() {
+            c.Inc()
+            wg.Done()
+        }()
+    }
+    
+    wg.Wait()
+    fmt.Println("计数:", c.Value())
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    计数: 1000
+                </div>
+
+                <h3>sync.RWMutex</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>type SafeCounter struct {
+    count int
+    mu    sync.RWMutex
+}
+
+// 读操作 - 多个可以同时读
+func (c *SafeCounter) Get() int {
+    c.mu.RLock()
+    defer c.mu.RUnlock()
+    return c.count
+}
+
+// 写操作 - 独占
+func (c *SafeCounter) Inc() {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    c.count++
+}</code></pre>
+                </div>
+
+                <h3>sync.WaitGroup</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>func main() {
+    var wg sync.WaitGroup
+    
+    for i := 0; i < 3; i++ {
+        wg.Add(1)
+        go func(id int) {
+            defer wg.Done()
+            fmt.Println("goroutine", id)
+        }(i)
+    }
+    
+    wg.Wait()  // 等待所有 goroutine 完成
+    fmt.Println("所有 goroutine 完成")
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="context">
+                <h2>context 上下文</h2>
+                <p>context 用于在 goroutine 之间传递截止时间、取消信号等。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import (
+    "context"
+    "fmt"
+    "time"
+)
+
+func main() {
+    // 创建带超时的 context
+    ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+    defer cancel()
+    
+    select {
+    case <-time.After(2 * time.Second):
+        fmt.Println("2秒后...")
+    case <-ctx.Done():
+        fmt.Println("超时，结束:", ctx.Err())
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    超时，结束: context deadline exceeded
+                </div>
+
+                <h3>取消操作</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>func main() {
+    ctx, cancel := context.WithCancel(context.Background())
+    
+    go func() {
+        for {
+            select {
+            case <-ctx.Done():
+                fmt.Println("收到取消信号")
+                return
+            default:
+                fmt.Println("工作中...")
+                time.Sleep(500 * time.Millisecond)
+            }
+        }
+    }()
+    
+    time.Sleep(2 * time.Second)
+    cancel()
+    time.Sleep(time.Second)
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="error">
+                <h2>错误处理</h2>
+
+                <h3>自定义错误</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import (
+    "errors"
+    "fmt"
+)
+
+// 使用 errors.New
+var ErrNotFound = errors.New("资源未找到")
+
+// 自定义错误类型
+type ValidationError struct {
+    Field   string
+    Message string
+}
+
+func (e *ValidationError) Error() string {
+    return e.Field + ": " + e.Message
+}
+
+func validate(age int) error {
+    if age < 0 {
+        return &ValidationError{Field: "age", Message: "不能为负数"}
+    }
+    return nil
+}
+
+func main() {
+    if err := validate(-1); err != nil {
+        fmt.Println("错误:", err)
+    }
+}</code></pre>
+                </div>
+
+                <h3>错误包装</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import (
+    "errors"
+    "fmt"
+)
+
+func main() {
+    baseErr := errors.New("基础错误")
+    
+    // 包装错误
+    wrappedErr := fmt.Errorf("操作失败: %w", baseErr)
+    
+    // 展开错误
+    if errors.Is(wrappedErr, baseErr) {
+        fmt.Println("是同一个错误")
+    }
+    
+    // 类型断言
+    var ve *ValidationError
+    if errors.As(wrappedErr, &ve) {
+        fmt.Println("是 ValidationError 类型")
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="generic">
+                <h2>泛型 (Go 1.18+)</h2>
+                <p>泛型允许编写可复用的代码，同时保持类型安全。</p>
+
+                <h3>泛型函数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 泛型函数
+func Max[T int | float64](a, b T) T {
+    if a > b {
+        return a
+    }
+    return b
+}
+
+func main() {
+    fmt.Println(Max(3, 5))      // int
+    fmt.Println(Max(3.14, 2.71))  // float64
+}</code></pre>
+                </div>
+
+                <h3>泛型类型</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 泛型切片
+type Stack[T any] struct {
+    items []T
+}
+
+func (s *Stack[T]) Push(item T) {
+    s.items = append(s.items, item)
+}
+
+func (s *Stack[T]) Pop() T {
+    item := s.items[len(s.items)-1]
+    s.items = s.items[:len(s.items)-1]
+    return item
+}
+
+func main() {
+    var intStack Stack[int]
+    intStack.Push(1)
+    intStack.Push(2)
+    fmt.Println(intStack.Pop())  // 2
+}</code></pre>
+                </div>
+
+                <h3>内置约束</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// comparable - 可比较的类型（可用于 ==）
+func Index[T comparable](s []T, target T) int {
+    for i, v := range s {
+        if v == target {
+            return i
+        }
+    }
+    return -1
+}
+
+// any - 任意类型（等同于 interface{}）
+func PrintAll[T any](s []T) {
+    for _, v := range s {
+        fmt.Println(v)
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="reflect">
+                <h2>反射</h2>
+                <p>反射允许在运行时检查和操作对象的类型和值。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import (
+    "fmt"
+    "reflect"
+)
+
+func main() {
+    // 基本类型
+    x := 10
+    fmt.Println(reflect.TypeOf(x))   // int
+    fmt.Println(reflect.ValueOf(x)) // 10
+    
+    // 修改值（需要指针）
+    v := reflect.ValueOf(&x).Elem()
+    v.SetInt(20)
+    fmt.Println(x)  // 20
+    
+    // 结构体
+    type Person struct {
+        Name string
+        Age  int
+    }
+    
+    p := Person{Name: "张三", Age: 25}
+    t := reflect.TypeOf(p)
+    
+    fmt.Println("字段数:", t.NumField())
+    for i := 0; i < t.NumField(); i++ {
+        field := t.Field(i)
+        fmt.Printf("  %s: %s\n", field.Name, field.Type)
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="defer">
+                <h2>defer 高级用法</h2>
+
+                <h3>多个 defer</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>func main() {
+    fmt.Println("开始")
+    
+    for i := 1; i <= 3; i++ {
+        defer fmt.Printf("defer %d\n", i)
+    }
+    
+    fmt.Println("结束")
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    开始<br>
+                    结束<br>
+                    defer 3<br>
+                    defer 2<br>
+                    defer 1
+                </div>
+
+                <h3>资源关闭</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>func readFile(filename string) {
+    file, err := os.Open(filename)
+    if err != nil {
+        return
+    }
+    
+    // 确保文件关闭
+    defer file.Close()
+    
+    // 读取文件...
+}
+
+// recover 捕获 panic
+func safeCall() {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("捕获 panic:", r)
+        }
+    }()
+    
+    panic("出错了!")
+}</code></pre>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="go.html">← Go 语言基础</a>
+                <a href="index.html">返回首页</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode - 多语言编程基础学习项目 | 让编程更简单</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

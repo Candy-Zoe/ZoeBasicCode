@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C 高级教程 - 指针、结构体与内存管理</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="c-advanced.html">C 高级</a>
+                <a href="cpp.html">C++</a>
+                <a href="cpp-advanced.html">C++ 高级</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="java-advanced.html">Java 高级</a>
+                <a href="csharp.html">C#</a>
+            </div>
+        </li>
+        <li><a href="python.html">Python</a></li>
+        <li><a href="javascript.html">JavaScript</a></li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>C 高级</h3>
+                <ul>
+                    <li><a href="#pointer-to-pointer">指针的指针</a></li>
+                    <li><a href="#function-pointer">函数指针</a></li>
+                    <li><a href="#struct">结构体</a></li>
+                    <li><a href="#struct-pointer">结构体指针</a></li>
+                    <li><a href="#linked-list">链表</a></li>
+                    <li><a href="#enum">枚举</a></li>
+                    <li><a href="#union">联合体</a></li>
+                    <li><a href="#typedef">类型定义</a></li>
+                    <li><a href="#dynamic-memory">动态内存分配</a></li>
+                    <li><a href="#bit-field">位域</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>C 高级教程</h1>
+            <p class="tip-box info">本教程涵盖 C 语言的高级特性，包括指针深入、函数指针、结构体、链表、枚举等。</p>
+
+            <section id="pointer-to-pointer">
+                <h2>指针的指针</h2>
+                <p>指针的指针（char **pp）存储指针的地址，常用于动态分配二维数组或修改指针本身。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+#include <stdlib.h>
+
+void allocate_int(int **pp, int value) {
+    *pp = (int *)malloc(sizeof(int));
+    **pp = value;
+}
+
+int main() {
+    int *p = NULL;
+    allocate_int(&p, 42);
+    printf("p = %d\n", *p);
+    free(p);
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    p = 42
+                </div>
+            </section>
+
+            <section id="function-pointer">
+                <h2>函数指针</h2>
+                <p>函数指针指向函数，可以作为参数传递或用于回调函数。</p>
+
+                <h3>基本用法</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+
+int add(int a, int b) {
+    return a + b;
+}
+
+int multiply(int a, int b) {
+    return a * b;
+}
+
+int main() {
+    // 定义函数指针
+    int (*operation)(int, int);
+
+    operation = add;
+    printf("3 + 5 = %d\n", operation(3, 5));
+
+    operation = multiply;
+    printf("3 * 5 = %d\n", operation(3, 5));
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    3 + 5 = 8<br>
+                    3 * 5 = 15
+                </div>
+
+                <h3>函数指针作为参数（回调函数）</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+
+void foreach(int *arr, int size, void (*callback)(int)) {
+    for (int i = 0; i < size; i++) {
+        callback(arr[i]);
+    }
+}
+
+void print_element(int x) {
+    printf("%d ", x);
+}
+
+int main() {
+    int arr[] = {1, 2, 3, 4, 5};
+    foreach(arr, 5, print_element);
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    1 2 3 4 5
+                </div>
+            </section>
+
+            <section id="struct">
+                <h2>结构体</h2>
+                <p>结构体是一种复合数据类型，可以包含不同类型的成员。</p>
+
+                <h3>基本结构体</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+#include <string.h>
+
+struct Student {
+    char name[50];
+    int age;
+    float score;
+};
+
+int main() {
+    struct Student s1;
+    strcpy(s1.name, "张三");
+    s1.age = 18;
+    s1.score = 95.5f;
+
+    printf("姓名: %s\n", s1.name);
+    printf("年龄: %d\n", s1.age);
+    printf("成绩: %.1f\n", s1.score);
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    姓名: 张三<br>
+                    年龄: 18<br>
+                    成绩: 95.5
+                </div>
+
+                <h3>结构体初始化</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+
+struct Point {
+    int x;
+    int y;
+};
+
+// 指定成员初始化（C99）
+int main() {
+    struct Point p1 = {.x = 10, .y = 20};
+    struct Point p2 = {5, 15};  // 顺序初始化
+
+    printf("p1: (%d, %d)\n", p1.x, p1.y);
+    printf("p2: (%d, %d)\n", p2.x, p2.y);
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    p1: (10, 20)<br>
+                    p2: (5, 15)
+                </div>
+            </section>
+
+            <section id="struct-pointer">
+                <h2>结构体指针</h2>
+                <p>使用指针访问结构体成员，常用于动态数据结构。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+#include <stdlib.h>
+
+struct Person {
+    char name[50];
+    int age;
+};
+
+int main() {
+    struct Person *p = (struct Person *)malloc(sizeof(struct Person));
+
+    // 使用 -> 访问成员
+    p->age = 25;
+    printf("年龄: %d\n", p->age);
+
+    free(p);
+    return 0;
+}</code></pre>
+                </div>
+
+                <h3>结构体数组指针</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+
+struct Item {
+    int id;
+    char name[20];
+};
+
+int main() {
+    struct Item items[] = {
+        {1, "苹果"},
+        {2, "香蕉"},
+        {3, "橙子"}
+    };
+
+    struct Item *p = items;  // 数组名即为首元素地址
+
+    for (int i = 0; i < 3; i++) {
+        printf("%d: %s\n", (p + i)->id, (p + i)->name);
+    }
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    1: 苹果<br>
+                    2: 香蕉<br>
+                    3: 橙子
+                </div>
+            </section>
+
+            <section id="linked-list">
+                <h2>链表</h2>
+                <p>链表是一种动态数据结构，由节点组成，每个节点包含数据和指向下一个节点的指针。</p>
+
+                <h3>单向链表</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+// 创建新节点
+Node* create_node(int data) {
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+// 头部插入
+Node* insert_at_head(Node *head, int data) {
+    Node *new_node = create_node(data);
+    new_node->next = head;
+    return new_node;
+}
+
+// 遍历链表
+void print_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        printf("%d -> ", current->data);
+        current = current->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    Node *head = NULL;
+    head = insert_at_head(head, 30);
+    head = insert_at_head(head, 20);
+    head = insert_at_head(head, 10);
+
+    print_list(head);  // 输出: 10 -> 20 -> 30 -> NULL
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    10 -> 20 -> 30 -> NULL
+                </div>
+
+                <h3>删除链表节点</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 删除指定值的节点
+Node* delete_node(Node *head, int value) {
+    if (head == NULL) return NULL;
+
+    // 如果要删除的是头节点
+    if (head->data == value) {
+        Node *temp = head;
+        head = head->next;
+        free(temp);
+        return head;
+    }
+
+    // 查找并删除
+    Node *current = head;
+    while (current->next != NULL && current->next->data != value) {
+        current = current->next;
+    }
+
+    if (current->next != NULL) {
+        Node *temp = current->next;
+        current->next = temp->next;
+        free(temp);
+    }
+
+    return head;
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="enum">
+                <h2>枚举</h2>
+                <p>枚举用于定义一组命名的整型常量，代码更易读。</p>
+
+                <h3>基本枚举</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+
+enum Weekday {
+    SUNDAY,    // 默认为 0
+    MONDAY,    // 1
+    TUESDAY,   // 2
+    WEDNESDAY, // 3
+    THURSDAY,  // 4
+    FRIDAY,    // 5
+    SATURDAY   // 6
+};
+
+enum Color {
+    RED = 1,
+    GREEN = 2,
+    BLUE = 4
+};
+
+int main() {
+    enum Weekday today = MONDAY;
+    printf("今天是星期 %d\n", today + 1);
+
+    enum Color c = GREEN;
+    printf("颜色值: %d\n", c);
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    今天是星期 2<br>
+                    颜色值: 2
+                </div>
+
+                <h3>枚举与 switch</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+
+enum Status { SUCCESS, FAILURE, PENDING };
+
+const char* get_status_message(enum Status status) {
+    switch (status) {
+        case SUCCESS:  return "成功";
+        case FAILURE:  return "失败";
+        case PENDING:   return "处理中";
+        default:       return "未知";
+    }
+}
+
+int main() {
+    printf("状态: %s\n", get_status_message(SUCCESS));
+    printf("状态: %s\n", get_status_message(PENDING));
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    状态: 成功<br>
+                    状态: 处理中
+                </div>
+            </section>
+
+            <section id="union">
+                <h2>联合体</h2>
+                <p>联合体的所有成员共享同一块内存，空间大小取决于最大成员。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+
+union Data {
+    int i;
+    float f;
+    char str[20];
+};
+
+int main() {
+    union Data data;
+
+    data.i = 10;
+    printf("整数: %d\n", data.i);
+
+    data.f = 3.14f;
+    printf("浮点: %.2f\n", data.f);
+
+    // 注意: 写入 str 会覆盖其他成员
+    sprintf(data.str, "Hello");
+    printf("字符串: %s\n", data.str);
+
+    // 联合体大小
+    printf("联合体大小: %lu 字节\n", sizeof(data));
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    整数: 10<br>
+                    浮点: 3.14<br>
+                    字符串: Hello<br>
+                    联合体大小: 20 字节
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意</strong>
+                    联合体的成员共享内存，修改一个成员会影响其他成员的值。
+                </div>
+            </section>
+
+            <section id="typedef">
+                <h2>类型定义 typedef</h2>
+                <p>typedef 为现有类型定义别名，简化代码并提高可移植性。</p>
+
+                <h3>基本用法</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+
+typedef unsigned int uint;
+typedef char* string;
+
+typedef struct {
+    int x;
+    int y;
+} Point;
+
+int main() {
+    uint age = 25;
+    string name = "张三";
+    Point p = {10, 20};
+
+    printf("%s %u岁 坐标(%d,%d)\n", name, age, p.x, p.y);
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    张三 25岁 坐标(10,20)
+                </div>
+
+                <h3>复杂类型别名</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+
+typedef int (*Operation)(int, int);
+
+int add(int a, int b) { return a + b; }
+int sub(int a, int b) { return a - b; }
+
+int main() {
+    Operation ops[] = {add, sub};
+
+    printf("3 + 5 = %d\n", ops[0](3, 5));
+    printf("3 - 5 = %d\n", ops[1](3, 5));
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    3 + 5 = 8<br>
+                    3 - 5 = -2
+                </div>
+            </section>
+
+            <section id="dynamic-memory">
+                <h2>动态内存分配</h2>
+                <p>C 语言使用 malloc/calloc/realloc/free 进行动态内存管理。</p>
+
+                <h3>内存分配函数</h3>
+                <table>
+                    <tr><th>函数</th><th>说明</th></tr>
+                    <tr><td>malloc</td><td>分配指定字节的内存</td></tr>
+                    <tr><td>calloc</td><td>分配并初始化为零</td></tr>
+                    <tr><td>realloc</td><td>重新分配内存</td></tr>
+                    <tr><td>free</td><td>释放内存</td></tr>
+                </table>
+
+                <h3>示例</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    // 分配整型数组
+    int *arr = (int *)malloc(5 * sizeof(int));
+    if (arr == NULL) {
+        printf("内存分配失败\n");
+        return 1;
+    }
+
+    for (int i = 0; i < 5; i++) {
+        arr[i] = (i + 1) * 10;
+    }
+
+    printf("数组元素: ");
+    for (int i = 0; i < 5; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    free(arr);
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    数组元素: 10 20 30 40 50
+                </div>
+
+                <h3>二维动态数组</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int rows = 3, cols = 4;
+
+    // 分配二维数组
+    int **matrix = (int **)malloc(rows * sizeof(int *));
+    for (int i = 0; i < rows; i++) {
+        matrix[i] = (int *)malloc(cols * sizeof(int));
+    }
+
+    // 赋值
+    int count = 1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            matrix[i][j] = count++;
+        }
+    }
+
+    // 打印
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            printf("%3d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+
+    // 释放
+    for (int i = 0; i < rows; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
+
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    1   2   3   4 <br>
+                    5   6   7   8 <br>
+                    9  10  11  12
+                </div>
+            </section>
+
+            <section id="bit-field">
+                <h2>位域</h2>
+                <p>位域允许直接访问 struct 的单个位，节省内存空间。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include <stdio.h>
+
+// 定义位域结构体
+struct Flags {
+    unsigned int is_active  : 1;  // 1位: 0或1
+    unsigned int is_valid   : 1;  // 1位: 0或1
+    unsigned int priority   : 3;  // 3位: 0-7
+    unsigned int mode       : 4;  // 4位: 0-15
+};
+
+int main() {
+    struct Flags f = {0};
+
+    f.is_active = 1;
+    f.is_valid = 1;
+    f.priority = 3;
+    f.mode = 7;
+
+    printf("结构体大小: %lu 字节\n", sizeof(f));
+    printf("is_active=%d, is_valid=%d, priority=%d, mode=%d\n",
+           f.is_active, f.is_valid, f.priority, f.mode);
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    结构体大小: 4 字节<br>
+                    is_active=1, is_valid=1, priority=3, mode=7
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 应用场景</strong>
+                    <ul>
+                        <li>嵌入式系统寄存器访问</li>
+                        <li>网络协议数据包解析</li>
+                        <li>需要压缩存储的场景</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="c.html">← C 语言基础</a>
+                <a href="cpp-advanced.html">C++ 高级教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode - 多语言编程基础学习项目 | 让编程更简单</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

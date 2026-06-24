@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 高级教程 - 面向对象与异步编程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="csharp.html">C#</a>
+            </div>
+        </li>
+        <li><a href="javascript.html" class="active">JavaScript</a></li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>JavaScript 高级</h3>
+                <ul>
+                    <li><a href="#prototype">原型链</a></li>
+                    <li><a href="#class">class 类</a></li>
+                    <li><a href="#inherit">继承</a></li>
+                    <li><a href="#closure">闭包</a></li>
+                    <li><a href="#scope">作用域</a></li>
+                    <li><a href="#promise">Promise</a></li>
+                    <li><a href="#async">async/await</a></li>
+                    <li><a href="#module">模块化</a></li>
+                    <li><a href="#proxy">Proxy</a></li>
+                    <li><a href="#reflect">Reflect</a></li>
+                    <li><a href="#symbol">Symbol</a></li>
+                    <li><a href="#generator">生成器</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>JavaScript 高级教程</h1>
+            <p class="tip-box info">本教程涵盖 JavaScript 面向对象编程、原型链、异步编程、模块化等高级内容。</p>
+
+            <section id="prototype">
+                <h2>原型链</h2>
+                <p>JavaScript 通过原型链实现继承，每个对象都有一个 prototype 属性。</p>
+
+                <h3>原型基础</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 构造函数
+function Person(name, age) {
+    this.name = name;
+    this.age = age;
+}
+
+// 在原型上添加方法
+Person.prototype.greet = function() {
+    console.log(`你好，我是${this.name}`);
+};
+
+const p1 = new Person("张三", 25);
+const p2 = new Person("李四", 30);
+
+p1.greet();  // 通过原型调用
+p2.greet();
+
+console.log(p1.__proto__ === Person.prototype);  // true
+console.log(Person.prototype.constructor === Person);  // true</code></pre>
+                </div>
+                <div class="output-block">
+                    你好，我是张三<br>
+                    你好，我是李四<br>
+                    true
+                </div>
+
+                <h3>原型链</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>function Parent() {
+    this.parentName = "Parent";
+}
+
+function Child() {
+    this.childName = "Child";
+}
+
+// 设置原型链
+Child.prototype = new Parent();
+Child.prototype.constructor = Child;
+
+const child = new Child();
+console.log(child.parentName);  // Parent
+console.log(child.childName);   // Child
+console.log(child instanceof Child);   // true
+console.log(child instanceof Parent);  // true</code></pre>
+                </div>
+            </section>
+
+            <section id="class">
+                <h2>class 类 (ES6)</h2>
+                <p>ES6 引入的 class 语法是构造函数的语法糖。</p>
+
+                <h3>基本用法</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Person {
+    // 构造函数
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    // 方法
+    greet() {
+        console.log(`你好，我是${this.name}`);
+    }
+
+    // 静态方法
+    static create(name, age) {
+        return new Person(name, age);
+    }
+
+    // getter
+    get info() {
+        return `${this.name}, ${this.age}岁`;
+    }
+}
+
+const p = new Person("张三", 25);
+p.greet();
+console.log(p.info);
+console.log(Person.create("李四", 30));</code></pre>
+                </div>
+                <div class="output-block">
+                    你好，我是张三<br>
+                    张三, 25岁
+                </div>
+
+                <h3>私有字段</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class BankAccount {
+    // 私有字段（ES2022）
+    #balance = 0;
+
+    deposit(amount) {
+        this.#balance += amount;
+    }
+
+    withdraw(amount) {
+        if (amount <= this.#balance) {
+            this.#balance -= amount;
+        }
+    }
+
+    getBalance() {
+        return this.#balance;
+    }
+}
+
+const account = new BankAccount();
+account.deposit(1000);
+account.withdraw(300);
+console.log(account.getBalance());  // 700
+// console.log(account.#balance);  // 语法错误</code></pre>
+                </div>
+            </section>
+
+            <section id="inherit">
+                <h2>继承</h2>
+
+                <h3>extends 继承</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+
+    speak() {
+        console.log(`${this.name} 发出声音`);
+    }
+}
+
+class Dog extends Animal {
+    constructor(name, breed) {
+        super(name);  // 调用父类构造函数
+        this.breed = breed;
+    }
+
+    speak() {
+        console.log(`${this.name} 汪汪叫`);
+    }
+
+    fetch() {
+        console.log(`${this.name} 去捡球`);
+    }
+}
+
+const dog = new Dog("旺财", "柴犬");
+dog.speak();  // 重写的方法
+dog.fetch();  // 子类方法
+super.speak?.();  // 调用父类方法（需在方法内）</code></pre>
+                </div>
+                <div class="output-block">
+                    旺财 汪汪叫<br>
+                    旺财 去捡球
+                </div>
+
+                <h3>多层继承</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class A {
+    method() { console.log("A"); }
+}
+
+class B extends A {
+    method() { console.log("B"); }
+}
+
+class C extends B {
+    method() { console.log("C"); }
+}
+
+const c = new C();
+c.method();  // C
+console.log(c instanceof A);  // true
+console.log(c instanceof B);  // true
+console.log(c instanceof C);  // true</code></pre>
+                </div>
+            </section>
+
+            <section id="closure">
+                <h2>闭包</h2>
+                <p>闭包是指函数能够访问其词法作用域之外的变量。</p>
+
+                <h3>基本闭包</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>function createCounter() {
+    let count = 0;  // 私有变量
+    
+    return function() {
+        count++;
+        return count;
+    };
+}
+
+const counter = createCounter();
+console.log(counter());  // 1
+console.log(counter());  // 2
+console.log(counter());  // 3
+console.log(counter());  // 4</code></pre>
+                </div>
+                <div class="output-block">
+                    1<br>
+                    2<br>
+                    3<br>
+                    4
+                </div>
+
+                <h3>常见应用</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 工厂函数
+function multiply(factor) {
+    return function(num) {
+        return num * factor;
+    };
+}
+
+const double = multiply(2);
+const triple = multiply(3);
+
+console.log(double(5));   // 10
+console.log(triple(5));    // 15
+
+// 私有方法
+function Person(name) {
+    let _age = 0;  // 私有变量
+    
+    this.getAge = function() {
+        return _age;
+    };
+    
+    this.setAge = function(age) {
+        if (age >= 0) _age = age;
+    };
+}
+
+const p = new Person("张三");
+p.setAge(25);
+console.log(p.getAge());  // 25</code></pre>
+                </div>
+            </section>
+
+            <section id="scope">
+                <h2>作用域</h2>
+
+                <h3>块级作用域 let/const</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// var 函数作用域
+function varTest() {
+    if (true) {
+        var x = 1;
+    }
+    console.log(x);  // 1，函数内可见
+}
+
+// let 块级作用域
+function letTest() {
+    if (true) {
+        let y = 1;
+    }
+    // console.log(y);  // ReferenceError
+}
+
+// const 常量
+const PI = 3.14159;
+// PI = 3.14;  // TypeError，不能重新赋值
+
+// const 对象
+const obj = { a: 1 };
+obj.b = 2;  // 可以修改属性
+// obj = {};  // 不能重新赋值</code></pre>
+                </div>
+
+                <h3>箭头函数特点</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 没有自己的 this
+const obj = {
+    name: "张三",
+    regularFunc: function() {
+        console.log(this.name);  // 张三
+    },
+    arrowFunc: () => {
+        console.log(this.name);  // undefined（指向外层）
+    }
+};
+
+// 构造函数不能用箭头函数
+// const Person = (name) => { this.name = name; };  // 错误
+
+// 更适合回调函数
+const nums = [1, 2, 3, 4, 5];
+const doubled = nums.map(n => n * 2);
+console.log(doubled);</code></pre>
+                </div>
+            </section>
+
+            <section id="promise">
+                <h2>Promise</h2>
+                <p>Promise 用于处理异步操作，是回调函数的替代方案。</p>
+
+                <h3>创建 Promise</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>const promise = new Promise((resolve, reject) => {
+    const success = true;
+    
+    if (success) {
+        resolve("操作成功");
+    } else {
+        reject("操作失败");
+    }
+});
+
+promise
+    .then(result => console.log(result))
+    .catch(error => console.error(error))
+    .finally(() => console.log("完成"));</code></pre>
+                </div>
+                <div class="output-block">
+                    操作成功<br>
+                    完成
+                </div>
+
+                <h3>链式调用</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>fetch("/api/user")
+    .then(response => response.json())
+    .then(user => {
+        console.log(user);
+        return fetch(`/api/posts/${user.id}`);
+    })
+    .then(response => response.json())
+    .then(posts => console.log(posts))
+    .catch(error => console.error(error));</code></pre>
+                </div>
+
+                <h3>并行处理</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>const p1 = Promise.resolve(1);
+const p2 = Promise.resolve(2);
+const p3 = Promise.resolve(3);
+
+// 等待所有完成
+Promise.all([p1, p2, p3])
+    .then(results => console.log(results));  // [1, 2, 3]
+
+// 任意一个完成（最先完成的）
+Promise.race([p1, p2, p3])
+    .then(result => console.log(result));  // 1
+
+// 任意一个完成（第一个成功的）
+Promise.any([p1, p2, p3])
+    .then(result => console.log(result));  // 1
+
+// 所有完成（无论成功失败）
+Promise.allSettled([p1, p2, p3])
+    .then(results => console.log(results));</code></pre>
+                </div>
+            </section>
+
+            <section id="async">
+                <h2>async/await</h2>
+                <p>async/await 是 Promise 的语法糖，让异步代码看起来像同步代码。</p>
+
+                <h3>基本用法</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// async 函数总是返回 Promise
+async function fetchUser(id) {
+    const response = await fetch(`/api/users/${id}`);
+    const user = await response.json();
+    return user;
+}
+
+async function main() {
+    try {
+        const user = await fetchUser(1);
+        console.log(user);
+    } catch (error) {
+        console.error("获取用户失败:", error);
+    }
+}
+
+main();</code></pre>
+                </div>
+
+                <h3>并发执行</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>async function getUsers(ids) {
+    // 并发请求
+    const promises = ids.map(id => fetchUser(id));
+    const users = await Promise.all(promises);
+    return users;
+}
+
+// 顺序执行（错误示例）
+async function wrongOrder() {
+    const user1 = await fetchUser(1);
+    const user2 = await fetchUser(2);  // 等待 user1 完成
+}
+
+// 并发执行（正确示例）
+async function rightOrder() {
+    const [user1, user2] = await Promise.all([
+        fetchUser(1),
+        fetchUser(2)
+    ]);
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="module">
+                <h2>模块化</h2>
+
+                <h3>ES6 模块</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// math.js 导出
+export const PI = 3.14159;
+export function add(a, b) {
+    return a + b;
+}
+export default class Calculator {
+    // ...
+}
+
+// 导入
+import { PI, add } from './math.js';
+import Calculator from './math.js';
+import * as math from './math.js';</code></pre>
+                </div>
+
+                <h3>CommonJS（Node.js）</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 导出
+module.exports = {
+    PI: 3.14159,
+    add: function(a, b) { return a + b; }
+};
+
+// 或者
+exports.add = function(a, b) { return a + b; };
+
+// 导入
+const math = require('./math.js');
+const { add } = require('./math.js');</code></pre>
+                </div>
+            </section>
+
+            <section id="proxy">
+                <h2>Proxy 代理</h2>
+                <p>Proxy 用于定义对象的自定义行为。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>const target = {
+    name: "张三",
+    age: 25
+};
+
+const handler = {
+    get(target, prop) {
+        console.log(`获取属性: ${prop}`);
+        return target[prop];
+    },
+    set(target, prop, value) {
+        console.log(`设置属性: ${prop} = ${value}`);
+        target[prop] = value;
+        return true;
+    }
+};
+
+const proxy = new Proxy(target, handler);
+
+console.log(proxy.name);  // 获取属性: name\n张三
+proxy.age = 30;          // 设置属性: age = 30</code></pre>
+                </div>
+
+                <h3>响应式系统</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>function reactive(obj) {
+    return new Proxy(obj, {
+        get(target, prop) {
+            return Reflect.get(target, prop);
+        },
+        set(target, prop, value) {
+            console.log(`属性 ${prop} 从 ${target[prop]} 变为 ${value}`);
+            return Reflect.set(target, prop, value);
+        }
+    });
+}
+
+const state = reactive({ count: 0 });
+state.count++;  // 属性 count 从 0 变为 1</code></pre>
+                </div>
+            </section>
+
+            <section id="symbol">
+                <h2>Symbol</h2>
+                <p>Symbol 是一种唯一标识符，常用于对象属性名。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 创建 Symbol
+const sym1 = Symbol("description");
+const sym2 = Symbol("description");
+console.log(sym1 === sym2);  // false
+
+// 作为对象属性
+const obj = {
+    [sym1]: "值1",
+    [sym2]: "值2"
+};
+
+// 常用 Symbol
+Symbol.iterator  // 可迭代对象
+Symbol.toStringTag  // toString 标签
+Symbol.hasInstance  // instanceof
+
+// 全局 Symbol
+const globalSym = Symbol.for("global");
+const sameSym = Symbol.for("global");
+console.log(globalSym === sameSym);  // true</code></pre>
+                </div>
+            </section>
+
+            <section id="generator">
+                <h2>生成器</h2>
+                <p>生成器函数使用 yield 产生一系列值。</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>function* numberGenerator() {
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+const gen = numberGenerator();
+console.log(gen.next());  // { value: 1, done: false }
+console.log(gen.next());  // { value: 2, done: false }
+console.log(gen.next());  // { value: 3, done: false }
+console.log(gen.next());  // { value: undefined, done: true }
+
+// 可迭代
+for (const num of numberGenerator()) {
+    console.log(num);
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    { value: 1, done: false }<br>
+                    { value: 2, done: false }<br>
+                    { value: 3, done: false }<br>
+                    { value: undefined, done: true }<br>
+                    1<br>
+                    2<br>
+                    3
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="javascript.html">← JavaScript 基础</a>
+                <a href="html.html">HTML 教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode - 多语言编程基础学习项目 | 让编程更简单</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>
