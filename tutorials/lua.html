@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lua 教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java/Kotlin ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="kotlin.html">Kotlin</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="javascript.html">JavaScript</a>
+                <a href="typescript.html">TypeScript</a>
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+        <li class="dropdown">
+            <a href="#">更多 ▾</a>
+            <div class="dropdown-content">
+                <a href="rust.html">Rust</a>
+                <a href="sql.html">SQL</a>
+                <a href="shell.html">Shell</a>
+                <a href="lua.html" class="active">Lua</a>
+                <a href="r.html">R 语言</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Lua 教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#variable">变量与类型</a></li>
+                    <li><a href="#table">Table 表</a></li>
+                    <li><a href="#function">函数</a></li>
+                    <li><a href="#control">流程控制</a></li>
+                    <li><a href="#metatable">元表与OOP</a></li>
+                    <li><a href="#module">模块与库</a></li>
+                    <li><a href="#error">错误处理</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>Lua 基础教程</h1>
+
+            <section id="intro">
+                <h2>Lua 简介</h2>
+                <p>Lua 是一种轻量级、高效的嵌入式脚本语言，由巴西里约热内卢天主教大学开发。它以简洁、快速、可嵌入著称，广泛用于游戏开发（如魔兽世界、愤怒的小鸟）和嵌入式系统。</p>
+
+                <div class="tip-box info">
+                    <strong>💡 Lua 特点</strong>
+                    <ul>
+                        <li>轻量级：核心仅几百 KB</li>
+                        <li>高效：使用寄存器式虚拟机</li>
+                        <li>可嵌入：C API 丰富，易于集成</li>
+                        <li>基于表（Table）的数据结构</li>
+                        <li>元表（Metatable）实现面向对象</li>
+                        <li>协程（coroutine）支持</li>
+                    </ul>
+                </div>
+
+                <h3>安装与运行</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code># Linux 安装
+sudo apt install lua5.4
+
+# 运行脚本
+lua hello.lua
+
+# 交互式解释器
+lua</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 第一个 Lua 程序
+print("Hello, World!")</code></pre>
+                </div>
+            </section>
+
+            <section id="variable">
+                <h2>变量与数据类型</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 变量（默认是全局的）
+name = "张三"
+age = 25
+print("姓名: " .. name .. ", 年龄: " .. age)
+
+-- 局部变量（推荐使用 local）
+local x = 10
+local y = 20
+
+-- 数据类型
+print(type(nil))          -- nil
+print(type(123))          -- number
+print(type("Hello"))      -- string
+print(type(true))         -- boolean
+print(type({}))           -- table
+print(type(function() end)) -- function
+print(type(coroutine.create(function() end))) -- thread
+print(type(io.stdin))     -- userdata
+
+-- 字符串
+str = "Hello World"
+print("长度: " .. #str)
+print(string.upper(str))
+print(string.lower(str))
+print(string.sub(str, 1, 5))
+print(string.format("姓名: %s, 年龄: %d", "张三", 25))
+
+-- 多行字符串
+multi = [[
+第一行
+第二行
+第三行
+]]
+print(multi)
+
+-- 类型转换
+tonumber("123")
+tostring(456)
+
+-- 运算符
+a, b = 10, 3
+print(a + b)     -- 加
+print(a - b)     -- 减
+print(a * b)     -- 乘
+print(a / b)     -- 除
+print(a % b)     -- 模
+print(a ^ b)     -- 幂
+print(-a)        -- 取负
+
+-- 关系运算
+print(a &gt; b)     -- 大于
+print(a &lt; b)     -- 小于
+print(a == b)    -- 等于
+print(a ~= b)    -- 不等于
+
+-- 逻辑运算
+print(true and false)  -- and
+print(true or false)   -- or
+print(not true)        -- not
+
+-- Lua 的 and/or 短路规则很有用
+x = x or 0  -- x 为 nil 时设为 0（类似默认值）</code></pre>
+                </div>
+            </section>
+
+            <section id="table">
+                <h2>Table 表</h2>
+                <p>Table 是 Lua 中唯一的数据结构，可以表示数组、字典、对象、集合等。</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 数组（数字索引，从 1 开始！）
+fruits = {"苹果", "香蕉", "橙子"}
+print(fruits[1])      -- 第一个元素（不是 0！）
+print(#fruits)        -- 长度
+
+-- 遍历数组
+for i, v in ipairs(fruits) do
+    print(i .. ". " .. v)
+end
+
+-- 字典（字符串索引）
+person = {
+    name = "张三",
+    age = 25,
+    city = "北京"
+}
+print(person.name)
+print(person["age"])
+
+-- 遍历字典
+for k, v in pairs(person) do
+    print(k .. ": " .. v)
+end
+
+-- 混合表
+mixed = {
+    10,
+    20,
+    name = "test",
+    value = 100
+}
+print(mixed[1])
+print(mixed.name)
+
+-- table 库
+table.insert(fruits, "葡萄")     -- 添加
+table.remove(fruits, 1)          -- 删除
+table.sort(fruits)               -- 排序
+table.concat(fruits, ", ")       -- 连接
+
+-- 多维表
+matrix = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+}
+print(matrix[2][3])  -- 6</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意</strong>
+                    <ul>
+                        <li>Lua 数组索引从 <b>1</b> 开始，不是 0！</li>
+                        <li>ipairs 只遍历连续的数字索引</li>
+                        <li>pairs 遍历所有键值对，顺序不确定</li>
+                        <li># 操作符只对数组部分有效</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="function">
+                <h2>函数</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 基本函数
+function add(a, b)
+    return a + b
+end
+print("add(5, 3) = " .. add(5, 3))
+
+-- 多返回值
+function divide(a, b)
+    return a / b, a % b
+end
+q, r = divide(10, 3)
+print("商: " .. q .. ", 余: " .. r)
+
+-- 可变参数
+function sum(...)
+    local total = 0
+    local args = {...}
+    for i = 1, #args do
+        total = total + args[i]
+    end
+    return total
+end
+print("sum(1,2,3,4,5) = " .. sum(1, 2, 3, 4, 5))
+
+-- 匿名函数
+double = function(x)
+    return x * 2
+end
+print("double(5) = " .. double(5))
+
+-- 高阶函数
+function apply(arr, func)
+    local result = {}
+    for i = 1, #arr do
+        result[i] = func(arr[i])
+    end
+    return result
+end
+
+nums = {1, 2, 3}
+result = apply(nums, function(x) return x ^ 2 end)
+print(table.concat(result, ", "))
+
+-- 闭包
+function counter()
+    local count = 0
+    return function()
+        count = count + 1
+        return count
+    end
+end
+
+c = counter()
+print(c())  -- 1
+print(c())  -- 2
+print(c())  -- 3</code></pre>
+                </div>
+            </section>
+
+            <section id="control">
+                <h2>流程控制</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- if 语句
+score = 85
+if score &gt;= 90 then
+    print("优秀")
+elseif score &gt;= 80 then
+    print("良好")
+elseif score &gt;= 60 then
+    print("及格")
+else
+    print("不及格")
+end
+
+-- while 循环
+i = 1
+while i &lt;= 3 do
+    print("while: " .. i)
+    i = i + 1
+end
+
+-- repeat ... until（类似 do-while）
+i = 1
+repeat
+    print("repeat: " .. i)
+    i = i + 1
+until i &gt; 3
+
+-- for 数值循环
+for i = 1, 3 do
+    print("for: " .. i)
+end
+
+for i = 1, 5, 2 do  -- 步长 2
+    print("步长2: " .. i)
+end
+
+for i = 3, 1, -1 do  -- 倒序
+    print("倒序: " .. i)
+end
+
+-- for 泛型循环 - ipairs（数组）
+fruits = {"苹果", "香蕉", "橙子"}
+for i, v in ipairs(fruits) do
+    print(i .. ". " .. v)
+end
+
+-- for 泛型循环 - pairs（字典）
+person = {name = "张三", age = 25}
+for k, v in pairs(person) do
+    print(k .. " = " .. v)
+end
+
+-- break
+for i = 1, 10 do
+    if i &gt; 3 then
+        break
+    end
+    print("break示例: " .. i)
+end
+
+-- goto + 标签（Lua 5.2+）
+::start::
+print("goto 示例")
+-- goto start  -- 会无限循环，已注释</code></pre>
+                </div>
+            </section>
+
+            <section id="metatable">
+                <h2>元表与面向对象</h2>
+
+                <h3>元表</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 元表：修改表的行为
+t1 = {1, 2, 3}
+t2 = {4, 5, 6}
+
+mt = {
+    __add = function(a, b)
+        local result = {}
+        for i = 1, #a do
+            result[i] = a[i] + b[i]
+        end
+        return result
+    end
+}
+
+setmetatable(t1, mt)
+setmetatable(t2, mt)
+
+t3 = t1 + t2
+print("表相加: " .. table.concat(t3, ", "))
+
+-- 常用元方法：
+-- __add 加  __sub 减  __mul 乘  __div 除
+-- __eq 等于  __lt 小于  __le 小于等于
+-- __index 访问不存在的键  __newindex 赋值
+-- __tostring 转字符串  __call 调用表</code></pre>
+                </div>
+
+                <h3>面向对象</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 原型模式（基于表的 OOP）
+Account = { balance = 0 }
+
+function Account:new(o)
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+    return o
+end
+
+function Account:deposit(v)
+    self.balance = self.balance + v
+end
+
+function Account:withdraw(v)
+    if v &lt;= self.balance then
+        self.balance = self.balance - v
+    end
+end
+
+a = Account:new{balance = 100}
+a:deposit(50)
+print("存款后余额: " .. a.balance)
+a:withdraw(30)
+print("取款后余额: " .. a.balance)
+
+-- 继承
+SpecialAccount = Account:new()
+
+function SpecialAccount:withdraw(v)
+    if v - self.balance &gt;= 0 then
+        self.balance = self.balance - v
+    end
+end
+
+s = SpecialAccount:new{balance = 100}
+s:withdraw(200)  -- 可以透支
+print("特殊账户余额: " .. s.balance)</code></pre>
+                </div>
+            </section>
+
+            <section id="module">
+                <h2>模块与标准库</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 创建模块（mymodule.lua）
+local mymodule = {}
+
+mymodule.version = "1.0"
+
+function mymodule.hello()
+    print("Hello from mymodule!")
+end
+
+return mymodule
+
+-- 使用模块
+-- local mymodule = require("mymodule")
+-- mymodule.hello()
+
+-- 标准库
+-- string 库
+print(string.len("hello"))
+print(string.find("hello world", "world"))
+print(string.match("hello 123", "%d+"))
+print(string.gsub("hello world", "o", "0"))
+
+-- math 库
+print(math.pi)
+print(math.abs(-5))
+print(math.sqrt(9))
+print(math.floor(3.7))
+print(math.ceil(3.1))
+print(math.random(1, 10))
+math.randomseed(os.time())  -- 设置随机种子
+
+-- table 库
+t = {3, 1, 2}
+table.sort(t)
+print(table.concat(t, ", "))
+
+-- os 库
+print(os.time())
+print(os.date("%Y-%m-%d %H:%M:%S"))
+print(os.getenv("PATH"))
+
+-- io 库
+-- io.write("请输入: ")
+-- local input = io.read()
+-- print("你输入了: " .. input)</code></pre>
+                </div>
+            </section>
+
+            <section id="error">
+                <h2>错误处理</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Lua</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- error 抛出错误
+function divide(a, b)
+    if b == 0 then
+        error("除数不能为零")
+    end
+    return a / b
+end
+
+-- pcall 保护调用
+ok, result = pcall(divide, 10, 0)
+if ok then
+    print("成功: " .. result)
+else
+    print("错误: " .. result)
+end
+
+ok, result = pcall(divide, 10, 2)
+if ok then
+    print("成功: " .. result)
+end
+
+-- xpcall 带错误处理
+function errorHandler(err)
+    return "捕获到错误: " .. err
+end
+
+ok, result = xpcall(function() return divide(5, 0) end, errorHandler)
+print(result)
+
+-- assert 断言
+n = 5
+assert(n &gt; 0, "n 必须大于 0")
+print("assert 通过")</code></pre>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="shell.html">← Shell 教程</a>
+                <a href="r.html">R 语言教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode 编程教程 © 2024 | 示例代码均有中文注释</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

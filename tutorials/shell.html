@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shell 教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java/Kotlin ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="kotlin.html">Kotlin</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="javascript.html">JavaScript</a>
+                <a href="typescript.html">TypeScript</a>
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+        <li class="dropdown">
+            <a href="#">更多 ▾</a>
+            <div class="dropdown-content">
+                <a href="rust.html">Rust</a>
+                <a href="sql.html">SQL</a>
+                <a href="shell.html" class="active">Shell</a>
+                <a href="lua.html">Lua</a>
+                <a href="r.html">R 语言</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Shell 教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#variable">变量与数组</a></li>
+                    <li><a href="#operator">运算符</a></li>
+                    <li><a href="#control">流程控制</a></li>
+                    <li><a href="#function">函数</a></li>
+                    <li><a href="#file">文件操作</a></li>
+                    <li><a href="#tools">常用工具命令</a></li>
+                    <li><a href="#debug">调试与信号</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>Shell / Bash 脚本编程教程</h1>
+
+            <section id="intro">
+                <h2>Shell 简介</h2>
+                <p>Shell 是用户与操作系统内核之间的接口，Shell 脚本是一系列命令的集合，用于自动化任务。Bash 是最常用的 Shell 环境。</p>
+
+                <div class="tip-box info">
+                    <strong>💡 Shell 类型</strong>
+                    <ul>
+                        <li><b>Bash</b>：GNU Bourne Again Shell，最常用</li>
+                        <li><b>Zsh</b>：功能丰富，配合 Oh My Zsh</li>
+                        <li><b>sh</b>：Bourne Shell，POSIX 标准</li>
+                        <li><b>Fish</b>：友好的交互式 Shell</li>
+                        <li><b>PowerShell</b>：Windows 下的 Shell</li>
+                    </ul>
+                </div>
+
+                <h3>第一个脚本</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+echo "Hello, World!"
+
+# 运行方式：
+# chmod +x hello.sh
+# ./hello.sh</code></pre>
+                </div>
+
+                <p>第一行的 <code>#!</code> 叫做 shebang，指定脚本的解释器。</p>
+            </section>
+
+            <section id="variable">
+                <h2>变量与数组</h2>
+
+                <h3>变量</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+# 定义变量（等号两边不能有空格！）
+name="张三"
+age=25
+
+# 使用变量
+echo "姓名: $name, 年龄: $age"
+echo "姓名: ${name}, 年龄: ${age}"
+
+# 只读变量
+readonly PI=3.14159
+
+# 删除变量
+unset age
+
+# 字符串操作
+str="Hello World"
+echo "长度: ${#str}"          # 字符串长度
+echo "截取: ${str:0:5}"        # 截取子串
+echo "大写: ${str^^}"          # 全部大写
+echo "小写: ${str,,}"          # 全部小写
+
+# 环境变量
+echo "HOME: $HOME"
+echo "PATH: $PATH"
+echo "USER: $USER"
+echo "PWD: $PWD"
+
+# 特殊变量
+echo "脚本名: $0"
+echo "参数1: $1"
+echo "参数个数: $#"
+echo "所有参数: $*"
+echo "进程ID: $$"
+echo "上一个命令退出码: $?"</code></pre>
+                </div>
+
+                <h3>数组</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+# 定义数组
+fruits=("苹果" "香蕉" "橙子" "葡萄")
+
+# 访问元素（索引从 0 开始）
+echo "第一个: ${fruits[0]}"
+echo "所有元素: ${fruits[@]}"
+echo "数组长度: ${#fruits[@]}"
+
+# 添加元素
+fruits+=("西瓜")
+
+# 修改元素
+fruits[0]="红苹果"
+
+# 遍历数组
+for fruit in "${fruits[@]}"; do
+    echo "  - $fruit"
+done
+
+# 关联数组（Bash 4+）
+declare -A person
+person[name]="张三"
+person[age]=25
+person[city]="北京"
+echo "姓名: ${person[name]}"</code></pre>
+                </div>
+            </section>
+
+            <section id="operator">
+                <h2>运算符</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+a=10
+b=3
+
+# 算术运算
+echo "$a + $b = $((a + b))"
+echo "$a - $b = $((a - b))"
+echo "$a * $b = $((a * b))"
+echo "$a / $b = $((a / b))"
+echo "$a % $b = $((a % b))"
+
+# 关系运算（[ ] 中两边要有空格）
+if [ $a -gt $b ]; then
+    echo "$a 大于 $b"
+fi
+
+# 常用关系运算符：
+# -eq 等于    -ne 不等于
+# -gt 大于    -lt 小于
+# -ge 大于等于 -le 小于等于
+
+# 字符串比较
+str1="hello"
+str2="world"
+if [ "$str1" \< "$str2" ]; then
+    echo "$str1 &lt; $str2"
+fi
+
+# = 等于  != 不等于  -z 长度为0  -n 长度不为0
+
+# 逻辑运算
+if [ $a -gt 5 ] && [ $b -lt 10 ]; then
+    echo "a > 5 且 b < 10"
+fi
+
+if [ $a -gt 5 ] || [ $b -gt 10 ]; then
+    echo "a > 5 或 b > 10"
+fi
+
+# 文件测试
+if [ -f "test.txt" ]; then
+    echo "文件存在"
+fi
+
+# -f 文件  -d 目录  -r 可读  -w 可写  -x 可执行  -e 存在</code></pre>
+                </div>
+            </section>
+
+            <section id="control">
+                <h2>流程控制</h2>
+
+                <h3>if 语句</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+score=85
+
+if [ $score -ge 90 ]; then
+    echo "优秀"
+elif [ $score -ge 80 ]; then
+    echo "良好"
+elif [ $score -ge 60 ]; then
+    echo "及格"
+else
+    echo "不及格"
+fi</code></pre>
+                </div>
+
+                <h3>case 语句</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+day="周一"
+
+case $day in
+    "周一"|"周二"|"周三"|"周四"|"周五")
+        echo "工作日"
+        ;;
+    "周六"|"周日")
+        echo "周末"
+        ;;
+    *)
+        echo "无效日期"
+        ;;
+esac</code></pre>
+                </div>
+
+                <h3>循环</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+# for 循环
+for i in 1 2 3 4 5; do
+    echo "for: $i"
+done
+
+# C 风格 for
+for ((i=1; i&lt;=5; i++)); do
+    echo "C风格: $i"
+done
+
+# 遍历文件
+for file in *.txt; do
+    echo "文件: $file"
+done
+
+# while 循环
+count=1
+while [ $count -le 5 ]; do
+    echo "while: $count"
+    count=$((count + 1))
+done
+
+# until 循环（条件为假时执行）
+count=1
+until [ $count -gt 5 ]; do
+    echo "until: $count"
+    count=$((count + 1))
+done
+
+# break 和 continue
+for i in 1 2 3 4 5; do
+    if [ $i -eq 3 ]; then
+        continue  # 跳过本次
+    fi
+    if [ $i -eq 5 ]; then
+        break     # 退出循环
+    fi
+    echo "循环: $i"
+done</code></pre>
+                </div>
+            </section>
+
+            <section id="function">
+                <h2>函数</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+# 定义函数
+say_hello() {
+    echo "Hello, World!"
+}
+
+# 带参数的函数
+greet() {
+    echo "你好, $1!"
+}
+
+# 返回值（只能返回 0-255 的整数）
+add() {
+    return $(($1 + $2))
+}
+
+# 调用函数
+say_hello
+greet "张三"
+
+add 5 3
+echo "5 + 3 = $?"
+
+# 局部变量
+test_local() {
+    local var="局部变量"
+    echo "函数内: $var"
+}
+
+# 递归函数
+factorial() {
+    if [ $1 -le 1 ]; then
+        echo 1
+    else
+        local prev=$(factorial $(( $1 - 1 )))
+        echo $(( $1 * prev ))
+    fi
+}
+
+echo "5! = $(factorial 5)"</code></pre>
+                </div>
+            </section>
+
+            <section id="file">
+                <h2>输入输出与文件操作</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+# 读取用户输入
+echo -n "请输入你的名字: "
+read user_name
+echo "你好, $user_name!"
+
+# 重定向
+echo "写入文件" &gt; test.txt     # 覆盖写入
+echo "追加内容" &gt;&gt; test.txt    # 追加
+
+# 读取文件
+cat test.txt
+
+# 按行读取
+while read -r line; do
+    echo "行内容: $line"
+done &lt; test.txt
+
+# 管道
+echo "abcdef" | tr 'a-z' 'A-Z'
+
+# Here Document
+cat &lt;&lt; EOF
+这是多行文本
+第一行
+第二行
+EOF
+
+# 标准错误重定向
+ls /nonexistent 2&gt; error.log
+ls /nonexistent 2&gt;&amp;1  # 错误重定向到标准输出</code></pre>
+                </div>
+            </section>
+
+            <section id="tools">
+                <h2>常用工具命令</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code># grep 查找
+grep "pattern" file.txt
+grep -r "pattern" .          # 递归查找
+grep -i "pattern" file.txt   # 忽略大小写
+grep -v "pattern" file.txt   # 反向匹配
+
+# sed 文本替换
+sed 's/old/new/g' file.txt
+sed -i 's/old/new/g' file.txt  # 原地修改
+
+# awk 文本处理
+awk '{print $1, $NF}' file.txt
+awk -F',' '{print $2}' file.csv
+
+# find 查找文件
+find . -name "*.txt"
+find . -type f -mtime -7
+find . -type d -name "src"
+
+# sort 排序
+sort file.txt
+sort -n file.txt      # 数字排序
+sort -r file.txt      # 倒序
+sort -t',' -k2 file.csv  # 按第二列排序
+
+# uniq 去重
+sort file.txt | uniq
+
+# wc 统计
+wc -l file.txt    # 行数
+wc -w file.txt    # 单词数
+wc -c file.txt    # 字符数
+
+# cut 切割
+cut -d',' -f1,3 file.csv
+cut -c1-5 file.txt
+
+# tr 转换
+echo "abc" | tr 'a-z' 'A-Z'
+echo "abc" | tr -d 'a'  # 删除字符
+
+# xargs 参数传递
+find . -name "*.log" | xargs rm -f</code></pre>
+                </div>
+            </section>
+
+            <section id="debug">
+                <h2>调试与信号</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code>#!/bin/bash
+
+# 调试模式
+set -x   # 打印执行的每一条命令
+set -e   # 遇到错误立即退出
+set -u   # 使用未定义变量时报错
+set -o pipefail  # 管道中任一命令失败则整体失败
+
+# 或运行时加参数
+# bash -x script.sh
+
+# trap 捕获信号
+cleanup() {
+    echo "清理资源..."
+    # rm -f /tmp/tempfile
+}
+
+trap cleanup EXIT        # 脚本退出时执行
+trap 'echo "收到 SIGINT"' SIGINT  # Ctrl+C 时
+
+echo "脚本运行中..."
+sleep 1
+echo "脚本结束"
+
+# 常用信号：
+# SIGINT (2)  - Ctrl+C
+# SIGTERM (15) - 终止信号
+# SIGKILL (9) - 强制杀死（不能捕获）
+# EXIT (0)    - 脚本退出</code></pre>
+                </div>
+
+                <div class="tip-box success">
+                    <strong>✅ Shell 脚本最佳实践</strong>
+                    <ul>
+                        <li>开头使用 <code>#!/bin/bash</code> 并 <code>set -euo pipefail</code></li>
+                        <li>变量名用大写，函数名用小写加下划线</li>
+                        <li>字符串引用时用双引号包裹变量</li>
+                        <li>重要脚本加注释和帮助信息</li>
+                        <li>使用 shellcheck 静态检查</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="sql.html">← SQL 教程</a>
+                <a href="lua.html">Lua 教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode 编程教程 © 2024 | 示例代码均有中文注释</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R 语言教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java/Kotlin ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="kotlin.html">Kotlin</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="javascript.html">JavaScript</a>
+                <a href="typescript.html">TypeScript</a>
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+        <li class="dropdown">
+            <a href="#">更多 ▾</a>
+            <div class="dropdown-content">
+                <a href="rust.html">Rust</a>
+                <a href="sql.html">SQL</a>
+                <a href="shell.html">Shell</a>
+                <a href="lua.html">Lua</a>
+                <a href="r.html" class="active">R 语言</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>R 语言教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#variable">变量与类型</a></li>
+                    <li><a href="#vector">向量</a></li>
+                    <li><a href="#data">数据结构</a></li>
+                    <li><a href="#function">函数</a></li>
+                    <li><a href="#control">流程控制</a></li>
+                    <li><a href="#apply">apply 族函数</a></li>
+                    <li><a href="#stats">统计分析</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>R 语言基础教程</h1>
+
+            <section id="intro">
+                <h2>R 语言简介</h2>
+                <p>R 是一种用于统计计算和图形展示的编程语言和环境，广泛用于数据分析、统计建模和可视化。由新西兰奥克兰大学开发，现已成为数据科学领域的重要工具。</p>
+
+                <div class="tip-box info">
+                    <strong>💡 R 语言特点</strong>
+                    <ul>
+                        <li>强大的统计和数据分析能力</li>
+                        <li>出色的绘图和可视化能力</li>
+                        <li>丰富的包生态系统（CRAN）</li>
+                        <li>向量化操作，高效处理数据</li>
+                        <li>函数式编程特性</li>
+                        <li>活跃的社区和大量学习资源</li>
+                    </ul>
+                </div>
+
+                <h3>安装与运行</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code># 运行脚本
+Rscript hello.R
+
+# 启动 REPL
+R
+
+# 推荐使用 RStudio IDE</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header"><span>R</span><button class="code-copy">复制</button></div>
+                    <pre><code># 第一个 R 程序
+cat("Hello, World!\n")</code></pre>
+                </div>
+            </section>
+
+            <section id="variable">
+                <h2>变量与数据类型</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>R</span><button class="code-copy">复制</button></div>
+                    <pre><code># 变量赋值
+x &lt;- 10        # 推荐使用 &lt;-
+y = 20         # 也可以用 =
+z &lt;&lt;- 30       # 全局赋值
+cat("x =", x, ", y =", y, "\n")
+
+# 数据类型
+print(class(123))         # numeric
+print(class(123L))        # integer
+print(class("Hello"))     # character
+print(class(TRUE))        # logical
+print(class(1+2i))        # complex
+print(class(factor(c("a","b"))))  # factor
+
+# 类型转换
+as.numeric("123")
+as.character(123)
+as.logical(1)
+as.integer(3.14)
+
+# 查看变量
+ls()
+exists("x")
+# rm(x)  # 删除变量
+
+# 特殊值
+NA        # 缺失值
+NULL      # 空值
+NaN       # 非数字
+Inf       # 无穷大
+
+# 检查
+is.na(NA)
+is.null(NULL)
+is.nan(0/0)
+is.infinite(1/0)</code></pre>
+                </div>
+            </section>
+
+            <section id="vector">
+                <h2>向量 Vector</h2>
+                <p>向量是 R 中最基本的数据结构，所有元素必须是同一类型。</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span>R</span><button class="code-copy">复制</button></div>
+                    <pre><code># 创建向量
+v &lt;- c(1, 2, 3, 4, 5)
+print(v)
+
+# 序列
+v2 &lt;- 1:10
+print(v2)
+
+v3 &lt;- seq(1, 10, by = 2)
+print(v3)
+
+v4 &lt;- rep("A", 5)
+print(v4)
+
+# 向量运算（向量化）
+a &lt;- c(1, 2, 3)
+b &lt;- c(4, 5, 6)
+cat("a + b =", a + b, "\n")
+cat("a * b =", a * b, "\n")
+cat("a ^ 2 =", a ^ 2, "\n")
+
+# 常用函数
+nums &lt;- c(5, 2, 8, 1, 9, 3)
+cat("长度:", length(nums), "\n")
+cat("总和:", sum(nums), "\n")
+cat("均值:", mean(nums), "\n")
+cat("中位数:", median(nums), "\n")
+cat("方差:", var(nums), "\n")
+cat("标准差:", sd(nums), "\n")
+cat("最大值:", max(nums), "\n")
+cat("最小值:", min(nums), "\n")
+cat("排序:", sort(nums), "\n")
+cat("反转:", rev(nums), "\n")
+
+# 索引（从 1 开始！）
+v &lt;- c("a", "b", "c", "d", "e")
+cat("v[1] =", v[1], "\n")
+cat("v[2:4] =", v[2:4], "\n")
+cat("v[c(1,3,5)] =", v[c(1,3,5)], "\n")
+cat("v[-1] =", v[-1], "\n")  # 删除第一个
+
+# 逻辑索引
+nums &lt;- 1:10
+cat("大于5的:", nums[nums &gt; 5], "\n")
+
+# 命名向量
+scores &lt;- c(语文=95, 数学=88, 英语=92)
+cat("数学成绩:", scores["数学"], "\n")</code></pre>
+                </div>
+            </section>
+
+            <section id="data">
+                <h2>数据结构</h2>
+
+                <h3>矩阵 Matrix</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>R</span><button class="code-copy">复制</button></div>
+                    <pre><code># 创建矩阵
+m &lt;- matrix(1:9, nrow=3, ncol=3)
+print(m)
+
+m2 &lt;- matrix(1:6, nrow=2, byrow=TRUE)
+print(m2)
+
+# 矩阵运算
+m1 &lt;- matrix(1:4, nrow=2)
+m2 &lt;- matrix(5:8, nrow=2)
+print(m1 + m2)   # 元素相加
+print(m1 %*% m2) # 矩阵乘法
+
+# 索引
+cat("m[1,1] =", m[1,1], "\n")
+cat("m[2,] =", m[2,], "\n")
+cat("m[,3] =", m[,3], "\n")</code></pre>
+                </div>
+
+                <h3>列表 List</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>R</span><button class="code-copy">复制</button></div>
+                    <pre><code># 创建列表（可以包含不同类型）
+person &lt;- list(
+    name = "张三",
+    age = 25,
+    scores = c(95, 88, 92),
+    info = list(city = "北京", phone = "123456")
+)
+
+# 访问
+cat("姓名:", person$name, "\n")
+cat("年龄:", person[["age"]], "\n")
+cat("成绩:", person$scores, "\n")
+cat("城市:", person$info$city, "\n")
+
+# 添加元素
+person$email &lt;- "zhangsan@example.com"</code></pre>
+                </div>
+
+                <h3>数据框 Data Frame</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>R</span><button class="code-copy">复制</button></div>
+                    <pre><code># 创建数据框
+df &lt;- data.frame(
+    姓名 = c("张三", "李四", "王五", "赵六"),
+    年龄 = c(25, 30, 28, 35),
+    城市 = c("北京", "上海", "广州", "深圳"),
+    成绩 = c(95, 88, 92, 85),
+    stringsAsFactors = FALSE
+)
+print(df)
+
+# 查看信息
+cat("行列数:", dim(df), "\n")
+cat("行数:", nrow(df), "\n")
+cat("列数:", ncol(df), "\n")
+cat("列名:", colnames(df), "\n")
+
+# 访问数据
+cat("姓名列:", df$姓名, "\n")
+cat("第二行:", as.character(df[2, ]), "\n")
+
+# 条件筛选
+print(df[df$成绩 &gt; 90, ])
+
+# 添加列
+df$等级 &lt;- ifelse(df$成绩 &gt;= 90, "优秀", "良好")
+print(df)</code></pre>
+                </div>
+
+                <h3>因子 Factor</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>R</span><button class="code-copy">复制</button></div>
+                    <pre><code># 创建因子
+grades &lt;- c("小学", "中学", "大学", "中学", "小学", "大学")
+f &lt;- factor(grades)
+print(f)
+print(table(f))  # 频数统计
+
+# 有序因子
+size &lt;- c("小", "中", "大", "中", "小")
+size_factor &lt;- factor(size, ordered = TRUE, levels = c("小", "中", "大"))
+print(size_factor)</code></pre>
+                </div>
+            </section>
+
+            <section id="function">
+                <h2>函数</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>R</span><button class="code-copy">复制</button></div>
+                    <pre><code># 基本函数
+add &lt;- function(a, b) {
+    return(a + b)
+}
+cat("add(3, 5) =", add(3, 5), "\n")
+
+# 默认参数
+greet &lt;- function(name = "世界") {
+    cat("你好,", name, "!\n")
+}
+greet()
+greet("张三")
+
+# 可变参数
+my_sum &lt;- function(...) {
+    args &lt;- list(...)
+    return(sum(unlist(args)))
+}
+cat("my_sum(1,2,3,4,5) =", my_sum(1,2,3,4,5), "\n")
+
+# 函数作为参数
+apply_func &lt;- function(arr, func) {
+    return(sapply(arr, func))
+}
+result &lt;- apply_func(1:5, function(x) x^2)
+cat("平方:", result, "\n")
+
+# 递归
+factorial &lt;- function(n) {
+    if (n &lt;= 1) {
+        return(1)
+    }
+    return(n * factorial(n - 1))
+}
+cat("5! =", factorial(5), "\n")</code></pre>
+                </div>
+            </section>
+
+            <section id="control">
+                <h2>流程控制</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>R</span><button class="code-copy">复制</button></div>
+                    <pre><code># if-else
+score &lt;- 85
+if (score &gt;= 90) {
+    cat("优秀\n")
+} else if (score &gt;= 80) {
+    cat("良好\n")
+} else if (score &gt;= 60) {
+    cat("及格\n")
+} else {
+    cat("不及格\n")
+}
+
+# ifelse（向量化）
+scores &lt;- c(95, 82, 75, 60, 55)
+grades &lt;- ifelse(scores &gt;= 90, "优秀",
+          ifelse(scores &gt;= 60, "及格", "不及格"))
+cat("成绩分级:", grades, "\n")
+
+# for 循环
+cat("for 循环:\n")
+for (i in 1:3) {
+    cat("  ", i, "\n")
+}
+
+# 遍历向量
+fruits &lt;- c("苹果", "香蕉", "橙子")
+cat("遍历水果:\n")
+for (f in fruits) {
+    cat("  -", f, "\n")
+}
+
+# while 循环
+cat("while 循环:\n")
+i &lt;- 1
+while (i &lt;= 3) {
+    cat("  ", i, "\n")
+    i &lt;- i + 1
+}
+
+# repeat 循环
+cat("repeat 循环:\n")
+i &lt;- 1
+repeat {
+    cat("  ", i, "\n")
+    i &lt;- i + 1
+    if (i &gt; 3) break
+}
+
+# break 和 next
+cat("break/next:\n")
+for (i in 1:5) {
+    if (i == 3) next  # 跳过
+    if (i == 5) break # 退出
+    cat("  ", i, "\n")
+}
+
+# switch
+day &lt;- "周一"
+result &lt;- switch(day,
+    "周一" = "工作日",
+    "周二" = "工作日",
+    "周三" = "工作日",
+    "周四" = "工作日",
+    "周五" = "工作日",
+    "周六" = "周末",
+    "周日" = "周末"
+)
+cat("周一:", result, "\n")</code></pre>
+                </div>
+            </section>
+
+            <section id="apply">
+                <h2>apply 族函数</h2>
+                <p>apply 族函数是 R 的精髓，用于对数据应用函数，避免显式循环。</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span>R</span><button class="code-copy">复制</button></div>
+                    <pre><code># apply - 矩阵/数组
+m &lt;- matrix(1:9, nrow=3)
+cat("行求和:\n")
+print(apply(m, 1, sum))
+cat("列求平均:\n")
+print(apply(m, 2, mean))
+
+# lapply - 列表/向量，返回列表
+nums &lt;- list(a=1:3, b=4:6, c=7:9)
+cat("lapply 求和:\n")
+print(lapply(nums, sum))
+
+# sapply - 简化结果
+cat("sapply 求和:\n")
+print(sapply(nums, sum))
+
+# tapply - 分组应用
+df &lt;- data.frame(
+    name = c("A","B","C","D","E"),
+    group = c("甲","乙","甲","乙","甲"),
+    score = c(90, 85, 92, 88, 95)
+)
+cat("分组平均值:\n")
+print(tapply(df$score, df$group, mean))
+
+# vapply - 指定返回类型
+cat("vapply 长度:\n")
+print(vapply(nums, length, integer(1)))
+
+# mapply - 多参数
+cat("mapply:\n")
+print(mapply(function(a, b) a + b, c(1,2,3), c(4,5,6)))</code></pre>
+                </div>
+            </section>
+
+            <section id="stats">
+                <h2>统计分析</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>R</span><button class="code-copy">复制</button></div>
+                    <pre><code># 生成随机数据
+set.seed(42)  # 设置随机种子
+data &lt;- rnorm(100, mean=0, sd=1)  # 正态分布
+
+# 描述性统计
+cat("长度:", length(data), "\n")
+cat("均值:", mean(data), "\n")
+cat("中位数:", median(data), "\n")
+cat("方差:", var(data), "\n")
+cat("标准差:", sd(data), "\n")
+cat("最小值:", min(data), "\n")
+cat("最大值:", max(data), "\n")
+cat("分位数:\n")
+print(quantile(data))
+cat("摘要:\n")
+print(summary(data))
+
+# 相关性
+x &lt;- 1:10
+y &lt;- 2*x + rnorm(10)
+cat("相关系数:", cor(x, y), "\n")
+
+# 线性回归
+model &lt;- lm(y ~ x)
+cat("回归模型:\n")
+print(summary(model))
+
+# 假设检验
+t.test(data, mu=0)  # t 检验
+
+# 常用分布函数
+# rnorm  rbinom  runif  rexp  # 生成随机数
+# dnorm  dbinom  dunif  dexp  # 概率密度
+# pnorm  pbinom  punif  pexp  # 累积概率
+# qnorm  qbinom  qunif  qexp  # 分位数</code></pre>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="lua.html">← Lua 教程</a>
+                <a href="kotlin.html">Kotlin 教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode 编程教程 © 2024 | 示例代码均有中文注释</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

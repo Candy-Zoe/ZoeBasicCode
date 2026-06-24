@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kotlin 教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java/Kotlin ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="kotlin.html" class="active">Kotlin</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="javascript.html">JavaScript</a>
+                <a href="typescript.html">TypeScript</a>
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+        <li class="dropdown">
+            <a href="#">更多 ▾</a>
+            <div class="dropdown-content">
+                <a href="rust.html">Rust</a>
+                <a href="sql.html">SQL</a>
+                <a href="shell.html">Shell</a>
+                <a href="lua.html">Lua</a>
+                <a href="r.html">R 语言</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Kotlin 教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#variable">变量与类型</a></li>
+                    <li><a href="#function">函数</a></li>
+                    <li><a href="#control">流程控制</a></li>
+                    <li><a href="#class">类与对象</a></li>
+                    <li><a href="#null">空安全</a></li>
+                    <li><a href="#generic">泛型</a></li>
+                    <li><a href="#scope">作用域函数</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>Kotlin 基础教程</h1>
+
+            <section id="intro">
+                <h2>Kotlin 简介</h2>
+                <p>Kotlin 是 JetBrains 开发的现代编程语言，运行在 JVM 上，语法简洁优雅。Google 官方推荐的 Android 开发语言，也可用于后端、Web 和原生开发。</p>
+
+                <div class="tip-box info">
+                    <strong>💡 Kotlin 特点</strong>
+                    <ul>
+                        <li>简洁：代码量比 Java 少很多</li>
+                        <li>空安全：从语法层面避免空指针</li>
+                        <li>100% Java 互操作</li>
+                        <li>函数式 + 面向对象</li>
+                        <li>扩展函数、数据类、密封类</li>
+                        <li>协程（Coroutine）异步编程</li>
+                        <li>Android 官方开发语言</li>
+                    </ul>
+                </div>
+
+                <h3>安装与运行</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code># 安装（SDKMAN）
+sdk install kotlin
+
+# 编译运行
+kotlinc hello.kt -include-runtime -d hello.jar
+java -jar hello.jar
+
+# 直接运行
+kotlinc hello.kt
+# HelloKt.main()</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 第一个 Kotlin 程序
+fun main() {
+    println("Hello, World!")
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="variable">
+                <h2>变量与数据类型</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // 可变变量
+    var x = 10
+    x = 20
+    println("var x = $x")
+
+    // 不可变变量（推荐）
+    val y = 10
+    // y = 20  // 错误
+    println("val y = $y")
+
+    // 显式类型
+    val a: Int = 100
+    val b: String = "Hello"
+    val c: Double = 3.14
+    val d: Boolean = true
+    val e: Char = 'A'
+
+    // 字符串模板
+    val name = "张三"
+    val age = 25
+    println("姓名: $name, 年龄: $age")
+    println("字符串长度: ${name.length}")
+    println("5年后: ${age + 5} 岁")
+
+    // 多行字符串
+    val multiLine = """
+        第一行
+        第二行
+        第三行
+    """.trimIndent()
+    println(multiLine)
+
+    // 基本类型转换
+    val i: Int = 100
+    val l: Long = i.toLong()
+    val d2: Double = i.toDouble()
+
+    // 数组
+    val nums = intArrayOf(1, 2, 3, 4, 5)
+    val strs = arrayOf("苹果", "香蕉", "橙子")
+    println("IntArray: ${nums.joinToString()}")
+    println("Array: ${strs.joinToString()}")
+    println("第一个: ${strs[0]}")
+    println("大小: ${strs.size}")
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="function">
+                <h2>函数</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 基本函数
+fun add(a: Int, b: Int): Int {
+    return a + b
+}
+
+// 表达式函数体
+fun multiply(a: Int, b: Int) = a * b
+
+// 默认参数
+fun greet(name: String = "世界") {
+    println("你好, $name!")
+}
+
+// 命名参数
+fun printInfo(name: String, age: Int, city: String) {
+    println("$name, $age 岁, 来自 $city")
+}
+
+// 可变参数
+fun sum(vararg numbers: Int): Int {
+    return numbers.sum()
+}
+
+// 中缀函数
+infix fun Int.times(str: String): String {
+    return str.repeat(this)
+}
+
+// 扩展函数
+fun String.reverse(): String {
+    return this.reversed()
+}
+
+// 高阶函数
+fun applyOperation(a: Int, b: Int, op: (Int, Int) -&gt; Int): Int {
+    return op(a, b)
+}
+
+// Lambda 表达式
+val square = { x: Int -&gt; x * x }
+
+fun main() {
+    println("add(3, 5) = ${add(3, 5)}")
+    println("multiply(3, 5) = ${multiply(3, 5)}")
+
+    greet()
+    greet("张三")
+
+    printInfo(age = 25, name = "李四", city = "上海")
+
+    println("sum(1,2,3,4,5) = ${sum(1, 2, 3, 4, 5)}")
+
+    println("3 times \"A\" = ${3 times "A"}")
+
+    println("\"hello\".reverse() = ${"hello".reverse()}")
+
+    val result = applyOperation(10, 5) { x, y -&gt; x - y }
+    println("10 - 5 = $result")
+
+    println("square(5) = ${square(5)}")
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="control">
+                <h2>流程控制</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // if 表达式
+    val score = 85
+    val grade = if (score &gt;= 90) {
+        "优秀"
+    } else if (score &gt;= 80) {
+        "良好"
+    } else if (score &gt;= 60) {
+        "及格"
+    } else {
+        "不及格"
+    }
+    println("成绩等级: $grade")
+
+    // when 表达式
+    val day = "周一"
+    val dayType = when (day) {
+        "周一", "周二", "周三", "周四", "周五" -&gt; "工作日"
+        "周六", "周日" -&gt; "周末"
+        else -&gt; "无效日期"
+    }
+    println("$day 是 $dayType")
+
+    // when 不带参数
+    val x = 15
+    val result = when {
+        x &lt; 10 -&gt; "小于10"
+        x &lt; 20 -&gt; "小于20"
+        else -&gt; "大于等于20"
+    }
+    println("x = $x, $result")
+
+    // for 循环
+    println("for 循环:")
+    for (i in 1..3) {
+        println("  $i")
+    }
+
+    println("downTo:")
+    for (i in 3 downTo 1) {
+        println("  $i")
+    }
+
+    println("step:")
+    for (i in 1..5 step 2) {
+        println("  $i")
+    }
+
+    println("until (不包含上限):")
+    for (i in 1 until 3) {
+        println("  $i")
+    }
+
+    // 遍历
+    val fruits = listOf("苹果", "香蕉", "橙子")
+    println("遍历列表:")
+    for ((index, fruit) in fruits.withIndex()) {
+        println("  $index. $fruit")
+    }
+
+    // while 循环
+    var i = 1
+    println("while 循环:")
+    while (i &lt;= 3) {
+        println("  $i")
+        i++
+    }
+
+    // do-while 循环
+    i = 1
+    println("do-while 循环:")
+    do {
+        println("  $i")
+        i++
+    } while (i &lt;= 3)
+
+    // return / break / continue
+    println("break/continue:")
+    loop@ for (i in 1..3) {
+        for (j in 1..3) {
+            if (j == 2) continue
+            if (i == 3) break@loop
+            println("  i=$i, j=$j")
+        }
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="class">
+                <h2>类与对象</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 基本类
+class Person(val name: String, var age: Int) {
+    fun greet() {
+        println("你好，我是$name，$age 岁")
+    }
+}
+
+// 数据类
+data class User(val id: Int, val name: String, val email: String)
+
+// 枚举类
+enum class Direction {
+    NORTH, SOUTH, EAST, WEST
+}
+
+// 带属性的枚举
+enum class Color(val r: Int, val g: Int, val b: Int) {
+    RED(255, 0, 0),
+    GREEN(0, 255, 0),
+    BLUE(0, 0, 255);
+
+    fun toHex(): String {
+        return String.format("#%02X%02X%02X", r, g, b)
+    }
+}
+
+// 单例对象
+object Singleton {
+    val version = "1.0"
+    fun info() {
+        println("这是单例对象，版本: $version")
+    }
+}
+
+// 伴生对象
+class MyClass {
+    companion object {
+        fun create(): MyClass = MyClass()
+        val TAG = "MyClass"
+    }
+}
+
+// 继承（open 才能被继承）
+open class Animal(val name: String) {
+    open fun speak() {
+        println("$name 发出声音")
+    }
+}
+
+class Dog(name: String) : Animal(name) {
+    override fun speak() {
+        println("$name 汪汪叫")
+    }
+
+    fun fetch() {
+        println("$name 在接飞盘")
+    }
+}
+
+// 接口
+interface Drawable {
+    fun draw()
+    fun info() {
+        println("可以绘制")
+    }
+}
+
+class Circle(val radius: Double) : Drawable {
+    override fun draw() {
+        println("画一个半径为 $radius 的圆")
+    }
+}
+
+// 密封类
+sealed class Result {
+    data class Success(val data: String) : Result()
+    data class Error(val message: String) : Result()
+    object Loading : Result()
+}
+
+fun handleResult(result: Result) {
+    when (result) {
+        is Result.Success -&gt; println("成功: ${result.data}")
+        is Result.Error -&gt; println("错误: ${result.message}")
+        is Result.Loading -&gt; println("加载中...")
+    }
+}
+
+fun main() {
+    val p = Person("张三", 25)
+    p.greet()
+    p.age = 26
+    println("修改后年龄: ${p.age}")
+
+    val user1 = User(1, "李四", "lisi@example.com")
+    val user2 = User(1, "李四", "lisi@example.com")
+    println("user1: $user1")
+    println("user1 == user2: ${user1 == user2}")
+
+    // 解构声明
+    val (id, name, email) = user1
+    println("解构: id=$id, name=$name, email=$email")
+
+    println("方向: ${Direction.NORTH}")
+    println("红色: ${Color.RED}, 16进制: ${Color.RED.toHex()}")
+
+    Singleton.info()
+    println("伴生对象: ${MyClass.TAG}")
+
+    val dog = Dog("旺财")
+    dog.speak()
+    dog.fetch()
+
+    val circle = Circle(5.0)
+    circle.draw()
+    circle.info()
+
+    handleResult(Result.Success("数据已加载"))
+    handleResult(Result.Error("网络错误"))
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="null">
+                <h2>空安全</h2>
+                <p>这是 Kotlin 最著名的特性之一，有效避免空指针异常。</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // 可空类型（?）
+    var nullableStr: String? = "Hello"
+    println("nullableStr = $nullableStr")
+    nullableStr = null
+    println("nullableStr = $nullableStr")
+
+    // 安全调用（?.）
+    val len = nullableStr?.length
+    println("长度: $len")
+
+    // 非空断言（!!）
+    val notNull = "Hello"
+    println("长度: ${notNull!!.length}")
+
+    // Elvis 操作符（?:）
+    val name: String? = null
+    val displayName = name ?: "未知"
+    println("显示名称: $displayName")
+
+    // 安全转换（as?）
+    val obj: Any = "Hello"
+    val str: String? = obj as? String
+    println("安全转换: $str")
+
+    // let 函数
+    val str2: String? = "Hello"
+    str2?.let {
+        println("let: 字符串长度 = ${it.length}")
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="generic">
+                <h2>泛型</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 泛型函数
+fun &lt;T&gt; identity(value: T): T = value
+
+// 泛型类
+class Box&lt;T&gt;(var content: T) {
+    fun get(): T = content
+    fun set(value: T) { content = value }
+}
+
+// 泛型约束
+fun &lt;T : Comparable&lt;T&gt;&gt; max(a: T, b: T): T {
+    return if (a &gt; b) a else b
+}
+
+// 协变 out（生产者）
+interface Producer&lt;out T&gt; {
+    fun produce(): T
+}
+
+// 逆变 in（消费者）
+interface Consumer&lt;in T&gt; {
+    fun consume(item: T)
+}
+
+fun main() {
+    println("identity(42) = ${identity(42)}")
+    println("identity(\"hello\") = ${identity("hello")}")
+
+    val intBox = Box(100)
+    println("Box content: ${intBox.get()}")
+
+    val strBox = Box("Hello")
+    println("Box content: ${strBox.get()}")
+
+    println("max(10, 20) = ${max(10, 20)}")
+    println("max(\"a\", \"z\") = ${max("a", "z")}")
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="scope">
+                <h2>作用域函数</h2>
+                <p>Kotlin 标准库提供了几个非常实用的作用域函数，是 Kotlin 的特色语法。</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Kotlin</span><button class="code-copy">复制</button></div>
+                    <pre><code>fun main() {
+    // let - 函数内用 it 引用，返回最后一行
+    val str: String? = "Hello"
+    str?.let {
+        println("let: 字符串长度 = ${it.length}")
+    }
+
+    // apply - 函数内用 this 引用，返回对象本身
+    val list = mutableListOf&lt;Int&gt;().apply {
+        add(1)
+        add(2)
+        add(3)
+    }
+    println("apply 创建的列表: $list")
+
+    // run - 函数内用 this 引用，返回最后一行
+    val result = StringBuilder().run {
+        append("Hello")
+        append(" ")
+        append("World")
+        toString()
+    }
+    println("run 结果: $result")
+
+    // with - 非扩展函数，传入对象
+    val list2 = listOf(1, 2, 3)
+    val size = with(list2) {
+        println("with: 列表 = $this")
+        size
+    }
+    println("with 返回大小: $size")
+
+    // also - 类似 apply，但用 it 引用
+    val numbers = mutableListOf&lt;Int&gt;()
+    numbers.also {
+        it.add(1)
+        it.add(2)
+    }.also {
+        println("also: $it")
+    }
+
+    // takeIf - 满足条件返回对象，否则 null
+    val num = 42
+    val result2 = num.takeIf { it &gt; 10 }
+    println("takeIf { it &gt; 10 }: $result2")
+
+    // takeUnless - 不满足条件返回对象
+    val result3 = num.takeUnless { it &gt; 100 }
+    println("takeUnless { it &gt; 100 }: $result3")
+}</code></pre>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr><th>函数</th><th>引用方式</th><th>返回值</th><th>用途</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>let</td><td>it</td><td>最后一行</td><td>非空判断、链式调用</td></tr>
+                        <tr><td>apply</td><td>this</td><td>对象本身</td><td>初始化对象</td></tr>
+                        <tr><td>run</td><td>this</td><td>最后一行</td><td>配置并计算结果</td></tr>
+                        <tr><td>with</td><td>this</td><td>最后一行</td><td>对对象做多个操作</td></tr>
+                        <tr><td>also</td><td>it</td><td>对象本身</td><td>附加操作（打印等）</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <div class="footer-nav">
+                <a href="r.html">← R 语言教程</a>
+                <a href="python.html">Python 教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode 编程教程 © 2024 | 示例代码均有中文注释</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

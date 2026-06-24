@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust 教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java/Kotlin ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="kotlin.html">Kotlin</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="javascript.html">JavaScript</a>
+                <a href="typescript.html">TypeScript</a>
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+        <li class="dropdown">
+            <a href="#">更多 ▾</a>
+            <div class="dropdown-content">
+                <a href="rust.html" class="active">Rust</a>
+                <a href="sql.html">SQL</a>
+                <a href="shell.html">Shell</a>
+                <a href="lua.html">Lua</a>
+                <a href="r.html">R 语言</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Rust 教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#variable">变量与类型</a></li>
+                    <li><a href="#ownership">所有权与借用</a></li>
+                    <li><a href="#struct">结构体与枚举</a></li>
+                    <li><a href="#match">模式匹配</a></li>
+                    <li><a href="#trait">Trait 与泛型</a></li>
+                    <li><a href="#lifetime">生命周期</a></li>
+                    <li><a href="#error">错误处理</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>Rust 基础教程</h1>
+
+            <section id="intro">
+                <h2>Rust 简介</h2>
+                <p>Rust 是一门注重安全、并发和性能的系统编程语言，由 Mozilla 开发。它通过所有权系统在编译时保证内存安全，无需垃圾回收。</p>
+
+                <div class="tip-box info">
+                    <strong>💡 Rust 核心特点</strong>
+                    <ul>
+                        <li>内存安全：所有权系统，无 GC</li>
+                        <li>零成本抽象：高性能，媲美 C++</li>
+                        <li>并发安全：编译时防止数据竞争</li>
+                        <li>实用的错误处理：Result、Option</li>
+                        <li>现代工具链：cargo、rustfmt、clippy</li>
+                    </ul>
+                </div>
+
+                <h3>安装与运行</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code># 安装（Linux/Mac）
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# 编译运行
+rustc hello.rs -o hello
+./hello
+
+# 使用 cargo
+cargo new myproject
+cd myproject
+cargo run</code></pre>
+                </div>
+            </section>
+
+            <section id="variable">
+                <h2>变量与数据类型</h2>
+
+                <h3>变量与可变性</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    // 不可变变量（默认）
+    let x = 5;
+    // x = 6;  // 错误！
+
+    // 可变变量
+    let mut y = 5;
+    y = 6;
+
+    // 常量
+    const MAX_POINTS: u32 = 100_000;
+
+    // 变量遮蔽
+    let spaces = "   ";
+    let spaces = spaces.len();
+}</code></pre>
+                </div>
+
+                <h3>数据类型</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 标量类型
+let guess: u32 = 42;   // 无符号整数
+let x: i32 = -10;      // 有符号整数
+let f: f64 = 3.14;     // 浮点数
+let b: bool = true;    // 布尔
+let c: char = '😻';    // 字符
+
+// 复合类型
+let tup: (i32, f64, u8) = (500, 6.4, 1);  // 元组
+let (x, y, z) = tup;                        // 解构
+
+let arr: [i32; 5] = [1, 2, 3, 4, 5];       // 数组
+let a = [3; 5];  // [3, 3, 3, 3, 3]</code></pre>
+                </div>
+
+                <h3>函数与控制流</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn add(a: i32, b: i32) -&gt; i32 {
+    a + b  // 表达式，无分号
+}
+
+fn main() {
+    // if 表达式
+    let number = if true { 5 } else { 6 };
+
+    // loop 循环
+    let mut count = 0;
+    let result = loop {
+        count += 1;
+        if count == 10 { break count * 2; }
+    };
+
+    // while 循环
+    let mut n = 3;
+    while n != 0 { n -= 1; }
+
+    // for 循环
+    for i in 1..4 { println!("{}", i); }
+    for i in (1..4).rev() { println!("{}", i); }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="ownership">
+                <h2>所有权与借用</h2>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 所有权三大规则</strong>
+                    <ol>
+                        <li>每个值都有一个所有者</li>
+                        <li>值在任一时刻只能有一个所有者</li>
+                        <li>当所有者离开作用域，值将被丢弃</li>
+                    </ol>
+                </div>
+
+                <h3>所有权转移</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1;  // s1 的所有权转移给 s2
+    // println!("{}", s1);  // 错误！s1 已失效
+
+    // clone 深拷贝
+    let s1 = String::from("hello");
+    let s2 = s1.clone();
+
+    // 基本类型实现了 Copy，不转移
+    let x = 5;
+    let y = x;  // x 仍然可用
+}</code></pre>
+                </div>
+
+                <h3>引用与借用</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>fn calculate_length(s: &amp;String) -&gt; usize {
+    s.len()
+}  // s 离开作用域，但因为没有所有权，什么也不做
+
+fn main() {
+    let s1 = String::from("hello");
+    let len = calculate_length(&amp;s1);  // 借用，不转移所有权
+    println!("'{}' 的长度是 {}", s1, len);
+
+    // 可变引用
+    let mut s = String::from("hello");
+    change(&amp;mut s);
+
+    // 同一时间只能有一个可变引用
+    // 或多个不可变引用
+}
+
+fn change(some_string: &amp;mut String) {
+    some_string.push_str(", world");
+}</code></pre>
+                </div>
+
+                <h3>切片 Slice</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>let s = String::from("hello world");
+
+let hello = &amp;s[0..5];   // "hello"
+let world = &amp;s[6..11];  // "world"
+let entire = &amp;s[..];    // 整个字符串
+
+let a = [1, 2, 3, 4, 5];
+let slice = &amp;a[1..3];   // [2, 3]</code></pre>
+                </div>
+            </section>
+
+            <section id="struct">
+                <h2>结构体与枚举</h2>
+
+                <h3>结构体</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>struct User {
+    username: String,
+    email: String,
+    sign_in_count: u64,
+    active: bool,
+}
+
+// 元组结构体
+struct Color(i32, i32, i32);
+struct Point(i32, i32, i32);
+
+// 类单元结构体
+struct AlwaysEqual;
+
+fn main() {
+    let user1 = User {
+        email: String::from("a@b.com"),
+        username: String::from("user1"),
+        active: true,
+        sign_in_count: 1,
+    };
+
+    // 结构体更新语法
+    let user2 = User {
+        email: String::from("c@d.com"),
+        username: String::from("user2"),
+        ..user1  // 其余字段从 user1 复制
+    };
+}</code></pre>
+                </div>
+
+                <h3>方法</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    // 方法
+    fn area(&amp;self) -&gt; u32 {
+        self.width * self.height
+    }
+
+    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
+        self.width &gt; other.width &amp;&amp; self.height &gt; other.height
+    }
+
+    // 关联函数（类似静态方法）
+    fn square(size: u32) -&gt; Rectangle {
+        Rectangle { width: size, height: size }
+    }
+}</code></pre>
+                </div>
+
+                <h3>枚举</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>enum IpAddr {
+    V4(u8, u8, u8, u8),
+    V6(String),
+}
+
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+// Option 枚举（标准库）
+let some_number = Some(5);
+let some_string = Some("a string");
+let absent_number: Option&lt;i32&gt; = None;</code></pre>
+                </div>
+            </section>
+
+            <section id="match">
+                <h2>模式匹配</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+
+fn value_in_cents(coin: Coin) -&gt; u8 {
+    match coin {
+        Coin::Penny =&gt; {
+            println!("幸运便士！");
+            1
+        }
+        Coin::Nickel =&gt; 5,
+        Coin::Dime =&gt; 10,
+        Coin::Quarter =&gt; 25,
+    }
+}
+
+// 匹配 Option
+fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+    match x {
+        None =&gt; None,
+        Some(i) =&gt; Some(i + 1),
+    }
+}
+
+// if let 简洁匹配
+let some_u8_value = Some(3u8);
+if let Some(3) = some_u8_value {
+    println!("three");
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="trait">
+                <h2>Trait 与泛型</h2>
+
+                <h3>Trait</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>pub trait Summary {
+    fn summarize(&amp;self) -&gt; String;
+
+    // 默认实现
+    fn summarize_author(&amp;self) -&gt; String {
+        String::from("(Read more...)")
+    }
+}
+
+struct Tweet { username: String, content: String }
+
+impl Summary for Tweet {
+    fn summarize(&amp;self) -&gt; String {
+        format!("{}: {}", self.username, self.content)
+    }
+}
+
+// trait 作为参数
+fn notify(item: &amp;impl Summary) {
+    println!("突发新闻! {}", item.summarize());
+}
+
+// trait 边界
+fn notify2&lt;T: Summary&gt;(item: &amp;T) {
+    println!("突发新闻! {}", item.summarize());
+}</code></pre>
+                </div>
+
+                <h3>泛型</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 泛型函数
+fn largest&lt;T: PartialOrd&gt;(list: &amp;[T]) -&gt; &amp;T {
+    let mut largest = &amp;list[0];
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+    largest
+}
+
+// 泛型结构体
+struct Point&lt;T, U&gt; {
+    x: T,
+    y: U,
+}
+
+// 泛型方法
+impl&lt;T, U&gt; Point&lt;T, U&gt; {
+    fn x(&amp;self) -&gt; &amp;T {
+        &amp;self.x
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="lifetime">
+                <h2>生命周期</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 函数生命周期注解
+fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+    if x.len() &gt; y.len() { x } else { y }
+}
+
+// 结构体生命周期注解
+struct ImportantExcerpt&lt;'a&gt; {
+    part: &amp;'a str,
+}
+
+fn main() {
+    let novel = String::from("Call me Ishmael. Some years ago...");
+    let first_sentence = novel.split('.').next().expect("没找到");
+    let i = ImportantExcerpt { part: first_sentence };
+}</code></pre>
+                </div>
+
+                <div class="tip-box success">
+                    <strong>✅ 生命周期省略规则</strong>
+                    <p>当函数满足以下情况时，Rust 可以自动推断生命周期，无需手动标注：</p>
+                    <ul>
+                        <li>输入生命周期都一样</li>
+                        <li>只有一个引用参数</li>
+                        <li>方法中 self 的生命周期赋给所有输出</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="error">
+                <h2>错误处理</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>Rust</span><button class="code-copy">复制</button></div>
+                    <pre><code>use std::fs::File;
+use std::io::{self, Read};
+
+// panic! - 不可恢复错误
+// panic!("crash and burn");
+
+// Result - 可恢复错误
+fn main() {
+    let f = File::open("hello.txt");
+    let f = match f {
+        Ok(file) =&gt; file,
+        Err(error) =&gt; panic!("打开文件失败: {:?}", error),
+    };
+}
+
+// ? 运算符 - 传播错误
+fn read_username_from_file() -&gt; Result&lt;String, io::Error&gt; {
+    let mut s = String::new();
+    File::open("hello.txt")?.read_to_string(&amp;mut s)?;
+    Ok(s)
+}
+
+// 自定义错误
+#[derive(Debug)]
+struct MyError { message: String }
+
+impl std::fmt::Display for MyError {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter) -&gt; std::fmt::Result {
+        write!(f, "{}", self.message)
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="go.html">← Go 教程</a>
+                <a href="sql.html">SQL 教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode 编程教程 © 2024 | 示例代码均有中文注释</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

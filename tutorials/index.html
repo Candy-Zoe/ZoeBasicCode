@@ -138,21 +138,33 @@
             </div>
         </li>
         <li class="dropdown">
-            <a href="#">Java ▾</a>
+            <a href="#">Java/Kotlin ▾</a>
             <div class="dropdown-content">
                 <a href="java.html">Java</a>
+                <a href="kotlin.html">Kotlin</a>
                 <a href="csharp.html">C#</a>
             </div>
         </li>
-        <li><a href="javascript.html">JavaScript</a></li>
         <li class="dropdown">
             <a href="#">前端 ▾</a>
             <div class="dropdown-content">
+                <a href="javascript.html">JavaScript</a>
+                <a href="typescript.html">TypeScript</a>
                 <a href="html.html">HTML</a>
                 <a href="css.html">CSS</a>
             </div>
         </li>
         <li><a href="go.html">Go</a></li>
+        <li><a href="rust.html">Rust</a></li>
+        <li class="dropdown">
+            <a href="#">更多 ▾</a>
+            <div class="dropdown-content">
+                <a href="sql.html">SQL</a>
+                <a href="shell.html">Shell</a>
+                <a href="lua.html">Lua</a>
+                <a href="r.html">R 语言</a>
+            </div>
+        </li>
     </ul>
 </nav>
 
@@ -168,8 +180,8 @@
     <div class="features">
         <div class="feature-item">
             <div class="icon">📚</div>
-            <h3>9 种主流语言</h3>
-            <p>覆盖 Python、C、C++、Java、JavaScript、Go 等</p>
+            <h3>16 种主流语言</h3>
+            <p>覆盖 Python、C、C++、Java、Go、Rust、TypeScript 等</p>
         </div>
         <div class="feature-item">
             <div class="icon">📝</div>
@@ -198,6 +210,55 @@
             <span class="tag">推荐入门</span>
         </a>
         
+        <a href="javascript.html" class="language-card">
+            <div class="icon">🟨</div>
+            <h3>JavaScript</h3>
+            <p>Web 开发核心语言，可前端可后端（Node.js）。前端开发必修。</p>
+            <span class="tag">Web 开发</span>
+        </a>
+        
+        <a href="typescript.html" class="language-card">
+            <div class="icon">🔷</div>
+            <h3>TypeScript</h3>
+            <p>JavaScript 的超集，添加了类型系统。大型项目必备，更安全、更易维护。</p>
+            <span class="tag">前端进阶</span>
+        </a>
+        
+        <a href="java.html" class="language-card">
+            <div class="icon">☕</div>
+            <h3>Java</h3>
+            <p>跨平台、企业级应用开发首选。稳定、安全，生态丰富。</p>
+            <span class="tag">企业级</span>
+        </a>
+        
+        <a href="kotlin.html" class="language-card">
+            <div class="icon">🟪</div>
+            <h3>Kotlin</h3>
+            <p>JetBrains 开发的现代语言，运行在 JVM 上。Android 官方开发语言。</p>
+            <span class="tag">Android</span>
+        </a>
+        
+        <a href="csharp.html" class="language-card">
+            <div class="icon">🔷</div>
+            <h3>C#</h3>
+            <p>微软主推语言，用于 Windows 开发、Unity 游戏、ASP.NET Web 开发。</p>
+            <span class="tag">Windows</span>
+        </a>
+        
+        <a href="go.html" class="language-card">
+            <div class="icon">🐹</div>
+            <h3>Go</h3>
+            <p>Google 开发，现代、简洁、高效。云计算、微服务、区块链常用。</p>
+            <span class="tag">云原生</span>
+        </a>
+        
+        <a href="rust.html" class="language-card">
+            <div class="icon">🦀</div>
+            <h3>Rust</h3>
+            <p>系统级编程语言，内存安全、高性能。适合底层开发和 WebAssembly。</p>
+            <span class="tag">系统编程</span>
+        </a>
+        
         <a href="c.html" class="language-card">
             <div class="icon">⚫</div>
             <h3>C 语言</h3>
@@ -212,25 +273,32 @@
             <span class="tag">高性能</span>
         </a>
         
-        <a href="java.html" class="language-card">
-            <div class="icon">☕</div>
-            <h3>Java</h3>
-            <p>跨平台、企业级应用开发首选。稳定、安全，生态丰富。</p>
-            <span class="tag">企业级</span>
+        <a href="sql.html" class="language-card">
+            <div class="icon">🗄️</div>
+            <h3>SQL</h3>
+            <p>数据库查询语言，数据分析和后端开发必备。所有关系型数据库的标准语言。</p>
+            <span class="tag">数据库</span>
         </a>
         
-        <a href="csharp.html" class="language-card">
-            <div class="icon">🔷</div>
-            <h3>C#</h3>
-            <p>微软主推语言，用于 Windows 开发、Unity 游戏、ASP.NET Web 开发。</p>
-            <span class="tag">Windows</span>
+        <a href="shell.html" class="language-card">
+            <div class="icon">💻</div>
+            <h3>Shell</h3>
+            <p>命令行脚本语言，自动化运维必备。Linux/Unix 系统管理的利器。</p>
+            <span class="tag">运维自动化</span>
         </a>
         
-        <a href="javascript.html" class="language-card">
-            <div class="icon">🟨</div>
-            <h3>JavaScript</h3>
-            <p>Web 开发核心语言，可前端可后端（Node.js）。前端开发必修。</p>
-            <span class="tag">Web 开发</span>
+        <a href="lua.html" class="language-card">
+            <div class="icon">🌙</div>
+            <h3>Lua</h3>
+            <p>轻量级脚本语言，嵌入性强。游戏开发、Nginx、Redis 等常用。</p>
+            <span class="tag">嵌入式脚本</span>
+        </a>
+        
+        <a href="r.html" class="language-card">
+            <div class="icon">📊</div>
+            <h3>R 语言</h3>
+            <p>统计分析和数据可视化的利器。数据科学、学术研究常用。</p>
+            <span class="tag">数据分析</span>
         </a>
         
         <a href="html.html" class="language-card">
@@ -246,13 +314,6 @@
             <p>网页样式设计语言。控制网页外观，让网页更美观。</p>
             <span class="tag">网页样式</span>
         </a>
-        
-        <a href="go.html" class="language-card">
-            <div class="icon">🐹</div>
-            <h3>Go</h3>
-            <p>Google 开发，现代、简洁、高效。云计算、微服务、区块链常用。</p>
-            <span class="tag">云原生</span>
-        </a>
     </div>
 
     <!-- 快速开始 -->
@@ -261,17 +322,41 @@
         <pre><code># Python
 python hello.py
 
-# C
-gcc hello.c -o hello && ./hello
+# JavaScript (Node.js)
+node hello.js
+
+# TypeScript
+tsc hello.ts && node hello.js
 
 # Java
 javac Hello.java && java Hello
 
-# JavaScript (Node.js)
-node hello.js
+# Kotlin
+kotlinc hello.kt -include-runtime -d hello.jar && java -jar hello.jar
 
 # Go
-go run hello.go</code></pre>
+go run hello.go
+
+# Rust
+rustc hello.rs && ./hello
+
+# C
+gcc hello.c -o hello && ./hello
+
+# C++
+g++ hello.cpp -o hello && ./hello
+
+# SQL
+mysql -u root -p < hello.sql
+
+# Shell
+bash hello.sh
+
+# Lua
+lua hello.lua
+
+# R
+Rscript hello.R</code></pre>
     </div>
 
     <!-- 学习路径 -->
@@ -288,19 +373,34 @@ go run hello.go</code></pre>
             <td>语法简洁，快速理解编程概念</td>
         </tr>
         <tr>
-            <td>进阶</td>
-            <td>C / Java</td>
-            <td>理解底层原理/面向对象思想</td>
+            <td>前端开发</td>
+            <td>HTML → CSS → JavaScript → TypeScript</td>
+            <td>Web 前端开发必备技能</td>
         </tr>
         <tr>
-            <td>前端</td>
-            <td>HTML → CSS → JavaScript</td>
-            <td>Web 开发必备技能</td>
+            <td>后端开发</td>
+            <td>Java / Go / C# / Python</td>
+            <td>服务器端开发主流选择</td>
         </tr>
         <tr>
-            <td>后端</td>
-            <td>Java / C# / Go</td>
-            <td>服务器端开发</td>
+            <td>移动端</td>
+            <td>Kotlin (Android) / Swift (iOS)</td>
+            <td>移动应用开发</td>
+        </tr>
+        <tr>
+            <td>系统编程</td>
+            <td>C / C++ / Rust</td>
+            <td>底层开发、高性能程序</td>
+        </tr>
+        <tr>
+            <td>数据科学</td>
+            <td>Python / R / SQL</td>
+            <td>数据分析、机器学习必备</td>
+        </tr>
+        <tr>
+            <td>运维自动化</td>
+            <td>Shell / Python</td>
+            <td>自动化脚本、DevOps</td>
         </tr>
     </table>
 </div>

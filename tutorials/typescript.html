@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript 教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java/Kotlin ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="kotlin.html">Kotlin</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="javascript.html">JavaScript</a>
+                <a href="typescript.html" class="active">TypeScript</a>
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+        <li class="dropdown">
+            <a href="#">更多 ▾</a>
+            <div class="dropdown-content">
+                <a href="rust.html">Rust</a>
+                <a href="sql.html">SQL</a>
+                <a href="shell.html">Shell</a>
+                <a href="lua.html">Lua</a>
+                <a href="r.html">R 语言</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>TypeScript 教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#type">类型系统</a></li>
+                    <li><a href="#interface">接口</a></li>
+                    <li><a href="#class">类与继承</a></li>
+                    <li><a href="#generic">泛型</a></li>
+                    <li><a href="#advanced">高级类型</a></li>
+                    <li><a href="#enum">枚举与装饰器</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>TypeScript 基础教程</h1>
+
+            <section id="intro">
+                <h2>TypeScript 简介</h2>
+                <p>TypeScript 是微软开发的 JavaScript 超集，添加了静态类型系统，可以编译为纯 JavaScript。</p>
+
+                <div class="tip-box info">
+                    <strong>💡 TypeScript 特点</strong>
+                    <ul>
+                        <li>静态类型检查，提前发现错误</li>
+                        <li>支持 ES6+ 新特性</li>
+                        <li>更好的 IDE 代码提示</li>
+                        <li>适合大型项目开发</li>
+                        <li>完全兼容 JavaScript</li>
+                    </ul>
+                </div>
+
+                <h3>安装与运行</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span><button class="code-copy">复制</button></div>
+                    <pre><code># 全局安装
+npm install -g typescript
+
+# 编译
+tsc hello.ts
+
+# 使用 ts-node 直接运行
+npm install -g ts-node
+ts-node hello.ts</code></pre>
+                </div>
+            </section>
+
+            <section id="type">
+                <h2>类型系统</h2>
+
+                <h3>基本类型</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 布尔值
+let isDone: boolean = false;
+
+// 数字
+let decimal: number = 6;
+let hex: number = 0xf00d;
+
+// 字符串
+let color: string = "blue";
+let name: string = `Bob`;
+let sentence: string = `Hello, ${name}`;
+
+// 数组
+let list1: number[] = [1, 2, 3];
+let list2: Array&lt;number&gt; = [1, 2, 3];
+
+// 元组
+let x: [string, number] = ["hello", 10];
+
+// 枚举
+enum Color {Red, Green, Blue}
+let c: Color = Color.Green;
+
+// Any
+let notSure: any = 4;
+notSure = "maybe a string";
+
+// Void
+function warnUser(): void {
+    console.log("警告");
+}
+
+// Null 和 Undefined
+let u: undefined = undefined;
+let n: null = null;</code></pre>
+                </div>
+
+                <h3>类型断言</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 方式一：尖括号
+let someValue: any = "this is a string";
+let strLength1: number = (&lt;string&gt;someValue).length;
+
+// 方式二：as 语法（JSX 推荐）
+let strLength2: number = (someValue as string).length;</code></pre>
+                </div>
+            </section>
+
+            <section id="interface">
+                <h2>接口 Interface</h2>
+
+                <h3>基本接口</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>interface Person {
+    firstName: string;
+    lastName: string;
+    age?: number;           // 可选属性
+    readonly id: number;    // 只读属性
+}
+
+function greeter(person: Person): string {
+    return `Hello, ${person.firstName} ${person.lastName}`;
+}
+
+let user: Person = { firstName: "Jane", lastName: "User", id: 1 };
+console.log(greeter(user));</code></pre>
+                </div>
+
+                <h3>函数类型接口</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>interface SearchFunc {
+    (source: string, subString: string): boolean;
+}
+
+let mySearch: SearchFunc = function(src, sub) {
+    return src.search(sub) > -1;
+};</code></pre>
+                </div>
+
+                <h3>可索引类型</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>interface StringArray {
+    [index: number]: string;
+}
+
+let myArray: StringArray = ["Bob", "Fred"];
+let myStr: string = myArray[0];</code></pre>
+                </div>
+            </section>
+
+            <section id="class">
+                <h2>类与继承</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>class Animal {
+    name: string;
+
+    constructor(name: string) {
+        this.name = name;
+    }
+
+    move(distance: number = 0): void {
+        console.log(`${this.name} 移动了 ${distance} 米`);
+    }
+}
+
+class Dog extends Animal {
+    breed: string;
+
+    constructor(name: string, breed: string) {
+        super(name);
+        this.breed = breed;
+    }
+
+    bark(): void {
+        console.log(`${this.name} 汪汪叫`);
+    }
+
+    move(distance: number = 0): void {
+        console.log(`${this.name} 跑了 ${distance} 米`);
+        super.move(distance);
+    }
+}
+
+let dog = new Dog("旺财", "金毛");
+dog.bark();
+dog.move(20);</code></pre>
+                </div>
+
+                <h3>访问修饰符</h3>
+                <div class="tip-box info">
+                    <strong>📝 三种访问修饰符</strong>
+                    <ul>
+                        <li><code>public</code>：公开的，默认值，任何地方可访问</li>
+                        <li><code>private</code>：私有的，只能在类内部访问</li>
+                        <li><code>protected</code>：受保护的，类内部和子类可访问</li>
+                    </ul>
+                </div>
+
+                <h3>抽象类</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>abstract class Animal2 {
+    abstract makeSound(): void;
+
+    move(): void {
+        console.log("移动中...");
+    }
+}
+
+class Cat extends Animal2 {
+    makeSound(): void {
+        console.log("喵喵叫");
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="generic">
+                <h2>泛型</h2>
+
+                <h3>泛型函数</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>function identity&lt;T&gt;(arg: T): T {
+    return arg;
+}
+
+let output = identity&lt;string&gt;("myString");
+let output2 = identity("myString");  // 类型推断</code></pre>
+                </div>
+
+                <h3>泛型类</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>class GenericNumber&lt;T&gt; {
+    zeroValue: T;
+    add: (x: T, y: T) =&gt; T;
+
+    constructor(zero: T, addFn: (x: T, y: T) =&gt; T) {
+        this.zeroValue = zero;
+        this.add = addFn;
+    }
+}
+
+let myGenericNumber = new GenericNumber&lt;number&gt;(0, (x, y) =&gt; x + y);
+console.log(myGenericNumber.add(5, 3));  // 8</code></pre>
+                </div>
+
+                <h3>泛型约束</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>interface Lengthwise {
+    length: number;
+}
+
+function loggingIdentity&lt;T extends Lengthwise&gt;(arg: T): T {
+    console.log(arg.length);
+    return arg;
+}
+
+loggingIdentity("hello");  // 5
+loggingIdentity([1, 2, 3]);  // 3</code></pre>
+                </div>
+            </section>
+
+            <section id="advanced">
+                <h2>高级类型</h2>
+
+                <h3>联合类型和交叉类型</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 联合类型
+function padLeft(value: string, padding: string | number): string {
+    if (typeof padding === "number") {
+        return Array(padding + 1).join(" ") + value;
+    }
+    return padding + value;
+}
+
+// 交叉类型
+interface PersonInfo { name: string; age: number; }
+interface Employee { company: string; salary: number; }
+type EmployeeInfo = PersonInfo &amp; Employee;</code></pre>
+                </div>
+
+                <h3>类型守卫</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// typeof 类型守卫
+function formatValue(value: string | number): string {
+    if (typeof value === "number") {
+        return value.toFixed(2);
+    }
+    return value.toUpperCase();
+}
+
+// instanceof 类型守卫
+class Bird { fly() {} }
+class Fish { swim() {} }
+
+function move(pet: Bird | Fish) {
+    if (pet instanceof Bird) {
+        pet.fly();
+    } else {
+        pet.swim();
+    }
+}
+
+// 自定义类型守卫
+function isString(x: any): x is string {
+    return typeof x === "string";
+}</code></pre>
+                </div>
+
+                <h3>映射类型</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>interface Person {
+    name: string;
+    age: number;
+}
+
+// 所有属性只读
+type ReadonlyPerson = Readonly&lt;Person&gt;;
+
+// 所有属性可选
+type PartialPerson = Partial&lt;Person&gt;;
+
+// 挑选部分属性
+type PersonName = Pick&lt;Person, "name"&gt;;
+
+// 排除部分属性
+type PersonWithoutAge = Omit&lt;Person, "age"&gt;;</code></pre>
+                </div>
+            </section>
+
+            <section id="enum">
+                <h2>枚举与装饰器</h2>
+
+                <h3>数字枚举</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>enum Direction {
+    Up = 1,
+    Down,      // 2
+    Left,      // 3
+    Right      // 4
+}
+
+console.log(Direction.Up);      // 1
+console.log(Direction[3]);      // "Left"</code></pre>
+                </div>
+
+                <h3>字符串枚举</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>enum Message {
+    Success = "操作成功",
+    Error = "操作失败",
+    Warning = "警告信息"
+}
+
+console.log(Message.Success);  // "操作成功"</code></pre>
+                </div>
+
+                <h3>装饰器</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>TypeScript</span><button class="code-copy">复制</button></div>
+                    <pre><code>// 类装饰器
+function sealed(constructor: Function) {
+    Object.seal(constructor);
+    Object.seal(constructor.prototype);
+}
+
+@sealed
+class Greeter {
+    greeting: string;
+    constructor(message: string) {
+        this.greeting = message;
+    }
+    greet() { return "Hello, " + this.greeting; }
+}
+
+// 方法装饰器
+function enumerable(value: boolean) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        descriptor.enumerable = value;
+    };
+}
+
+class MyClass {
+    @enumerable(false)
+    greet() {}
+}</code></pre>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="javascript.html">← JavaScript 教程</a>
+                <a href="html.html">HTML 教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode 编程教程 © 2024 | 示例代码均有中文注释</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

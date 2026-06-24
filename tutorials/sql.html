@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL 教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java/Kotlin ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="kotlin.html">Kotlin</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="javascript.html">JavaScript</a>
+                <a href="typescript.html">TypeScript</a>
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+        <li class="dropdown">
+            <a href="#">更多 ▾</a>
+            <div class="dropdown-content">
+                <a href="rust.html">Rust</a>
+                <a href="sql.html" class="active">SQL</a>
+                <a href="shell.html">Shell</a>
+                <a href="lua.html">Lua</a>
+                <a href="r.html">R 语言</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>SQL 教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#ddl">DDL 数据定义</a></li>
+                    <li><a href="#dml">DML 数据操作</a></li>
+                    <li><a href="#select">查询语句</a></li>
+                    <li><a href="#join">连接查询</a></li>
+                    <li><a href="#subquery">子查询</a></li>
+                    <li><a href="#advanced">高级特性</a></li>
+                    <li><a href="#index">索引与事务</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>SQL 基础教程</h1>
+
+            <section id="intro">
+                <h2>SQL 简介</h2>
+                <p>SQL（Structured Query Language，结构化查询语言）是用于管理关系数据库的标准语言。所有主流数据库（MySQL、PostgreSQL、SQLite、Oracle、SQL Server）都支持 SQL。</p>
+
+                <div class="tip-box info">
+                    <strong>💡 SQL 分类</strong>
+                    <ul>
+                        <li><b>DDL</b>：数据定义语言（CREATE、ALTER、DROP）</li>
+                        <li><b>DML</b>：数据操作语言（INSERT、UPDATE、DELETE）</li>
+                        <li><b>DQL</b>：数据查询语言（SELECT）</li>
+                        <li><b>DCL</b>：数据控制语言（GRANT、REVOKE）</li>
+                        <li><b>TCL</b>：事务控制语言（COMMIT、ROLLBACK）</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="ddl">
+                <h2>DDL 数据定义语言</h2>
+
+                <h3>创建和删除数据库</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 创建数据库
+CREATE DATABASE mydb DEFAULT CHARACTER SET utf8mb4;
+
+-- 删除数据库
+DROP DATABASE IF EXISTS mydb;
+
+-- 使用数据库
+USE mydb;</code></pre>
+                </div>
+
+                <h3>创建表</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>CREATE TABLE students (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    age INT,
+    email VARCHAR(100) UNIQUE,
+    grade VARCHAR(20) DEFAULT '一年级',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE courses (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    course_name VARCHAR(100) NOT NULL,
+    teacher VARCHAR(50),
+    credits INT DEFAULT 3
+);
+
+CREATE TABLE scores (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT,
+    course_id INT,
+    score DECIMAL(5,2),
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (course_id) REFERENCES courses(id)
+);</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 常用数据类型</strong>
+                    <ul>
+                        <li>整数：INT、BIGINT、TINYINT、SMALLINT</li>
+                        <li>小数：DECIMAL(总位数, 小数位)、FLOAT、DOUBLE</li>
+                        <li>字符串：VARCHAR(长度)、TEXT、CHAR(长度)</li>
+                        <li>日期：DATE、TIME、DATETIME、TIMESTAMP</li>
+                        <li>布尔：BOOLEAN（实际是 TINYINT(1)）</li>
+                    </ul>
+                </div>
+
+                <h3>修改表结构</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 添加列
+ALTER TABLE students ADD COLUMN phone VARCHAR(20);
+
+-- 修改列
+ALTER TABLE students MODIFY COLUMN name VARCHAR(80);
+
+-- 删除列
+ALTER TABLE students DROP COLUMN phone;
+
+-- 查看表结构
+DESCRIBE students;
+
+-- 删除表
+DROP TABLE IF EXISTS scores;</code></pre>
+                </div>
+            </section>
+
+            <section id="dml">
+                <h2>DML 数据操作语言</h2>
+
+                <h3>插入数据</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 插入单行
+INSERT INTO students (name, age, email, grade)
+VALUES ('张三', 18, 'zhangsan@example.com', '高三');
+
+-- 插入多行
+INSERT INTO students (name, age, email, grade) VALUES
+    ('李四', 17, 'lisi@example.com', '高二'),
+    ('王五', 16, 'wangwu@example.com', '高一'),
+    ('赵六', 18, 'zhaoliu@example.com', '高三');</code></pre>
+                </div>
+
+                <h3>更新数据</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 更新单行
+UPDATE students SET grade = '高三' WHERE id = 5;
+
+-- 批量更新
+UPDATE scores SET score = score + 5 WHERE score &lt; 60;
+
+-- 多列更新
+UPDATE students SET age = age + 1, grade = '新年级' WHERE id = 1;</code></pre>
+                </div>
+
+                <h3>删除数据</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 删除指定行
+DELETE FROM students WHERE id = 1;
+
+-- 删除所有行（逐行删除，可回滚）
+DELETE FROM students;
+
+-- 清空表（直接删除整表，不可回滚，更快）
+TRUNCATE TABLE students;</code></pre>
+                </div>
+
+                <div class="tip-box danger">
+                    <strong>🚨 注意事项</strong>
+                    <ul>
+                        <li>UPDATE 和 DELETE 一定要带 WHERE 条件！</li>
+                        <li>执行前先 SELECT 确认范围</li>
+                        <li>重要操作开启事务，确认无误再提交</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="select">
+                <h2>查询语句 SELECT</h2>
+
+                <h3>基础查询</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 查询所有列
+SELECT * FROM students;
+
+-- 查询指定列
+SELECT name, age, email FROM students;
+
+-- 别名
+SELECT name AS 姓名, age AS 年龄 FROM students;
+
+-- 去重
+SELECT DISTINCT grade FROM students;
+
+-- 限制行数
+SELECT * FROM students LIMIT 10;       -- 前10条
+SELECT * FROM students LIMIT 10, 5;    -- 跳过10条，取5条</code></pre>
+                </div>
+
+                <h3>WHERE 条件</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 比较运算符
+SELECT * FROM students WHERE age &gt; 17;
+SELECT * FROM students WHERE age &lt;= 18;
+
+-- 逻辑运算符
+SELECT * FROM students WHERE grade = '高三' AND age &gt;= 18;
+SELECT * FROM students WHERE age = 17 OR age = 18;
+SELECT * FROM students WHERE NOT active = 0;
+
+-- 范围查询
+SELECT * FROM students WHERE age BETWEEN 16 AND 18;
+
+-- IN 查询
+SELECT * FROM students WHERE grade IN ('高三', '高二');
+
+-- 模糊查询
+SELECT * FROM students WHERE name LIKE '张%';   -- 张开头
+SELECT * FROM students WHERE name LIKE '%三%';  -- 包含三
+
+-- 空值判断
+SELECT * FROM students WHERE email IS NULL;
+SELECT * FROM students WHERE email IS NOT NULL;</code></pre>
+                </div>
+
+                <h3>排序 ORDER BY</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 升序（默认）
+SELECT * FROM students ORDER BY age ASC;
+
+-- 降序
+SELECT * FROM students ORDER BY age DESC;
+
+-- 多字段排序
+SELECT * FROM students ORDER BY grade ASC, age DESC;</code></pre>
+                </div>
+
+                <h3>聚合函数与分组</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 聚合函数
+SELECT COUNT(*) AS 总人数 FROM students;
+SELECT AVG(age) AS 平均年龄 FROM students;
+SELECT MAX(score) AS 最高分 FROM scores;
+SELECT MIN(score) AS 最低分 FROM scores;
+SELECT SUM(score) AS 总分 FROM scores WHERE student_id = 1;
+
+-- GROUP BY 分组
+SELECT grade, COUNT(*) AS 人数
+FROM students
+GROUP BY grade;
+
+-- HAVING 分组后过滤
+SELECT student_id, AVG(score) AS 平均分
+FROM scores
+GROUP BY student_id
+HAVING AVG(score) &gt; 90;</code></pre>
+                </div>
+            </section>
+
+            <section id="join">
+                <h2>连接查询 JOIN</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- INNER JOIN 内连接（两边都匹配）
+SELECT s.name, c.course_name, sc.score
+FROM scores sc
+INNER JOIN students s ON sc.student_id = s.id
+INNER JOIN courses c ON sc.course_id = c.id;
+
+-- LEFT JOIN 左连接（左表全部，右表匹配）
+SELECT s.name, AVG(sc.score) AS 平均分
+FROM students s
+LEFT JOIN scores sc ON s.id = sc.student_id
+GROUP BY s.id;
+
+-- RIGHT JOIN 右连接
+SELECT c.course_name, COUNT(sc.id) AS 选课人数
+FROM scores sc
+RIGHT JOIN courses c ON sc.course_id = c.id
+GROUP BY c.id;
+
+-- 自连接
+SELECT a.name, b.name
+FROM students a, students b
+WHERE a.grade = b.grade AND a.id &lt;&gt; b.id;</code></pre>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr><th>连接类型</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>INNER JOIN</td><td>只返回两边都匹配的行</td></tr>
+                        <tr><td>LEFT JOIN</td><td>返回左表所有行，右表匹配的行</td></tr>
+                        <tr><td>RIGHT JOIN</td><td>返回右表所有行，左表匹配的行</td></tr>
+                        <tr><td>FULL JOIN</td><td>返回两边所有行（部分数据库支持）</td></tr>
+                        <tr><td>CROSS JOIN</td><td>笛卡尔积，所有组合</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="subquery">
+                <h2>子查询</h2>
+
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 标量子查询
+SELECT name, (
+    SELECT AVG(score) FROM scores WHERE student_id = s.id
+) AS 平均分
+FROM students s;
+
+-- IN 子查询
+SELECT * FROM students
+WHERE id IN (
+    SELECT DISTINCT student_id FROM scores WHERE score &gt; 95
+);
+
+-- EXISTS 子查询
+SELECT * FROM students s
+WHERE EXISTS (
+    SELECT 1 FROM scores sc
+    WHERE sc.student_id = s.id AND sc.score &gt; 95
+);
+
+-- FROM 子查询
+SELECT name, 平均分
+FROM (
+    SELECT s.name, AVG(sc.score) AS 平均分
+    FROM students s
+    JOIN scores sc ON s.id = sc.student_id
+    GROUP BY s.id
+) AS student_avg
+WHERE 平均分 &gt; 90;</code></pre>
+                </div>
+            </section>
+
+            <section id="advanced">
+                <h2>高级特性</h2>
+
+                <h3>CASE WHEN</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>SELECT
+    name,
+    CASE
+        WHEN age &lt; 16 THEN '少年'
+        WHEN age &lt; 18 THEN '青年'
+        ELSE '成年'
+    END AS 年龄段
+FROM students;</code></pre>
+                </div>
+
+                <h3>常用函数</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 字符串函数
+SELECT UPPER(name), LOWER(name), LENGTH(name) FROM students;
+SELECT CONCAT(name, ' - ', grade) FROM students;
+SELECT SUBSTRING(name, 1, 1) FROM students;
+
+-- 数学函数
+SELECT ROUND(95.678, 2), CEIL(95.1), FLOOR(95.9), ABS(-10);
+
+-- 日期函数
+SELECT NOW(), CURDATE(), CURTIME();
+SELECT YEAR(NOW()), MONTH(NOW()), DAY(NOW());
+SELECT DATE_ADD(NOW(), INTERVAL 1 DAY);</code></pre>
+                </div>
+
+                <h3>窗口函数 (MySQL 8.0+)</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 排名
+SELECT
+    name,
+    grade,
+    ROW_NUMBER() OVER (PARTITION BY grade ORDER BY age DESC) AS rn
+FROM students;
+
+-- 其他窗口函数：RANK(), DENSE_RANK()
+-- SUM() OVER(), AVG() OVER() 等聚合窗口</code></pre>
+                </div>
+            </section>
+
+            <section id="index">
+                <h2>索引与事务</h2>
+
+                <h3>索引</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 创建索引
+CREATE INDEX idx_student_name ON students(name);
+CREATE INDEX idx_score_student ON scores(student_id);
+
+-- 唯一索引
+CREATE UNIQUE INDEX idx_student_email ON students(email);
+
+-- 组合索引（最左前缀原则）
+CREATE INDEX idx_name_age ON students(name, age);
+
+-- 查看索引
+SHOW INDEX FROM students;
+
+-- 删除索引
+DROP INDEX idx_student_name ON students;
+
+-- 查看执行计划
+EXPLAIN SELECT * FROM students WHERE name = '张三';</code></pre>
+                </div>
+
+                <h3>事务</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>SQL</span><button class="code-copy">复制</button></div>
+                    <pre><code>-- 开始事务
+START TRANSACTION;
+BEGIN;
+
+-- 执行 SQL
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+
+-- 设置保存点
+SAVEPOINT sp1;
+
+-- 回滚到保存点
+ROLLBACK TO sp1;
+
+-- 提交事务
+COMMIT;
+
+-- 回滚事务
+ROLLBACK;</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 事务四大特性 (ACID)</strong>
+                    <ul>
+                        <li><b>原子性 (Atomicity)</b>：要么全成功，要么全失败</li>
+                        <li><b>一致性 (Consistency)</b>：事务前后数据保持一致</li>
+                        <li><b>隔离性 (Isolation)</b>：并发事务互不干扰</li>
+                        <li><b>持久性 (Durability)</b>：提交后永久保存</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="rust.html">← Rust 教程</a>
+                <a href="shell.html">Shell 教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode 编程教程 © 2024 | 示例代码均有中文注释</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>
