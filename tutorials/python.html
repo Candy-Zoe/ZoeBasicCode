@@ -11,6 +11,7 @@
 <!-- 导航栏 -->
 <nav class="navbar">
     <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <button class="mobile-menu-btn">☰</button>
     <ul class="nav-menu">
         <li><a href="python.html">Python</a></li>
         <li class="dropdown">
@@ -77,19 +78,32 @@
 
             <section id="intro">
                 <h2>Python 简介</h2>
-                <p>Python 是一种广泛使用的高级编程语言，以其简洁易读的语法著称，非常适合编程初学者入门。</p>
-                
+                <p>Python 是一种<strong>广泛使用的高级编程语言</strong>，它的语法简洁得就像读英语句子一样，因此被很多人称为"编程世界的普通话"。无论你是想<em>做网站、开发游戏、处理数据，还是写个小工具自动化办公</em>，Python 都能帮你轻松搞定！</p>
+
                 <div class="tip-box info">
-                    <strong>💡 Python 特点</strong>
+                    <strong>💡 Python 能做什么？</strong>
                     <ul>
-                        <li>语法简洁，代码可读性高</li>
-                        <li>动态类型语言，不需要声明变量类型</li>
-                        <li>丰富的标准库和第三方库</li>
-                        <li>跨平台支持</li>
+                        <li><strong>网站开发</strong>：Instagram、YouTube 后台都在用 Django/Flask</li>
+                        <li><strong>数据分析</strong>：处理 Excel、做图表、数据分析报告</li>
+                        <li><strong>人工智能</strong>：机器学习、深度学习、图像识别</li>
+                        <li><strong>自动化办公</strong>：自动处理文件、发送邮件、定时任务</li>
+                        <li><strong>爬虫抓数据</strong>：自动获取网页信息，做市场调研</li>
+                        <li><strong>游戏开发</strong>：很多独立游戏用 Python 写原型</li>
                     </ul>
                 </div>
 
+                <div class="tip-box success">
+                    <strong>🌟 为什么编程小白首选 Python？</strong>
+                    <p>想象一下，如果你要用积木搭房子：</p>
+                    <ul>
+                        <li><strong>其他语言</strong>：需要记住各种积木的尺寸、材质、拼接方式...</li>
+                        <li><strong>Python</strong>：只需要说"我要红色积木"，它就自动给你准备好了！</li>
+                    </ul>
+                    <p>Python 就是这么<em>简单直接</em>，让你专注于<strong>解决问题</strong>，而不是纠结于语法细节。</p>
+                </div>
+
                 <h3>第一个程序</h3>
+                <p>传统上，编程的第一步就是让电脑显示"Hello, World!"（你好，世界）。让我们来试试：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
@@ -100,11 +114,37 @@
                 <div class="output-block">
                     Hello, World!
                 </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 运行方法</strong>
+                    <p>保存为 <code>hello.py</code>，然后在终端运行：</p>
+                    <pre><code>python hello.py</code></pre>
+                </div>
+
+                <h3>为什么叫 print？</h3>
+                <p><code>print</code> 的意思是"打印"，但在这里不是打印机，而是<strong>把内容显示到屏幕上</strong>。就像你说的话被"打印"出来让别人看到一样。</p>
             </section>
 
             <section id="variable">
                 <h2>变量和数据类型</h2>
-                <p>Python 是动态类型语言，变量不需要声明类型，直接赋值即可。</p>
+                <p><strong>变量</strong>就像是一个<em>有名字的盒子</em>，我们把数据放进去，给盒子贴上标签（变量名），这样下次就能快速找到它了！</p>
+
+                <p>Python 是<strong>动态类型语言</strong>，意思是：</p>
+                <ul>
+                    <li>不需要提前告诉电脑"我要放整数"还是"要放字符串"</li>
+                    <li>直接赋值就行，Python 会自动"猜"出这是什么类型</li>
+                </ul>
+
+                <div class="tip-box info">
+                    <strong>💡 什么是数据类型？</strong>
+                    <p>就像现实生活中的物品有不同的分类：</p>
+                    <ul>
+                        <li><strong>整数</strong>：1、2、3、100（就像苹果的数量）</li>
+                        <li><strong>小数</strong>：3.14、1.75（就像身高、体重）</li>
+                        <li><strong>字符串</strong>："Hello"、"你好"（就像一串文字）</li>
+                        <li><strong>布尔值</strong>：True/False（就像开关的开和关）</li>
+                    </ul>
+                </div>
 
                 <h3>基本变量</h3>
                 <div class="code-block">
@@ -112,15 +152,16 @@
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
-                    <pre><code># 字符串类型
+                    <pre><code># 字符串类型 - 用引号包围的文字
 name = "张三"
-# 整数类型
+# 整数类型 - 没有小数点的数字
 age = 25
-# 浮点数类型
+# 浮点数类型 - 带小数点的数字
 height = 1.75
-# 布尔类型
+# 布尔类型 - 真或假
 is_student = True
 
+# f-string: 在字符串中嵌入变量，非常方便！
 print(f"姓名: {name}")
 print(f"年龄: {age}")
 print(f"身高: {height}")
@@ -133,7 +174,13 @@ print(f"是否学生: {is_student}")</code></pre>
                     是否学生: True
                 </div>
 
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意</strong>
+                    <p>变量名<strong>不能</strong>以数字开头，也不能包含空格或特殊符号（除了下划线 <code>_</code>）。</p>
+                </div>
+
                 <h3>查看变量类型</h3>
+                <p>如果不确定一个变量是什么类型，可以用 <code>type()</code> 函数来"检查"它：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
@@ -142,96 +189,145 @@ print(f"是否学生: {is_student}")</code></pre>
                     <pre><code>name = "张三"
 age = 25
 
-print(type(name))  # &lt;class 'str'&gt;
-print(type(age))   # &lt;class 'int'&gt;</code></pre>
+print(type(name))  # 查看字符串的类型
+print(type(age))   # 查看整数的类型</code></pre>
+                </div>
+                <div class="output-block">
+                    &lt;class 'str'&gt;（str 就是 string，字符串）<br>
+                    &lt;class 'int'&gt;（int 就是 integer，整数）
                 </div>
 
                 <h3>类型转换</h3>
+                <p>有时候我们需要把一种类型变成另一种类型，就像把"字符串数字"变成"真正的数字"：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
-                    <pre><code># 字符串转整数
+                    <pre><code># 场景：用户输入的都是字符串，但我们需要当数字用
+
+# 字符串转整数
 num_str = "123"
-num_int = int(num_str)
+num_int = int(num_str)  # int() 把字符串变成整数
 
 # 整数转字符串
 age = 25
-age_str = str(age)
+age_str = str(age)  # str() 把整数变成字符串
 
 # 字符串转浮点数
 pi_str = "3.14"
-pi = float(pi_str)
+pi = float(pi_str)  # float() 把字符串变成小数
 
 print(f"整数: {num_int}, 类型: {type(num_int)}")
 print(f"字符串: {age_str}, 类型: {type(age_str)}")</code></pre>
                 </div>
 
                 <div class="tip-box success">
+                    <strong>✅ 记忆小技巧</strong>
+                    <ul>
+                        <li><code>int</code> → <code>int()</code> → 整数（integer）</li>
+                        <li><code>str</code> → <code>str()</code> → 字符串（string）</li>
+                        <li><code>float</code> → <code>float()</code> → 浮点数（小数，float）</li>
+                    </ul>
+                </div>
+
+                <div class="tip-box success">
                     <strong>✅ 提示</strong>
-                    Python 中字符串可以用单引号 <code>'</code> 或双引号 <code>"</code> 包围。
+                    Python 中字符串可以用单引号 <code>'</code> 或双引号 <code>"</code> 包围，效果一样。
                 </div>
             </section>
 
             <section id="operator">
                 <h2>运算符</h2>
+                <p>运算符就是用来做<strong>数学运算</strong>和<strong>逻辑判断</strong>的符号，就像我们平时用的 <code>+</code>（加）、<code>-</code>（减）、<code>=</code>（等于）一样。</p>
 
                 <h3>算术运算符</h3>
+                <p>算术运算符就是数学里常见的加减乘除，但有几个需要注意的点：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
                     <pre><code>a, b = 10, 3
-print(f"加法: {a} + {b} = {a + b}")
-print(f"减法: {a} - {b} = {a - b}")
-print(f"乘法: {a} * {b} = {a * b}")
-print(f"除法: {a} / {b} = {a / b}")
-print(f"整除: {a} // {b} = {a // b}")
-print(f"取余: {a} % {b} = {a % b}")
-print(f"幂运算: {a} ** {b} = {a ** b}")</code></pre>
+print(f"加法: {a} + {b} = {a + b}")  # 10 + 3 = 13
+print(f"减法: {a} - {b} = {a - b}")  # 10 - 3 = 7
+print(f"乘法: {a} * {b} = {a * b}")  # 10 × 3 = 30
+print(f"除法: {a} / {b} = {a / b}")  # 10 ÷ 3 = 3.33...（注意！除法结果是小数）
+print(f"整除: {a} // {b} = {a // b}")  # 10 ÷ 3 = 3（取整数部分）
+print(f"取余: {a} % {b} = {a % b}")  # 10 ÷ 3 = 3...1（取余数）
+print(f"幂运算: {a} ** {b} = {a ** b}")  # 10³ = 1000（10的3次方）</code></pre>
                 </div>
                 <div class="output-block">
                     加法: 10 + 3 = 13<br>
                     减法: 10 - 3 = 7<br>
-                    乘法: 10 * 3 = 30<br>
-                    整除: 10 // 3 = 3<br>
-                    取余: 10 % 3 = 1<br>
-                    幂运算: 10 ** 3 = 1000
+                    乘法: 10 × 3 = 30<br>
+                    除法: 10 ÷ 3 = 3.333...（注意！除法结果是小数）<br>
+                    整除: 10 ÷ 3 = 3（取整数部分）<br>
+                    取余: 10 ÷ 3 = 1（取余数）<br>
+                    幂运算: 10³ = 1000（10的3次方）
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 什么时候用 // 和 %？</strong>
+                    <p>想象一下分糖果的场景：</p>
+                    <ul>
+                        <li>10 颗糖分给 3 个人，<code>//</code> 告诉每个人能分到几颗整糖</li>
+                        <li>10 颗糖分给 3 个人，<code>%</code> 告诉还剩几颗糖</li>
+                    </ul>
                 </div>
 
                 <h3>比较运算符</h3>
+                <p>比较运算符用来<strong>比较两个值的大小</strong>，结果只有 True（真）或 False（假）：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
                     <pre><code>m, n = 10, 20
-print(f"{m} == {n}: {m == n}")  # False
-print(f"{m} != {n}: {m != n}")  # True
-print(f"{m} > {n}: {m > n}")    # False
-print(f"{m} < {n}: {m < n}")    # True</code></pre>
+print(f"{m} == {n}: {m == n}")  # False（等于）
+print(f"{m} != {n}: {m != n}")  # True（不等于）
+print(f"{m} > {n}: {m > n}")    # False（大于）
+print(f"{m} < {n}: {m < n}")    # True（小于）
+print(f"{m} >= {n}: {m >= n}")  # False（大于等于）
+print(f"{m} <= {n}: {m <= n}")  # True（小于等于）</code></pre>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 特别注意</strong>
+                    <p><code>==</code> 是"等于"（比较），<code>=</code> 是"赋值"（存入）。别搞混了！</p>
                 </div>
 
                 <h3>逻辑运算符</h3>
+                <p>逻辑运算符用来组合多个条件，就像说"并且"、"或者"、"不是"：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
                     <pre><code>p, q = True, False
-print(f"p and q: {p and q}")  # False
-print(f"p or q: {p or q}")    # True
-print(f"not p: {not p}")      # False</code></pre>
+print(f"p and q: {p and q}")  # False（并且：两个都要真）
+print(f"p or q: {p or q}")    # True（或者：至少一个为真）
+print(f"not p: {not p}")      # False（不是：取反）</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 逻辑运算记忆口诀</strong>
+                    <ul>
+                        <li><strong>and</strong>：and 就是"和"，要<em>两个都</em>对才返回 True（就像同时满足两个条件）</li>
+                        <li><strong>or</strong>：or 就是"或"，<em>至少一个</em>对就返回 True（就像满足任一条件）</li>
+                        <li><strong>not</strong>：not 就是"非"，<em>取反</em>（对的变错，错的变对）</li>
+                    </ul>
                 </div>
             </section>
 
             <section id="condition">
                 <h2>条件语句</h2>
-                <p>Python 使用 <code>if</code>、<code>elif</code>、<code>else</code> 进行条件判断。</p>
+                <p>条件语句就像我们日常生活中的<strong>决策</strong>：如果...就...，否则如果...就...，否则就...</p>
+
+                <p>Python 使用 <code>if</code>（如果）、<code>elif</code>（否则如果）、<code>else</code>（否则）来进行条件判断。</p>
 
                 <h3>基本 if 语句</h3>
+                <p>最简单的场景：如果条件满足，就做一件事，否则做另一件事。</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
@@ -247,7 +343,13 @@ else:
                     你已经成年了
                 </div>
 
+                <div class="tip-box info">
+                    <strong>💡 语法小提示</strong>
+                    <p>注意代码前的<strong>缩进</strong>（4个空格或1个Tab）！Python 用缩进来区分代码块，不像其他语言用大括号 <code>{}</code>。</p>
+                </div>
+
                 <h3>多条件判断</h3>
+                <p>生活中经常有多个条件，比如考试成绩判断：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
@@ -255,13 +357,13 @@ else:
                     </div>
                     <pre><code>score = 85
 if score >= 90:
-    grade = "A"
+    grade = "A"  # 90分以上是A
 elif score >= 80:
-    grade = "B"
+    grade = "B"  # 80-89分是B
 elif score >= 60:
-    grade = "C"
+    grade = "C"  # 60-79分是C
 else:
-    grade = "D"
+    grade = "D"  # 60分以下是D
 
 print(f"成绩 {score} 分，等级: {grade}")</code></pre>
                 </div>
@@ -269,13 +371,21 @@ print(f"成绩 {score} 分，等级: {grade}")</code></pre>
                     成绩 85 分，等级: B
                 </div>
 
+                <div class="tip-box info">
+                    <strong>💡 多个条件的判断顺序</strong>
+                    <p>计算机会<strong>从上到下</strong>检查条件，一旦找到满足的条件就执行对应的代码，后面的条件就不会再检查了。</p>
+                    <p>所以要把<strong>更具体的条件放前面</strong>，更宽泛的条件放后面。</p>
+                </div>
+
                 <h3>三元表达式</h3>
+                <p>如果只想根据条件返回一个值，可以用更简洁的方式：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
                     <pre><code>a, b = 10, 20
+# 格式：值1 if 条件 else 值2
 max_val = a if a > b else b
 print(f"{a} 和 {b} 中较大的是: {max_val}")</code></pre>
                 </div>
@@ -286,41 +396,56 @@ print(f"{a} 和 {b} 中较大的是: {max_val}")</code></pre>
 
             <section id="loop">
                 <h2>循环语句</h2>
+                <p>循环就是让计算机<strong>重复做某件事</strong>。想象一下要打印 100 次"你好"，不用循环就要写 100 遍，有了循环就只需要 1 行代码！</p>
 
                 <h3>for 循环</h3>
+                <p>for 循环就像<strong>按顺序遍历</strong>一个清单：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
-                    <pre><code># 遍历列表
+                    <pre><code># 遍历列表（一个一个地处理）
 fruits = ["苹果", "香蕉", "橙子"]
-for fruit in fruits:
+for fruit in fruits:  # 每次循环，fruit 都会变成下一个水果
     print(f"水果: {fruit}")
 
-# 使用 range()
-for i in range(5):
+# 使用 range() 产生数字序列
+print("\n使用 range:")
+for i in range(5):  # 产生 0, 1, 2, 3, 4
     print(f"第 {i} 次循环")</code></pre>
                 </div>
                 <div class="output-block">
                     水果: 苹果<br>
                     水果: 香蕉<br>
                     水果: 橙子<br>
+                    <br>
+                    使用 range:<br>
                     第 0 次循环<br>
                     第 1 次循环<br>
                     ...
                 </div>
 
+                <div class="tip-box info">
+                    <strong>💡 range() 小技巧</strong>
+                    <ul>
+                        <li><code>range(5)</code> → 0, 1, 2, 3, 4（从0开始，不包含5）</li>
+                        <li><code>range(1, 5)</code> → 1, 2, 3, 4（从1开始，不包含5）</li>
+                        <li><code>range(0, 10, 2)</code> → 0, 2, 4, 6, 8（步长为2）</li>
+                    </ul>
+                </div>
+
                 <h3>while 循环</h3>
+                <p>while 循环就像<strong>满足条件就一直做</strong>：只要条件为真，就一直重复执行。</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
                     <pre><code>count = 1
-while count <= 5:
+while count <= 5:  # 只要 count <= 5，就一直循环
     print(f"count = {count}")
-    count += 1</code></pre>
+    count += 1  # 重要！每次循环后递增，否则会无限循环！</code></pre>
                 </div>
                 <div class="output-block">
                     count = 1<br>
@@ -330,36 +455,63 @@ while count <= 5:
                     count = 5
                 </div>
 
+                <div class="tip-box danger">
+                    <strong>⚠️ 警告：无限循环！</strong>
+                    <p>使用 while 循环时，<strong>一定要确保循环条件最终会变为 False</strong>，否则程序会一直运行下去，不会停止！</p>
+                    <p>就像热水器，如果忘记关，就会一直烧水，直到...</p>
+                </div>
+
                 <h3>break 和 continue</h3>
+                <p>有时候我们需要<strong>提前退出循环</strong>或<strong>跳过某次循环</strong>：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
-                    <pre><code># break: 跳出循环
+                    <pre><code># break: 提前退出循环（整个循环结束）
+print("break 示例:")
 for i in range(10):
     if i == 5:
-        break
+        break  # 当 i=5 时，退出整个循环
     print(i, end=" ")
 print("\n遇到 break，循环结束")
 
-# continue: 跳过当前迭代
+# continue: 跳过当前迭代（进入下一次循环）
+print("\ncontinue 示例:")
 for i in range(10):
-    if i % 2 == 0:
-        continue
+    if i % 2 == 0:  # 如果是偶数
+        continue  # 跳过这次循环，继续下一次
     print(i, end=" ")
 print("\n只打印了奇数")</code></pre>
                 </div>
                 <div class="output-block">
+                    break 示例:<br>
                     0 1 2 3 4<br>
                     遇到 break，循环结束<br>
+                    <br>
+                    continue 示例:<br>
                     1 3 5 7 9<br>
                     只打印了奇数
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 break vs continue</strong>
+                    <ul>
+                        <li><strong>break</strong>：<em>提前下班</em>，直接结束整个循环</li>
+                        <li><strong>continue</strong>：<em>跳过这次</em>，但继续下一次循环</li>
+                    </ul>
                 </div>
             </section>
 
             <section id="function">
                 <h2>函数</h2>
+                <p>函数就是一段<strong>可以重复使用的代码</strong>。就像一个<em>会做特定事情的机器</em>，你给它原料（参数），它给你产出（返回值）。</p>
+
+                <div class="tip-box info">
+                    <strong>💡 为什么需要函数？</strong>
+                    <p>想象一下：你要写 100 遍"你好，张三！"，还是写一个函数然后调用 100 次？</p>
+                    <p>函数让代码<strong>不重复、更简洁、易维护</strong>。</p>
+                </div>
 
                 <h3>定义函数</h3>
                 <div class="code-block">
@@ -368,7 +520,7 @@ print("\n只打印了奇数")</code></pre>
                         <button class="code-copy">复制</button>
                     </div>
                     <pre><code>def greet():
-    """简单的问候函数"""
+    """简单的问候函数 - 文档字符串"""
     print("Hello, World!")
 
 def greet_user(name):
@@ -377,11 +529,13 @@ def greet_user(name):
 
 def add(a, b):
     """返回两个数的和"""
-    return a + b
+    return a + b  # return 返回结果
 
+# 调用函数
 greet()
 greet_user("张三")
-print(f"3 + 5 = {add(3, 5)}")</code></pre>
+result = add(3, 5)
+print(f"3 + 5 = {result}")</code></pre>
                 </div>
                 <div class="output-block">
                     Hello, World!<br>
@@ -389,7 +543,13 @@ print(f"3 + 5 = {add(3, 5)}")</code></pre>
                     3 + 5 = 8
                 </div>
 
+                <div class="tip-box info">
+                    <strong>💡 def 是什么意思？</strong>
+                    <p><code>def</code> 是 define（定义）的缩写，告诉计算机"我要创建一个函数"。</p>
+                </div>
+
                 <h3>默认参数</h3>
+                <p>参数可以设置<strong>默认值</strong>，这样调用时就可以省略：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
@@ -399,8 +559,8 @@ print(f"3 + 5 = {add(3, 5)}")</code></pre>
     """计算幂，默认是平方"""
     return base ** exponent
 
-print(f"3的平方: {power(3)}")
-print(f"3的立方: {power(3, 3)}")</code></pre>
+print(f"3的平方: {power(3)}")   # 使用默认值 exponent=2
+print(f"3的立方: {power(3, 3)}")  # 手动指定 exponent=3</code></pre>
                 </div>
                 <div class="output-block">
                     3的平方: 9<br>
@@ -408,15 +568,16 @@ print(f"3的立方: {power(3, 3)}")</code></pre>
                 </div>
 
                 <h3>可变参数</h3>
+                <p>有时候不确定会有多少个参数，用 <code>*args</code> 可以接收任意数量：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
                     <pre><code>def sum_all(*args):
-    """计算所有参数的和"""
+    """计算所有参数的和 - args 是元组类型"""
     total = 0
-    for num in args:
+    for num in args:  # 遍历所有传入的参数
         total += num
     return total
 
@@ -429,18 +590,19 @@ print(f"sum_all(1, 2, 3, 4, 5) = {sum_all(1, 2, 3, 4, 5)}")</code></pre>
                 </div>
 
                 <h3>Lambda 表达式</h3>
+                <p>Lambda（λ）是<strong>匿名函数</strong>，适合写一些简单的一次性函数：</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
-                    <pre><code># 匿名函数
+                    <pre><code># 匿名函数 - 用来创建一个简单函数
 square = lambda x: x ** 2
 print(f"5的平方: {square(5)}")
 
-# 作为参数传递
+# 结合 map() 使用 - 对列表中每个元素操作
 nums = [1, 2, 3, 4, 5]
-squared = list(map(lambda x: x ** 2, nums))
+squared = list(map(lambda x: x ** 2, nums))  # map 对每个元素执行函数
 print(f"平方后: {squared}")</code></pre>
                 </div>
                 <div class="output-block">
@@ -451,8 +613,10 @@ print(f"平方后: {squared}")</code></pre>
 
             <section id="data-structure">
                 <h2>数据结构</h2>
+                <p>数据结构就是<strong>组织和存储数据的方式</strong>。就像不同的容器（盒子、抽屉、柜子）适合装不同的东西，Python 也有多种数据结构来应对不同场景。</p>
 
                 <h3>列表 (List)</h3>
+                <p>列表就像一个<strong>会变的序列</strong>，可以随时往里面添加、删除元素。就像购物清单，可以随时增减商品。</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
@@ -460,15 +624,15 @@ print(f"平方后: {squared}")</code></pre>
                     </div>
                     <pre><code>fruits = ["苹果", "香蕉", "橙子"]
 print(f"列表: {fruits}")
-print(f"第一个: {fruits[0]}")
-print(f"最后一个: {fruits[-1]}")
+print(f"第一个: {fruits[0]}")  # Python 从 0 开始计数！
+print(f"最后一个: {fruits[-1]}")  # -1 表示倒数第一个
 
 # 添加元素
-fruits.append("葡萄")
+fruits.append("葡萄")  # append 追加到末尾
 print(f"添加后: {fruits}")
 
 # 删除元素
-fruits.remove("香蕉")
+fruits.remove("香蕉")  # remove 删除指定元素
 print(f"删除后: {fruits}")</code></pre>
                 </div>
                 <div class="output-block">
@@ -479,46 +643,75 @@ print(f"删除后: {fruits}")</code></pre>
                     删除后: ['苹果', '橙子', '葡萄']
                 </div>
 
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意索引从 0 开始！</strong>
+                    <p>在大多数编程语言中，列表的第一个元素索引是 <strong>0</strong>，不是 1。</p>
+                    <p>就像楼层：第 1 层其实是 0 楼（ground floor）。</p>
+                </div>
+
                 <h3>字典 (Dictionary)</h3>
+                <p>字典就像<strong>真实字典</strong>，通过"键"（词语）查找"值"（解释）。访问速度超快！</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
-                    <pre><code>person = {"name": "张三", "age": 25, "city": "北京"}
+                    <pre><code>person = {
+    "name": "张三",  # "name" 是键，张三 是值
+    "age": 25,
+    "city": "北京"
+}
 print(f"字典: {person}")
-print(f"姓名: {person['name']}")
-print(f"年龄: {person.get('age')}")
+print(f"姓名: {person['name']}")  # 通过键访问
+print(f"年龄: {person.get('age')}")  # get 方法更安全
 
 # 添加/修改
 person["job"] = "工程师"
 print(f"添加后: {person}")
 
 # 遍历
-for key, value in person.items():
+for key, value in person.items():  # items() 返回键值对
     print(f"  {key}: {value}")</code></pre>
                 </div>
 
+                <div class="tip-box info">
+                    <strong>💡 字典 vs 列表</strong>
+                    <ul>
+                        <li><strong>列表</strong>：按<em>顺序</em>存储，适合需要按位置访问的场景</li>
+                        <li><strong>字典</strong>：按<em>键值对</em>存储，适合需要快速查找的场景</li>
+                    </ul>
+                </div>
+
                 <h3>集合 (Set)</h3>
+                <p>集合就像一个<strong>不重复的袋子</strong>，自动去除重复元素。适合做集合运算（交集、并集）。</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
                         <button class="code-copy">复制</button>
                     </div>
-                    <pre><code>s = {1, 2, 3, 2, 1}  # 自动去重
-print(f"集合: {s}")  # {1, 2, 3}
+                    <pre><code>s = {1, 2, 3, 2, 1}  # 自动去重！
+print(f"集合: {s}")  # 输出: {1, 2, 3}
 
 # 集合运算
 a = {1, 2, 3, 4, 5}
 b = {4, 5, 6, 7, 8}
-print(f"交集: {a & b}")   # {4, 5}
-print(f"并集: {a | b}")   # {1, 2, 3, 4, 5, 6, 7, 8}
-print(f"差集: {a - b}")   # {1, 2, 3}</code></pre>
+print(f"交集: {a & b}")   # 两个集合都有的元素: {4, 5}
+print(f"并集: {a | b}")   # 合并所有元素: {1, 2, 3, 4, 5, 6, 7, 8}
+print(f"差集: {a - b}")   # a 有 b 没有的: {1, 2, 3}</code></pre>
                 </div>
             </section>
 
             <section id="oop">
                 <h2>面向对象</h2>
+                <p>面向对象编程（OOP）是一种<strong>把现实世界抽象成代码</strong>的思想。就像在创建"模具"（类），然后用模具造出具体的"产品"（对象）。</p>
+
+                <div class="tip-box info">
+                    <strong>💡 类 vs 对象 的区别</strong>
+                    <ul>
+                        <li><strong>类 (Class)</strong>：就像<em>设计图</em>，定义了"人"应该有什么（属性和方法）</li>
+                        <li><strong>对象 (Object)</strong>：就像<em>用设计图造出来的真人</em>，比如张三、李四</li>
+                    </ul>
+                </div>
 
                 <h3>定义类</h3>
                 <div class="code-block">
@@ -528,23 +721,30 @@ print(f"差集: {a - b}")   # {1, 2, 3}</code></pre>
                     </div>
                     <pre><code>class Person:
     def __init__(self, name, age):
-        """构造方法"""
-        self.name = name
+        """构造方法 - 创建对象时自动调用的初始化方法"""
+        self.name = name  # self 指代对象本身
         self.age = age
 
     def greet(self):
-        """问候方法"""
+        """方法 - 对象能做什么"""
         print(f"你好，我是{self.name}，今年{self.age}岁")
 
-# 创建对象
-person1 = Person("张三", 25)
-person1.greet()</code></pre>
+# 创建对象（实例化）
+person1 = Person("张三", 25)  # 创建了一个"张三"这个人
+person1.greet()  # 调用对象的方法</code></pre>
                 </div>
                 <div class="output-block">
                     你好，我是张三，今年25岁
                 </div>
 
+                <div class="tip-box info">
+                    <strong>💡 __init__ 是什么意思？</strong>
+                    <p><code>__init__</code> 是 Python 的<em>构造方法</em>，创建对象时会自动调用。</p>
+                    <p><code>self</code> 指向对象本身，就像说"我自己"。</p>
+                </div>
+
                 <h3>继承</h3>
+                <p>继承就是<strong>子类继承父类</strong>的特性，就像儿子会继承父亲的一些特征，还能有自己的独特能力。</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span>Python</span>
@@ -553,21 +753,22 @@ person1.greet()</code></pre>
                     <pre><code>class Animal:
     def __init__(self, name):
         self.name = name
-    
+
     def speak(self):
         print(f"{self.name} 发出声音")
 
-class Dog(Animal):
-    def speak(self):
+class Dog(Animal):  # Dog 继承自 Animal
+    def speak(self):  # 重写父类的方法
         print(f"{self.name} 汪汪叫")
 
 class Cat(Animal):
     def speak(self):
         print(f"{self.name} 喵喵叫")
 
+# 创建对象
 dog = Dog("旺财")
 cat = Cat("咪咪")
-dog.speak()
+dog.speak()  # 子类的方法
 cat.speak()</code></pre>
                 </div>
                 <div class="output-block">
@@ -578,6 +779,7 @@ cat.speak()</code></pre>
 
             <section id="file">
                 <h2>文件操作</h2>
+                <p>文件操作就是<strong>读取和写入文件</strong>。就像打开文件夹、读取里面的内容，或者创建新文件并保存内容。</p>
 
                 <h3>读写文件</h3>
                 <div class="code-block">
@@ -587,18 +789,40 @@ cat.speak()</code></pre>
                     </div>
                     <pre><code># 写入文件
 with open("test.txt", "w", encoding="utf-8") as f:
-    f.write("第一行\n")
+    """with 自动管理文件关闭，不用担心忘记 f.close()"""
+    f.write("第一行\n")  # \n 表示换行
     f.write("第二行\n")
 
 # 读取文件
 with open("test.txt", "r", encoding="utf-8") as f:
-    content = f.read()
+    content = f.read()  # 读取全部内容
     print(content)</code></pre>
                 </div>
 
                 <div class="tip-box info">
-                    <strong>💡 提示</strong>
-                    <code>with</code> 语句会在代码块结束后自动关闭文件，无需手动调用 <code>f.close()</code>。
+                    <strong>💡 open() 模式说明</strong>
+                    <ul>
+                        <li><code>r</code>：read，只读模式（默认）</li>
+                        <li><code>w</code>：write，写入模式（会覆盖原内容）</li>
+                        <li><code>a</code>：append，追加模式（在末尾添加）</li>
+                    </ul>
+                </div>
+
+                <div class="tip-box success">
+                    <strong>✅ 推荐使用 with</strong>
+                    <p><code>with</code> 语句会在代码块结束后<strong>自动关闭文件</strong>，即使出错了也会关闭，比手动调用 <code>f.close()</code> 更安全。</p>
+                </div>
+
+                <h3>逐行读取</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code># 逐行读取 - 适合大文件
+with open("test.txt", "r", encoding="utf-8") as f:
+    for line in f:  # 每次只读取一行，节省内存
+        print(line.strip())  # strip() 去除首尾空白</code></pre>
                 </div>
             </section>
 

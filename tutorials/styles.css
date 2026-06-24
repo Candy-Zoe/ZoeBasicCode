@@ -761,6 +761,23 @@ footer p {
 /* ============================================================
  * 响应式
  * ============================================================ */
+
+/* 移动端菜单按钮 */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.3s;
+}
+
+.mobile-menu-btn:hover {
+    transform: scale(1.1);
+}
+
 @media (max-width: 1024px) {
     .container {
         padding: 0 20px;
@@ -772,22 +789,102 @@ footer p {
 }
 
 @media (max-width: 768px) {
+    /* 导航栏调整 */
     .navbar {
         padding: 0 15px;
         height: 60px;
+        flex-wrap: wrap;
     }
 
     .logo {
-        font-size: 18px;
+        font-size: 16px;
+        flex: 1;
     }
 
+    .logo::before {
+        font-size: 24px;
+    }
+
+    /* 显示移动端菜单按钮 */
+    .mobile-menu-btn {
+        display: block;
+        order: 3;
+        margin-left: auto;
+    }
+
+    /* 移动端导航菜单 */
     .nav-menu {
+        display: none;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        flex-direction: column;
+        padding: 15px;
+        gap: 5px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+        z-index: 999;
+    }
+
+    .nav-menu.active {
+        display: flex;
+    }
+
+    .nav-menu > li {
+        width: 100%;
+    }
+
+    .nav-menu a {
+        display: block;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+
+    /* 下拉菜单在移动端 */
+    .dropdown-content {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        margin-top: 5px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 8px;
         display: none;
     }
 
+    .dropdown.active .dropdown-content {
+        display: block;
+    }
+
+    .dropdown-content a {
+        color: rgba(255,255,255,0.9);
+        padding: 10px 20px;
+        border-bottom: none;
+    }
+
+    .dropdown-content a:hover {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        padding-left: 25px;
+    }
+
+    .dropdown > a::after {
+        float: right;
+        content: "▸";
+    }
+
+    .dropdown.active > a::after {
+        content: "▾";
+    }
+
+    /* 布局调整 */
     .main-content {
         flex-direction: column;
         margin-top: 20px;
+        gap: 20px;
     }
 
     .sidebar {
@@ -796,6 +893,33 @@ footer p {
 
     .sidebar-menu {
         position: static;
+        padding: 16px;
+    }
+
+    .sidebar-menu h3 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .sidebar-menu ul {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .sidebar-menu a {
+        padding: 8px 12px;
+        font-size: 13px;
+        text-align: center;
+        border-left: none;
+        border-radius: 6px;
+        background: var(--bg-secondary);
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+        transform: none;
+        border-left: none;
     }
 
     .content {
@@ -803,15 +927,176 @@ footer p {
     }
 
     .content h1 {
-        font-size: 28px;
+        font-size: 24px;
     }
 
     .content h2 {
+        font-size: 18px;
+        padding: 12px 16px;
+        margin: 24px 0 14px;
+    }
+
+    .content h3 {
+        font-size: 16px;
+    }
+
+    .content p {
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    /* 代码块移动端适配 */
+    .code-block {
+        margin: 16px -5px;
+        border-radius: 8px;
+    }
+
+    .code-block pre {
+        padding: 15px;
+        font-size: 13px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+
+    /* 表格移动端 */
+    table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table th,
+    table td {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    /* 底部导航 */
+    .footer-nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .footer-nav a {
+        padding: 14px 20px;
+        font-size: 14px;
+    }
+
+    /* 首页卡片网格 */
+    .language-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .language-card {
+        padding: 20px;
+    }
+
+    .language-card h3 {
         font-size: 20px;
     }
 
-    .footer-nav {
-        flex-direction: column;
+    .language-card p {
+        font-size: 13px;
+    }
+
+    /* 英雄区移动端 */
+    .hero {
+        padding: 50px 20px;
+        border-radius: 0 0 30% 30%;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    /* 特点网格 */
+    .features {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .feature-item {
+        padding: 15px;
+    }
+
+    .feature-item .icon {
+        font-size: 28px;
+    }
+
+    .feature-item h3 {
+        font-size: 14px;
+    }
+
+    .feature-item p {
+        font-size: 12px;
+    }
+
+    /* 提示框 */
+    .tip-box {
+        padding: 14px 16px;
+        margin: 16px 0;
+    }
+
+    .tip-box strong {
+        font-size: 14px;
+    }
+
+    .tip-box p,
+    .tip-box li {
+        font-size: 13px;
+    }
+}
+
+/* 平板设备优化 */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .sidebar-menu ul {
+        grid-template-columns: 1fr;
+    }
+
+    .features {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* 小屏幕手机 */
+@media (max-width: 480px) {
+    .hero {
+        padding: 40px 15px;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+    }
+
+    .hero p {
+        font-size: 14px;
+    }
+
+    .section-title {
+        font-size: 20px;
+    }
+
+    .quick-start {
+        padding: 20px;
+    }
+
+    .quick-start pre {
+        padding: 15px;
+        font-size: 12px;
+    }
+
+    .footer {
+        padding: 30px 15px;
+    }
+
+    .footer p {
+        font-size: 12px;
     }
 }
 
