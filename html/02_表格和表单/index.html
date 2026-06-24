@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML 表单和表格示例</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        form {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="email"], select, textarea {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h1>HTML 表格和表单练习</h1>
+
+<h2>一、表格合并单元格</h2>
+<table>
+    <tr>
+        <th colspan="3">学生成绩单</th>
+    </tr>
+    <tr>
+        <th rowspan="2">姓名</th>
+        <th colspan="2">成绩</th>
+    </tr>
+    <tr>
+        <th>语文</th>
+        <th>数学</th>
+    </tr>
+    <tr>
+        <td>张三</td>
+        <td>90</td>
+        <td>85</td>
+    </tr>
+    <tr>
+        <td>李四</td>
+        <td>78</td>
+        <td>92</td>
+    </tr>
+    <tr>
+        <td>王五</td>
+        <td>88</td>
+        <td>95</td>
+    </tr>
+</table>
+<p><strong>说明：</strong>colspan 跨列合并，rowspan 跨行合并</p>
+
+<h2>二、注册表单</h2>
+<form onsubmit="event.preventDefault(); alert('注册成功！');">
+    <div class="form-group">
+        <label>用户名:</label>
+        <input type="text" name="username" required placeholder="请输入用户名">
+    </div>
+    <div class="form-group">
+        <label>邮箱:</label>
+        <input type="email" name="email" required placeholder="请输入邮箱">
+    </div>
+    <div class="form-group">
+        <label>密码:</label>
+        <input type="password" name="password" required placeholder="请输入密码">
+    </div>
+    <div class="form-group">
+        <label>性别:</label>
+        <label><input type="radio" name="gender" value="male" checked> 男</label>
+        <label><input type="radio" name="gender" value="female"> 女</label>
+    </div>
+    <div class="form-group">
+        <label>学历:</label>
+        <select name="education">
+            <option value="">请选择</option>
+            <option value="high">高中</option>
+            <option value="college">大专</option>
+            <option value="bachelor">本科</option>
+            <option value="master">硕士</option>
+            <option value="doctor">博士</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>兴趣爱好:</label>
+        <label><input type="checkbox" name="hobby" value="reading"> 阅读</label>
+        <label><input type="checkbox" name="hobby" value="music"> 音乐</label>
+        <label><input type="checkbox" name="hobby" value="sports"> 运动</label>
+        <label><input type="checkbox" name="hobby" value="travel"> 旅行</label>
+    </div>
+    <div class="form-group">
+        <label>个人简介:</label>
+        <textarea name="bio" rows="4" placeholder="介绍一下你自己..."></textarea>
+    </div>
+    <div class="form-group">
+        <label></label>
+        <input type="checkbox" name="agree" required>
+        <span>我已阅读并同意用户协议</span>
+    </div>
+    <div class="form-group">
+        <label></label>
+        <button type="submit" class="btn">注册</button>
+        <button type="reset" class="btn" style="background: #999;">重置</button>
+    </div>
+</form>
+
+<h2>三、常用 input 类型</h2>
+<form>
+    <div class="form-group">
+        <label>数字:</label>
+        <input type="number" min="1" max="100" step="1" value="50">
+    </div>
+    <div class="form-group">
+        <label>范围:</label>
+        <input type="range" min="0" max="100" value="50">
+    </div>
+    <div class="form-group">
+        <label>日期:</label>
+        <input type="date">
+    </div>
+    <div class="form-group">
+        <label>时间:</label>
+        <input type="time">
+    </div>
+    <div class="form-group">
+        <label>颜色:</label>
+        <input type="color" value="#4CAF50">
+    </div>
+    <div class="form-group">
+        <label>文件:</label>
+        <input type="file">
+    </div>
+</form>
+
+</body>
+</html>

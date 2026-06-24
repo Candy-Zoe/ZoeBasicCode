@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML 基础语法 - 常用标签</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1, h2, h3 { color: #333; }
+        .demo-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f9f9f9;
+        }
+        .comment { color: #888; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<h1>HTML 基础语法教程</h1>
+
+<!-- 1. 标题标签 -->
+<h2>1. 标题标签</h2>
+<div class="demo-box">
+    <h1>h1 一级标题</h1>
+    <h2>h2 二级标题</h2>
+    <h3>h3 三级标题</h3>
+    <h4>h4 四级标题</h4>
+    <h5>h5 五级标题</h5>
+    <h6>h6 六级标题</h6>
+</div>
+<p class="comment">标题标签用于表示文档结构，h1 最重要，h6 最次要</p>
+
+<!-- 2. 段落和文本 -->
+<h2>2. 段落和文本格式</h2>
+<div class="demo-box">
+    <p>这是一个段落。p 标签用于定义段落。</p>
+    <p>这是另一个段落。段落之间会有默认的间距。</p>
+    <p>
+        <strong>strong 加粗</strong>、<em>em 斜体</em>、
+        <u>u 下划线</u>、<s>s 删除线</s>、
+        <code>code 代码</code>、<mark>mark 高亮</mark>
+    </p>
+    <p>上标: 10<sup>2</sup>，下标: H<sub>2</sub>O</p>
+    <p>换行用 br 标签：<br>第一行<br>第二行</p>
+    <hr>
+    <p>hr 水平分割线</p>
+</div>
+
+<!-- 3. 链接 -->
+<h2>3. 链接标签 a</h2>
+<div class="demo-box">
+    <p><a href="https://www.baidu.com" target="_blank">百度一下（新窗口打开）</a></p>
+    <p><a href="#top">跳转到页面顶部</a>（锚点链接）</p>
+    <p><a href="mailto:test@example.com">发送邮件</a></p>
+    <p><a href="tel:1234567890">拨打电话</a></p>
+</div>
+
+<!-- 4. 图片 -->
+<h2>4. 图片标签 img</h2>
+<div class="demo-box">
+    <p>img 标签用于插入图片：</p>
+    <pre>&lt;img src="图片地址" alt="图片描述" width="200" height="100"&gt;</pre>
+    <p>src: 图片路径，alt: 替代文本（图片加载失败时显示）</p>
+</div>
+
+<!-- 5. 列表 -->
+<h2>5. 列表</h2>
+<div class="demo-box">
+    <h4>无序列表 ul</h4>
+    <ul>
+        <li>苹果</li>
+        <li>香蕉</li>
+        <li>橙子</li>
+    </ul>
+
+    <h4>有序列表 ol</h4>
+    <ol>
+        <li>第一步</li>
+        <li>第二步</li>
+        <li>第三步</li>
+    </ol>
+
+    <h4>定义列表 dl</h4>
+    <dl>
+        <dt>HTML</dt>
+        <dd>超文本标记语言</dd>
+        <dt>CSS</dt>
+        <dd>层叠样式表</dd>
+    </dl>
+</div>
+
+<!-- 6. 表格 -->
+<h2>6. 表格 table</h2>
+<div class="demo-box">
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>城市</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>张三</td>
+                <td>25</td>
+                <td>北京</td>
+            </tr>
+            <tr>
+                <td>李四</td>
+                <td>30</td>
+                <td>上海</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="comment">tr: 行，td: 单元格，th: 表头单元格</p>
+</div>
+
+<!-- 7. 表单 -->
+<h2>7. 表单 form</h2>
+<div class="demo-box">
+    <form onsubmit="event.preventDefault(); alert('表单已提交');">
+        <p>
+            <label>文本输入: <input type="text" placeholder="请输入"></label>
+        </p>
+        <p>
+            <label>密码: <input type="password" placeholder="密码"></label>
+        </p>
+        <p>
+            性别:
+            <label><input type="radio" name="gender" value="male"> 男</label>
+            <label><input type="radio" name="gender" value="female"> 女</label>
+        </p>
+        <p>
+            爱好:
+            <label><input type="checkbox" value="read"> 读书</label>
+            <label><input type="checkbox" value="music"> 音乐</label>
+            <label><input type="checkbox" value="sport"> 运动</label>
+        </p>
+        <p>
+            <label>城市:
+                <select>
+                    <option value="">请选择</option>
+                    <option value="beijing">北京</option>
+                    <option value="shanghai">上海</option>
+                    <option value="guangzhou">广州</option>
+                </select>
+            </label>
+        </p>
+        <p>
+            <label>个人简介:<br><textarea rows="4" cols="30" placeholder="请输入..."></textarea></label>
+        </p>
+        <p>
+            <input type="submit" value="提交">
+            <input type="reset" value="重置">
+            <button type="button">普通按钮</button>
+        </p>
+    </form>
+</div>
+
+<!-- 8. 布局标签 -->
+<h2>8. 语义化标签</h2>
+<div class="demo-box">
+    <pre>
+&lt;header&gt;   页面头部
+&lt;nav&gt;      导航
+&lt;main&gt;     主要内容
+&lt;section&gt;  区块
+&lt;article&gt;  文章
+&lt;aside&gt;    侧边栏
+&lt;footer&gt;   页面底部
+&lt;div&gt;      通用容器
+&lt;span&gt;     行内容器
+    </pre>
+</div>
+
+<!-- 9. 媒体标签 -->
+<h2>9. 媒体标签</h2>
+<div class="demo-box">
+    <pre>
+&lt;!-- 音频 --&gt;
+&lt;audio src="audio.mp3" controls&gt;&lt;/audio&gt;
+
+&lt;!-- 视频 --&gt;
+&lt;video src="video.mp4" controls width="400"&gt;&lt;/video&gt;
+
+&lt;!-- 画布 --&gt;
+&lt;canvas id="canvas" width="200" height="200"&gt;&lt;/canvas&gt;
+    </pre>
+</div>
+
+<!-- 10. 实体字符 -->
+<h2>10. HTML 实体</h2>
+<div class="demo-box">
+    <p>小于号: &amp;lt; → &lt;</p>
+    <p>大于号: &amp;gt; → &gt;</p>
+    <p>和号: &amp;amp; → &amp;</p>
+    <p>引号: &amp;quot; → &quot;</p>
+    <p>版权: &amp;copy; → &copy;</p>
+    <p>空格: &amp;nbsp; → （&nbsp;空格）</p>
+</div>
+
+</body>
+</html>

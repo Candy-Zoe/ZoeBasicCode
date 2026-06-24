@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go 语言基础教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="csharp.html">C#</a>
+            </div>
+        </li>
+        <li><a href="javascript.html">JavaScript</a></li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html" class="active">Go</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Go 教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#variable">变量和数据类型</a></li>
+                    <li><a href="#function">函数</a></li>
+                    <li><a href="#struct">结构体</a></li>
+                    <li><a href="#interface">接口</a></li>
+                    <li><a href="#goroutine">并发</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>Go 语言基础语法教程</h1>
+
+            <section id="intro">
+                <h2>Go 简介</h2>
+                <p>Go（又称 Golang）是 Google 开发的一种静态类型、编译型语言，以简洁、高效、并发支持好著称。</p>
+                
+                <div class="tip-box info">
+                    <strong>💡 Go 语言特点</strong>
+                    <ul>
+                        <li>语法简洁，只有 25 个关键字</li>
+                        <li>内置并发支持（goroutine + channel）</li>
+                        <li>垃圾回收（自动内存管理）</li>
+                        <li>编译速度快</li>
+                        <li>静态链接二进制文件，部署简单</li>
+                    </ul>
+                </div>
+
+                <h3>第一个程序</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, World!")
+}</code></pre>
+                </div>
+                <div class="tip-box warning">
+                    <strong>⚠️ 编译运行</strong>
+                    <code>go run hello.go</code>
+                </div>
+            </section>
+
+            <section id="variable">
+                <h2>变量和数据类型</h2>
+
+                <h3>变量声明</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+func main() {
+    // var 声明
+    var name string = "张三"
+    var age int = 25
+    
+    // 类型推断
+    var height = 1.75
+    
+    // 短变量声明（函数内）
+    score := 95.5
+    isStudent := true
+    
+    fmt.Printf("姓名: %s, 年龄: %d\n", name, age)
+    fmt.Printf("身高: %.2f, 成绩: %.1f\n", height, score)
+}</code></pre>
+                </div>
+
+                <h3>基本数据类型</h3>
+                <table>
+                    <tr><th>类型</th><th>说明</th></tr>
+                    <tr><td>int, int8, int16, int32, int64</td><td>整数</td></tr>
+                    <tr><td>uint</td><td>无符号整数</td></tr>
+                    <tr><td>float32, float64</td><td>浮点数</td></tr>
+                    <tr><td>bool</td><td>布尔（true/false）</td></tr>
+                    <tr><td>string</td><td>字符串</td></tr>
+                    <tr><td>byte</td><td>uint8 别名</td></tr>
+                    <tr><td>rune</td><td>int32，Unicode</td></tr>
+                </table>
+            </section>
+
+            <section id="function">
+                <h2>函数</h2>
+
+                <h3>基本函数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+// 多个返回值
+func calculate(a, b int) (int, int) {
+    return a + b, a * b
+}
+
+// 命名返回值
+func divide(a, b int) (quotient, remainder int) {
+    quotient = a / b
+    remainder = a % b
+    return
+}
+
+func main() {
+    sum, product := calculate(10, 3)
+    fmt.Printf("和: %d, 积: %d\n", sum, product)
+    
+    q, r := divide(10, 3)
+    fmt.Printf("商: %d, 余数: %d\n", q, r)
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    和: 13, 积: 30<br>
+                    商: 3, 余数: 1
+                </div>
+
+                <h3>可变参数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>func sumAll(nums ...int) int {
+    total := 0
+    for _, n := range nums {
+        total += n
+    }
+    return total
+}
+
+func main() {
+    fmt.Println("sum:", sumAll(1, 2, 3))
+    fmt.Println("sum:", sumAll(1, 2, 3, 4, 5))
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    sum: 6<br>
+                    sum: 15
+                </div>
+
+                <h3>defer 延迟执行</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>func main() {
+    fmt.Println("开始")
+    defer fmt.Println("延迟执行1")
+    defer fmt.Println("延迟执行2")
+    fmt.Println("结束")
+    // defer 按栈顺序执行，先声明的后执行
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    开始<br>
+                    结束<br>
+                    延迟执行2<br>
+                    延迟执行1
+                </div>
+            </section>
+
+            <section id="struct">
+                <h2>结构体</h2>
+
+                <h3>定义和使用</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+type Person struct {
+    Name string
+    Age  int
+}
+
+// 方法
+func (p Person) Greet() {
+    fmt.Printf("你好，我是%s\n", p.Name)
+}
+
+func main() {
+    p := Person{Name: "张三", Age: 25}
+    p.Greet()
+    fmt.Printf("年龄: %d\n", p.Age)
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    你好，我是张三<br>
+                    年龄: 25
+                </div>
+            </section>
+
+            <section id="interface">
+                <h2>接口</h2>
+
+                <h3>接口定义</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import "fmt"
+
+type Shape interface {
+    Area() float64
+}
+
+type Rectangle struct {
+    Width, Height float64
+}
+
+func (r Rectangle) Area() float64 {
+    return r.Width * r.Height
+}
+
+func main() {
+    var s Shape = Rectangle{Width: 4, Height: 5}
+    fmt.Printf("面积: %.2f\n", s.Area())
+}</code></pre>
+                </div>
+                <div class="tip-box info">
+                    <strong>💡 Go 接口特点</strong>
+                    Go 的接口是隐式实现，不需要显式声明 implements。
+                </div>
+            </section>
+
+            <section id="goroutine">
+                <h2>并发编程</h2>
+
+                <h3>goroutine</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func say(s string) {
+    for i := 0; i < 3; i++ {
+        fmt.Println(s)
+    }
+}
+
+func main() {
+    go say("异步执行")
+    say("同步执行")
+    time.Sleep(time.Second)  // 等待 goroutine 完成
+}</code></pre>
+                </div>
+
+                <h3>channel 通道</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>func main() {
+    ch := make(chan string)
+    
+    go func() {
+        ch <- "数据1"
+        ch <- "数据2"
+        close(ch)
+    }()
+    
+    for msg := range ch {
+        fmt.Println("收到:", msg)
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="html.html">← HTML 教程</a>
+                <a href="css.html">CSS 教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode - 多语言编程基础学习项目 | 让编程更简单</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

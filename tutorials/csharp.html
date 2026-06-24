@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C# 基础教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#" class="active">Java ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="csharp.html" class="active">C#</a>
+            </div>
+        </li>
+        <li><a href="javascript.html">JavaScript</a></li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>C# 教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#variable">变量和数据类型</a></li>
+                    <li><a href="#oop">面向对象</a></li>
+                    <li><a href="#linq">LINQ</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>C# 基础语法教程</h1>
+
+            <section id="intro">
+                <h2>C# 简介</h2>
+                <p>C# 是微软开发的现代编程语言，广泛用于 Windows 应用、游戏开发（Unity）、Web 开发（ASP.NET）等。</p>
+                
+                <div class="tip-box info">
+                    <strong>💡 C# 特点</strong>
+                    <ul>
+                        <li>面向对象语言</li>
+                        <li>强类型检查</li>
+                        <li>自动内存管理（GC）</li>
+                        <li>LINQ 数据查询</li>
+                        <li>异步编程支持（async/await）</li>
+                    </ul>
+                </div>
+
+                <h3>第一个程序</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C#</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Hello, World!");
+    }
+}</code></pre>
+                </div>
+                <div class="tip-box warning">
+                    <strong>⚠️ 编译运行</strong>
+                    需要安装 .NET SDK，然后用 <code>dotnet run</code> 运行。
+                </div>
+            </section>
+
+            <section id="variable">
+                <h2>变量和数据类型</h2>
+
+                <h3>基本数据类型</h3>
+                <table>
+                    <tr><th>类型</th><th>说明</th></tr>
+                    <tr><td>int</td><td>32位整数</td></tr>
+                    <tr><td>long</td><td>64位整数</td></tr>
+                    <tr><td>float</td><td>单精度浮点</td></tr>
+                    <tr><td>double</td><td>双精度浮点</td></tr>
+                    <tr><td>decimal</td><td>高精度（金融）</td></tr>
+                    <tr><td>string</td><td>字符串</td></tr>
+                    <tr><td>bool</td><td>布尔</td></tr>
+                </table>
+
+                <h3>变量声明</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C#</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>string name = "张三";
+int age = 25;
+double height = 1.75;
+bool isStudent = true;
+
+// var 类型推断
+var x = 10;        // int
+var message = "hello";  // string
+
+Console.WriteLine($"姓名: {name}");  // 字符串插值</code></pre>
+                </div>
+                <div class="output-block">
+                    姓名: 张三
+                </div>
+
+                <h3>字符串插值</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C#</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>string name = "张三";
+int age = 25;
+
+// 字符串插值（$ 开头）
+Console.WriteLine($"你好，我是{name}，今年{age}岁");
+
+// 格式化
+Console.WriteLine("{0} + {1} = {2}", 1, 2, 1 + 2);</code></pre>
+                </div>
+            </section>
+
+            <section id="oop">
+                <h2>面向对象</h2>
+
+                <h3>类和对象</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C#</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+
+    public Person(string name, int age)
+    {
+        Name = name;
+        Age = age;
+    }
+
+    public void Greet()
+    {
+        Console.WriteLine($"你好，我是{Name}");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var p = new Person("张三", 25);
+        p.Greet();
+    }
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    你好，我是张三
+                </div>
+
+                <h3>继承和接口</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C#</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>interface IShape
+{
+    double Area();
+}
+
+class Circle : IShape
+{
+    public double Radius { get; set; }
+
+    public Circle(double radius)
+    {
+        Radius = radius;
+    }
+
+    public double Area() => Math.PI * Radius * Radius;
+}
+
+class Program
+{
+    static void Main()
+    {
+        var c = new Circle(5);
+        Console.WriteLine($"圆面积: {c.Area():F2}");
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="linq">
+                <h2>LINQ 查询</h2>
+
+                <h3>基本查询</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C#</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>using System.Linq;
+
+int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+// Where - 过滤
+var evens = numbers.Where(n => n % 2 == 0);
+
+// Select - 映射
+var squared = numbers.Select(n => n * n);
+
+// OrderBy - 排序
+var sorted = numbers.OrderByDescending(n => n);
+
+// Take - 取前几个
+var first3 = numbers.Take(3);
+
+// 链式调用
+var result = numbers
+    .Where(n => n > 5)
+    .Select(n => n * 2)
+    .OrderBy(n => n);
+
+Console.WriteLine(string.Join(", ", result));</code></pre>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="java.html">← Java 教程</a>
+                <a href="javascript.html">JavaScript 教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode - 多语言编程基础学习项目 | 让编程更简单</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

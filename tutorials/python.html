@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 基础语法教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="csharp.html">C#</a>
+            </div>
+        </li>
+        <li><a href="javascript.html">JavaScript</a></li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Python 教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#variable">变量和数据类型</a></li>
+                    <li><a href="#operator">运算符</a></li>
+                    <li><a href="#condition">条件语句</a></li>
+                    <li><a href="#loop">循环语句</a></li>
+                    <li><a href="#function">函数</a></li>
+                    <li><a href="#data-structure">数据结构</a></li>
+                    <li><a href="#oop">面向对象</a></li>
+                    <li><a href="#file">文件操作</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- 主内容 -->
+        <main class="content">
+            <h1>Python 基础语法教程</h1>
+
+            <section id="intro">
+                <h2>Python 简介</h2>
+                <p>Python 是一种广泛使用的高级编程语言，以其简洁易读的语法著称，非常适合编程初学者入门。</p>
+                
+                <div class="tip-box info">
+                    <strong>💡 Python 特点</strong>
+                    <ul>
+                        <li>语法简洁，代码可读性高</li>
+                        <li>动态类型语言，不需要声明变量类型</li>
+                        <li>丰富的标准库和第三方库</li>
+                        <li>跨平台支持</li>
+                    </ul>
+                </div>
+
+                <h3>第一个程序</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>print("Hello, World!")</code></pre>
+                </div>
+                <div class="output-block">
+                    Hello, World!
+                </div>
+            </section>
+
+            <section id="variable">
+                <h2>变量和数据类型</h2>
+                <p>Python 是动态类型语言，变量不需要声明类型，直接赋值即可。</p>
+
+                <h3>基本变量</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code># 字符串类型
+name = "张三"
+# 整数类型
+age = 25
+# 浮点数类型
+height = 1.75
+# 布尔类型
+is_student = True
+
+print(f"姓名: {name}")
+print(f"年龄: {age}")
+print(f"身高: {height}")
+print(f"是否学生: {is_student}")</code></pre>
+                </div>
+                <div class="output-block">
+                    姓名: 张三<br>
+                    年龄: 25<br>
+                    身高: 1.75<br>
+                    是否学生: True
+                </div>
+
+                <h3>查看变量类型</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>name = "张三"
+age = 25
+
+print(type(name))  # &lt;class 'str'&gt;
+print(type(age))   # &lt;class 'int'&gt;</code></pre>
+                </div>
+
+                <h3>类型转换</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code># 字符串转整数
+num_str = "123"
+num_int = int(num_str)
+
+# 整数转字符串
+age = 25
+age_str = str(age)
+
+# 字符串转浮点数
+pi_str = "3.14"
+pi = float(pi_str)
+
+print(f"整数: {num_int}, 类型: {type(num_int)}")
+print(f"字符串: {age_str}, 类型: {type(age_str)}")</code></pre>
+                </div>
+
+                <div class="tip-box success">
+                    <strong>✅ 提示</strong>
+                    Python 中字符串可以用单引号 <code>'</code> 或双引号 <code>"</code> 包围。
+                </div>
+            </section>
+
+            <section id="operator">
+                <h2>运算符</h2>
+
+                <h3>算术运算符</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>a, b = 10, 3
+print(f"加法: {a} + {b} = {a + b}")
+print(f"减法: {a} - {b} = {a - b}")
+print(f"乘法: {a} * {b} = {a * b}")
+print(f"除法: {a} / {b} = {a / b}")
+print(f"整除: {a} // {b} = {a // b}")
+print(f"取余: {a} % {b} = {a % b}")
+print(f"幂运算: {a} ** {b} = {a ** b}")</code></pre>
+                </div>
+                <div class="output-block">
+                    加法: 10 + 3 = 13<br>
+                    减法: 10 - 3 = 7<br>
+                    乘法: 10 * 3 = 30<br>
+                    整除: 10 // 3 = 3<br>
+                    取余: 10 % 3 = 1<br>
+                    幂运算: 10 ** 3 = 1000
+                </div>
+
+                <h3>比较运算符</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>m, n = 10, 20
+print(f"{m} == {n}: {m == n}")  # False
+print(f"{m} != {n}: {m != n}")  # True
+print(f"{m} > {n}: {m > n}")    # False
+print(f"{m} < {n}: {m < n}")    # True</code></pre>
+                </div>
+
+                <h3>逻辑运算符</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>p, q = True, False
+print(f"p and q: {p and q}")  # False
+print(f"p or q: {p or q}")    # True
+print(f"not p: {not p}")      # False</code></pre>
+                </div>
+            </section>
+
+            <section id="condition">
+                <h2>条件语句</h2>
+                <p>Python 使用 <code>if</code>、<code>elif</code>、<code>else</code> 进行条件判断。</p>
+
+                <h3>基本 if 语句</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>age = 18
+if age >= 18:
+    print("你已经成年了")
+else:
+    print("你还未成年")</code></pre>
+                </div>
+                <div class="output-block">
+                    你已经成年了
+                </div>
+
+                <h3>多条件判断</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>score = 85
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 60:
+    grade = "C"
+else:
+    grade = "D"
+
+print(f"成绩 {score} 分，等级: {grade}")</code></pre>
+                </div>
+                <div class="output-block">
+                    成绩 85 分，等级: B
+                </div>
+
+                <h3>三元表达式</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>a, b = 10, 20
+max_val = a if a > b else b
+print(f"{a} 和 {b} 中较大的是: {max_val}")</code></pre>
+                </div>
+                <div class="output-block">
+                    10 和 20 中较大的是: 20
+                </div>
+            </section>
+
+            <section id="loop">
+                <h2>循环语句</h2>
+
+                <h3>for 循环</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code># 遍历列表
+fruits = ["苹果", "香蕉", "橙子"]
+for fruit in fruits:
+    print(f"水果: {fruit}")
+
+# 使用 range()
+for i in range(5):
+    print(f"第 {i} 次循环")</code></pre>
+                </div>
+                <div class="output-block">
+                    水果: 苹果<br>
+                    水果: 香蕉<br>
+                    水果: 橙子<br>
+                    第 0 次循环<br>
+                    第 1 次循环<br>
+                    ...
+                </div>
+
+                <h3>while 循环</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>count = 1
+while count <= 5:
+    print(f"count = {count}")
+    count += 1</code></pre>
+                </div>
+                <div class="output-block">
+                    count = 1<br>
+                    count = 2<br>
+                    count = 3<br>
+                    count = 4<br>
+                    count = 5
+                </div>
+
+                <h3>break 和 continue</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code># break: 跳出循环
+for i in range(10):
+    if i == 5:
+        break
+    print(i, end=" ")
+print("\n遇到 break，循环结束")
+
+# continue: 跳过当前迭代
+for i in range(10):
+    if i % 2 == 0:
+        continue
+    print(i, end=" ")
+print("\n只打印了奇数")</code></pre>
+                </div>
+                <div class="output-block">
+                    0 1 2 3 4<br>
+                    遇到 break，循环结束<br>
+                    1 3 5 7 9<br>
+                    只打印了奇数
+                </div>
+            </section>
+
+            <section id="function">
+                <h2>函数</h2>
+
+                <h3>定义函数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>def greet():
+    """简单的问候函数"""
+    print("Hello, World!")
+
+def greet_user(name):
+    """向指定用户问候"""
+    print(f"你好，{name}！")
+
+def add(a, b):
+    """返回两个数的和"""
+    return a + b
+
+greet()
+greet_user("张三")
+print(f"3 + 5 = {add(3, 5)}")</code></pre>
+                </div>
+                <div class="output-block">
+                    Hello, World!<br>
+                    你好，张三！<br>
+                    3 + 5 = 8
+                </div>
+
+                <h3>默认参数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>def power(base, exponent=2):
+    """计算幂，默认是平方"""
+    return base ** exponent
+
+print(f"3的平方: {power(3)}")
+print(f"3的立方: {power(3, 3)}")</code></pre>
+                </div>
+                <div class="output-block">
+                    3的平方: 9<br>
+                    3的立方: 27
+                </div>
+
+                <h3>可变参数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>def sum_all(*args):
+    """计算所有参数的和"""
+    total = 0
+    for num in args:
+        total += num
+    return total
+
+print(f"sum_all(1, 2, 3) = {sum_all(1, 2, 3)}")
+print(f"sum_all(1, 2, 3, 4, 5) = {sum_all(1, 2, 3, 4, 5)}")</code></pre>
+                </div>
+                <div class="output-block">
+                    sum_all(1, 2, 3) = 6<br>
+                    sum_all(1, 2, 3, 4, 5) = 15
+                </div>
+
+                <h3>Lambda 表达式</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code># 匿名函数
+square = lambda x: x ** 2
+print(f"5的平方: {square(5)}")
+
+# 作为参数传递
+nums = [1, 2, 3, 4, 5]
+squared = list(map(lambda x: x ** 2, nums))
+print(f"平方后: {squared}")</code></pre>
+                </div>
+                <div class="output-block">
+                    5的平方: 25<br>
+                    平方后: [1, 4, 9, 16, 25]
+                </div>
+            </section>
+
+            <section id="data-structure">
+                <h2>数据结构</h2>
+
+                <h3>列表 (List)</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>fruits = ["苹果", "香蕉", "橙子"]
+print(f"列表: {fruits}")
+print(f"第一个: {fruits[0]}")
+print(f"最后一个: {fruits[-1]}")
+
+# 添加元素
+fruits.append("葡萄")
+print(f"添加后: {fruits}")
+
+# 删除元素
+fruits.remove("香蕉")
+print(f"删除后: {fruits}")</code></pre>
+                </div>
+                <div class="output-block">
+                    列表: ['苹果', '香蕉', '橙子']<br>
+                    第一个: 苹果<br>
+                    最后一个: 橙子<br>
+                    添加后: ['苹果', '香蕉', '橙子', '葡萄']<br>
+                    删除后: ['苹果', '橙子', '葡萄']
+                </div>
+
+                <h3>字典 (Dictionary)</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>person = {"name": "张三", "age": 25, "city": "北京"}
+print(f"字典: {person}")
+print(f"姓名: {person['name']}")
+print(f"年龄: {person.get('age')}")
+
+# 添加/修改
+person["job"] = "工程师"
+print(f"添加后: {person}")
+
+# 遍历
+for key, value in person.items():
+    print(f"  {key}: {value}")</code></pre>
+                </div>
+
+                <h3>集合 (Set)</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>s = {1, 2, 3, 2, 1}  # 自动去重
+print(f"集合: {s}")  # {1, 2, 3}
+
+# 集合运算
+a = {1, 2, 3, 4, 5}
+b = {4, 5, 6, 7, 8}
+print(f"交集: {a & b}")   # {4, 5}
+print(f"并集: {a | b}")   # {1, 2, 3, 4, 5, 6, 7, 8}
+print(f"差集: {a - b}")   # {1, 2, 3}</code></pre>
+                </div>
+            </section>
+
+            <section id="oop">
+                <h2>面向对象</h2>
+
+                <h3>定义类</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Person:
+    def __init__(self, name, age):
+        """构造方法"""
+        self.name = name
+        self.age = age
+
+    def greet(self):
+        """问候方法"""
+        print(f"你好，我是{self.name}，今年{self.age}岁")
+
+# 创建对象
+person1 = Person("张三", 25)
+person1.greet()</code></pre>
+                </div>
+                <div class="output-block">
+                    你好，我是张三，今年25岁
+                </div>
+
+                <h3>继承</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Animal:
+    def __init__(self, name):
+        self.name = name
+    
+    def speak(self):
+        print(f"{self.name} 发出声音")
+
+class Dog(Animal):
+    def speak(self):
+        print(f"{self.name} 汪汪叫")
+
+class Cat(Animal):
+    def speak(self):
+        print(f"{self.name} 喵喵叫")
+
+dog = Dog("旺财")
+cat = Cat("咪咪")
+dog.speak()
+cat.speak()</code></pre>
+                </div>
+                <div class="output-block">
+                    旺财 汪汪叫<br>
+                    咪咪 喵喵叫
+                </div>
+            </section>
+
+            <section id="file">
+                <h2>文件操作</h2>
+
+                <h3>读写文件</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code># 写入文件
+with open("test.txt", "w", encoding="utf-8") as f:
+    f.write("第一行\n")
+    f.write("第二行\n")
+
+# 读取文件
+with open("test.txt", "r", encoding="utf-8") as f:
+    content = f.read()
+    print(content)</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 提示</strong>
+                    <code>with</code> 语句会在代码块结束后自动关闭文件，无需手动调用 <code>f.close()</code>。
+                </div>
+            </section>
+
+            <!-- 底部导航 -->
+            <div class="footer-nav">
+                <a href="index.html">← 返回首页</a>
+                <a href="c.html">C 语言教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode - 多语言编程基础学习项目 | 让编程更简单</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

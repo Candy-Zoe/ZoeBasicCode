@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C 语言基础教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#" class="active">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html" class="active">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="csharp.html">C#</a>
+            </div>
+        </li>
+        <li><a href="javascript.html">JavaScript</a></li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>C 语言教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#variable">变量和数据类型</a></li>
+                    <li><a href="#operator">运算符</a></li>
+                    <li><a href="#condition">条件语句</a></li>
+                    <li><a href="#loop">循环语句</a></li>
+                    <li><a href="#function">函数</a></li>
+                    <li><a href="#array">数组和指针</a></li>
+                    <li><a href="#struct">结构体</a></li>
+                    <li><a href="#file">文件操作</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- 主内容 -->
+        <main class="content">
+            <h1>C 语言基础语法教程</h1>
+
+            <section id="intro">
+                <h2>C 语言简介</h2>
+                <p>C 语言是一种通用、过程式的计算机编程语言，广泛用于系统软件开发，是很多编程语言的"母语"。</p>
+                
+                <div class="tip-box info">
+                    <strong>💡 C 语言特点</strong>
+                    <ul>
+                        <li>静态类型语言，需要声明变量类型</li>
+                        <li>面向过程编程</li>
+                        <li>直接操作内存，适合系统级编程</li>
+                        <li>执行效率高，是很多语言的基石</li>
+                    </ul>
+                </div>
+
+                <h3>第一个程序</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    printf("Hello, World!\n");
+    return 0;
+}</code></pre>
+                </div>
+                <div class="tip-box warning">
+                    <strong>⚠️ 编译运行</strong>
+                    Windows: <code>gcc hello.c -o hello && hello.exe</code><br>
+                    Linux/macOS: <code>gcc hello.c -o hello && ./hello</code>
+                </div>
+                <div class="output-block">
+                    Hello, World!
+                </div>
+            </section>
+
+            <section id="variable">
+                <h2>变量和数据类型</h2>
+                <p>C 语言是静态类型语言，变量必须先声明类型才能使用。</p>
+
+                <h3>基本数据类型</h3>
+                <table>
+                    <tr><th>类型</th><th>大小</th><th>说明</th></tr>
+                    <tr><td>char</td><td>1字节</td><td>字符型</td></tr>
+                    <tr><td>int</td><td>4字节</td><td>整型（最常用）</td></tr>
+                    <tr><td>float</td><td>4字节</td><td>单精度浮点型</td></tr>
+                    <tr><td>double</td><td>8字节</td><td>双精度浮点型</td></tr>
+                </table>
+
+                <h3>变量声明</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int age = 25;           // 整型
+float height = 1.75f;     // 单精度浮点型
+double weight = 65.5;    // 双精度浮点型
+char grade = 'A';       // 字符型
+
+printf("年龄: %d\n", age);
+printf("身高: %.2f\n", height);
+printf("体重: %.1lf\n", weight);
+printf("等级: %c\n", grade);</code></pre>
+                </div>
+                <div class="output-block">
+                    年龄: 25<br>
+                    身高: 1.75<br>
+                    体重: 65.5<br>
+                    等级: A
+                </div>
+
+                <h3>格式化输出</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>printf("整数: %d\n", 42);
+printf("浮点: %.2f\n", 3.14159);
+printf("字符: %c\n", 'A');
+printf("字符串: %s\n", "Hello");
+printf("十六进制: %x\n", 255);</code></pre>
+                </div>
+                <div class="output-block">
+                    整数: 42<br>
+                    浮点: 3.14<br>
+                    字符: A<br>
+                    字符串: Hello<br>
+                    十六进制: ff
+                </div>
+
+                <h3>常量</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// const 常量
+const double PI = 3.1415926;
+
+// 宏定义（预处理器）
+#define MAX_SIZE 1024
+#define TRUE 1
+
+printf("PI = %f\n", PI);
+printf("MAX_SIZE = %d\n", MAX_SIZE);</code></pre>
+                </div>
+            </section>
+
+            <section id="operator">
+                <h2>运算符</h2>
+
+                <h3>算术运算符</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int a = 10, b = 3;
+printf("加法: %d + %d = %d\n", a, b, a + b);
+printf("减法: %d - %d = %d\n", a, b, a - b);
+printf("乘法: %d * %d = %d\n", a, b, a * b);
+printf("除法: %d / %d = %d (整数除法)\n", a, b, a / b);
+printf("取余: %d %% %d = %d\n", a, b, a % b);</code></pre>
+                </div>
+                <div class="output-block">
+                    加法: 10 + 3 = 13<br>
+                    减法: 10 - 3 = 7<br>
+                    乘法: 10 * 3 = 30<br>
+                    除法: 10 / 3 = 3 (整数除法)<br>
+                    取余: 10 % 3 = 1
+                </div>
+
+                <h3>自增自减运算符</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int i = 0;
+printf("i = %d\n", i);
+printf("i++ = %d\n", i++);  // 先返回再加
+printf("i = %d\n", i);
+printf("++i = %d\n", ++i);  // 先加再返回</code></pre>
+                </div>
+                <div class="output-block">
+                    i = 0<br>
+                    i++ = 0<br>
+                    i = 1<br>
+                    ++i = 2
+                </div>
+
+                <h3>位运算符</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int x = 6;  // 二进制: 0110
+int y = 3;  // 二进制: 0011
+
+printf("按位与: x & y = %d\n", x & y);  // 0010 = 2
+printf("按位或: x | y = %d\n", x | y);  // 0111 = 7
+printf("按位异或: x ^ y = %d\n", x ^ y); // 0101 = 5
+printf("左移: x << 1 = %d\n", x << 1);  // 1100 = 12
+printf("右移: x >> 1 = %d\n", x >> 1);  // 0011 = 3</code></pre>
+                </div>
+            </section>
+
+            <section id="condition">
+                <h2>条件语句</h2>
+
+                <h3>if-else 语句</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int score = 85;
+
+if (score >= 90) {
+    printf("优秀\n");
+} else if (score >= 80) {
+    printf("良好\n");
+} else if (score >= 60) {
+    printf("及格\n");
+} else {
+    printf("不及格\n");
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    良好
+                </div>
+
+                <h3>switch 语句</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int day = 3;
+switch (day) {
+    case 1:
+        printf("星期一\n");
+        break;
+    case 2:
+        printf("星期二\n");
+        break;
+    case 3:
+        printf("星期三\n");
+        break;
+    case 4:
+        printf("星期四\n");
+        break;
+    case 5:
+        printf("星期五\n");
+        break;
+    case 6:
+    case 7:
+        printf("周末\n");
+        break;
+    default:
+        printf("无效日期\n");
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    星期三
+                </div>
+
+                <h3>三元运算符</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int a = 10, b = 20;
+int max = (a > b) ? a : b;
+printf("%d 和 %d 中较大的是: %d\n", a, b, max);</code></pre>
+                </div>
+                <div class="output-block">
+                    10 和 20 中较大的是: 20
+                </div>
+            </section>
+
+            <section id="loop">
+                <h2>循环语句</h2>
+
+                <h3>for 循环</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 基本用法
+for (int i = 0; i < 5; i++) {
+    printf("第 %d 次循环\n", i + 1);
+}
+
+// 打印九九乘法表
+printf("\n九九乘法表:\n");
+for (int i = 1; i < 10; i++) {
+    for (int j = 1; j <= i; j++) {
+        printf("%dx%d=%d\t", j, i, i*j);
+    }
+    printf("\n");
+}</code></pre>
+                </div>
+
+                <h3>while 循环</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int count = 1;
+while (count <= 5) {
+    printf("count = %d\n", count);
+    count++;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    count = 1<br>
+                    count = 2<br>
+                    count = 3<br>
+                    count = 4<br>
+                    count = 5
+                </div>
+
+                <h3>do-while 循环</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int num = 1;
+do {
+    printf("num = %d\n", num);
+    num++;
+} while (num <= 5);</code></pre>
+                </div>
+                <div class="tip-box info">
+                    <strong>💡 do-while 特点</strong>
+                    do-while 会先执行一次循环体，再判断条件，所以至少会执行一次。
+                </div>
+
+                <h3>break 和 continue</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// break: 跳出循环
+for (int i = 0; i < 10; i++) {
+    if (i == 5) break;
+    printf("%d ", i);
+}
+printf("\n");
+
+// continue: 跳过当前迭代
+for (int i = 0; i < 10; i++) {
+    if (i % 2 == 0) continue;
+    printf("%d ", i);
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    0 1 2 3 4<br>
+                    1 3 5 7 9
+                </div>
+            </section>
+
+            <section id="function">
+                <h2>函数</h2>
+
+                <h3>定义函数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+
+// 函数声明
+int add(int a, int b);
+void greet(void);
+
+int main() {
+    greet();
+    printf("3 + 5 = %d\n", add(3, 5));
+    return 0;
+}
+
+// 函数定义
+void greet(void) {
+    printf("Hello, World!\n");
+}
+
+int add(int a, int b) {
+    return a + b;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    Hello, World!<br>
+                    3 + 5 = 8
+                </div>
+
+                <h3>递归函数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int factorial(int n) {
+    if (n == 0 || n == 1) {
+        return 1;
+    }
+    return n * factorial(n - 1);
+}
+
+int main() {
+    for (int i = 0; i < 6; i++) {
+        printf("%d! = %d\n", i, factorial(i));
+    }
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    0! = 1<br>
+                    1! = 1<br>
+                    2! = 2<br>
+                    3! = 6<br>
+                    4! = 24<br>
+                    5! = 120
+                </div>
+            </section>
+
+            <section id="array">
+                <h2>数组和指针</h2>
+
+                <h3>一维数组</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int nums[5] = {1, 2, 3, 4, 5};
+
+printf("数组元素:\n");
+for (int i = 0; i < 5; i++) {
+    printf("nums[%d] = %d\n", i, nums[i]);
+}
+
+// 计算数组长度
+int length = sizeof(nums) / sizeof(nums[0]);
+printf("数组长度: %d\n", length);</code></pre>
+                </div>
+                <div class="output-block">
+                    nums[0] = 1<br>
+                    nums[1] = 2<br>
+                    nums[2] = 3<br>
+                    nums[3] = 4<br>
+                    nums[4] = 5<br>
+                    数组长度: 5
+                </div>
+
+                <h3>指针基础</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int num = 42;
+int *ptr = &num;  // 指针变量，存储 num 的地址
+
+printf("num 的值: %d\n", num);
+printf("num 的地址: %p\n", &num);
+printf("ptr 存储的地址: %p\n", ptr);
+printf("ptr 指向的值: %d\n", *ptr);
+
+*ptr = 100;  // 通过指针修改值
+printf("修改后 num = %d\n", num);</code></pre>
+                </div>
+                <div class="output-block">
+                    num 的值: 42<br>
+                    num 的地址: 0x7ffd...<br>
+                    ptr 指向的值: 42<br>
+                    修改后 num = 100
+                </div>
+
+                <h3>指针与数组</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int arr[] = {10, 20, 30, 40, 50};
+int *p = arr;  // 数组名就是数组首元素的地址
+
+printf("使用指针遍历数组:\n");
+for (int i = 0; i < 5; i++) {
+    printf("*(p + %d) = %d\n", i, *(p + i));
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="struct">
+                <h2>结构体</h2>
+
+                <h3>定义和使用结构体</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+struct Student {
+    char name[50];
+    int age;
+    float score;
+};
+
+int main() {
+    struct Student stu;
+    strcpy(stu.name, "张三");
+    stu.age = 20;
+    stu.score = 95.5f;
+
+    printf("学生信息:\n");
+    printf("  姓名: %s\n", stu.name);
+    printf("  年龄: %d\n", stu.age);
+    printf("  成绩: %.1f\n", stu.score);
+
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    学生信息:<br>
+                    姓名: 张三<br>
+                    年龄: 20<br>
+                    成绩: 95.5
+                </div>
+
+                <h3>结构体指针</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>struct Student stu = {"李四", 22, 88.0f};
+struct Student *p = &stu;
+
+printf("姓名: %s\n", p->name);
+printf("年龄: %d\n", p->age);
+printf("成绩: %.1f\n", p->score);</code></pre>
+                </div>
+            </section>
+
+            <section id="file">
+                <h2>文件操作</h2>
+
+                <h3>读写文件</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    // 写入文件
+    FILE *fp = fopen("test.txt", "w");
+    if (fp == NULL) {
+        printf("打开文件失败\n");
+        return 1;
+    }
+    fprintf(fp, "第一行\n");
+    fprintf(fp, "第二行\n");
+    fclose(fp);
+    printf("写入成功\n");
+
+    // 读取文件
+    fp = fopen("test.txt", "r");
+    char line[100];
+    printf("文件内容:\n");
+    while (fgets(line, sizeof(line), fp) != NULL) {
+        printf("%s", line);
+    }
+    fclose(fp);
+
+    return 0;
+}</code></pre>
+                </div>
+
+                <div class="tip-box info">
+                    <strong>💡 常用文件模式</strong>
+                    <ul>
+                        <li><code>"r"</code> - 读取</li>
+                        <li><code>"w"</code> - 写入（覆盖）</li>
+                        <li><code>"a"</code> - 追加</li>
+                        <li><code>"rb"/"wb"</code> - 二进制模式</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 底部导航 -->
+            <div class="footer-nav">
+                <a href="python.html">← Python 教程</a>
+                <a href="cpp.html">C++ 教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode - 多语言编程基础学习项目 | 让编程更简单</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

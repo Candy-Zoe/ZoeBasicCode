@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 基础教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="csharp.html">C#</a>
+            </div>
+        </li>
+        <li><a href="javascript.html" class="active">JavaScript</a></li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>JavaScript 教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#variable">变量和数据类型</a></li>
+                    <li><a href="#function">函数</a></li>
+                    <li><a href="#array">数组方法</a></li>
+                    <li><a href="#oop">面向对象</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>JavaScript 基础语法教程</h1>
+
+            <section id="intro">
+                <h2>JavaScript 简介</h2>
+                <p>JavaScript 是 Web 开发的核心语言，可用于前端（浏览器）和后端（Node.js）开发。</p>
+                
+                <div class="tip-box info">
+                    <strong>💡 JavaScript 特点</strong>
+                    <ul>
+                        <li>动态类型语言</li>
+                        <li>基于原型的面向对象</li>
+                        <li>异步编程（Promise, async/await）</li>
+                        <li>函数式编程特性</li>
+                        <li>浏览器原生支持</li>
+                    </ul>
+                </div>
+
+                <h3>运行环境</h3>
+                <p>可以在浏览器开发者工具控制台中运行，也可以使用 Node.js：</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// Node.js 运行
+node 文件名.js</code></pre>
+                </div>
+            </section>
+
+            <section id="variable">
+                <h2>变量和数据类型</h2>
+
+                <h3>变量声明</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>var a = 10;          // 函数作用域
+let b = 20;          // 块级作用域（推荐）
+const PI = 3.14;     // 常量（不能修改）
+
+// 基本类型
+let str = "Hello";      // 字符串
+let num = 123;          // 数字
+let bool = true;        // 布尔
+let undef = undefined;  // 未定义
+let nul = null;         // 空值
+
+console.log("字符串:", str);
+console.log("数字:", num);
+console.log("布尔:", bool);</code></pre>
+                </div>
+                <div class="output-block">
+                    字符串: Hello<br>
+                    数字: 123<br>
+                    布尔: true
+                </div>
+
+                <h3>模板字符串</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>let name = "张三";
+let age = 25;
+
+// 模板字符串（反引号）
+let greeting = `你好，我是${name}，今年${age}岁`;
+console.log(greeting);</code></pre>
+                </div>
+                <div class="output-block">
+                    你好，我是张三，今年25岁
+                </div>
+
+                <h3>解构赋值</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 数组解构
+let [x, y] = [1, 2];
+console.log(`x=${x}, y=${y}`);
+
+// 对象解构
+let { name, age } = { name: "李四", age: 30 };
+console.log(`${name} - ${age}`);
+
+// 展开运算符
+let arr1 = [1, 2, 3];
+let arr2 = [...arr1, 4, 5];
+console.log(arr2);  // [1, 2, 3, 4, 5]</code></pre>
+                </div>
+            </section>
+
+            <section id="function">
+                <h2>函数</h2>
+
+                <h3>函数声明</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// 函数声明
+function greet(name) {
+    return `你好，${name}！`;
+}
+
+// 函数表达式
+const add = function(a, b) {
+    return a + b;
+};
+
+// 箭头函数
+const multiply = (a, b) => a * b;
+
+console.log(greet("张三"));
+console.log(add(3, 5));
+console.log(multiply(3, 4));</code></pre>
+                </div>
+                <div class="output-block">
+                    你好，张三！<br>
+                    8<br>
+                    12
+                </div>
+
+                <h3>默认参数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>function power(base, exponent = 2) {
+    return Math.pow(base, exponent);
+}
+
+console.log(power(3));    // 9
+console.log(power(3, 3)); // 27</code></pre>
+                </div>
+
+                <h3>剩余参数</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>function sum(...numbers) {
+    return numbers.reduce((acc, cur) => acc + cur, 0);
+}
+
+console.log(sum(1, 2, 3));         // 6
+console.log(sum(1, 2, 3, 4, 5));    // 15</code></pre>
+                </div>
+            </section>
+
+            <section id="array">
+                <h2>数组方法</h2>
+
+                <h3>常用方法</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>let nums = [1, 2, 3, 4, 5];
+
+// map - 映射
+let doubled = nums.map(n => n * 2);
+console.log("map:", doubled);
+
+// filter - 过滤
+let evens = nums.filter(n => n % 2 === 0);
+console.log("filter:", evens);
+
+// reduce - 累计
+let sum = nums.reduce((acc, n) => acc + n, 0);
+console.log("reduce:", sum);
+
+// find - 查找
+let found = nums.find(n => n > 3);
+console.log("find:", found);</code></pre>
+                </div>
+                <div class="output-block">
+                    map: [2, 4, 6, 8, 10]<br>
+                    filter: [2, 4]<br>
+                    reduce: 15<br>
+                    find: 4
+                </div>
+            </section>
+
+            <section id="oop">
+                <h2>面向对象</h2>
+
+                <h3>class 类</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Person {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    greet() {
+        console.log(`你好，我是${this.name}`);
+    }
+}
+
+class Student extends Person {
+    constructor(name, age, score) {
+        super(name, age);
+        this.score = score;
+    }
+
+    study() {
+        console.log(`${this.name} 学习中，成绩: ${this.score}`);
+    }
+}
+
+const s = new Student("小明", 18, 95);
+s.greet();
+s.study();</code></pre>
+                </div>
+                <div class="output-block">
+                    你好，我是小明<br>
+                    小明 学习中，成绩: 95
+                </div>
+
+                <h3>Promise 和 async/await</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JavaScript</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>// Promise
+function delay(ms) {
+    return new Promise(resolve => {
+        setTimeout(() => resolve(`等待了${ms}ms`), ms);
+    });
+}
+
+// async/await
+async function main() {
+    console.log("开始...");
+    let result = await delay(100);
+    console.log(result);
+}
+
+main();</code></pre>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="csharp.html">← C# 教程</a>
+                <a href="html.html">HTML 教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode - 多语言编程基础学习项目 | 让编程更简单</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>

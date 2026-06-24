@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ 基础教程</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">ZoeBasicCode 编程教程</a>
+    <ul class="nav-menu">
+        <li><a href="python.html">Python</a></li>
+        <li class="dropdown">
+            <a href="#" class="active">C/C++ ▾</a>
+            <div class="dropdown-content">
+                <a href="c.html">C 语言</a>
+                <a href="cpp.html" class="active">C++</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Java ▾</a>
+            <div class="dropdown-content">
+                <a href="java.html">Java</a>
+                <a href="csharp.html">C#</a>
+            </div>
+        </li>
+        <li><a href="javascript.html">JavaScript</a></li>
+        <li class="dropdown">
+            <a href="#">前端 ▾</a>
+            <div class="dropdown-content">
+                <a href="html.html">HTML</a>
+                <a href="css.html">CSS</a>
+            </div>
+        </li>
+        <li><a href="go.html">Go</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>C++ 教程</h3>
+                <ul>
+                    <li><a href="#intro">简介</a></li>
+                    <li><a href="#variable">变量和数据类型</a></li>
+                    <li><a href="#oop">面向对象</a></li>
+                    <li><a href="#stl">STL 容器</a></li>
+                    <li><a href="#function">函数和模板</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1>C++ 基础语法教程</h1>
+
+            <section id="intro">
+                <h2>C++ 简介</h2>
+                <p>C++ 是 C 语言的扩展，增加了面向对象、泛型编程等特性，是目前最流行的系统级编程语言之一。</p>
+                
+                <div class="tip-box info">
+                    <strong>💡 C++ 与 C 的区别</strong>
+                    <ul>
+                        <li>支持面向对象编程（类、继承、多态）</li>
+                        <li>标准模板库（STL）</li>
+                        <li>命名空间（namespace）</li>
+                        <li>引用（reference）类型</li>
+                        <li>异常处理</li>
+                    </ul>
+                </div>
+
+                <h3>第一个程序</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    cout << "Hello, World!" << endl;
+    return 0;
+}</code></pre>
+                </div>
+                <div class="tip-box warning">
+                    <strong>⚠️ 编译运行</strong>
+                    <code>g++ -std=c++17 hello.cpp -o hello && ./hello</code>
+                </div>
+            </section>
+
+            <section id="variable">
+                <h2>变量和数据类型</h2>
+
+                <h3>基本类型</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>int age = 25;                 // 整型
+float height = 1.75f;           // 单精度
+double weight = 65.5;          // 双精度（常用）
+char grade = 'A';              // 字符
+bool isStudent = true;         // 布尔
+string name = "张三";          // 字符串（C++11）
+
+cout << "姓名: " << name << endl;
+cout << "年龄: " << age << endl;</code></pre>
+                </div>
+
+                <h3>auto 类型推断</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>auto x = 10;           // int
+auto y = 3.14;         // double
+auto z = "hello"s;     // string (C++14)
+
+cout << "x 类型: " << typeid(x).name() << endl;</code></pre>
+                </div>
+
+                <h3>vector 动态数组</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;vector&gt;
+using namespace std;
+
+vector&lt;int&gt; nums = {1, 2, 3, 4, 5};
+nums.push_back(6);           // 添加元素
+cout << "大小: " << nums.size() << endl;
+cout << "第一个: " << nums.front() << endl;
+cout << "最后一个: " << nums.back() << endl;</code></pre>
+                </div>
+            </section>
+
+            <section id="oop">
+                <h2>面向对象</h2>
+
+                <h3>类定义</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Person {
+private:
+    string name;
+    int age;
+
+public:
+    Person(string n, int a) : name(n), age(a) {}
+    
+    void greet() {
+        cout << "你好，我是" << name << endl;
+    }
+};
+
+int main() {
+    Person p("张三", 25);
+    p.greet();
+    return 0;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    你好，我是张三
+                </div>
+
+                <h3>继承</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>class Animal {
+protected:
+    string name;
+public:
+    Animal(string n) : name(n) {}
+    virtual void speak() = 0;  // 纯虚函数
+};
+
+class Dog : public Animal {
+public:
+    Dog(string n) : Animal(n) {}
+    void speak() override {
+        cout << name << " 汪汪叫" << endl;
+    }
+};
+
+int main() {
+    Dog d("旺财");
+    d.speak();
+    return 0;
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="stl">
+                <h2>STL 容器</h2>
+
+                <h3>map 字典</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;map&gt;
+using namespace std;
+
+map&lt;string, int&gt; scores;
+scores["张三"] = 95;
+scores["李四"] = 85;
+
+for (auto& p : scores) {
+    cout << p.first << ": " << p.second << endl;
+}</code></pre>
+                </div>
+                <div class="output-block">
+                    李四: 85<br>
+                    张三: 95
+                </div>
+
+                <h3>set 集合</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;set&gt;
+using namespace std;
+
+set&lt;int&gt; s = {3, 1, 4, 1, 5, 9};
+cout << "集合(自动排序去重): ";
+for (int n : s) cout << n << " ";
+cout << endl;</code></pre>
+                </div>
+            </section>
+
+            <section id="function">
+                <h2>函数和模板</h2>
+
+                <h3>函数模板</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>template&lt;typename T&gt;
+T maxValue(T a, T b) {
+    return a > b ? a : b;
+}
+
+int main() {
+    cout << maxValue(3, 5) << endl;
+    cout << maxValue(3.14, 2.71) << endl;
+    return 0;
+}</code></pre>
+                </div>
+
+                <h3>Lambda 表达式</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>C++</span>
+                        <button class="code-copy">复制</button>
+                    </div>
+                    <pre><code>#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; nums = {3, 1, 4, 1, 5};
+    
+    auto square = [](int x) { return x * x; };
+    cout << "5的平方: " << square(5) << endl;
+    
+    sort(nums.begin(), nums.end(), [](int a, int b) { return a > b; });
+    cout << "降序排序: ";
+    for (int n : nums) cout << n << " ";
+    return 0;
+}</code></pre>
+                </div>
+            </section>
+
+            <div class="footer-nav">
+                <a href="c.html">← C 语言教程</a>
+                <a href="java.html">Java 教程 →</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>
+    <p>ZoeBasicCode - 多语言编程基础学习项目 | 让编程更简单</p>
+</footer>
+
+<script src="navigation.js"></script>
+</body>
+</html>
