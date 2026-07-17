@@ -1734,6 +1734,597 @@ EOF
 
     <div class="danger">永远不要在生产环境中使用 <code>rm -rf /</code>、<code>dd if=/dev/zero of=/dev/sda</code> 等破坏性命令。在执行任何不可逆操作前，务必三重确认路径和参数。考虑使用 <code>--dry-run</code> 参数或先在测试环境中验证。</div>
 
+    <!-- ==================== 进阶实战篇 ==================== -->
+
+    <!-- 20. 高级参数展开 -->
+    <h2 id="sec20">20. 高级参数展开模式</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：参数展开的完整语法</div>
+        <p>Bash 的参数展开（Parameter Expansion）远不止简单的 <code>$var</code> 引用。掌握这些高级模式可以在不调用外部命令的情况下完成复杂的字符串操作，性能极高。</p>
+        <p><strong>模式匹配替换</strong>：<code>${var/pattern/replacement}</code> 使用 glob 模式匹配而非正则。<code>/</code> 替换第一个匹配，<code>//</code> 替换所有匹配。<code>/#</code> 匹配开头，<code>/%</code> 匹配结尾。</p>
+        <p><strong>长度和切片</strong>：<code>${#var}</code> 获取字符串长度，<code>${var:offset:length}</code> 提取子串。注意 offset 为负数时，冒号后必须有空格：<code>${var: -3}</code>。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 高级参数展开 ===</span>
+
+<span class="cm"># 变量名间接引用（nameref）</span>
+<span class="kw">name</span>=<span class="st">"hello"</span>
+<span class="kw">ref</span>=<span class="st">"name"</span>
+<span class="fn">echo</span> <span class="st">${!ref}</span>              <span class="cm"># hello（通过变量名引用变量值）</span>
+
+<span class="cm"># 从文件路径提取信息</span>
+<span class="kw">filepath</span>=<span class="st">"/home/user/docs/report.pdf"</span>
+<span class="fn">echo</span> <span class="st">${filepath##*/}</span>      <span class="cm"># report.pdf（文件名）</span>
+<span class="fn">echo</span> <span class="st">${filepath%/*}</span>       <span class="cm"># /home/user/docs（目录路径）</span>
+<span class="fn">echo</span> <span class="st">${filepath##*.}</span>      <span class="cm"># pdf（扩展名）</span>
+<span class="fn">echo</span> <span class="st">${filepath%.*}</span>       <span class="cm"># /home/user/docs/report（去掉扩展名）</span>
+
+<span class="cm"># 默认值、赋值、替代值的完整用法</span>
+<span class="kw">unset</span> var
+<span class="fn">echo</span> <span class="st">${var:-default}</span>      <span class="cm"># default（变量未定义或为空时使用默认值）</span>
+<span class="fn">echo</span> <span class="st">${var:=assigned}</span>     <span class="cm"># assigned（同时赋值给变量）</span>
+<span class="fn">echo</span> <span class="st">${var:?"错误信息"}</span>    <span class="cm"># 报错退出：bash: var: 错误信息</span>
+<span class="fn">echo</span> <span class="st">${var:+"有值了"}</span>      <span class="cm"># 空（变量为空时不返回替代值）</span>
+
+<span class="cm"># 大小写转换（Bash 4.0+）</span>
+<span class="kw">text</span>=<span class="st">"Hello World"</span>
+<span class="fn">echo</span> <span class="st">${text^^}</span>             <span class="cm"># HELLO WORLD（全部大写）</span>
+<span class="fn">echo</span> <span class="st">${text,,}</span>             <span class="cm"># hello world（全部小写）</span>
+<span class="fn">echo</span> <span class="st">${text^}</span>              <span class="cm"># Hello World（首字母大写）</span>
+<span class="fn">echo</span> <span class="st">${text~}</span>              <span class="cm"># 反转大小写</span>
+
+<span class="cm"># 逐字符大小写转换</span>
+<span class="kw">word</span>=<span class="st">"hello"</span>
+<span class="fn">echo</span> <span class="st">${word^^}</span>             <span class="cm"># HELLO</span>
+<span class="fn">echo</span> <span class="st">${word^^[aeiou]}</span>       <span class="cm"># hEllO（仅元音转大写）</span>
+
+<span class="cm"># 替换模式</span>
+<span class="kw">path</span>=<span class="st">"/usr/local/bin:/usr/bin:/bin"</span>
+<span class="fn">echo</span> <span class="st">${path//:/ } </span>         <span class="cm"># 把冒号替换为空格</span>
+<span class="fn">echo</span> <span class="st">${path/#\/usr/\/opt}</span>   <span class="cm"># /opt/local/bin:/usr/bin:/bin（仅替换开头）</span>
+
+<span class="cm"># 长度和切片</span>
+<span class="kw">str</span>=<span class="st">"Hello, World!"</span>
+<span class="fn">echo</span> <span class="st">${#str}</span>               <span class="cm"># 13</span>
+<span class="fn">echo</span> <span class="st">${str:0:5}</span>            <span class="cm"># Hello</span>
+<span class="fn">echo</span> <span class="st">${str: -6}</span>            <span class="cm"># World!（注意冒号后空格）</span>
+<span class="fn">echo</span> <span class="st">${str:(-6)}</span>           <span class="cm"># World!（用括号也行）</span></code></pre>
+    </div>
+
+    <!-- 21. 进程替换与 Here 文档 -->
+    <h2 id="sec21">21. 进程替换与 Here 文档进阶</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 进程替换 ===</span>
+<span class="cm"># &lt;(command) 将命令输出包装为文件描述符（用于读取）</span>
+<span class="cm"># &gt;(command) 将输入传递给命令（用于写入）</span>
+
+<span class="cm"># 比较两个命令的输出（无需临时文件）</span>
+<span class="fn">diff</span> &lt;(<span class="fn">sort</span> file1.txt) &lt;(<span class="fn">sort</span> file2.txt)
+
+<span class="cm"># 同时比较多个文件的排序结果</span>
+<span class="fn">diff</span> &lt;(<span class="fn">cut</span> -d: -f1 /etc/passwd | <span class="fn">sort</span>) &lt;(<span class="fn">ls</span> /home)
+
+<span class="cm"># 将多个命令输出合并</span>
+<span class="fn">diff</span> &lt;(<span class="fn">cat</span> fileA.txt) &lt;(<span class="fn">cat</span> fileB.txt)
+
+<span class="cm"># 用进程替换做日志同时输出到终端和文件</span>
+<span class="fn">some_command</span> &gt; &gt;(<span class="fn">tee</span> output.log)
+
+<span class="cm"># === Here Document 进阶 ===</span>
+
+<span class="cm"># 不做变量展开（用引号包裹标记）</span>
+<span class="fn">cat</span> << <span class="st">'EOF'</span>
+这个 $变量 不会被展开
+路径 $HOME 也不会被展开
+<span class="st">EOF</span>
+
+<span class="cm"># Here String（单行 Here Document）</span>
+<span class="fn">grep</span> <span class="st">"hello"</span> &lt;&lt;&lt; <span class="st">"hello world"</span>
+
+<span class="cm"># 使用 Here Document 创建多行文件</span>
+<span class="fn">cat</span> << <span class="st">'EOF'</span> > /etc/nginx/conf.d/app.conf
+server {
+    listen 80;
+    server_name example.com;
+    root /var/www/html;
+}
+<span class="st">EOF</span>
+
+<span class="cm"># Here Document 配合函数</span>
+<span class="fn">generate_config</span>() {
+    <span class="kw">local</span> env=<span class="nm">$1</span> port=<span class="nm">$2</span>
+    <span class="fn">cat</span> << EOF
+<span class="cm"># 自动生成的配置文件</span>
+environment: ${env}
+port: ${port}
+debug: $([ "$env" = "dev" ] && echo "true" || echo "false")
+EOF
+}
+<span class="fn">generate_config</span> <span class="st">"production"</span> <span class="nm">8080</span>
+
+<span class="cm"># 临时文件自动清理</span>
+<span class="fn">cleanup</span>() {
+    <span class="fn">rm</span> -f <span class="st">"$TEMP_FILE"</span>
+}
+<span class="fn">trap</span> cleanup EXIT
+<span class="kw">TEMP_FILE</span>=$(<span class="fn">mktemp</span>)
+<span class="fn">echo</span> <span class="st">"data"</span> > <span class="st">"$TEMP_FILE"</span></code></pre>
+    </div>
+
+    <!-- 22. PS1 自定义提示符 -->
+    <h2 id="sec22">22. 自定义提示符（PS1）</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === PS1 常用转义序列 ===</span>
+<span class="cm"># \u  当前用户名</span>
+<span class="cm"># \h  主机名（短）</span>
+<span class="cm"># \H  主机名（全）</span>
+<span class="cm"># \w  当前工作目录（完整路径）</span>
+<span class="cm"># \W  当前工作目录（仅最后一级）</span>
+<span class="cm"># \$  #（root）或 $（普通用户）</span>
+<span class="cm"># \n  换行</span>
+<span class="cm"># \t  时间（HH:MM:SS）</span>
+<span class="cm"># \d  日期</span>
+<span class="cm"># \!  历史命令编号</span>
+<span class="cm"># \#  当前命令编号</span>
+
+<span class="cm"># 简单提示符</span>
+<span class="kw">PS1</span>=<span class="st">'\u@\h:\w\$ '</span>
+
+<span class="cm"># 彩色提示符（使用 \[ 和 \] 包裹非打印字符）</span>
+<span class="kw">PS1</span>=<span class="st">'\[\033[1;32m\]\u@\h\[\033[0m\]:\[\033[1;34m\]\w\[\033[0m\]\$ '</span>
+
+<span class="cm"># 高级彩色提示符（带 Git 分支）</span>
+<span class="fn">parse_git_branch</span>() {
+    <span class="kw">local</span> branch
+    branch=$(<span class="fn">git</span> symbolic-ref --short HEAD 2>/dev/null) || \
+    branch=$(<span class="fn">git</span> rev-parse --short HEAD 2>/dev/null) || \
+    <span class="kw">return</span>
+    <span class="fn">echo</span> <span class="st">" ($branch)"</span>
+}
+
+<span class="kw">PS1</span>=<span class="st">'\n\[\033[1;36m\]\u@\h\[\033[0m\]:\[\033[1;33m\]\w\[\033[1;35m\]$(parse_git_branch)\[\033[0m\]\n\$ '</span>
+
+<span class="cm"># 动态提示符：根据退出状态变色</span>
+<span class="kw">PS1</span>=<span class="st">'$(if [ $? -eq 0 ]; then echo "\[\033[1;32m\]✓"; else echo "\[\033[1;31m\]✗"; fi)\[\033[0m\] \u:\w\$ '</span>
+
+<span class="cm"># 显示上次命令耗时</span>
+<span class="fn">timer_start</span>() {
+    <span class="kw">SPOCH</span>=$(<span class="fn">date</span> +%s%N)
+}
+<span class="fn">timer_stop</span>() {
+    <span class="kw">local</span> elapsed=$(($(<span class="fn">date</span> +%s%N) - SPOCH))
+    <span class="fn">echo</span> <span class="st">$((elapsed / 1000000))ms</span>
+}
+<span class="fn">trap</span> timer_start DEBUG
+<span class="kw">PS1</span>=<span class="st">'\u:\w [\033[1;33m$(timer_stop)\033[0m]\$ '</span></code></pre>
+    </div>
+
+    <!-- 23. 参数解析（getopts） -->
+    <h2 id="sec23">23. 脚本参数解析（getopts）</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === getopts 解析命令行参数 ===</span>
+<span class="cm"># getopts optstring name [arg...]</span>
+<span class="cm"># optstring 中：字母后跟 : 表示该选项需要参数</span>
+
+<span class="kw">VERBOSE</span>=<span class="nm">0</span>
+<span class="kw">OUTPUT</span>=<span class="st">"output.txt"</span>
+<span class="kw">LEVEL</span>=<span class="nm">1</span>
+
+<span class="kw">while</span> <span class="fn">getopts</span> <span class="st">"vo:l:h"</span> opt; <span class="kw">do</span>
+    <span class="kw">case</span> $opt <span class="kw">in</span>
+        v) VERBOSE=<span class="nm">1</span> ;;
+        o) OUTPUT=<span class="st">"$OPTARG"</span> ;;
+        l) LEVEL=<span class="st">"$OPTARG"</span> ;;
+        h)
+            <span class="fn">cat</span> &lt;&lt;EOF
+用法: $(<span class="fn">basename</span> <span class="st">"$0"</span>) [选项]
+选项:
+    -v          详细输出
+    -o FILE     输出文件（默认: output.txt）
+    -l LEVEL    日志级别（1-3，默认: 1）
+    -h          显示帮助
+EOF
+            <span class="kw">exit</span> <span class="nm">0</span>
+            ;;
+        ?) <span class="fn">echo</span> <span class="st">"无效选项: -$OPTARG"</span> >&amp;2; <span class="kw">exit</span> <span class="nm">1</span> ;;
+    <span class="kw">esac</span>
+<span class="kw">done</span>
+<span class="kw">shift</span> $((OPTIND - <span class="nm">1</span>))  <span class="cm"># 移除已解析的选项</span>
+
+<span class="fn">echo</span> <span class="st">"Verbose: $VERBOSE"</span>
+<span class="fn">echo</span> <span class="st">"Output: $OUTPUT"</span>
+<span class="fn">echo</span> <span class="st">"Level: $LEVEL"</span>
+<span class="fn">echo</span> <span class="st">"剩余参数: $*"</span>
+
+<span class="cm"># === 长选项解析（getopt，非 getopts） ===</span>
+<span class="cm"># GNU getopt 支持 --long-option</span>
+<span class="kw">OPTS</span>=$(<span class="fn">getopt</span> -o vo:l:h -l verbose,output:,level:,help -n <span class="st">"$0"</span> -- <span class="st">"$@"</span>)
+<span class="kw">eval set</span> -- <span class="st">"$OPTS"</span>
+
+<span class="kw">while</span> <span class="kw">true</span>; <span class="kw">do</span>
+    <span class="kw">case</span> <span class="st">"$1"</span> <span class="kw">in</span>
+        -v|--verbose) VERBOSE=<span class="nm">1</span>; <span class="kw">shift</span> ;;
+        -o|--output)  OUTPUT=<span class="st">"$2"</span>; <span class="kw">shift</span> <span class="nm">2</span> ;;
+        -l|--level)   LEVEL=<span class="st">"$2"</span>; <span class="kw">shift</span> <span class="nm">2</span> ;;
+        -h|--help)    <span class="fn">usage</span>; <span class="kw">exit</span> <span class="nm">0</span> ;;
+        --)           <span class="kw">shift</span>; <span class="kw">break</span> ;;
+        *)            <span class="fn">echo</span> <span class="st">"内部错误"</span>; <span class="kw">exit</span> <span class="nm">1</span> ;;
+    <span class="kw">esac</span>
+<span class="kw">done</span></code></pre>
+    </div>
+
+    <!-- 24. 锁文件与并发控制 -->
+    <h2 id="sec24">24. 锁文件与并发控制</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 文件锁（flock）— 保证脚本单实例运行 ===</span>
+
+<span class="cm"># 方式一：使用 flock 命令</span>
+<span class="fn">flock</span> -n /tmp/myapp.lock -c <span class="st">'echo "独占运行"; sleep 10'</span>
+<span class="cm"># -n: 非阻塞，获取不到锁立即退出</span>
+<span class="cm"># -w: 等待超时秒数</span>
+
+<span class="cm"># 方式二：在脚本中使用 flock</span>
+<span class="cm">#!/bin/bash</span>
+<span class="kw">LOCKFILE</span>=<span class="st">"/tmp/backup.lock"</span>
+<span class="kw">exec</span> <span class="nm">200</span>&gt;<span class="st">"$LOCKFILE"</span>
+<span class="fn">flock</span> -n <span class="nm">200</span> || { <span class="fn">echo</span> <span class="st">"另一个实例正在运行"</span>; <span class="kw">exit</span> <span class="nm">1</span>; }
+
+<span class="cm"># 脚本主体内容...</span>
+<span class="fn">echo</span> <span class="st">"独占执行中..."</span>
+<span class="fn">sleep</span> <span class="nm">5</span>
+
+<span class="cm"># === 简单锁文件实现（兼容性更好） ===</span>
+<span class="kw">LOCKFILE</span>=<span class="st">"/tmp/myscript.lock"</span>
+
+<span class="fn">acquire_lock</span>() {
+    <span class="kw">if</span> <span class="fn">mkdir</span> <span class="st">"$LOCKFILE"</span> 2>/dev/null; <span class="kw">then</span>
+        <span class="fn">trap</span> <span class="st">'rm -rf "$LOCKFILE"'</span> EXIT
+        <span class="kw">return</span> <span class="nm">0</span>
+    <span class="kw">else</span>
+        <span class="fn">echo</span> <span class="st">"错误：另一个实例正在运行（PID: $(cat $LOCKFILE/pid 2>/dev/null)）"</span>
+        <span class="kw">return</span> <span class="nm">1</span>
+    <span class="kw">fi</span>
+}
+
+<span class="fn">acquire_lock</span> || <span class="kw">exit</span> <span class="nm">1</span>
+<span class="fn">echo</span> $$ > <span class="st">"$LOCKFILE/pid"</span>
+
+<span class="cm"># === 信号量式并发限制 ===</span>
+<span class="cm"># 限制同时运行的并发任务数量</span>
+<span class="kw">MAX_JOBS</span>=<span class="nm">4</span>
+<span class="kw">PIDS</span>=()
+
+<span class="kw">for</span> <span class="nm">file</span> <span class="kw">in</span> *.txt; <span class="kw">do</span>
+    <span class="cm"># 等待有空闲槽位</span>
+    <span class="kw">while</span> (( ${#PIDS[@]} >= MAX_JOBS )); <span class="kw">do</span>
+        <span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> "${!PIDS[@]}"; <span class="kw">do</span>
+            <span class="kw">if</span> <span class="kw">!</span> <span class="fn">kill</span> -0 "${PIDS[$i]}" 2>/dev/null; <span class="kw">then</span>
+                <span class="kw">unset</span> PIDS[$i]
+            <span class="kw">fi</span>
+        <span class="kw">done</span>
+        <span class="fn">sleep</span> <span class="nm">0.1</span>
+    <span class="kw">done</span>
+
+    <span class="cm"># 启动后台任务</span>
+    <span class="fn">process_file</span> <span class="st">"$file"</span> &
+    PIDS+=(<span class="nm">$!</span>)
+<span class="kw">done</span>
+
+<span class="cm"># 等待所有任务完成</span>
+<span class="kw">for</span> <span class="nm">pid</span> <span class="kw">in</span> "${PIDS[@]}"; <span class="kw">do</span>
+    <span class="fn">wait</span> <span class="nm">$pid</span>
+<span class="kw">done</span></code></pre>
+    </div>
+
+    <!-- 25. 日志轮转与清理 -->
+    <h2 id="sec25">25. 日志轮转与清理脚本</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm">#!/bin/bash</span>
+<span class="cm"># 日志轮转脚本</span>
+<span class="kw">set</span> -euo pipefail
+
+<span class="kw">LOG_DIR</span>=<span class="st">"/var/log/myapp"</span>
+<span class="kw">KEEP_DAYS</span>=<span class="nm">30</span>
+<span class="kw">COMPRESS_DAYS</span>=<span class="nm">7</span>
+
+<span class="cm"># 轮转日志文件</span>
+<span class="fn">rotate_log</span>() {
+    <span class="kw">local</span> logfile=<span class="nm">$1</span>
+    <span class="kw">if</span> [[ -f <span class="st">"$logfile"</span> && -s <span class="st">"$logfile"</span> ]]; <span class="kw">then</span>
+        <span class="kw">local</span> timestamp=$(<span class="fn">date</span> +%Y%m%d_%H%M%S)
+        <span class="fn">mv</span> <span class="st">"$logfile"</span> <span class="st">"${logfile}.${timestamp}"</span>
+        <span class="fn">touch</span> <span class="st">"$logfile"</span>
+        <span class="fn">echo</span> <span class="st">"已轮转: $logfile → ${logfile}.${timestamp}"</span>
+    <span class="kw">fi</span>
+}
+
+<span class="cm"># 压缩旧日志</span>
+<span class="fn">compress_old_logs</span>() {
+    <span class="fn">find</span> <span class="st">"$LOG_DIR"</span> -name <span class="st">"*.log.*"</span> -mtime +<span class="nm">$COMPRESS_DAYS</span> ! -name <span class="st">"*.gz"</span> | <span class="kw">while</span> <span class="fn">read</span> -r f; <span class="kw">do</span>
+        <span class="fn">gzip</span> <span class="st">"$f"</span>
+        <span class="fn">echo</span> <span class="st">"已压缩: $f"</span>
+    <span class="kw">done</span>
+}
+
+<span class="cm"># 清理过期日志</span>
+<span class="fn">cleanup_old_logs</span>() {
+    <span class="kw">local</span> count=$(<span class="fn">find</span> <span class="st">"$LOG_DIR"</span> -name <span class="st">"*.log.gz"</span> -mtime +<span class="nm">$KEEP_DAYS</span> | <span class="fn">wc</span> -l)
+    <span class="fn">find</span> <span class="st">"$LOG_DIR"</span> -name <span class="st">"*.log.gz"</span> -mtime +<span class="nm">$KEEP_DAYS</span> -<span class="fn">delete</span>
+    <span class="fn">echo</span> <span class="st">"已清理 $count 个过期日志文件"</span>
+}
+
+<span class="cm"># 主流程</span>
+<span class="fn">mkdir</span> -p <span class="st">"$LOG_DIR"</span>
+<span class="fn">rotate_log</span> <span class="st">"$LOG_DIR/app.log"</span>
+<span class="fn">rotate_log</span> <span class="st">"$LOG_DIR/error.log"</span>
+<span class="fn">compress_old_logs</span>
+<span class="fn">cleanup_old_logs</span></code></pre>
+    </div>
+
+    <!-- 26. 网络操作 -->
+    <h2 id="sec26">26. 网络操作（curl / wget）</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === curl 常用模式 ===</span>
+
+<span class="cm"># GET 请求</span>
+<span class="fn">curl</span> -s https://api.example.com/users
+
+<span class="cm"># POST JSON</span>
+<span class="fn">curl</span> -X POST https://api.example.com/users \
+    -H <span class="st">"Content-Type: application/json"</span> \
+    -d <span class="st">'{"name":"张三","email":"z@example.com"}'</span>
+
+<span class="cm"># 带认证的请求</span>
+<span class="fn">curl</span> -H <span class="st">"Authorization: Bearer $TOKEN"</span> https://api.example.com/me
+
+<span class="cm"># 下载文件（显示进度）</span>
+<span class="fn">curl</span> -L -o output.zip https://example.com/file.zip
+
+<span class="cm"># 重试和超时</span>
+<span class="fn">curl</span> --retry <span class="nm">3</span> --retry-delay <span class="nm">2</span> --connect-timeout <span class="nm">10</span> https://example.com
+
+<span class="cm"># 检查 HTTP 状态码</span>
+<span class="fn">curl</span> -s -o /dev/null -w <span class="st">"%{http_code}"</span> https://example.com
+
+<span class="cm"># 获取响应头</span>
+<span class="fn">curl</span> -I https://example.com
+
+<span class="cm"># === wget 常用模式 ===</span>
+
+<span class="cm"># 下载文件</span>
+<span class="fn">wget</span> https://example.com/file.tar.gz
+
+<span class="cm"># 指定保存名称</span>
+<span class="fn">wget</span> -O output.tar.gz https://example.com/file.tar.gz
+
+<span class="cm"># 断点续传</span>
+<span class="fn">wget</span> -c https://example.com/large-file.zip
+
+<span class="cm"># 递归下载整个网站</span>
+<span class="fn">wget</span> -r -np -l <span class="nm">2</span> https://example.com/docs/
+
+<span class="cm"># 后台下载</span>
+<span class="fn">wget</span> -b https://example.com/huge-file.iso
+
+<span class="cm"># 批量下载</span>
+<span class="fn">wget</span> -i urls.txt  <span class="cm"># urls.txt 每行一个 URL</span>
+
+<span class="cm"># 健康检查脚本</span>
+<span class="fn">check_health</span>() {
+    <span class="kw">local</span> url=<span class="nm">$1</span> expected=<span class="nm">${2:-200}</span>
+    <span class="kw">local</span> code=$(<span class="fn">curl</span> -s -o /dev/null -w <span class="st">"%{http_code}"</span> --connect-timeout <span class="nm">5</span> <span class="st">"$url"</span>)
+    <span class="kw">if</span> (( code == expected )); <span class="kw">then</span>
+        <span class="fn">echo</span> <span class="st">"✓ $url is healthy (HTTP $code)"</span>
+    <span class="kw">else</span>
+        <span class="fn">echo</span> <span class="st">"✗ $url is down (HTTP $code)"</span>
+        <span class="kw">return</span> <span class="nm">1</span>
+    <span class="kw">fi</span>
+}
+<span class="fn">check_health</span> <span class="st">"https://example.com"</span></code></pre>
+    </div>
+
+    <!-- 27. Docker Shell 命令 -->
+    <h2 id="sec27">27. Docker 相关 Shell 命令</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === Docker 容器管理 ===</span>
+
+<span class="cm"># 查看运行中的容器</span>
+<span class="fn">docker</span> ps
+
+<span class="cm"># 查看所有容器（包括已停止的）</span>
+<span class="fn">docker</span> ps -a
+
+<span class="cm"># 进入容器执行命令</span>
+<span class="fn">docker</span> exec -it mycontainer /bin/bash
+
+<span class="cm"># 在容器中执行单条命令</span>
+<span class="fn">docker</span> exec mycontainer cat /etc/hostname
+
+<span class="cm"># 查看容器日志（实时跟踪）</span>
+<span class="fn">docker</span> logs -f --tail <span class="nm">100</span> mycontainer
+
+<span class="cm"># 查看容器资源使用</span>
+<span class="fn">docker</span> stats mycontainer
+
+<span class="cm"># === Docker 镜像操作 ===</span>
+
+<span class="cm"># 构建镜像</span>
+<span class="fn">docker</span> build -t myapp:v1.0 .
+
+<span class="cm"># 清理无用镜像和容器</span>
+<span class="fn">docker</span> system prune -af
+
+<span class="cm"># 查看镜像大小</span>
+<span class="fn">docker</span> images --format <span class="st">"{{.Repository}}:{{.Tag}} {{.Size}}"</span>
+
+<span class="cm"># === Docker Compose 常用命令 ===</span>
+<span class="fn">docker-compose</span> up -d          <span class="cm"># 后台启动所有服务</span>
+<span class="fn">docker-compose</span> down           <span class="cm"># 停止并移除容器</span>
+<span class="fn">docker-compose</span> logs -f         <span class="cm"># 实时查看日志</span>
+<span class="fn">docker-compose</span> ps             <span class="cm"># 查看服务状态</span>
+<span class="fn">docker-compose</span> exec web bash  <span class="cm"># 进入指定服务容器</span>
+
+<span class="cm"># === 实用脚本 ===</span>
+
+<span class="cm"># 批量重启容器</span>
+<span class="fn">docker</span> ps -q | <span class="kw">while</span> <span class="fn">read</span> cid; <span class="kw">do</span>
+    <span class="fn">docker</span> restart <span class="st">"$cid"</span>
+    <span class="fn">echo</span> <span class="st">"已重启: $cid"</span>
+<span class="kw">done</span>
+
+<span class="cm"># 自动清理停止超过 24 小时的容器</span>
+<span class="fn">docker</span> container prune -f --filter <span class="st">"until=24h"</span>
+
+<span class="cm"># 导出容器文件系统（备份）</span>
+<span class="fn">docker</span> export mycontainer > <span class="st">"backup_$(date +%Y%m%d).tar"</span>
+
+<span class="cm"># Docker 网络管理</span>
+<span class="fn">docker</span> network ls
+<span class="fn">docker</span> network inspect bridge
+
+<span class="cm"># === Docker 备份与迁移 ===</span>
+
+<span class="cm"># 导出所有镜像为 tar 文件</span>
+<span class="fn">docker</span> images --format <span class="st">"{{.Repository}}:{{.Tag}}"</span> | <span class="kw">grep</span> -v <span class="st">"&lt;none&gt;"</span> | <span class="kw">while</span> <span class="fn">read</span> img; <span class="kw">do</span>
+    <span class="kw">safe_name</span>=$(<span class="fn">echo</span> <span class="st">"$img"</span> | <span class="fn">tr</span> <span class="st">'/:'</span> <span class="st">'__'</span>)
+    <span class="fn">docker</span> save <span class="st">"$img"</span> | <span class="fn">gzip</span> > <span class="st">"images/${safe_name}.tar.gz"</span>
+    <span class="fn">echo</span> <span class="st">"已导出: $img"</span>
+<span class="kw">done</span>
+
+<span class="cm"># 从 tar 文件恢复镜像</span>
+<span class="kw">for</span> <span class="nm">tarball</span> <span class="kw">in</span> images/*.tar.gz; <span class="kw">do</span>
+    <span class="fn">docker</span> load <span class="st">"$tarball"</span>
+<span class="kw">done</span>
+
+<span class="cm"># Docker Compose 完整备份脚本</span>
+<span class="fn">backup_docker</span>() {
+    <span class="kw">local</span> backup_dir=<span class="st">"/backup/docker/$(date +%Y%m%d_%H%M%S)"</span>
+    <span class="fn">mkdir</span> -p <span class="st">"$backup_dir"</span>
+
+    <span class="cm"># 备份卷数据</span>
+    <span class="kw">for</span> <span class="nm">vol</span> <span class="kw">in</span> $(<span class="fn">docker</span> volume ls -q); <span class="kw">do</span>
+        <span class="fn">docker</span> run --rm -v <span class="st">"$vol"</span>:/data -v <span class="st">"$backup_dir"</span>:/backup \
+            alpine tar czf <span class="st">"/backup/${vol}.tar.gz"</span> -C /data .
+    <span class="kw">done</span>
+
+    <span class="cm"># 备份数据库（假设 MySQL 容器）</span>
+    <span class="fn">docker</span> exec mysql-container mysqldump -u root -p<span class="st">"$DB_PASS"</span> --all-databases \
+        | <span class="fn">gzip</span> > <span class="st">"$backup_dir/databases.sql.gz"</span>
+
+    <span class="fn">echo</span> <span class="st">"备份完成: $backup_dir"</span>
+}</code></pre>
+    </div>
+
+    <!-- 28. 自动化运维脚本 -->
+    <h2 id="sec28">28. 自动化运维脚本实战</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm">#!/bin/bash</span>
+<span class="cm"># 服务器健康检查脚本</span>
+<span class="kw">set</span> -euo pipefail
+
+<span class="kw">HOSTNAME</span>=$(<span class="fn">hostname</span>)
+<span class="kw">DATE</span>=$(<span class="fn">date</span> <span class="st">'+%Y-%m-%d %H:%M:%S'</span>)
+
+<span class="fn">check_disk</span>() {
+    <span class="fn">df</span> -h / | <span class="fn">awk</span> <span class="st">'NR==2 {gsub(/%/,"",$5); if ($5 > 80) print "磁盘使用率过高: "$5"%"}'</span>
+}
+
+<span class="fn">check_memory</span>() {
+    <span class="kw">local</span> mem_total mem_avail pct
+    <span class="kw">if</span> [[ -f /proc/meminfo ]]; <span class="kw">then</span>
+        <span class="fn">read</span> _ mem_total _ <span class="kw">&lt;</span> /proc/meminfo
+        <span class="fn">read</span> _ mem_avail _ <span class="kw">&lt;</span> /proc/meminfo
+        pct=$(( (<span class="nm">mem_total</span> - <span class="nm">mem_avail</span>) * <span class="nm">100</span> / <span class="nm">mem_total</span> ))
+        (( pct > <span class="nm">90</span> )) && <span class="fn">echo</span> <span class="st">"内存使用率过高: ${pct}%"</span>
+    <span class="kw">fi</span>
+}
+
+<span class="fn">check_load</span>() {
+    <span class="kw">local</span> load cores
+    <span class="fn">read</span> load _ _ _ <span class="kw">&lt;</span> /proc/loadavg
+    cores=$(<span class="fn">nproc</span>)
+    <span class="kw">if</span> (( $(<span class="fn">echo</span> <span class="st">"$load > $cores * 2"</span> | <span class="fn">bc</span> -l) )); <span class="kw">then</span>
+        <span class="fn">echo</span> <span class="st">"负载过高: $load (CPU核心: $cores)"</span>
+    <span class="kw">fi</span>
+}
+
+<span class="fn">check_port</span>() {
+    <span class="kw">local</span> port=<span class="nm">$1</span> name=<span class="nm">$2</span>
+    <span class="kw">if</span> ! <span class="fn">ss</span> -tln | <span class="fn">grep</span> -q <span class="st">":$port "</span>; <span class="kw">then</span>
+        <span class="fn">echo</span> <span class="st">"端口 $port ($name) 未监听!"</span>
+    <span class="kw">fi</span>
+}
+
+<span class="fn">check_cert_expiry</span>() {
+    <span class="kw">local</span> domain=<span class="nm">$1</span> days_warn=<span class="nm">${2:-30}</span>
+    <span class="kw">local</span> expiry
+    expiry=$(<span class="fn">echo</span> | <span class="fn">openssl</span> s_client -servername <span class="st">"$domain"</span> -connect <span class="st">"$domain":443"</span> 2>/dev/null \
+        | <span class="fn">openssl</span> x509 -noout -enddate 2>/dev/null | <span class="fn">cut</span> -d= -f2)
+    <span class="kw">if</span> [[ -n <span class="st">"$expiry"</span> ]]; <span class="kw">then</span>
+        <span class="kw">local</span> expiry_epoch=$(<span class="fn">date</span> -d <span class="st">"$expiry"</span> +%s)
+        <span class="kw">local</span> now_epoch=$(<span class="fn">date</span> +%s)
+        <span class="kw">local</span> days_left=$(( (expiry_epoch - now_epoch) / <span class="nm">86400</span> ))
+        (( days_left < days_warn )) && <span class="fn">echo</span> <span class="st">"证书即将过期: $domain ($days_left 天)"</span>
+    <span class="kw">fi</span>
+}
+
+<span class="cm"># 主检查流程</span>
+<span class="fn">echo</span> <span class="st">"=== 服务器健康报告: $HOSTNAME ($DATE) ==="</span>
+<span class="fn">check_disk</span>
+<span class="fn">check_memory</span>
+<span class="fn">check_load</span>
+<span class="fn">check_port</span> <span class="nm">22</span> <span class="st">"SSH"</span>
+<span class="fn">check_port</span> <span class="nm">80</span> <span class="st">"HTTP"</span>
+<span class="fn">check_port</span> <span class="nm">443</span> <span class="st">"HTTPS"</span>
+<span class="fn">check_cert_expiry</span> <span class="st">"example.com"</span></code></pre>
+    </div>
+
 </main>
 </body>
 </html>

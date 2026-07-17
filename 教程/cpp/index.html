@@ -69,6 +69,17 @@
         <a href="#memory-model" class="sidebar-link"><span class="num">26</span>内存模型</a>
         <a href="#best-practices" class="sidebar-link"><span class="num">27</span>最佳实践</a>
     </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">现代C++专题</div>
+        <a href="#coroutines" class="sidebar-link"><span class="num">28</span>协程</a>
+        <a href="#ranges" class="sidebar-link"><span class="num">29</span>Ranges</a>
+        <a href="#std-format" class="sidebar-link"><span class="num">30</span>std::format</a>
+        <a href="#std-expected" class="sidebar-link"><span class="num">31</span>std::expected</a>
+        <a href="#mdspan" class="sidebar-link"><span class="num">32</span>多维下标</a>
+        <a href="#consteval" class="sidebar-link"><span class="num">33</span>If consteval</a>
+        <a href="#structured-bindings" class="sidebar-link"><span class="num">34</span>结构化绑定进阶</a>
+        <a href="#custom-hash" class="sidebar-link"><span class="num">35</span>自定义哈希</a>
+    </div>
 </aside>
 
 <!-- Main Content -->
@@ -2391,6 +2402,645 @@ add_test(NAME AllTests COMMAND tests)</code></pre>
 </div>
 
 <div class="tip">学习 C++ 最好的方式是<strong>写代码</strong>。从简单项目开始（如命令行工具、简单游戏），逐步挑战更复杂的项目。推荐资源：cppreference.com、《Effective Modern C++》（Scott Meyers）、C++ Core Guidelines。</div>
+
+<!-- ==================== 28. 协程 ==================== -->
+<h2 id="coroutines">28. 协程 (Coroutines)</h2>
+
+<div class="principle">
+    <div class="principle-title">C++20 协程</div>
+    <p>协程是可以在执行过程中挂起和恢复的函数。C++20 引入了三个关键字：<code>co_await</code>（挂起等待）、<code>co_yield</code>（产出值并挂起）、<code>co_return</code>（协程返回）。协程是实现异步 I/O、生成器、惰性求值等模式的基础。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C++</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="cpp"><span class="kw">#include</span> <span class="st">&lt;coroutine&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;optional&gt;</span>
+
+<span class="cm">// 简单的 Generator 协程</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>&gt;
+<span class="kw">struct</span> <span class="tp">Generator</span> {
+    <span class="kw">struct</span> <span class="tp">promise_type</span> {
+        <span class="tp">T</span> current_value;
+        
+        <span class="tp">Generator</span> <span class="fn">get_return_object</span>() {
+            <span class="kw">return</span> <span class="tp">Generator</span>{
+                <span class="tp">std::coroutine_handle</span>&lt;<span class="tp">promise_type</span>&gt;::<span class="fn">from_promise</span>(*<span class="kw">this</span>)
+            };
+        }
+        
+        <span class="tp">std::suspend_always</span> <span class="fn">initial_suspend</span>() { <span class="kw">return</span> {}; }
+        <span class="tp">std::suspend_always</span> <span class="fn">final_suspend</span>() noexcept { <span class="kw">return</span> {}; }
+        
+        <span class="tp">std::suspend_always</span> <span class="fn">yield_value</span>(<span class="tp">T</span> value) {
+            current_value = value;
+            <span class="kw">return</span> {};
+        }
+        
+        <span class="tp">void</span> <span class="fn">return_void</span>() {}
+        <span class="tp">void</span> <span class="fn">unhandled_exception</span>() { <span class="tp">std</span>::<span class="fn">terminate</span>(); }
+    };
+    
+    <span class="tp">std::coroutine_handle</span>&lt;<span class="tp">promise_type</span>&gt; handle;
+    
+    <span class="tp">Generator</span>(<span class="tp">std::coroutine_handle</span>&lt;<span class="tp">promise_type</span>&gt; h) : <span class="fn">handle</span>(h) {}
+    ~<span class="tp">Generator</span>() { <span class="kw">if</span> (handle) handle.<span class="fn">destroy</span>(); }
+    
+    <span class="tp">std</span>::<span class="tp">optional</span>&lt;<span class="tp">T</span>&gt; <span class="fn">next</span>() {
+        <span class="kw">if</span> (!handle || handle.<span class="fn">done</span>()) <span class="kw">return</span> <span class="tp">std</span>::nullopt;
+        handle.<span class="fn">resume</span>();
+        <span class="kw">if</span> (handle.<span class="fn">done</span>()) <span class="kw">return</span> <span class="tp">std</span>::nullopt;
+        <span class="kw">return</span> handle.<span class="fn">promise</span>().current_value;
+    }
+};
+
+<span class="cm">// 使用 co_yield 生成斐波那契数列</span>
+<span class="tp">Generator</span>&lt;<span class="tp">int</span>&gt; <span class="fn">fibonacci</span>() {
+    <span class="tp">int</span> a = <span class="nm">0</span>, b = <span class="nm">1</span>;
+    <span class="kw">while</span> (<span class="kw">true</span>) {
+        <span class="kw">co_yield</span> a;
+        <span class="tp">int</span> next = a + b;
+        a = b;
+        b = next;
+    }
+}
+
+<span class="cm">// 无限范围生成器</span>
+<span class="tp">Generator</span>&lt;<span class="tp">int</span>&gt; <span class="fn">count_from</span>(<span class="tp">int</span> start) {
+    <span class="tp">int</span> n = start;
+    <span class="kw">while</span> (<span class="kw">true</span>) {
+        <span class="kw">co_yield</span> n++;
+    }
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="cm">// 使用生成器</span>
+    <span class="kw">auto</span> fib = <span class="fn">fibonacci</span>();
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="st">"Fibonacci: "</span>;
+    <span class="kw">for</span> (<span class="tp">int</span> i = <span class="nm">0</span>; i < <span class="nm">10</span>; i++) {
+        <span class="kw">auto</span> val = fib.<span class="fn">next</span>();
+        <span class="kw">if</span> (val) <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; *val &lt;&lt; <span class="st">" "</span>;
+    }
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="tp">std</span>::<span class="tp">endl</span>;
+    
+    <span class="cm">// 使用 count_from</span>
+    <span class="kw">auto</span> counter = <span class="fn">count_from</span>(<span class="nm">100</span>);
+    <span class="kw">for</span> (<span class="tp">int</span> i = <span class="nm">0</span>; i < <span class="nm">5</span>; i++) {
+        <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; *counter.<span class="fn">next</span>() &lt;&lt; <span class="st">" "</span>;
+    }
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="tp">std</span>::<span class="tp">endl</span>;
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 29. Ranges ==================== -->
+<h2 id="ranges">29. Ranges (C++20)</h2>
+
+<div class="principle">
+    <div class="principle-title">Ranges 的设计理念</div>
+    <p>Ranges 是 C++20 对 STL 算法和迭代器的现代化重写。它用管道操作符 <code>|</code> 串联视图和操作，消除了迭代器配对的冗余，提供了惰性求值和组合式的数据处理管线。Ranges 使代码更声明式、更安全。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C++</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="cpp"><span class="kw">#include</span> <span class="st">&lt;ranges&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;vector&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;algorithm&gt;</span>
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="tp">std</span>::<span class="tp">vector</span>&lt;<span class="tp">int</span>&gt; nums = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>, <span class="nm">7</span>, <span class="nm">8</span>, <span class="nm">9</span>, <span class="nm">10</span>};
+    
+    <span class="cm">// 管道语法：筛选偶数 → 平方 → 取前3个</span>
+    <span class="kw">auto</span> result = nums
+        | <span class="tp">std</span>::views::<span class="fn">filter</span>([](<span class="tp">int</span> n) { <span class="kw">return</span> n % <span class="nm">2</span> == <span class="nm">0</span>; })
+        | <span class="tp">std</span>::views::<span class="fn">transform</span>([](<span class="tp">int</span> n) { <span class="kw">return</span> n * n; })
+        | <span class="tp">std</span>::views::<span class="fn">take</span>(<span class="nm">3</span>);
+    
+    <span class="kw">for</span> (<span class="tp">int</span> v : result)
+        <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; v &lt;&lt; <span class="st">" "</span>;
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="st">"\n"</span>;
+    <span class="cm">// 输出: 4 16 36</span>
+    
+    <span class="cm">// 常用视图</span>
+    <span class="kw">auto</span> evens = nums | <span class="tp">std</span>::views::<span class="fn">filter</span>([](<span class="tp">int</span> n) { <span class="kw">return</span> n % <span class="nm">2</span> == <span class="nm">0</span>; });
+    <span class="kw">auto</span> doubled = nums | <span class="tp">std</span>::views::<span class="fn">transform</span>([](<span class="tp">int</span> n) { <span class="kw">return</span> n * <span class="nm">2</span>; });
+    <span class="kw">auto</span> reversed = nums | <span class="tp">std</span>::views::<span class="fn">reverse</span>;
+    <span class="kw">auto</span> first5 = nums | <span class="tp">std</span>::views::<span class="fn">take</span>(<span class="nm">5</span>);
+    <span class="kw">auto</span> skip3 = nums | <span class="tp">std</span>::views::<span class="fn">drop</span>(<span class="nm">3</span>);
+    <span class="kw">auto</span> flattened = <span class="tp">std</span>::<span class="tp">vector</span>&lt;<span class="tp">std</span>::<span class="tp">vector</span>&lt;<span class="tp">int</span>&gt;&gt;{
+        {<span class="nm">1</span>,<span class="nm">2</span>}, {<span class="nm">3</span>,<span class="nm">4</span>}, {<span class="nm">5</span>,<span class="nm">6</span>}
+    } | <span class="tp">std</span>::views::<span class="fn">join</span>;
+    
+    <span class="cm">// iota 生成连续数字</span>
+    <span class="kw">auto</span> range10 = <span class="tp">std</span>::views::<span class="fn">iota</span>(<span class="nm">1</span>, <span class="nm">11</span>);
+    
+    <span class="cm">// zip 多个范围</span>
+    <span class="tp">std</span>::<span class="tp">vector</span>&lt;<span class="tp">std</span>::<span class="tp">string</span>&gt; names = {<span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Charlie"</span>};
+    <span class="tp">std</span>::<span class="tp">vector</span>&lt;<span class="tp">int</span>&gt; ages = {<span class="nm">25</span>, <span class="nm">30</span>, <span class="nm">35</span>};
+    
+    <span class="kw">for</span> (<span class="kw">auto</span> [name, age] : <span class="tp">std</span>::views::<span class="fn">zip</span>(names, ages)) {
+        <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; name &lt;&lt; <span class="st">": "</span> &lt;&lt; age &lt;&lt; <span class="st">"\n"</span>;
+    }
+    
+    <span class="cm">// 使用 ranges 算法</span>
+    <span class="kw">auto</span> sorted = nums | <span class="tp">std</span>::views::<span class="fn">filter</span>([](<span class="tp">int</span> n) { <span class="kw">return</span> n > <span class="nm">5</span>; });
+    <span class="tp">std</span>::ranges::<span class="fn">sort</span>(nums);
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 30. std::format ==================== -->
+<h2 id="std-format">30. std::format (C++20)</h2>
+
+<div class="principle">
+    <div class="principle-title">类型安全的格式化</div>
+    <p><code>std::format</code> 是 C++20 引入的类型安全格式化库，替代 <code>printf</code> 和 <code>iostream</code> 的格式化功能。它使用 Python 风格的格式说明符，支持自定义类型的格式化，性能优于 iostream。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C++</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="cpp"><span class="kw">#include</span> <span class="st">&lt;format&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string&gt;</span>
+
+<span class="cm">// 自定义类型的格式化</span>
+<span class="kw">struct</span> <span class="tp">Point</span> {
+    <span class="tp">double</span> x, y;
+};
+
+<span class="kw">template</span>&lt;&gt;
+<span class="kw">struct</span> <span class="tp">std</span>::<span class="fn">formatter</span>&lt;<span class="tp">Point</span>&gt; {
+    <span class="kw">constexpr</span> <span class="kw">auto</span> <span class="fn">parse</span>(<span class="tp">std</span>::<span class="fn">format_parse_context</span>&amp; ctx) {
+        <span class="kw">return</span> ctx.<span class="fn">begin</span>();
+    }
+    
+    <span class="kw">auto</span> <span class="fn">format</span>(<span class="kw">const</span> <span class="tp">Point</span>&amp; p, <span class="tp">std</span>::<span class="fn">format_context</span>&amp; ctx) <span class="kw">const</span> {
+        <span class="kw">return</span> <span class="tp">std</span>::<span class="fn">format_to</span>(ctx.<span class="fn">out</span>(), <span class="st">"({:.2f}, {:.2f})"</span>, p.x, p.y);
+    }
+};
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="cm">// 基本格式化</span>
+    <span class="tp">std</span>::<span class="tp">string</span> s1 = <span class="tp">std</span>::<span class="fn">format</span>(<span class="st">"Hello, {}! You are {} years old."</span>,
+                                  <span class="st">"Alice"</span>, <span class="nm">30</span>);
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; s1 &lt;&lt; <span class="st">"\n"</span>;
+    
+    <span class="cm">// 数字格式化</span>
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="tp">std</span>::<span class="fn">format</span>(<span class="st">"Pi = {:.4f}\n"</span>, <span class="nm">3.14159265</span>);
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="tp">std</span>::<span class="fn">format</span>(<span class="st">"Hex: {:X}, Oct: {:o}, Bin: {:b}\n"</span>,
+                              <span class="nm">255</span>, <span class="nm">255</span>, <span class="nm">255</span>);
+    
+    <span class="cm">// 填充与对齐</span>
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="tp">std</span>::<span class="fn">format</span>(<span class="st">"[{:>10}]\n"</span>, <span class="st">"right"</span>);
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="tp">std</span>::<span class="fn">format</span>(<span class="st">"[{:<10}]\n"</span>, <span class="st">"left"</span>);
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="tp">std</span>::<span class="fn">format</span>(<span class="st">"[{:^10}]\n"</span>, <span class="st">"center"</span>);
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="tp">std</span>::<span class="fn">format</span>(<span class="st">"[{:*^10}]\n"</span>, <span class="st">"padded"</span>);
+    
+    <span class="cm">// 自定义类型</span>
+    <span class="tp">Point</span> p{<span class="nm">3.14</span>, <span class="nm">2.71</span>};
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="tp">std</span>::<span class="fn">format</span>(<span class="st">"Point: {}\n"</span>, p);
+    
+    <span class="cm">// 动态宽度</span>
+    <span class="tp">int</span> width = <span class="nm">20</span>;
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="tp">std</span>::<span class="fn">format</span>(<span class="st">"[{:>{}}]\n"</span>, <span class="st">"dynamic"</span>, width);
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 31. std::expected ==================== -->
+<h2 id="std-expected">31. std::expected (C++23)</h2>
+
+<div class="principle">
+    <div class="principle-title">优雅的错误处理</div>
+    <p><code>std::expected</code> 是 C++23 引入的类型，用于表示要么成功返回值、要么失败返回错误码。它是 <code>std::optional</code> 和异常之间的折中方案，适用于不想使用异常但仍需传播错误的场景。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C++</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="cpp"><span class="kw">#include</span> <span class="st">&lt;expected&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;cmath&gt;</span>
+
+<span class="kw">enum</span> <span class="kw">class</span> <span class="tp">ParseError</span> { <span class="nm">InvalidFormat</span>, <span class="nm">OutOfRange</span>, <span class="nm">EmptyInput</span> };
+
+<span class="cm">// 使用 expected 返回值或错误</span>
+<span class="tp">std</span>::<span class="tp">expected</span>&lt;<span class="tp">double</span>, <span class="tp">ParseError</span>&gt; <span class="fn">parse_number</span>(<span class="kw">const</span> <span class="tp">std</span>::<span class="tp">string</span>&amp; s) {
+    <span class="kw">if</span> (s.<span class="fn">empty</span>()) <span class="kw">return</span> <span class="tp">std</span>::<span class="fn">unexpected</span>(<span class="tp">ParseError</span>::<span class="nm">EmptyInput</span>);
+    
+    <span class="kw">try</span> {
+        <span class="tp">size_t</span> pos;
+        <span class="tp">double</span> val = <span class="tp">std</span>::<span class="fn">stod</span>(s, &amp;pos);
+        <span class="kw">if</span> (pos != s.<span class="fn">size</span>()) <span class="kw">return</span> <span class="tp">std</span>::<span class="fn">unexpected</span>(<span class="tp">ParseError</span>::<span class="nm">InvalidFormat</span>);
+        <span class="kw">return</span> val;
+    } <span class="kw">catch</span> (...) {
+        <span class="kw">return</span> <span class="tp">std</span>::<span class="fn">unexpected</span>(<span class="tp">ParseError</span>::<span class="nm">OutOfRange</span>);
+    }
+}
+
+<span class="cm">// 链式操作</span>
+<span class="tp">std</span>::<span class="tp">expected</span>&lt;<span class="tp">double</span>, <span class="tp">ParseError</span>&gt; <span class="fn">sqrt_positive</span>(<span class="tp">double</span> x) {
+    <span class="kw">if</span> (x < <span class="nm">0</span>) <span class="kw">return</span> <span class="tp">std</span>::<span class="fn">unexpected</span>(<span class="tp">ParseError</span>::<span class="nm">OutOfRange</span>);
+    <span class="kw">return</span> <span class="tp">std</span>::<span class="fn">sqrt</span>(x);
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="cm">// 成功路径</span>
+    <span class="kw">auto</span> result = <span class="fn">parse_number</span>(<span class="st">"42.5"</span>);
+    <span class="kw">if</span> (result) {
+        <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="st">"Parsed: "</span> &lt;&lt; *result &lt;&lt; <span class="st">"\n"</span>;
+    }
+    
+    <span class="cm">// 使用 value_or 提供默认值</span>
+    <span class="kw">auto</span> val = <span class="fn">parse_number</span>(<span class="st">"invalid"</span>).<span class="fn">value_or</span>(<span class="nm">0.0</span>);
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="st">"Default: "</span> &lt;&lt; val &lt;&lt; <span class="st">"\n"</span>;
+    
+    <span class="cm">// 链式：解析后求平方根</span>
+    <span class="kw">auto</span> pipeline = <span class="fn">parse_number</span>(<span class="st">"16.0"</span>)
+        .<span class="fn">and_then</span>(<span class="fn">sqrt_positive</span>);
+    
+    <span class="kw">if</span> (pipeline) {
+        <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="st">"sqrt(16) = "</span> &lt;&lt; *pipeline &lt;&lt; <span class="st">"\n"</span>;
+    }
+    
+    <span class="cm">// 错误映射</span>
+    <span class="kw">auto</span> err = <span class="fn">parse_number</span>(<span class="st">""</span>)
+        .<span class="fn">transform_error</span>([](<span class="tp">ParseError</span> e) {
+            <span class="kw">return</span> <span class="tp">std</span>::<span class="tp">string</span>(<span class="st">"Error: "</span>) + <span class="fn">std</span>::<span class="fn">to_string</span>(<span class="kw">static_cast</span>&lt;<span class="tp">int</span>&gt;(e));
+        });
+    
+    <span class="kw">if</span> (!err) {
+        <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; err.<span class="fn">error</span>() &lt;&lt; <span class="st">"\n"</span>;
+    }
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 32. 多维下标 ==================== -->
+<h2 id="mdspan">32. 多维下标运算符 (C++23)</h2>
+
+<div class="principle">
+    <div class="principle-title">operator[] 多参数</div>
+    <p>C++23 允许 <code>operator[]</code> 接受多个参数，使多维数组和矩阵的访问更加自然。例如 <code>m[i][j]</code> 可以写成 <code>m[i, j]</code>（使用逗号运算符）或 <code>m[i][j]</code>（传统方式），多参数版本让自定义容器也能享受这种便利。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C++</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="cpp"><span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;vector&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;span&gt;</span>
+
+<span class="cm">// 多维矩阵类（使用多参数 operator[]）</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>, <span class="tp">size_t</span> Rows, <span class="tp">size_t</span> Cols&gt;
+<span class="kw">class</span> <span class="tp">Matrix</span> {
+    <span class="tp">T</span> data_[Rows][Cols];
+<span class="kw">public</span>:
+    <span class="cm">// C++23: 多参数 operator[]</span>
+    <span class="tp">T</span>&amp; <span class="kw">operator</span>[](<span class="tp">size_t</span> row, <span class="tp">size_t</span> col) {
+        <span class="kw">return</span> data_[row][col];
+    }
+    
+    <span class="kw">const</span> <span class="tp">T</span>&amp; <span class="kw">operator</span>[](<span class="tp">size_t</span> row, <span class="tp">size_t</span> col) <span class="kw">const</span> {
+        <span class="kw">return</span> data_[row][col];
+    }
+    
+    <span class="cm">// 委托构造</span>
+    <span class="tp">Matrix</span>() = <span class="kw">default</span>;
+    
+    <span class="kw">static</span> <span class="tp">Matrix</span> <span class="fn">identity</span>() {
+        <span class="tp">Matrix</span> m{};
+        <span class="kw">for</span> (<span class="tp">size_t</span> i = <span class="nm">0</span>; i < Rows; i++)
+            m[i, i] = <span class="nm">1</span>;  <span class="cm">// 使用多参数 []</span>
+        <span class="kw">return</span> m;
+    }
+    
+    <span class="cm">// 矩阵乘法</span>
+    <span class="kw">template</span>&lt;<span class="tp">size_t</span> OtherCols&gt;
+    <span class="tp">Matrix</span>&lt;<span class="tp">T</span>, Rows, OtherCols&gt; <span class="kw">operator</span>*(
+        <span class="kw">const</span> <span class="tp">Matrix</span>&lt;<span class="tp">T</span>, Cols, OtherCols&gt;&amp; rhs) <span class="kw">const</span>
+    {
+        <span class="tp">Matrix</span>&lt;<span class="tp">T</span>, Rows, OtherCols&gt; result{};
+        <span class="kw">for</span> (<span class="tp">size_t</span> i = <span class="nm">0</span>; i < Rows; i++)
+            <span class="kw">for</span> (<span class="tp">size_t</span> j = <span class="nm">0</span>; j < OtherCols; j++)
+                <span class="kw">for</span> (<span class="tp">size_t</span> k = <span class="nm">0</span>; k < Cols; k++)
+                    result[i, j] += data_[i][k] * rhs[k, j];
+        <span class="kw">return</span> result;
+    }
+};
+
+<span class="cm">// 3D 张量（多维访问）</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>&gt;
+<span class="kw">class</span> <span class="tp">Tensor3D</span> {
+    <span class="tp">std</span>::<span class="tp">vector</span>&lt;<span class="tp">T</span>&gt; data_;
+    <span class="tp">size_t</span> d1_, d2_, d3_;
+<span class="kw">public</span>:
+    <span class="tp">Tensor3D</span>(<span class="tp">size_t</span> d1, <span class="tp">size_t</span> d2, <span class="tp">size_t</span> d3)
+        : <span class="fn">data_</span>(d1 * d2 * d3, <span class="tp">T</span>{}), <span class="fn">d1_</span>(d1), <span class="fn">d2_</span>(d2), <span class="fn">d3_</span>(d3) {}
+    
+    <span class="tp">T</span>&amp; <span class="kw">operator</span>[](<span class="tp">size_t</span> i, <span class="tp">size_t</span> j, <span class="tp">size_t</span> k) {
+        <span class="kw">return</span> data_[i * d2_ * d3_ + j * d3_ + k];
+    }
+};
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="kw">auto</span> m = <span class="tp">Matrix</span>&lt;<span class="tp">int</span>, <span class="nm">3</span>, <span class="nm">3</span>&gt;::<span class="fn">identity</span>();
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="st">"m[1][1] = "</span> &lt;&lt; m[<span class="nm">1</span>, <span class="nm">1</span>] &lt;&lt; <span class="st">"\n"</span>;
+    
+    <span class="tp">Tensor3D</span>&lt;<span class="tp">float</span>&gt; tensor(<span class="nm">4</span>, <span class="nm">4</span>, <span class="nm">4</span>);
+    tensor[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>] = <span class="nm">42.0f</span>;
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="st">"tensor[1,2,3] = "</span> &lt;&lt; tensor[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>] &lt;&lt; <span class="st">"\n"</span>;
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 33. If consteval ==================== -->
+<h2 id="consteval">33. If consteval (C++23)</h2>
+
+<div class="principle">
+    <div class="principle-title">编译时与运行时分支</div>
+    <p><code>if consteval</code>（或 <code>if constexpr</code>）允许在编译时和运行时执行不同的代码路径。C++23 的 <code>if consteval</code> 专门用于检测当前上下文是否为常量求值上下文（如 <code>constexpr</code> 函数内），使编译期检查更精确。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C++</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="cpp"><span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;type_traits&gt;</span>
+
+<span class="cm">// constexpr if：编译时条件分支</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>&gt;
+<span class="tp">auto</span> <span class="fn">safe_divide</span>(<span class="tp">T</span> a, <span class="tp">T</span> b) {
+    <span class="kw">if</span> <span class="kw">constexpr</span> (<span class="tp">std</span>::<span class="fn">is_floating_point_v</span>&lt;<span class="tp">T</span>&gt;) {
+        <span class="kw">return</span> a / b;  <span class="cm">// 浮点数：允许除零（产生 inf）</span>
+    } <span class="kw">else</span> {
+        <span class="kw">if</span> (b == <span class="nm">0</span>) <span class="kw">throw</span> <span class="tp">std</span>::<span class="tp">runtime_error</span>(<span class="st">"Division by zero"</span>);
+        <span class="kw">return</span> a / b;
+    }
+}
+
+<span class="cm">// if consteval (C++23)：区分常量/运行时上下文</span>
+<span class="kw">constexpr</span> <span class="tp">int</span> <span class="fn">complex_calc</span>(<span class="tp">int</span> x) {
+    <span class="kw">if</span> <span class="kw">consteval</span> {
+        <span class="cm">// 编译时：使用简单但安全的算法</span>
+        <span class="kw">return</span> x * x + <span class="nm">1</span>;
+    } <span class="kw">else</span> {
+        <span class="cm">// 运行时：可以使用复杂优化</span>
+        <span class="kw">return</span> x * x + <span class="nm">1</span>;
+    }
+}
+
+<span class="cm">// 编译时选择不同的实现</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>&gt;
+<span class="kw">constexpr</span> <span class="tp">T</span> <span class="fn">fast_or_safe</span>(<span class="tp">T</span> value) {
+    <span class="kw">if</span> <span class="kw">consteval</span> {
+        <span class="cm">// 编译时验证</span>
+        <span class="kw">if</span> (<span class="kw">consteval</span>) {
+            <span class="cm">// 嵌套 consteval 检查</span>
+            <span class="kw">return</span> value;
+        }
+    }
+    <span class="kw">return</span> value;
+}
+
+<span class="cm">// 使用 constexpr 在编译时计算</span>
+<span class="kw">constexpr</span> <span class="tp">int</span> factorial(<span class="tp">int</span> n) {
+    <span class="tp">int</span> result = <span class="nm">1</span>;
+    <span class="kw">for</span> (<span class="tp">int</span> i = <span class="nm">2</span>; i <= n; i++) result *= i;
+    <span class="kw">return</span> result;
+}
+
+<span class="cm">// 编译时生成查找表</span>
+<span class="kw">constexpr</span> <span class="tp">auto</span> fact_table = [] {
+    <span class="tp">std</span>::<span class="tp">array</span>&lt;<span class="tp">int</span>, <span class="nm">11</span>&gt; table{};
+    <span class="kw">for</span> (<span class="tp">int</span> i = <span class="nm">0</span>; i <= <span class="nm">10</span>; i++)
+        table[i] = <span class="fn">factorial</span>(i);
+    <span class="kw">return</span> table;
+}();
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="cm">// 编译时已计算</span>
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="st">"10! = "</span> &lt;&lt; fact_table[<span class="nm">10</span>] &lt;&lt; <span class="st">"\n"</span>;
+    
+    <span class="cm">// constexpr if 分支</span>
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="fn">safe_divide</span>(<span class="nm">10.0</span>, <span class="nm">3.0</span>) &lt;&lt; <span class="st">"\n"</span>;
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 34. 结构化绑定进阶 ==================== -->
+<h2 id="structured-bindings">34. 结构化绑定进阶</h2>
+
+<div class="principle">
+    <div class="principle-title">绑定的深层机制</div>
+    <p>结构化绑定（Structured Bindings）不只是简单的语法糖。它支持绑定到数组、 tuple-like 类型和公共成员的结构体。进阶用法包括：绑定到引用、配合 <code>auto&</code> 避免拷贝、在 lambda 参数中使用等。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C++</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="cpp"><span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;map&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;tuple&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;array&gt;</span>
+
+<span class="cm">// 绑定到结构体</span>
+<span class="kw">struct</span> <span class="tp">Person</span> {
+    <span class="tp">std</span>::<span class="tp">string</span> name;
+    <span class="tp">int</span> age;
+    <span class="tp">double</span> gpa;
+};
+
+<span class="cm">// 绑定到 tuple-like 类型</span>
+<span class="kw">struct</span> <span class="tp">Point3D</span> {
+    <span class="tp">double</span> x, y, z;
+    
+    <span class="cm">// 使结构化绑定按成员工作</span>
+    <span class="kw">friend</span> <span class="kw">auto</span> <span class="kw">get</span>(<span class="kw">const</span> <span class="tp">Point3D</span>&amp; p, <span class="tp">size_t</span> i) {
+        <span class="kw">return</span> (&amp;p.x)[i];
+    }
+};
+
+<span class="cm">// std::tuple_size 和 std::tuple_element 特化</span>
+<span class="kw">namespace</span> <span class="tp">std</span> {
+    <span class="kw">template</span>&lt;&gt;
+    <span class="kw">struct</span> <span class="fn">tuple_size</span>&lt;<span class="tp">Point3D</span>&gt; : <span class="tp">std</span>::<span class="fn">integral_constant</span>&lt;<span class="tp">size_t</span>, <span class="nm">3</span>&gt; {};
+    
+    <span class="kw">template</span>&lt;<span class="tp">size_t</span> I&gt;
+    <span class="kw">struct</span> <span class="fn">tuple_element</span>&lt;I, <span class="tp">Point3D</span>&gt; {
+        <span class="kw">using</span> type = <span class="tp">double</span>;
+    };
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="cm">// 基本结构化绑定</span>
+    <span class="tp">Person</span> p{<span class="st">"Alice"</span>, <span class="nm">25</span>, <span class="nm">3.9</span>};
+    <span class="kw">auto</span> [name, age, gpa] = p;
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; name &lt;&lt; <span class="st">", "</span> &lt;&lt; age &lt;&lt; <span class="st">", "</span> &lt;&lt; gpa &lt;&lt; <span class="st">"\n"</span>;
+    
+    <span class="cm">// 引用绑定（避免拷贝，可修改）</span>
+    <span class="kw">auto</span>&amp; [name_ref, age_ref, gpa_ref] = p;
+    age_ref = <span class="nm">26</span>;  <span class="cm">// 修改原对象</span>
+    
+    <span class="cm">// const 引用绑定</span>
+    <span class="kw">const</span> <span class="kw">auto</span>&amp; [cn, ca, cg] = p;
+    
+    <span class="cm">// 绑定到 map 迭代器</span>
+    <span class="tp">std</span>::<span class="tp">map</span>&lt;<span class="tp">std</span>::<span class="tp">string</span>, <span class="tp">int</span>&gt; scores = {<span class="st">"Alice"</span>, <span class="nm">95</span>}, {<span class="st">"Bob"</span>, <span class="nm">87</span>}};
+    <span class="kw">for</span> (<span class="kw">const</span> <span class="kw">auto</span>&amp; [student, score] : scores) {
+        <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; student &lt;&lt; <span class="st">": "</span> &lt;&lt; score &lt;&lt; <span class="st">"\n"</span>;
+    }
+    
+    <span class="cm">// 绑定到数组</span>
+    <span class="tp">int</span> arr[] = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>};
+    <span class="kw">auto</span> [a, b, c] = arr;
+    
+    <span class="cm">// 绑定到 tuple</span>
+    <span class="kw">auto</span> tup = <span class="tp">std</span>::<span class="fn">make_tuple</span>(<span class="nm">1</span>, <span class="st">"hello"</span>, <span class="nm">3.14</span>);
+    <span class="kw">auto</span> [i, s, d] = tup;
+    
+    <span class="cm">// 在 lambda 中使用</span>
+    <span class="kw">auto</span> print_person = [](<span class="kw">const</span> <span class="kw">auto</span>&amp; [n, a, g]) {
+        <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; n &lt;&lt; <span class="st">" (age "</span> &lt;&lt; a &lt;&lt; <span class="st">")\n"</span>;
+    };
+    print_person(p);
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 35. 自定义哈希 ==================== -->
+<h2 id="custom-hash">35. 自定义哈希</h2>
+
+<div class="principle">
+    <div class="principle-title">为自定义类型提供哈希</div>
+    <p>要在 <code>std::unordered_map</code> 或 <code>std::unordered_set</code> 中使用自定义类型作为键，需要提供哈希函数。C++ 标准库提供了 <code>std::hash</code> 模板，通过特化或提供自定义函数对象来扩展。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C++</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="cpp"><span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;unordered_map&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;unordered_set&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;functional&gt;</span>
+
+<span class="cm">// 自定义类型</span>
+<span class="kw">struct</span> <span class="tp">Vec2</span> {
+    <span class="tp">int</span> x, y;
+    
+    <span class="tp">bool</span> <span class="kw">operator</span>==(<span class="kw">const</span> <span class="tp">Vec2</span>&amp; o) <span class="kw">const</span> {
+        <span class="kw">return</span> x == o.x && y == o.y;
+    }
+};
+
+<span class="cm">// 方法 1：特化 std::hash</span>
+<span class="kw">namespace</span> <span class="tp">std</span> {
+    <span class="kw">template</span>&lt;&gt;
+    <span class="kw">struct</span> <span class="fn">hash</span>&lt;<span class="tp">Vec2</span>&gt; {
+        <span class="tp">size_t</span> <span class="kw">operator</span>()(<span class="kw">const</span> <span class="tp">Vec2</span>&amp; v) <span class="kw">const</span> <span class="kw">noexcept</span> {
+            <span class="cm">// 组合哈希</span>
+            <span class="tp">size_t</span> h1 = <span class="tp">std</span>::<span class="fn">hash</span>&lt;<span class="tp">int</span>&gt;{}(v.x);
+            <span class="tp">size_t</span> h2 = <span class="tp">std</span>::<span class="fn">hash</span>&lt;<span class="tp">int</span>&gt;{}(v.y);
+            <span class="kw">return</span> h1 ^ (h2 << <span class="nm">1</span>);
+        }
+    };
+}
+
+<span class="cm">// 方法 2：自定义哈希函数对象</span>
+<span class="kw">struct</span> <span class="tp">PairHash</span> {
+    <span class="tp">size_t</span> <span class="kw">operator</span>()(<span class="kw">const</span> <span class="tp">std</span>::<span class="tp">pair</span>&lt;<span class="tp">int</span>, <span class="tp">int</span>&gt;&amp; p) <span class="kw">const</span> {
+        <span class="kw">auto</span> h1 = <span class="tp">std</span>::<span class="fn">hash</span>&lt;<span class="tp">int</span>&gt;{}(p.first);
+        <span class="kw">auto</span> h2 = <span class="tp">std</span>::<span class="fn">hash</span>&lt;<span class="tp">int</span>&gt;{}(p.second);
+        <span class="kw">return</span> h1 ^ (h2 << <span class="nm">1</span>);
+    }
+};
+
+<span class="cm">// 方法 3：通用组合哈希</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span>... <span class="tp">Ts</span>&gt;
+<span class="tp">size_t</span> <span class="fn">hash_combine</span>(<span class="tp">size_t</span> seed, <span class="tp">Ts</span>... args) {
+    ((seed ^= <span class="tp">std</span>::<span class="fn">hash</span>&lt;<span class="tp">Ts</span>&gt;{}(args) + <span class="nm">0x9e3779b9</span> + (seed << <span class="nm">6</span>) + (seed >> <span class="nm">2</span>)), ...);
+    <span class="kw">return</span> seed;
+}
+
+<span class="cm">// 为复杂结构体提供哈希</span>
+<span class="kw">struct</span> <span class="tp">Employee</span> {
+    <span class="tp">std</span>::<span class="tp">string</span> name;
+    <span class="tp">int</span> id;
+    <span class="tp">std</span>::<span class="tp">string</span> department;
+    
+    <span class="tp">bool</span> <span class="kw">operator</span>==(<span class="kw">const</span> <span class="tp">Employee</span>&amp; o) <span class="kw">const</span> {
+        <span class="kw">return</span> id == o.id;
+    }
+};
+
+<span class="kw">namespace</span> <span class="tp">std</span> {
+    <span class="kw">template</span>&lt;&gt;
+    <span class="kw">struct</span> <span class="fn">hash</span>&lt;<span class="tp">Employee</span>&gt; {
+        <span class="tp">size_t</span> <span class="kw">operator</span>()(<span class="kw">const</span> <span class="tp">Employee</span>&amp; e) <span class="kw">const</span> {
+            <span class="kw">return</span> <span class="fn">hash_combine</span>(<span class="nm">0</span>, e.name, e.id, e.department);
+        }
+    };
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="cm">// 使用自定义哈希</span>
+    <span class="tp">std</span>::<span class="tp">unordered_set</span>&lt;<span class="tp">Vec2</span>&gt; points;
+    points.<span class="fn">insert</span>({<span class="nm">1</span>, <span class="nm">2</span>});
+    points.<span class="fn">insert</span>({<span class="nm">3</span>, <span class="nm">4</span>});
+    points.<span class="fn">insert</span>({<span class="nm">1</span>, <span class="nm">2</span>});  <span class="cm">// 重复，不会插入</span>
+    <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; <span class="st">"Points: "</span> &lt;&lt; points.<span class="fn">size</span>() &lt;&lt; <span class="st">"\n"</span>;
+    
+    <span class="cm">// 使用 PairHash</span>
+    <span class="tp">std</span>::<span class="tp">unordered_map</span>&lt;<span class="tp">std</span>::<span class="tp">pair</span>&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;, <span class="tp">std</span>::<span class="tp">string</span>, <span class="tp">PairHash</span>&gt; grid;
+    grid[{<span class="nm">0</span>, <span class="nm">0</span>}] = <span class="st">"origin"</span>;
+    grid[{<span class="nm">1</span>, <span class="nm">1</span>}] = <span class="st">"center"</span>;
+    
+    <span class="cm">// 使用 Employee 哈希</span>
+    <span class="tp">std</span>::<span class="tp">unordered_set</span>&lt;<span class="tp">Employee</span>&gt; team;
+    team.<span class="fn">insert</span>({<span class="st">"Alice"</span>, <span class="nm">1</span>, <span class="st">"Eng"</span>});
+    team.<span class="fn">insert</span>({<span class="st">"Bob"</span>, <span class="nm">2</span>, <span class="st">"Design"</span>});
+    
+    <span class="kw">for</span> (<span class="kw">const</span> <span class="kw">auto</span>&amp; e : team) {
+        <span class="tp">std</span>::<span class="tp">cout</span> &lt;&lt; e.name &lt;&lt; <span class="st">" (id: "</span> &lt;&lt; e.id &lt;&lt; <span class="st">")\n"</span>;
+    }
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<div class="tip">
+<strong>哈希组合最佳实践</strong>：使用 Boost 风格的 <code>hash_combine</code> 技巧（seed ^= hash(val) + 0x9e3779b9 + (seed << 6) + (seed >> 2)）来组合多个字段的哈希。这个魔数来源于黄金比例，能有效减少哈希冲突。
+</div>
 
 </main>
 

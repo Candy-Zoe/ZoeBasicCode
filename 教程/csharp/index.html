@@ -70,6 +70,25 @@
         <div class="sidebar-title">实战</div>
         <a href="#best-practices" class="sidebar-link"><span class="num">26</span>最佳实践</a>
     </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">架构</div>
+        <a href="#dependency-injection" class="sidebar-link"><span class="num">27</span>依赖注入</a>
+        <a href="#middleware" class="sidebar-link"><span class="num">28</span>中间件管道</a>
+        <a href="#efcore" class="sidebar-link"><span class="num">29</span>Entity Framework Core</a>
+        <a href="#signalr" class="sidebar-link"><span class="num">30</span>SignalR</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">高级</div>
+        <a href="#minimal-apis" class="sidebar-link"><span class="num">31</span>Minimal APIs</a>
+        <a href="#source-generators" class="sidebar-link"><span class="num">32</span>Source Generators</a>
+        <a href="#high-perf" class="sidebar-link"><span class="num">33</span>高性能编程</a>
+        <a href="#localization" class="sidebar-link"><span class="num">34</span>国际化与本地化</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">工程</div>
+        <a href="#testing" class="sidebar-link"><span class="num">35</span>测试</a>
+        <a href="#deployment" class="sidebar-link"><span class="num">36</span>部署</a>
+    </div>
 </aside>
 
 <!-- Main Content -->
@@ -2672,6 +2691,1266 @@ app.<span class="fn">MapControllers</span>();</code></pre>
     <strong>核心原则总结：</strong>面向接口编程而非面向实现；优先组合而非继承；使用 async/await 处理 I/O 密集型操作；始终正确处理 IDisposable 资源；不要过早优化，先用 profiler 定位瓶颈。
 </div>
 
+<!-- ==================== Section 27 ==================== -->
+<h2 id="dependency-injection">27. 依赖注入（Dependency Injection）</h2>
+
+<p>依赖注入（DI）是 ASP.NET Core 的核心设计模式，通过 IoC 容器管理对象的创建和生命周期，实现松耦合架构。开发者只需在构造函数中声明依赖，框架自动完成实例化和注入。</p>
+
+<div class="principle">
+    <div class="principle-title">为什么需要依赖注入</div>
+    <p>不使用 DI 时，类需要自行创建依赖对象（<code>new Service()</code>），导致紧耦合——难以替换实现、难以测试、生命周期难以管理。DI 将对象创建权交给容器，类只声明"我需要什么"，容器负责"怎么给"。这使得同一接口可以切换不同实现（如开发时用 Mock，生产时用真实数据库），且容器统一管理对象生命周期，避免资源泄漏。</p>
+</div>
+
+<h3>IServiceCollection 与注册方式</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// Program.cs 中注册服务</span>
+<span class="kw">var</span> builder = WebApplication.<span class="fn">CreateBuilder</span>(args);
+
+<span class="cm">// 三种生命周期注册</span>
+
+<span class="cm">// 1. Transient：每次请求创建新实例（最轻量）</span>
+builder.Services.<span class="fn">AddTransient</span>&lt;<span class="tp">IEmailService</span>, <span class="tp">SmtpEmailService</span>&gt;();
+
+<span class="cm">// 2. Scoped：同一请求内共享实例（默认选择）</span>
+builder.Services.<span class="fn">AddScoped</span>&lt;<span class="tp">IOrderRepository</span>, <span class="tp">OrderRepository</span>&gt;();
+
+<span class="cm">// 3. Singleton：整个应用生命周期内只有一个实例</span>
+builder.Services.<span class="fn">AddSingleton</span>&lt;<span class="tp">ICacheService</span>, <span class="tp">MemoryCacheService</span>&gt;();
+
+<span class="cm">// 注册工厂方法（复杂初始化逻辑）</span>
+builder.Services.<span class="fn">AddSingleton</span>&lt;<span class="tp">IRedisClient</span>&gt;(sp =>
+{
+    <span class="kw">var</span> config = sp.<span class="fn">GetRequiredService</span>&lt;<span class="tp">IConfiguration</span>&gt;();
+    <span class="kw">return new</span> <span class="tp">RedisClient</span>(config[<span class="st">"Redis:ConnectionString"</span>]);
+});
+
+<span class="cm">// 批量注册同一程序集下所有接口实现</span>
+builder.Services.<span class="fn">Scan</span>(scan => scan
+    .<span class="fn">FromAssemblyOf</span>&lt;<span class="tp">OrderService</span>&gt;()
+    .<span class="fn">AddClasses</span>(c => c.<span class="fn">Where</span>(t => t.Name.<span class="fn">EndsWith</span>(<span class="st">"Service"</span>)))
+    .<span class="fn">AsImplementedInterfaces</span>()
+    .<span class="fn">WithScopedLifetime</span>());
+
+<span class="kw">var</span> app = builder.<span class="fn">Build</span>();</code></pre>
+</div>
+
+<h3>生命周期对比与选择</h3>
+<table>
+    <thead>
+        <tr><th>生命周期</th><th>创建时机</th><th>销毁时机</th><th>适用场景</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><strong>Transient</strong></td><td>每次 GetService()</td><td>GC 回收</td><td>无状态轻量服务</td></tr>
+        <tr><td><strong>Scoped</strong></td><td>每个 HTTP 请求</td><td>请求结束</td><td>数据库上下文、工作单元</td></tr>
+        <tr><td><strong>Singleton</strong></td><td>应用启动时</td><td>应用关闭</td><td>缓存、日志、配置</td></tr>
+    </tbody>
+</table>
+
+<h3>构造函数注入</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 构造函数注入（推荐方式）</span>
+<span class="kw">public class</span> <span class="tp">OrderController</span> : <span class="tp">ControllerBase</span>
+{
+    <span class="kw">private readonly</span> <span class="tp">IOrderService</span> _orderService;
+    <span class="kw">private readonly</span> <span class="tp">ILogger</span>&lt;<span class="tp">OrderController</span>&gt; _logger;
+
+    <span class="cm">// ASP.NET Core 自动解析构造函数参数</span>
+    <span class="kw">public</span> <span class="fn">OrderController</span>(<span class="tp">IOrderService</span> orderService, <span class="tp">ILogger</span>&lt;<span class="tp">OrderController</span>&gt; logger)
+    {
+        _orderService = orderService;
+        _logger = logger;
+    }
+
+    [<span class="tp">HttpPost</span>]
+    <span class="kw">public async</span> <span class="tp">Task</span>&lt;<span class="tp">ActionResult</span>&lt;<span class="tp">Order</span>&gt;&gt; <span class="fn">CreateOrder</span>([<span class="tp">FromBody</span>] <span class="tp">CreateOrderDto</span> dto)
+    {
+        _logger.<span class="fn">.LogInformation</span>(<span class="st">"Creating order for {Customer}"</span>, dto.CustomerId);
+        <span class="kw">var</span> order = <span class="kw">await</span> _orderService.<span class="fn">CreateAsync</span>(dto);
+        <span class="kw">return</span> <span class="fn">Ok</span>(order);
+    }
+}
+
+<span class="cm">// 主构造函数注入（C# 12）</span>
+<span class="kw">public class</span> <span class="tp">ProductService</span>(<span class="tp">IProductRepo</span> repo, <span class="tp">ILogger</span>&lt;<span class="tp">ProductService</span>&gt; logger)
+{
+    <span class="kw">public async</span> <span class="tp">Task</span>&lt;<span class="tp">Product</span>?&gt; <span class="fn">GetAsync</span>(<span class="tp">int</span> id) =>
+        <span class="kw">await</span> repo.<span class="fn">FindByIdAsync</span>(id);
+}</code></pre>
+</div>
+
+<h3>IServiceProvider 解析服务</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 在中间件或特殊场景中手动解析</span>
+app.<span class="fn">Use</span>(<span class="kw">async</span> (context, next) =>
+{
+    <span class="cm">// 从当前请求的作用域中解析服务</span>
+    <span class="kw">var</span> repo = context.RequestServices
+        .<span class="fn">GetRequiredService</span>&lt;<span class="tp">IOrderRepository</span>&gt;();
+
+    <span class="cm">// 获取所有注册的 IEventHandler 实现</span>
+    <span class="kw">var</span> handlers = context.RequestServices
+        .<span class="fn">GetServices</span>&lt;<span class="tp">IEventHandler</span>&gt;();
+
+    <span class="kw">await</span> <span class="fn">next</span>();
+});
+
+<span class="cm">// ❌ 反模式：在控制器中直接 new</span>
+<span class="cm">// var service = new OrderService(new DbRepository());</span>
+<span class="cm">// 失去 DI 的所有好处：生命周期管理、可测试性、配置绑定</span>
+
+<span class="cm">// ✅ 正确：始终通过构造函数注入</span></code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">Scoped vs Transient 的陷阱</div>
+    <p>在一个 Scoped 服务中注入 Transient 服务，Transient 实例会在该 Scoped 的生命周期内被"捕获"——即不会每次调用都是新实例。如果你的 Transient 服务持有状态，这会导致隐蔽的 Bug。推荐做法：如果服务有状态，统一使用 Scoped；如果无状态，使用 Transient。数据库上下文必须用 Scoped，绝不能用 Singleton 或 Transient。</p>
+</div>
+
+<!-- ==================== Section 28 ==================== -->
+<h2 id="middleware">28. 中间件管道</h2>
+
+<p>ASP.NET Core 的请求处理管道由一系列中间件组成，每个中间件处理请求的一部分，然后传递给下一个。中间件类似于洋葱模型——请求从外层进入，响应从内层返回。</p>
+
+<div class="principle">
+    <div class="principle-title">中间件 vs 过滤器</div>
+    <p>中间件（Middleware）在管道级别工作，处理所有请求（包括静态文件、WebSocket），能短路管道。过滤器（Filter）在 MVC 管道内部工作，只处理控制器动作。中间件适合跨切面关注点（日志、异常、认证），过滤器适合动作级别关注点（缓存、授权、模型验证）。</p>
+</div>
+
+<h3>Use / Map / When</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="kw">var</span> app = builder.<span class="fn">Build</span>();
+
+<span class="cm">// Use：处理请求并决定是否传递给下一个中间件</span>
+app.<span class="fn">Use</span>(<span class="kw">async</span> (context, next) =>
+{
+    <span class="cm">// 请求进入</span>
+    <span class="kw">var</span> sw = <span class="tp">System</span>.<span class="tp">Diagnostics</span>.<span class="tp">Stopwatch</span>.<span class="fn">StartNew</span>();
+
+    <span class="kw">await</span> <span class="fn">next</span>();  <span class="cm">// 传递给下一个中间件</span>
+
+    <span class="cm">// 响应返回（next() 之后的代码）</span>
+    sw.<span class="fn">Stop</span>();
+    context.Response.Headers[<span class="st">"X-Elapsed"</span>] = sw.ElapsedMilliseconds.<span class="fn">ToString</span>();
+});
+
+<span class="cm">// Map：根据路径前缀分支管道</span>
+app.<span class="fn">Map</span>(<span class="st">"/api/admin"</span>, adminApp =>
+{
+    adminApp.<span class="fn">UseAuthorization</span>();
+    adminApp.<span class="fn">MapControllers</span>();
+});
+
+<span class="cm">// MapGet（路由级别的分支）</span>
+app.<span class="fn">MapGet</span>(<span class="st">"/health"</span>, () => <span class="tp">Results</span>.<span class="fn">Ok</span>(<span class="kw">new</span> { status = <span class="st">"healthy"</span> }));
+
+<span class="cm">// When：根据条件分支管道</span>
+app.<span class="fn">When</span>(
+    ctx => ctx.Request.Query.ContainsKey(<span class="st">"debug"</span>),
+    debugApp => debugApp.<span class="fn">Use</span>(<span class="kw">async</span> (ctx, next) =>
+    {
+        ctx.Response.Headers[<span class="st">"X-Debug"</span>] = <span class="st">"true"</span>;
+        <span class="kw">await</span> <span class="fn">next</span>();
+    }));
+
+<span class="cm">// 终端中间件（不调用 next）</span>
+app.<span class="fn">MapPost</span>(<span class="st">"/echo"</span>, <span class="kw">async</span> context =>
+{
+    <span class="kw">var</span> reader = <span class="kw">new</span> <span class="tp">StreamReader</span>(context.Request.Body);
+    <span class="kw">var</span> body = <span class="kw">await</span> reader.<span class="fn">ReadToEndAsync</span>();
+    <span class="kw">await</span> context.Response.<span class="fn">WriteAsync</span>(body);
+});</code></pre>
+</div>
+
+<h3>自定义中间件类</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 自定义异常处理中间件</span>
+<span class="kw">public class</span> <span class="tp">ExceptionHandlingMiddleware</span>
+{
+    <span class="kw">private readonly</span> <span class="tp">RequestDelegate</span> _next;
+    <span class="kw">private readonly</span> <span class="tp">ILogger</span>&lt;<span class="tp">ExceptionHandlingMiddleware</span>&gt; _logger;
+
+    <span class="cm">// RequestDelegate 由框架注入，代表管道中的下一个中间件</span>
+    <span class="kw">public</span> <span class="fn">ExceptionHandlingMiddleware</span>(<span class="tp">RequestDelegate</span> next, <span class="tp">ILogger</span>&lt;<span class="tp">ExceptionHandlingMiddleware</span>&gt; logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
+    <span class="kw">public async</span> <span class="tp">Task</span> <span class="fn">InvokeAsync</span>(<span class="tp">HttpContext</span> context)
+    {
+        <span class="kw">try</span>
+        {
+            <span class="kw">await</span> <span class="fn">_next</span>(context);  <span class="cm">// 调用下一个中间件</span>
+        }
+        <span class="kw">catch</span> (<span class="tp">Exception</span> ex)
+        {
+            _logger.<span class="fn">LogError</span>(ex, <span class="st">"Unhandled exception"</span>);
+
+            context.Response.StatusCode = <span class="nm">500</span>;
+            context.Response.ContentType = <span class="st">"application/json"</span>;
+
+            <span class="kw">var</span> result = <span class="tp">JsonSerializer</span>.<span class="fn">Serialize</span>(<span class="kw">new</span>
+            {
+                error = <span class="st">"Internal server error"</span>,
+                message = ex.Message
+            });
+
+            <span class="kw">await</span> context.Response.<span class="fn">WriteAsync</span>(result);
+        }
+    }
+}
+
+<span class="cm">// 扩展方法（推荐注册方式）</span>
+<span class="kw">public static class</span> <span class="tp">ExceptionMiddlewareExtensions</span>
+{
+    <span class="kw">public static</span> <span class="tp">IApplicationBuilder</span> <span class="fn">UseExceptionHandling</span>(<span class="kw">this</span> <span class="tp">IApplicationBuilder</span> app) =>
+        app.<span class="fn">UseMiddleware</span>&lt;<span class="tp">ExceptionHandlingMiddleware</span>&gt;();
+}
+
+<span class="cm">// 使用：app.UseExceptionHandling();</span></code></pre>
+</div>
+
+<h3>中间件执行顺序</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// ⚠️ 中间件注册顺序很重要！</span>
+<span class="cm">// 1. 异常处理 → 最先注册（最外层，捕获所有异常）</span>
+app.<span class="fn">UseExceptionHandler</span>(<span class="st">"/error"</span>);
+
+<span class="cm">// 2. HSTS → 第二（安全头）</span>
+app.<span class="fn">UseHsts</span>();
+
+<span class="cm">// 3. HTTPS 重定向</span>
+app.<span class="fn">UseHttpsRedirection</span>();
+
+<span class="cm">// 4. 静态文件（可以短路管道）</span>
+app.<span class="fn">UseStaticFiles</span>();
+
+<span class="cm">// 5. 路由</span>
+app.<span class="fn">UseRouting</span>();
+
+<span class="cm">// 6. CORS</span>
+app.<span class="fn">UseCors</span>();
+
+<span class="cm">// 7. 认证（必须在授权之前）</span>
+app.<span class="fn">UseAuthentication</span>();
+
+<span class="cm">// 8. 授权</span>
+app.<span class="fn">UseAuthorization</span>();
+
+<span class="cm">// 9. 端点映射</span>
+app.<span class="fn">MapControllers</span>();</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">中间件短路</div>
+    <p>当某个中间件处理完请求后不调用 <code>next()</code>，管道就此终止——称为"短路"。<code>UseStaticFiles</code> 就是典型的短路中间件：如果请求匹配静态文件，直接返回文件内容，不再进入后续的 MVC 管道。这大幅提升了静态资源的响应速度。</p>
+</div>
+
+<!-- ==================== Section 29 ==================== -->
+<h2 id="efcore">29. Entity Framework Core</h2>
+
+<p>Entity Framework Core（EF Core）是微软的轻量级 ORM 框架，将数据库表映射为 C# 对象，支持 LINQ 查询、自动变更追踪和数据库迁移。</p>
+
+<h3>DbContext 与实体配置</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 定义实体</span>
+<span class="kw">public class</span> <span class="tp">Product</span>
+{
+    <span class="kw">public int</span> Id { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="tp">string</span> Name { <span class="kw">get</span>; <span class="kw">set</span>; } = <span class="st">""</span>;
+    <span class="kw">public decimal</span> Price { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> CategoryId { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="cm">// 导航属性</span>
+    <span class="kw">public</span> <span class="tp">Category</span> Category { <span class="kw">get</span>; <span class="kw">set</span>; } = <span class="kw">null</span>!;
+    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProductTag</span>&gt; Tags { <span class="kw">get</span>; <span class="kw">set</span>; } = <span class="kw">new</span>();
+}
+
+<span class="kw">public class</span> <span class="tp">Category</span>
+{
+    <span class="kw">public int</span> Id { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="tp">string</span> Name { <span class="kw">get</span>; <span class="kw">set</span>; } = <span class="st">""</span>;
+    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Product</span>&gt; Products { <span class="kw">get</span>; <span class="kw">set</span>; } = <span class="kw">new</span>();
+}
+
+<span class="cm">// DbContext：应用与数据库之间的会话</span>
+<span class="kw">public class</span> <span class="tp">AppDbContext</span> : <span class="tp">DbContext</span>
+{
+    <span class="kw">public</span> <span class="tp">DbSet</span>&lt;<span class="tp">Product</span>&gt; Products { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="tp">DbSet</span>&lt;<span class="tp">Category</span>&gt; Categories { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="kw">protected override void</span> <span class="fn">OnModelCreating</span>(<span class="tp">ModelBuilder</span> modelBuilder)
+    {
+        <span class="cm">// Fluent API 配置（优于 Data Annotations）</span>
+        modelBuilder.<span class="fn">Entity</span>&lt;<span class="tp">Product</span>&gt;(e =>
+        {
+            e.<span class="fn">HasKey</span>(p => p.Id);
+            e.<span class="fn">Property</span>(p => p.Name).<span class="fn">HasMaxLength</span>(<span class="nm">200</span>).<span class="fn">IsRequired</span>();
+            e.<span class="fn">Property</span>(p => p.Price).<span class="fn">HasPrecision</span>(<span class="nm">18</span>, <span class="nm">2</span>);
+
+            <span class="cm">// 多对多关系</span>
+            e.<span class="fn">HasMany</span>(p => p.Tags)
+             .<span class="fn">WithMany</span>(t => t.Products)
+             .<span class="fn">UsingEntity</span>(<span class="st">"ProductTagMapping"</span>);
+        });
+    }
+}</code></pre>
+</div>
+
+<h3>LINQ 查询与异步操作</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">ProductRepository</span>
+{
+    <span class="kw">private readonly</span> <span class="tp">AppDbContext</span> _db;
+    <span class="kw">public</span> <span class="fn">ProductRepository</span>(<span class="tp">AppDbContext</span> db) => _db = db;
+
+    <span class="cm">// 延迟执行：查询在枚举时才生成 SQL</span>
+    <span class="kw">public</span> <span class="tp">IQueryable</span>&lt;<span class="tp">Product</span>&gt; <span class="fn">GetExpensiveProducts</span>(<span class="tp">decimal</span> minPrice)
+    {
+        <span class="kw">return</span> _db.Products
+            .<span class="fn">Where</span>(p => p.Price >= minPrice)
+            .<span class="fn">OrderByDescending</span>(p => p.Price);
+    }
+
+    <span class="cm">// 异步执行（推荐用于 Web 应用）</span>
+    <span class="kw">public async</span> <span class="tp">Task</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Product</span>&gt;&gt; <span class="fn">SearchAsync</span>(<span class="tp">string</span> keyword)
+    {
+        <span class="kw">return await</span> _db.Products
+            .<span class="fn">Include</span>(p => p.Category)  <span class="cm">// Eager Loading 预加载导航属性</span>
+            .<span class="fn">Where</span>(p => p.Name.<span class="fn">Contains</span>(keyword))
+            .<span class="fn">ToListAsync</span>();
+    }
+
+    <span class="cm">// 投影（只查询需要的列）</span>
+    <span class="kw">public async</span> <span class="tp">Task</span>&lt;<span class="tp">List</span>&lt;<span class="tp">ProductDto</span>&gt;&gt; <span class="fn">GetDtosAsync</span>()
+    {
+        <span class="kw">return await</span> _db.Products
+            .<span class="fn">Select</span>(p => <span class="kw">new</span> <span class="tp">ProductDto</span>
+            {
+                Id = p.Id,
+                Name = p.Name,
+                CategoryName = p.Category.Name
+            })
+            .<span class="fn">ToListAsync</span>();
+    }
+
+    <span class="cm">// 增删改</span>
+    <span class="kw">public async</span> <span class="tp">Task</span> <span class="fn">CreateAsync</span>(<span class="tp">Product</span> product)
+    {
+        _db.Products.<span class="fn">Add</span>(product);
+        <span class="kw">await</span> _db.<span class="fn">SaveChangesAsync</span>();  <span class="cm">// 生成 INSERT 语句</span>
+    }
+
+    <span class="kw">public async</span> <span class="tp">Task</span> <span class="fn">UpdatePriceAsync</span>(<span class="tp">int</span> id, <span class="tp">decimal</span> newPrice)
+    {
+        <span class="kw">var</span> product = <span class="kw">await</span> _db.Products.<span class="fn">FindAsync</span>(id);
+        <span class="kw">if</span> (product != <span class="kw">null</span>)
+        {
+            product.Price = newPrice;  <span class="cm">// 变更追踪自动检测修改</span>
+            <span class="kw">await</span> _db.<span class="fn">SaveChangesAsync</span>();  <span class="cm">// 生成 UPDATE 语句</span>
+        }
+    }
+}</code></pre>
+</div>
+
+<h3>数据库迁移</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">bash</span>
+    </div>
+    <pre><code><span class="cm"># 添加迁移</span>
+dotnet ef migrations add InitialCreate
+
+<span class="cm"># 更新数据库</span>
+dotnet ef database update
+
+<span class="cm"># 添加新迁移（修改实体后）</span>
+dotnet ef migrations add AddProductDescription
+
+<span class="cm"># 回滚到指定迁移</span>
+dotnet ef database update PreviousMigration
+
+<span class="cm"># 生成 SQL 脚本（用于生产部署）</span>
+dotnet ef migrations script -o script.sql</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">EF Core 性能要点</div>
+    <p>EF Core 最常见的性能问题是 N+1 查询：遍历集合时，每个元素的导航属性都触发一次独立查询。使用 <code>.Include()</code> 或 <code>.ThenInclude()</code> 进行 Eager Loading，或使用 <code>.AsSplitQuery()</code> 分割大查询。另外，<code>AsNoTracking()</code> 可跳过变更追踪，读取操作性能提升 20%-50%。</p>
+</div>
+
+<!-- ==================== Section 30 ==================== -->
+<h2 id="signalr">30. SignalR（实时通信）</h2>
+
+<p>ASP.NET Core SignalR 是一个实时通信框架，支持服务器向客户端推送数据。底层自动选择最佳传输方式（WebSocket、Server-Sent Events、Long Polling），开发者只需关注 Hub 接口定义。</p>
+
+<h3>定义 Hub</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 定义 Hub（服务端与客户端的通信桥梁）</span>
+<span class="kw">public class</span> <span class="tp">ChatHub</span> : <span class="tp">Hub</span>
+{
+    <span class="kw">private readonly</span> <span class="tp">ILogger</span>&lt;<span class="tp">ChatHub</span>&gt; _logger;
+    <span class="kw">public</span> <span class="fn">ChatHub</span>(<span class="tp">ILogger</span>&lt;<span class="tp">ChatHub</span>&gt; logger) => _logger = logger;
+
+    <span class="cm">// 客户端调用：hubConnection.invoke("SendMessage", "Alice", "Hi!")</span>
+    <span class="kw">public async</span> <span class="tp">Task</span> <span class="fn">SendMessage</span>(<span class="tp">string</span> user, <span class="tp">string</span> message)
+    {
+        <span class="cm">// 广播给所有连接的客户端</span>
+        <span class="kw">await</span> Clients.All.<span class="fn">SendAsync</span>(<span class="st">"ReceiveMessage"</span>, user, message);
+    }
+
+    <span class="cm">// 发送到指定组</span>
+    <span class="kw">public async</span> <span class="tp">Task</span> <span class="fn">JoinGroup</span>(<span class="tp">string</span> groupName)
+    {
+        <span class="kw">await</span> Groups.<span class="fn">AddToGroupAsync</span>(Context.ConnectionId, groupName);
+        <span class="kw">await</span> Clients.<span class="fn">Group</span>(groupName)
+            .<span class="fn">SendAsync</span>(<span class="st">"SystemMessage"</span>, $<span class="st">"{Context.User?.Identity?.Name} joined {groupName}"</span>);
+    }
+
+    <span class="cm">// 发送给发送者以外的所有人</span>
+    <span class="kw">public async</span> <span class="tp">Task</span> <span class="fn">BroadcastExcept</span>(<span class="tp">string</span> message)
+    {
+        <span class="kw">await</span> Clients.Others.<span class="fn">SendAsync</span>(<span class="st">"ReceiveMessage"</span>, <span class="st">"System"</span>, message);
+    }
+
+    <span class="cm">// 发送给特定用户</span>
+    <span class="kw">public async</span> <span class="tp">Task</span> <span class="fn">SendToUser</span>(<span class="tp">string</span> userId, <span class="tp">string</span> message)
+    {
+        <span class="kw">await</span> Clients.<span class="fn">User</span>(userId).<span class="fn">SendAsync</span>(<span class="st">"PrivateMessage"</span>, message);
+    }
+
+    <span class="cm">// 重写连接/断开事件</span>
+    <span class="kw">public override async</span> <span class="tp">Task</span> <span class="fn">OnConnectedAsync</span>()
+    {
+        _logger.<span class="fn">LogInformation</span>(<span class="st">"Client connected: {Id}"</span>, Context.ConnectionId);
+        <span class="kw">await</span> Clients.Caller.<span class="fn">SendAsync</span>(<span class="st">"Welcome"</span>, <span class="st">"Connected to chat!"</span>);
+        <span class="kw">await base</span>.<span class="fn">OnConnectedAsync</span>();
+    }
+
+    <span class="kw">public override async</span> <span class="tp">Task</span> <span class="fn">OnDisconnectedAsync</span>(<span class="tp">Exception</span>? exception)
+    {
+        _logger.<span class="fn">LogInformation</span>(<span class="st">"Client disconnected: {Id}"</span>, Context.ConnectionId);
+        <span class="kw">await base</span>.<span class="fn">OnDisconnectedAsync</span>(exception);
+    }
+}</code></pre>
+</div>
+
+<h3>客户端 JavaScript</h3>
+<div class="code-block" data-lang="javascript">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 客户端连接与事件监听</span>
+<span class="kw">const</span> connection = <span class="kw">new</span> <span class="fn">signalR</span>.<span class="tp">HubConnectionBuilder</span>()
+    .<span class="fn">withUrl</span>(<span class="st">"/chathub"</span>)
+    .<span class="fn">withAutomaticReconnect</span>([<span class="nm">0</span>, <span class="nm">2000</span>, <span class="nm">5000</span>, <span class="nm">10000</span>, <span class="nm">30000</span>])
+    .<span class="fn">configureLogging</span>(signalR.<span class="tp">LogLevel</span>.Information)
+    .<span class="fn">build</span>();
+
+<span class="cm">// 监听服务端推送的消息</span>
+connection.<span class="fn">on</span>(<span class="st">"ReceiveMessage"</span>, (user, message) => {
+    <span class="kw">const</span> li = document.<span class="fn">createElement</span>(<span class="st">"li"</span>);
+    li.textContent = <span class="st">`${user}: ${message}`</span>;
+    document.<span class="fn">getElementById</span>(<span class="st">"messages"</span>).<span class="fn">appendChild</span>(li);
+});
+
+<span class="cm">// 启动连接</span>
+<span class="kw">async function</span> <span class="fn">start</span>() {
+    <span class="kw">try</span> {
+        <span class="kw">await</span> connection.<span class="fn">start</span>();
+        console.<span class="fn">log</span>(<span class="st">"SignalR Connected."</span>);
+    } <span class="kw">catch</span> (err) {
+        console.<span class="fn">error</span>(err);
+        <span class="fn">setTimeout</span>(start, <span class="nm">5000</span>);
+    }
+}
+
+<span class="cm">// 发送消息到服务端</span>
+<span class="kw">async function</span> <span class="fn">sendMessage</span>() {
+    <span class="kw">const</span> user = document.<span class="fn">getElementById</span>(<span class="st">"userInput"</span>).value;
+    <span class="kw">const</span> message = document.<span class="fn">getElementById</span>(<span class="st">"messageInput"</span>).value;
+    <span class="kw">await</span> connection.<span class="fn">invoke</span>(<span class="st">"SendMessage"</span>, user, message);
+}
+
+<span class="fn">start</span>();</code></pre>
+</div>
+
+<h3>Hub 后台服务调用</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 在后台服务中向客户端推送</span>
+<span class="kw">public class</span> <span class="tp">NotificationService</span> : <span class="tp">BackgroundService</span>
+{
+    <span class="kw">private readonly</span> <span class="tp">IHubContext</span>&lt;<span class="tp">ChatHub</span>&gt; _hubContext;
+
+    <span class="kw">public</span> <span class="fn">NotificationService</span>(<span class="tp">IHubContext</span>&lt;<span class="tp">ChatHub</span>&gt; hubContext) =>
+        _hubContext = hubContext;
+
+    <span class="kw">protected override async</span> <span class="tp">Task</span> <span class="fn">ExecuteAsync</span>(<span class="tp">CancellationToken</span> stoppingToken)
+    {
+        <span class="kw">while</span> (!stoppingToken.<span class="fn">IsCancellationRequested</span>)
+        {
+            <span class="kw">await</span> _hubContext.Clients.All
+                .<span class="fn">SendAsync</span>(<span class="st">"ReceiveMessage"</span>, <span class="st">"Server"</span>, <span class="st">"Heartbeat"</span>, stoppingToken);
+            <span class="kw">await</span> <span class="tp">Task</span>.<span class="fn">Delay</span>(<span class="tp">TimeSpan</span>.<span class="fn">FromSeconds</span>(<span class="nm">30</span>), stoppingToken);
+        }
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== Section 31 ==================== -->
+<h2 id="minimal-apis">31. Minimal APIs</h2>
+
+<p>Minimal APIs（.NET 6+）提供了一种轻量级的 HTTP API 开发方式，无需控制器类，直接在顶级语句中定义路由和处理逻辑。适合微服务和小型 API。</p>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 基本 Minimal API</span>
+<span class="kw">var</span> builder = WebApplication.<span class="fn">CreateBuilder</span>(args);
+<span class="kw">var</span> app = builder.<span class="fn">Build</span>();
+
+<span class="cm">// GET 请求</span>
+app.<span class="fn">MapGet</span>(<span class="st">"/"</span>, () => <span class="st">"Hello World!"</span>);
+
+<span class="cm">// 路径参数</span>
+app.<span class="fn">MapGet</span>(<span class="st">"/users/{id}"</span>, (<span class="tp">int</span> id) => <span class="st">$"User {id}"</span>);
+
+<span class="cm">// 查询参数</span>
+app.<span class="fn">MapGet</span>(<span class="st">"/search"</span>, (<span class="tp">string</span>? q, <span class="tp">int</span>? page) =>
+    <span class="tp">Results</span>.<span class="fn">Ok</span>(<span class="kw">new</span> { query = q, page = page ?? <span class="nm">1</span> }));
+
+<span class="cm">// POST 请求 + 请求体绑定</span>
+app.<span class="fn">MapPost</span>(<span class="st">"/products"</span>, <span class="kw">async</span> (<span class="tp">ProductDto</span> dto, <span class="tp">AppDbContext</span> db) =>
+{
+    <span class="kw">var</span> product = <span class="kw">new</span> <span class="tp">Product</span> { Name = dto.Name, Price = dto.Price };
+    db.Products.<span class="fn">Add</span>(product);
+    <span class="kw">await</span> db.<span class="fn">SaveChangesAsync</span>();
+    <span class="kw">return</span> <span class="tp">Results</span>.<span class="fn">Created</span>(<span class="st">$"/products/{product.Id}"</span>, product);
+});
+
+<span class="cm">// DELETE 请求</span>
+app.<span class="fn">MapDelete</span>(<span class="st">"/products/{id}"</span>, <span class="kw">async</span> (<span class="tp">int</span> id, <span class="tp">AppDbContext</span> db) =>
+{
+    <span class="kw">var</span> product = <span class="kw">await</span> db.Products.<span class="fn">FindAsync</span>(id);
+    <span class="kw">if</span> (product == <span class="kw">null</span>) <span class="kw">return</span> <span class="tp">Results</span>.<span class="fn">NotFound</span>();
+    db.Products.<span class="fn">Remove</span>(product);
+    <span class="kw">await</span> db.<span class="fn">SaveChangesAsync</span>();
+    <span class="kw">return</span> <span class="tp">Results</span>.<span class="fn">NoContent</span>();
+});
+
+app.<span class="fn">Run</span>();</code></pre>
+</div>
+
+<h3>Filter 与参数绑定</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 自定义 Filter（拦截请求）</span>
+<span class="kw">public class</span> <span class="tp">ApiKeyFilter</span> : <span class="tp">IEndpointFilter</span>
+{
+    <span class="kw">public async</span> <span class="tp">ValueTask</span>&lt;<span class="tp">object</span>?&gt; <span class="fn">OnInvokeAsync</span>(
+        <span class="tp">EndpointFilterInvocationContext</span> context,
+        <span class="tp">EndpointFilterDelegate</span> next)
+    {
+        <span class="kw">if</span> (!context.HttpContext.Request.Headers
+            .<span class="fn">TryGetValue</span>(<span class="st">"X-Api-Key"</span>, <span class="kw">out var</span> key) || key != <span class="st">"secret123"</span>)
+        {
+            <span class="kw">return</span> <span class="tp">Results</span>.<span class="fn">Unauthorized</span>();
+        }
+
+        <span class="kw">return await</span> <span class="fn">next</span>(context);  <span class="cm">// 传递给下一个 filter 或处理程序</span>
+    }
+}
+
+<span class="cm">// 使用 Filter</span>
+app.<span class="fn">MapGet</span>(<span class="st">"/admin/data"</span>, () => <span class="tp">Results</span>.<span class="fn">Ok</span>(<span class="st">"secret"</span>))
+   .<span class="fn">AddEndpointFilter</span>&lt;<span class="tp">ApiKeyFilter</span>&gt;();
+
+<span class="cm">// 参数绑定：FromQuery / FromRoute / FromBody / FromHeader</span>
+app.<span class="fn">MapGet</span>(<span class="st">"/filtered"</span>, (
+    [<span class="tp">FromQuery</span>] <span class="tp">string</span>? search,
+    [<span class="tp">FromHeader</span>(Name = <span class="st">"X-Request-Id"</span>)] <span class="tp">string</span>? requestId) =>
+{
+    <span class="kw">return</span> <span class="tp">Results</span>.<span class="fn">Ok</span>(<span class="kw">new</span> { search, requestId });
+});
+
+<span class="cm">// TypedResults（强类型返回值，自动生成 OpenAPI 文档）</span>
+app.<span class="fn">MapGet</span>(<span class="st">"/typed"</span>, () =>
+    <span class="tp">TypedResults</span>.<span class="fn">Ok</span>(<span class="kw">new</span> { message = <span class="st">"success"</span> }))
+   .<span class="fn">Produces</span>&lt;<span class="tp">Ok</span>&lt;<span class="kw">object</span>&gt;&gt;(<span class="nm">200</span>);</code></pre>
+</div>
+
+<!-- ==================== Section 32 ==================== -->
+<h2 id="source-generators">32. Source Generators</h2>
+
+<p>Source Generators 是 C# 编译器的扩展机制，可以在编译时分析代码并生成新的 C# 源文件。它们运行在编译管线中，能访问所有语法树和语义信息，常用于减少样板代码和性能优化。</p>
+
+<div class="principle">
+    <div class="principle-title">为什么用 Source Generators</div>
+    <p>反射是运行时行为，无法 AOT 编译且有性能开销。Source Generators 在编译时生成代码，生成的代码是普通的 C#——可调试、可静态分析、完全支持 Native AOT。主流库如 System.Text.Json、Microsoft.Extensions.DependencyInjection 已全面迁移到 Source Generator 方案。</p>
+</div>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// IIncrementalGenerator（增量生成器，推荐方式）</span>
+[<span class="tp">Generator</span>]
+<span class="kw">public class</span> <span class="tp">NotifyPropertyChangedGenerator</span> : <span class="tp">IIncrementalGenerator</span>
+{
+    <span class="kw">public void</span> <span class="fn">Initialize</span>(<span class="tp">IncrementalGeneratorInitializationContext</span> context)
+    {
+        <span class="cm">// 1. 识别标记了 [NotifyPropertyChanged] 的类</span>
+        <span class="kw">var</span> classDeclarations = context.SyntaxProvider
+            .<span class="fn">ForAttributeWithMetadataName</span>(
+                <span class="st">"MyLib.NotifyPropertyChangedAttribute"</span>,
+                predicate: (node, _) => node <span class="kw">is</span> <span class="tp">ClassDeclarationSyntax</span>,
+                transform: (ctx, _) => <span class="fn">GetClassInfo</span>(ctx))
+            .<span class="fn">Where</span>(info => info != <span class="kw">null</span>);
+
+        <span class="cm">// 2. 注册输出</span>
+        context.<span class="fn">RegisterSourceOutput</span>(classDeclarations, (spc, info) =>
+        {
+            <span class="kw">var</span> source = <span class="fn">GenerateINotifyPropertyChanged</span>(info!);
+            spc.<span class="fn">AddSource</span>(<span class="st">$"{info!.ClassName}.g.cs"</span>, source);
+        });
+    }
+
+    <span class="kw">private static string</span> <span class="fn">GenerateINotifyPropertyChanged</span>(<span class="tp">ClassInfo</span> info)
+    {
+        <span class="kw">var</span> properties = <span class="kw">string</span>.<span class="fn">Join</span>(<span class="st">"\n"</span>,
+            info.PublicProperties.<span class="fn">Select</span>(p => <span class="st">$@"
+    public {p.Type} {p.Name}
+    {{
+        get => _{p.Name.LowerCaseFirst()};
+        set
+        {{
+            if (_{p.Name.LowerCaseFirst()} == value) return;
+            _{p.Name.LowerCaseFirst()} = value;
+            OnPropertyChanged(nameof({p.Name}));
+        }}
+    }}"</span>));
+
+        <span class="kw">return</span> <span class="st">$@"
+// &lt;auto-generated /&gt;
+namespace {info.Namespace};
+
+public partial class {info.ClassName} : System.ComponentModel.INotifyPropertyChanged
+{{
+    public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged(string name) =>
+        PropertyChanged?.Invoke(this, new(name));
+
+{properties}
+}"</span>;
+    }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 使用标记（业务代码零样板）</span>
+[<span class="tp">NotifyPropertyChanged</span>]
+<span class="kw">public partial class</span> <span class="tp">UserViewModel</span>
+{
+    <span class="kw">public</span> <span class="tp">string</span> Name { <span class="kw">get</span>; <span class="kw">set</span>; } = <span class="st">""</span>;
+    <span class="kw">public int</span> Age { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="cm">// 编译器自动生成：</span>
+<span class="cm">// public partial class UserViewModel : INotifyPropertyChanged { ... }</span>
+
+<span class="cm">// 常见的内置 Source Generator：</span>
+<span class="cm">// 1. System.Text.Json 源生成器（替代反射序列化）</span>
+[<span class="tp">JsonSerializable</span>(<span class="kw">typeof</span>(<span class="tp">ProductDto</span>))]
+<span class="kw">internal partial class</span> <span class="tp">AppJsonContext</span> : <span class="tp">JsonSerializerContext</span> { }
+
+<span class="cm">// 2. 正则表达式源生成器（编译时生成解析代码）</span>
+<span class="kw">public static partial class</span> <span class="tp">Regexes</span>
+{
+    [<span class="tp">GeneratedRegex</span>(<span class="st">@"\b\d{3}-\d{4}\b"</span>)]
+    <span class="kw">public static partial</span> <span class="tp">Regex</span> <span class="fn">ZipCodePattern</span>();
+}</code></pre>
+</div>
+
+<!-- ==================== Section 33 ==================== -->
+<h2 id="high-perf">33. 高性能编程</h2>
+
+<p>.NET 提供了一系列零分配或低分配的高性能 API，用于消除 GC 压力、提升吞吐量。核心概念包括 Span、Memory、ArrayPool 和 stackalloc。</p>
+
+<div class="principle">
+    <div class="principle-title">GC 压力是性能杀手</div>
+    <p>每次堆分配都会增加 GC 的工作量。在高吞吐量场景（百万级 RPS）中，减少分配比优化算法更有效。Span 和 Memory 是"视图类型"——它们引用已有内存而不复制数据；ArrayPool 提供可复用的缓冲区；stackalloc 将小数组分配在栈上（无需 GC）。目标：将每请求分配控制在 1KB 以内。</p>
+</div>
+
+<h3>Span&lt;T&gt; 深度使用</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// Span 的核心：对连续内存的引用视图（栈上值类型）</span>
+<span class="kw">public static class</span> <span class="tp">HighPerfParsing</span>
+{
+    <span class="cm">// 无分配的整数解析</span>
+    <span class="kw">public static bool</span> <span class="fn">TryParseInt</span>(<span class="tp">ReadOnlySpan</span>&lt;<span class="tp">char</span>&gt; text, <span class="kw">out int</span> result)
+    {
+        result = <span class="nm">0</span>;
+        <span class="tp">int</span> sign = <span class="nm">1</span>;
+        <span class="tp">int</span> i = <span class="nm">0</span>;
+
+        <span class="kw">if</span> (text.Length == <span class="nm">0</span>) <span class="kw">return false</span>;
+        <span class="kw">if</span> (text[<span class="nm">0</span>] == <span class="st">'-'</span>) { sign = -<span class="nm">1</span>; i = <span class="nm">1</span>; }
+
+        <span class="kw">for</span> (; i &lt; text.Length; i++)
+        {
+            <span class="tp">char</span> c = text[i];
+            <span class="kw">if</span> (c &lt; <span class="st">'0'</span> || c > <span class="st">'9'</span>) <span class="kw">return false</span>;
+            result = result * <span class="nm">10</span> + (c - <span class="st">'0'</span>);
+        }
+        result *= sign;
+        <span class="kw">return true</span>;
+    }
+
+    <span class="cm">// 无分配的 CSV 字段分割</span>
+    <span class="kw">public static</span> <span class="tp">ReadOnlySpan</span>&lt;<span class="tp">ReadOnlyMemory</span>&lt;<span class="tp">char</span>&gt;&gt; <span class="fn">SplitCsv</span>(<span class="tp">ReadOnlySpan</span>&lt;<span class="tp">char</span>&gt; line)
+    {
+        <span class="kw">var</span> fields = <span class="kw">new</span> <span class="tp">List</span>&lt;<span class="tp">ReadOnlyMemory</span>&lt;<span class="tp">char</span>&gt;&gt;();
+        <span class="tp">int</span> start = <span class="nm">0</span>;
+
+        <span class="kw">for</span> (<span class="tp">int</span> i = <span class="nm">0</span>; i &lt;= line.Length; i++)
+        {
+            <span class="kw">if</span> (i == line.Length || line[i] == <span class="st">','</span>)
+            {
+                fields.<span class="fn">Add</span>(line[start..i].<span class="fn">ToArray</span>());
+                start = i + <span class="nm">1</span>;
+            }
+        }
+        <span class="kw">return</span> fields.<span class="fn">ToArray</span>();
+    }
+}
+
+<span class="cm">// 使用：零堆分配</span>
+<span class="tp">ReadOnlySpan</span>&lt;<span class="tp">char</span>&gt; input = <span class="st">"12345"</span>.<span class="fn">AsSpan</span>();
+<span class="tp">HighPerfParsing</span>.<span class="fn">TryParseInt</span>(input, <span class="kw">out var</span> num);  <span class="cm">// num = 12345</span></code></pre>
+</div>
+
+<h3>ArrayPool 与内存池</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// ArrayPool&lt;T&gt;：可复用的数组缓冲区</span>
+<span class="kw">public static async</span> <span class="tp">ValueTask</span>&lt;<span class="tp">byte</span>[]&gt; <span class="fn">ReadAllBytesAsync</span>(<span class="tp">Stream</span> stream)
+{
+    <span class="kw">var</span> pool = <span class="tp">ArrayPool</span>&lt;<span class="tp">byte</span>&gt;.<span class="tp">Shared</span>;
+    <span class="tp">byte</span>[]? buffer = <span class="kw">null</span>;
+
+    <span class="kw">try</span>
+    {
+        buffer = pool.<span class="fn">Rent</span>(<span class="nm">4096</span>);
+        <span class="kw">using var</span> ms = <span class="kw">new</span> <span class="tp">MemoryStream</span>();
+        <span class="tp">int</span> bytesRead;
+
+        <span class="kw">while</span> ((bytesRead = <span class="kw">await</span> stream.<span class="fn">ReadAsync</span>(buffer)) > <span class="nm">0</span>)
+        {
+            <span class="kw">await</span> ms.<span class="fn">WriteAsync</span>(buffer.<span class="fn">AsMemory</span>(<span class="nm">0</span>, bytesRead));
+        }
+
+        <span class="kw">return</span> ms.<span class="fn">ToArray</span>();
+    }
+    <span class="kw">finally</span>
+    {
+        <span class="kw">if</span> (buffer != <span class="kw">null</span>) pool.<span class="fn">Return</span>(buffer);  <span class="cm">// 必须归还！</span>
+    }
+}
+
+<span class="cm">// MemoryPool&lt;T&gt;：适合异步场景的内存池</span>
+<span class="kw">public static async</span> <span class="tp">ValueTask</span> <span class="fn">ProcessWithPoolAsync</span>(<span class="tp">Stream</span> stream)
+{
+    <span class="kw">using var</span> owner = <span class="tp">MemoryPool</span>&lt;<span class="tp">byte</span>&gt;.<span class="tp">Shared</span>.<span class="fn">Rent</span>(<span class="nm">4096</span>);
+    <span class="tp">Memory</span>&lt;<span class="tp">byte</span>&gt; buffer = owner.Memory;
+
+    <span class="tp">int</span> bytesRead = <span class="kw">await</span> stream.<span class="fn">ReadAsync</span>(buffer);
+    <span class="cm">// 使用 buffer.Span 进行同步处理</span>
+    <span class="kw">foreach</span> (<span class="tp">byte</span> b <span class="kw">in</span> buffer.Span[..bytesRead])
+    {
+        <span class="tp">Console</span>.<span class="fn">Write</span>(<span class="st">$"{b:X2} "</span>);
+    }
+}</code></pre>
+</div>
+
+<h3>BenchmarkDotNet 性能测试</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// BenchmarkDotNet：专业的性能基准测试框架</span>
+[<span class="tp">MemoryDiagnoser</span>]  <span class="cm">// 追踪内存分配</span>
+<span class="kw">public class</span> <span class="tp">StringComparisonBenchmark</span>
+{
+    [<span class="tp">Params</span>(<span class="nm">10</span>, <span class="nm">100</span>, <span class="nm">1000</span>)]
+    <span class="kw">public int</span> N { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="tp">string</span> _data = <span class="st">""</span>;
+
+    [<span class="tp">GlobalSetup</span>]
+    <span class="kw">public void</span> <span class="fn">Setup</span>() =>
+        _data = <span class="kw">new string</span>(<span class="st">'x'</span>, N);
+
+    [<span class="tp">Benchmark</span>]
+    <span class="kw">public bool</span> <span class="fn">StringContains</span>() =>
+        _data.<span class="fn">Contains</span>(<span class="st">"xxxx"</span>);
+
+    [<span class="tp">Benchmark</span>]
+    <span class="kw">public bool</span> <span class="fn">SpanContains</span>() =>
+        _data.<span class="fn">AsSpan</span>().<span class="fn">Contains</span>(<span class="st">"xxxx"</span>.<span class="fn">AsSpan</span>());
+
+    <span class="cm">// BenchmarkRunner.Run&lt;StringComparisonBenchmark&gt;();</span>
+    <span class="cm">// 输出：</span>
+    <span class="cm">// |           Method | N   | Mean     | Allocated |</span>
+    <span class="cm">// |----------------- |---- |---------:|----------:|</span>
+    <span class="cm">// | StringContains   | 100 | 25.3 ns  |     0 B   |</span>
+    <span class="cm">// | SpanContains     | 100 | 12.1 ns  |     0 B   |</span>
+}</code></pre>
+</div>
+
+<!-- ==================== Section 34 ==================== -->
+<h2 id="localization">34. 国际化与本地化</h2>
+
+<p>ASP.NET Core 的本地化框架支持基于资源文件的多语言支持，通过 <code>IStringLocalizer</code> 和 <code>IHtmlLocalizer</code> 在运行时根据当前文化加载对应文本。</p>
+
+<h3>配置与资源文件</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// Program.cs 配置本地化</span>
+builder.Services.<span class="fn">AddLocalization</span>(options =>
+    options.ResourcesPath = <span class="st">"Resources"</span>);
+
+builder.Services.<span class="fn">Configure</span>&lt;<span class="tp">RequestLocalizationOptions</span>&gt;(options =>
+{
+    <span class="kw">var</span> supportedCultures = <span class="kw">new</span>[]
+    {
+        <span class="kw">new</span> <span class="tp">CultureInfo</span>(<span class="st">"zh-CN"</span>),
+        <span class="kw">new</span> <span class="tp">CultureInfo</span>(<span class="st">"en-US"</span>),
+        <span class="kw">new</span> <span class="tp">CultureInfo</span>(<span class="st">"ja-JP"</span>),
+    };
+    options.DefaultRequestCulture = <span class="kw">new</span>(<span class="st">"zh-CN"</span>);
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+
+    <span class="cm">// 从查询字符串、Cookie 或 Accept-Language 头确定文化</span>
+    options.RequestCultureProviders.<span class="fn">Insert</span>(<span class="nm">0</span>,
+        <span class="kw">new</span> <span class="tp">QueryStringRequestCultureProvider</span>());
+});
+
+app.<span class="fn">UseRequestLocalization</span>();</code></pre>
+</div>
+
+<h3>资源文件与 IStringLocalizer</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// Resources/SharedResource.zh-CN.resx（中文）</span>
+<span class="cm">// Hello = "你好，{0}！"</span>
+<span class="cm">// Goodbye = "再见"</span>
+
+<span class="cm">// Resources/SharedResource.en-US.resx（英文）</span>
+<span class="cm">// Hello = "Hello, {0}!"</span>
+<span class="cm">// Goodbye = "Goodbye"</span>
+
+<span class="cm">// 在控制器中使用</span>
+<span class="kw">public class</span> <span class="tp">HomeController</span> : <span class="tp">Controller</span>
+{
+    <span class="kw">private readonly</span> <span class="tp">IStringLocalizer</span>&lt;<span class="tp">SharedResource</span>&gt; _localizer;
+
+    <span class="kw">public</span> <span class="fn">HomeController</span>(<span class="tp">IStringLocalizer</span>&lt;<span class="tp">SharedResource</span>&gt; localizer) =>
+        _localizer = localizer;
+
+    [<span class="tp">HttpGet</span>(<span class="st">"/greet"</span>)]
+    <span class="kw">public</span> <span class="tp">IActionResult</span> <span class="fn">Greet</span>(<span class="tp">string</span> name)
+    {
+        <span class="cm">// 通过 key 获取本地化文本</span>
+        <span class="kw">var</span> greeting = _localizer[<span class="st">"Hello"</span>, name];
+        <span class="kw">return</span> <span class="fn">Content</span>(greeting);
+    }
+
+    [<span class="tp">HttpGet</span>(<span class="st">"/culture-info"</span>)]
+    <span class="kw">public</span> <span class="tp">IActionResult</span> <span class="fn">CultureInfo</span>()
+    {
+        <span class="kw">var</span> culture = <span class="tp">CultureInfo</span>.CurrentUICulture;
+        <span class="cm">// culture.Name = "zh-CN" 或 "en-US"</span>
+        <span class="kw">return</span> <span class="fn">Ok</span>(<span class="kw">new</span> { culture = culture.Name, fallback = _localizer[<span class="st">"Hello"</span>].ResourceNotFound });
+    }
+}</code></pre>
+</div>
+
+<h3>动态切换语言</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 通过 Cookie 动态切换语言</span>
+app.<span class="fn">MapPost</span>(<span class="st">"/set-culture"</span>, (<span class="tp">string</span> culture) =>
+{
+    <span class="kw">var</span> cookieOptions = <span class="kw">new</span> <span class="tp">CookieBuilder</span>
+    {
+        HttpOnly = <span class="kw">true</span>,
+        Path = <span class="st">"/"</span>,
+        SameSite = <span class="tp">SameSiteMode</span>.Lax,
+        Expiration = <span class="tp">TimeSpan</span>.<span class="fn">FromDays</span>(<span class="nm">365</span>)
+    };
+
+    <span class="kw">var</span> response = <span class="tp">Results</span>.<span class="fn">Redirect</span>(<span class="st">"/"</span>);
+    response.Cookies.<span class="fn">Append</span>(<span class="tp">CookieRequestCultureProvider</span>.DefaultCookieName,
+        <span class="tp">CookieRequestCultureProvider</span>.<span class="fn">MakeCookieValue</span>(
+            <span class="kw">new</span> <span class="tp">RequestCulture</span>(culture)));
+
+    <span class="kw">return</span> response;
+});
+
+<span class="cm">// Razor 页面中的切换链接</span>
+<span class="cm">// &lt;a href="?culture=en-US"&gt;English&lt;/a&gt;</span>
+<span class="cm">// &lt;a href="?culture=zh-CN"&gt;中文&lt;/a&gt;</span></code></pre>
+</div>
+
+<!-- ==================== Section 35 ==================== -->
+<h2 id="testing">35. 测试</h2>
+
+<p>现代 .NET 项目通常使用 xUnit 作为测试框架，Moq 作为 Mock 框架。测试分为单元测试（隔离验证逻辑）和集成测试（验证整个管道）。</p>
+
+<h3>xUnit 单元测试</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 单元测试：验证 OrderService 的业务逻辑</span>
+<span class="kw">public class</span> <span class="tp">OrderServiceTests</span>
+{
+    <span class="kw">private readonly</span> <span class="tp">Mock</span>&lt;<span class="tp">IOrderRepository</span>&gt; _repoMock;
+    <span class="kw">private readonly</span> <span class="tp">Mock</span>&lt;<span class="tp">ILogger</span>&lt;<span class="tp">OrderService</span>&gt;&gt; _loggerMock;
+    <span class="kw">private readonly</span> <span class="tp">OrderService</span> _sut;  <span class="cm">// System Under Test</span>
+
+    <span class="kw">public</span> <span class="fn">OrderServiceTests</span>()
+    {
+        _repoMock = <span class="kw">new</span> <span class="tp">Mock</span>&lt;<span class="tp">IOrderRepository</span>&gt;();
+        _loggerMock = <span class="kw">new</span> <span class="tp">Mock</span>&lt;<span class="tp">ILogger</span>&lt;<span class="tp">OrderService</span>&gt;&gt;();
+        _sut = <span class="kw">new</span> <span class="tp">OrderService</span>(_repoMock.Object, _loggerMock.Object);
+    }
+
+    [<span class="tp">Fact</span>]
+    <span class="kw">public async</span> <span class="tp">Task</span> <span class="fn">CreateAsync_ValidOrder_ReturnsCreatedOrder</span>()
+    {
+        <span class="cm">// Arrange</span>
+        <span class="kw">var</span> dto = <span class="kw">new</span> <span class="tp">CreateOrderDto</span> { ProductId = <span class="nm">1</span>, Quantity = <span class="nm">2</span> };
+        _repoMock.<span class="fn">Setup</span>(r => r.<span class="fn">AddAsync</span>(<span class="tp">It</span>.<span class="fn">Any</span>&lt;<span class="tp">Order</span>&gt;()))
+                 .<span class="fn">ReturnsAsync</span>((<span class="tp">Order</span> o) => { o.Id = <span class="nm">1</span>; <span class="kw">return</span> o; });
+
+        <span class="cm">// Act</span>
+        <span class="kw">var</span> result = <span class="kw">await</span> _sut.<span class="fn">CreateAsync</span>(dto);
+
+        <span class="cm">// Assert</span>
+        <span class="tp">Assert</span>.<span class="fn">NotNull</span>(result);
+        <span class="tp">Assert</span>.<span class="fn">Equal</span>(<span class="nm">1</span>, result.Id);
+        _repoMock.<span class="fn">Verify</span>(r => r.<span class="fn">AddAsync</span>(<span class="tp">It</span>.<span class="fn">Any</span>&lt;<span class="tp">Order</span>&gt;()), <span class="tp">Times</span>.<span class="fn">Once</span>());
+    }
+
+    [<span class="tp">Fact</span>]
+    <span class="kw">public void</span> <span class="fn">CalculateDiscount_Over1000_Returns10Percent</span>()
+    {
+        <span class="kw">var</span> order = <span class="kw">new</span> <span class="tp">Order</span> { Total = <span class="nm">1500</span> };
+
+        <span class="tp">Assert</span>.<span class="fn">Equal</span>(<span class="nm">150</span>, order.<span class="fn">CalculateDiscount</span>());
+    }
+
+    [<span class="tp">Theory</span>]
+    [<span class="tp">InlineData</span>(<span class="nm">0</span>, <span class="nm">0</span>)]      <span class="cm">// 总额为 0</span>
+    [<span class="tp">InlineData</span>(<span class="nm">500</span>, <span class="nm">0</span>)]     <span class="cm">// 低于阈值</span>
+    [<span class="tp">InlineData</span>(<span class="nm">1000</span>, <span class="nm">50</span>)]    <span class="cm">// 恰好达到阈值</span>
+    [<span class="tp">InlineData</span>(<span class="nm">2000</span>, <span class="nm">200</span>)]   <span class="cm">// 超过阈值</span>
+    <span class="kw">public void</span> <span class="fn">CalculateDiscount_VariousTotals</span>(<span class="tp">decimal</span> total, <span class="tp">decimal</span> expected)
+    {
+        <span class="kw">var</span> order = <span class="kw">new</span> <span class="tp">Order</span> { Total = total };
+        <span class="tp">Assert</span>.<span class="fn">Equal</span>(expected, order.<span class="fn">CalculateDiscount</span>());
+    }
+}</code></pre>
+</div>
+
+<h3>Moq 高级用法</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 回调验证：检查传入参数</span>
+_repoMock.<span class="fn">Setup</span>(r => r.<span class="fn">AddAsync</span>(<span class="tp">It</span>.<span class="fn">Any</span>&lt;<span class="tp">Order</span>&gt;()))
+    .<span class="fn">Callback</span>&lt;<span class="tp">Order</span>&gt;(o => {
+        <span class="tp">Assert</span>.<span class="fn">True</span>(o.Total > <span class="nm">0</span>);  <span class="cm">// 验证传入的 Order 状态</span>
+    })
+    .<span class="fn">ReturnsAsync</span>((<span class="tp">Order</span> o) => { o.Id = <span class="nm">1</span>; <span class="kw">return</span> o; });
+
+<span class="cm">// 条件 Setup：不同输入返回不同结果</span>
+_repoMock.<span class="fn">Setup</span>(r => r.<span class="fn">FindByIdAsync</span>(<span class="nm">1</span>))
+    .<span class="fn">ReturnsAsync</span>(<span class="kw">new</span> <span class="tp">Order</span> { Id = <span class="nm">1</span>, ProductId = <span class="nm">10</span> });
+
+_repoMock.<span class="fn">Setup</span>(r => r.<span class="fn">FindByIdAsync</span>(<span class="tp">It</span>.<span class="fn">IsNotIn</span>(<span class="nm">1</span>)))
+    .<span class="fn">ReturnsAsync</span>((<span class="tp">Order</span>?)<span class="kw">null</span>);
+
+<span class="cm">// Verify：验证调用次数和参数</span>
+_repoMock.<span class="fn">Verify</span>(r => r.<span class="fn">AddAsync</span>(
+    <span class="tp">It</span>.<span class="fn">Is</span>&lt;<span class="tp">Order</span>&gt;(o => o.ProductId == <span class="nm">10</span>)),
+    <span class="tp">Times</span>.<span class="fn">Exactly</span>(<span class="nm">1</span>));
+
+<span class="cm">// Mock 行为验证</span>
+_loggerMock.<span class="fn">Verify</span>(x => x.<span class="fn">Log</span>(
+    <span class="tp">LogLevel</span>.Information,
+    <span class="tp">It</span>.<span class="fn">Any</span>&lt;<span class="tp">EventId</span>&gt;(),
+    <span class="tp">It</span>.<span class="fn">IsAny</span>&lt;<span class="tp">It</span>.<span class="tp">AnyType</span>&gt;(),
+    <span class="tp">It</span>.<span class="fn">Any</span>&lt;<span class="tp">Exception</span>&gt;(),
+    <span class="tp">It</span>.<span class="fn">.IsAny</span>&lt;<span class="tp">Func</span>&lt;<span class="tp">It</span>.<span class="tp">AnyType</span>, <span class="tp">Exception</span>?, <span class="tp">string</span>&gt;&gt;()),
+    <span class="tp">Times</span>.<span class="fn">AtLeastOnce</span>());</code></pre>
+</div>
+
+<h3>集成测试</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 使用 WebApplicationFactory 进行集成测试</span>
+<span class="kw">public class</span> <span class="tp">ProductApiTests</span> : <span class="tp">IClassFixture</span>&lt;<span class="tp">WebApplicationFactory</span>&lt;<span class="tp">Program</span>&gt;&gt;
+{
+    <span class="kw">private readonly</span> <span class="tp">HttpClient</span> _client;
+
+    <span class="kw">public</span> <span class="fn">ProductApiTests</span>(<span class="tp">WebApplicationFactory</span>&lt;<span class="tp">Program</span>&gt; factory)
+    {
+        _client = factory.<span class="fn">WithWebHostBuilder</span>(builder =>
+        {
+            builder.<span class="fn">ConfigureServices</span>(services =>
+            {
+                <span class="cm">// 替换真实数据库为内存数据库</span>
+                services.<span class="fn">AddDbContext</span>&lt;<span class="tp">AppDbContext</span>&gt;(options =>
+                    options.<span class="fn">UseInMemoryDatabase</span>(<span class="st">"TestDb"</span>));
+            });
+        }).<span class="fn">CreateClient</span>();
+    }
+
+    [<span class="tp">Fact</span>]
+    <span class="kw">public async</span> <span class="tp">Task</span> <span class="fn">GetProducts_ReturnsSuccess</span>()
+    {
+        <span class="kw">var</span> response = <span class="kw">await</span> _client.<span class="fn">GetAsync</span>(<span class="st">"/api/products"</span>);
+
+        response.EnsureSuccessStatusCode();
+        <span class="kw">var</span> content = <span class="kw">await</span> response.Content.<span class="fn">ReadFromJsonAsync</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Product</span>&gt;&gt;();
+        <span class="tp">Assert</span>.<span class="fn">NotNull</span>(content);
+    }
+
+    [<span class="tp">Fact</span>]
+    <span class="kw">public async</span> <span class="tp">Task</span> <span class="fn">CreateProduct_ReturnsCreatedAtAction</span>()
+    {
+        <span class="kw">var</span> dto = <span class="kw">new</span> { Name = <span class="st">"Test"</span>, Price = <span class="nm">9.99</span> };
+        <span class="kw">var</span> response = <span class="kw">await</span> _client.<span class="fn">PostAsJsonAsync</span>(<span class="st">"/api/products"</span>, dto);
+
+        <span class="tp">Assert</span>.<span class="fn">Equal</span>(<span class="tp">HttpStatusCode</span>.Created, response.StatusCode);
+    }
+}</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">测试金字塔</div>
+    <p>理想的测试分布：底层是大量单元测试（快速、隔离、覆盖核心逻辑），中层是少量集成测试（验证组件协作），顶层是极少量端到端测试（验证完整用户流程）。单元测试占比约 70%，集成测试约 20%，E2E 测试约 10%。避免"冰淇淋反模式"——大量慢速 E2E 测试、极少单元测试。</p>
+</div>
+
+<!-- ==================== Section 36 ==================== -->
+<h2 id="deployment">36. 部署</h2>
+
+<p>.NET 应用支持多种部署方式：Docker 容器化、Azure 云服务、Kubernetes 编排。本节覆盖最常见的部署场景和健康检查配置。</p>
+
+<h3>Docker 容器化</h3>
+<div class="code-block" data-lang="dockerfile">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Dockerfile</span>
+    </div>
+    <pre><code><span class="cm"># 多阶段构建：减小最终镜像体积</span>
+
+<span class="cm"># 阶段 1：构建</span>
+<span class="kw">FROM</span> mcr.microsoft.com/dotnet/sdk:8.0 <span class="kw">AS</span> build
+<span class="kw">WORKDIR</span> /src
+<span class="kw">COPY</span> *.csproj .
+<span class="kw">RUN</span> dotnet restore
+<span class="kw">COPY</span> . .
+<span class="kw">RUN</span> dotnet publish -c Release -o /app --no-restore
+
+<span class="cm"># 阶段 2：运行（只包含运行时，体积更小）</span>
+<span class="kw">FROM</span> mcr.microsoft.com/dotnet/aspnet:8.0 <span class="kw">AS</span> runtime
+<span class="kw">WORKDIR</span> /app
+<span class="kw">COPY</span> --from=build /app .
+<span class="kw">EXPOSE</span> 8080
+<span class="kw">ENV</span> ASPNETCORE_URLS=http://+:8080
+<span class="kw">ENTRYPOINT</span> [<span class="st">"dotnet"</span>, <span class="st">"MyApp.dll"</span>]</code></pre>
+</div>
+
+<h3>发布与运行</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">bash</span>
+    </div>
+    <pre><code><span class="cm"># 自包含发布（包含 .NET 运行时，无需安装 .NET）</span>
+dotnet publish -c Release -r linux-x64 --self-contained
+
+<span class="cm"># 框架依赖发布（需要目标机器安装 .NET）</span>
+dotnet publish -c Release --no-self-contained
+
+<span class="cm"># Native AOT 发布（编译为原生二进制）</span>
+dotnet publish -c Release -r linux-x64 -p:PublishAot=true
+
+<span class="cm"># Docker 构建与运行</span>
+docker build -t myapp:latest .
+docker run -p 8080:8080 myapp:latest
+
+<span class="cm"># 运行健康检查端点</span>
+curl http://localhost:8080/health</code></pre>
+</div>
+
+<h3>健康检查</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// Program.cs 配置健康检查</span>
+builder.Services.<span class="fn">AddHealthChecks</span>()
+    .<span class="fn">AddCheck</span>&lt;<span class="tp">DatabaseHealthCheck</span>&gt;(<span class="st">"database"</span>)
+    .<span class="fn">AddRedis</span>(builder.Configuration[<span class="st">"Redis:ConnectionString"</span>]!,
+        name: <span class="st">"redis"</span>, tags: [<span class="st">"ready"</span>])
+    .<span class="fn">AddUrlGroup</span>(<span class="kw">new</span> <span class="tp">Uri</span>(<span class="st">"https://api.external.com/ping"</span>),
+        name: <span class="st">"external-api"</span>);
+
+app.<span class="fn">MapHealthChecks</span>(<span class="st">"/health"</span>);
+app.<span class="fn">MapHealthChecks</span>(<span class="st">"/health/ready"</span>, <span class="kw">new</span> <span class="tp">HealthCheckOptions</span>
+{
+    Predicate = check => check.Tags.<span class="fn">Contains</span>(<span class="st">"ready"</span>)
+});
+
+<span class="cm">// 自定义健康检查</span>
+<span class="kw">public class</span> <span class="tp">DatabaseHealthCheck</span> : <span class="tp">IHealthCheck</span>
+{
+    <span class="kw">private readonly</span> <span class="tp">AppDbContext</span> _db;
+    <span class="kw">public</span> <span class="fn">DatabaseHealthCheck</span>(<span class="tp">AppDbContext</span> db) => _db = db;
+
+    <span class="kw">public async</span> <span class="tp">Task</span>&lt;<span class="tp">HealthCheckResult</span>&gt; <span class="fn">CheckHealthAsync</span>(
+        <span class="tp">HealthCheckContext</span> context,
+        <span class="tp">CancellationToken</span> ct = <span class="kw">default</span>)
+    {
+        <span class="kw">try</span>
+        {
+            <span class="kw">await</span> _db.Database.<span class="fn">ExecuteSqlRawAsync</span>(<span class="st">"SELECT 1"</span>, ct);
+            <span class="kw">return</span> <span class="tp">HealthCheckResult</span>.<span class="fn">Healthy</span>(<span class="st">"Database is reachable"</span>);
+        }
+        <span class="kw">catch</span> (<span class="tp">Exception</span> ex)
+        {
+            <span class="kw">return</span> <span class="tp">HealthCheckResult</span>.<span class="fn">Unhealthy</span>(
+                <span class="st">"Database unreachable"</span>, ex);
+        }
+    }
+}
+
+<span class="cm">// 健康检查响应示例：</span>
+<span class="cm">// {</span>
+<span class="cm">//   "status": "Healthy",</span>
+<span class="cm">//   "results": {</span>
+<span class="cm">//     "database": { "status": "Healthy" },</span>
+<span class="cm">//     "redis": { "status": "Healthy" }</span>
+<span class="cm">//   }</span>
+<span class="cm">// }</span></code></pre>
+</div>
+
+<h3>Azure 部署</h3>
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">bash</span>
+    </div>
+    <pre><code><span class="cm"># Azure App Service 部署</span>
+az webapp create --resource-group MyGroup --plan MyPlan --name MyApp
+az webapp deployment source config-local-git --name MyApp --resource-group MyGroup
+git push azure main
+
+<span class="cm"># Azure Container Apps（容器化微服务）</span>
+az containerapp up -n myapp -g MyGroup --image myapp:latest
+
+<span class="cm"># Azure Kubernetes Service</span>
+az aks get-credentials --resource-group MyGroup --name MyCluster
+kubectl apply -f deployment.yaml
+kubectl get pods -w</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">部署最佳实践</div>
+    <p>12-Factor App 原则：配置通过环境变量注入（不硬编码）；使用健康检查端点（<code>/health</code>）配合负载均衡器的探针；生产环境使用 Release 构建（关闭开发者异常页面）；容器镜像使用多阶段构建减小体积；日志输出到 stdout/stderr，由容器运行时收集；使用 <code>appsettings.Production.json</code> 区分环境配置。</p>
+</div>
+
 </main>
 
 <script>
@@ -2701,10 +3980,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script src="../assets/editor.js"></script>
-
-</body>
-</html>
-</main>
 
 </body>
 </html>

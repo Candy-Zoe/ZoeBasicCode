@@ -1871,6 +1871,541 @@
 
 <div class="danger">不要使用 CSS <code>expression()</code>（已废弃），不要使用 <code>@import</code>（会阻塞渲染），不要使用 <code>zoom: 1</code>（非标准，替代方案是 <code>overflow: auto</code> 或 <code>display: flow-root</code>）。</div>
 
+<!-- ========== 28 Container Queries ========== -->
+<h2 id="container-queries">28. Container Queries（容器查询）</h2>
+<p>Container Queries 让组件根据其<strong>父容器的尺寸</strong>而非视口尺寸来调整样式，实现真正的组件级响应式。</p>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：Container vs Viewport</div>
+    <p>传统的 <code>@media</code> 查询基于<strong>视口（viewport）</strong>宽度，但组件经常被放在不同宽度的容器中（如侧边栏、弹窗、卡片网格）。Container Queries 让组件"感知"自己所在容器的大小，从而实现真正的组件级自适应。</p>
+    <p>步骤：1) 用 <code>container-type</code> 声明容器；2) 用 <code>@container</code> 查询容器尺寸。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">CSS</span>
+    </div>
+    <pre><code><span class="cm">/* 声明容器 */</span>
+<span class="tg">.sidebar</span> {
+    <span class="pr">container-type</span>: <span class="vl">inline-size</span>;  <span class="cm">/* 仅监听宽度 */</span>
+    <span class="pr">container-name</span>: <span class="vl">sidebar</span>;      <span class="cm">/* 命名容器（可选） */</span>
+}
+
+<span class="cm">/* 根据容器宽度调整布局 */</span>
+<span class="kw">@container</span> (min-width: <span class="vl">400px</span>) {
+    <span class="tg">.card</span> {
+        <span class="pr">display</span>: <span class="vl">flex</span>;
+        <span class="pr">flex-direction</span>: <span class="vl">row</span>;
+    }
+    <span class="tg">.card__image</span> {
+        <span class="pr">width</span>: <span class="vl">120px</span>;
+    }
+}
+
+<span class="kw">@container</span> (max-width: <span class="vl">399px</span>) {
+    <span class="tg">.card</span> {
+        <span class="pr">display</span>: <span class="vl">flex</span>;
+        <span class="pr">flex-direction</span>: <span class="vl">column</span>;
+    }
+}
+
+<span class="cm">/* 按名称查询特定容器 */</span>
+<span class="kw">@container sidebar</span> (min-width: <span class="vl">300px</span>) {
+    <span class="tg">.nav-item__label</span> { <span class="pr">display</span>: <span class="vl">inline</span>; }
+}
+<span class="kw">@container sidebar</span> (max-width: <span class="vl">299px</span>) {
+    <span class="tg">.nav-item__label</span> { <span class="pr">display</span>: <span class="vl">none</span>; }
+}
+
+<span class="cm">/* container-type: size 同时监听宽高 */</span>
+<span class="tg">.widget-wrapper</span> {
+    <span class="pr">container-type</span>: <span class="vl">size</span>;
+}
+
+<span class="kw">@container</span> (min-aspect-ratio: <span class="vl">1/1</span>) {
+    <span class="tg">.chart</span> { <span class="pr">layout</span>: <span class="vl">landscape</span>; }
+}
+
+<span class="cm">/* 配合 CSS 变量 */</span>
+<span class="tg">.card</span> {
+    <span class="pr">--card-padding</span>: <span class="vl">var(--space-sm)</span>;
+}
+<span class="kw">@container</span> (min-width: <span class="vl">600px</span>) {
+    <span class="tg">.card</span> { <span class="pr">--card-padding</span>: <span class="vl">var(--space-lg)</span>; }
+}</code></pre>
+</div>
+
+<!-- ========== 29 :has() Selector Patterns ========== -->
+<h2 id="has-selector">29. :has() 选择器模式</h2>
+<p><code>:has()</code> 是 CSS 中最强大的选择器之一，被称为"父选择器"，它允许根据<strong>后代元素的状态</strong>来选择父元素。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">CSS</span>
+    </div>
+    <pre><code><span class="cm">/* 表单验证：包含无效输入时，给表单加红色边框 */</span>
+<span class="tg">.form:has(:invalid)</span> {
+    <span class="pr">border-color</span>: <span class="vl">red</span>;
+}
+
+<span class="cm">/* 包含图片的卡片，调整网格行 */</span>
+<span class="tg">.card:has(img)</span> {
+    <span class="pr">grid-template-rows</span>: <span class="vl">auto 1fr auto</span>;
+}
+
+<span class="cm">/* 导航栏：有下拉菜单激活时，整体加阴影 */</span>
+<span class="tg">.nav:has(.dropdown.is-open)</span> {
+    <span class="pr">box-shadow</span>: <span class="vl">0 4px 12px rgba(0,0,0,0.15)</span>;
+}
+
+<span class="cm">/* 空列表隐藏容器 */</span>
+<span class="tg">.list-container:has(> .list:empty)</span> {
+    <span class="pr">display</span>: <span class="vl">none</span>;
+}
+
+<span class="cm">/* 反向选择：不包含某个元素时 */</span>
+<span class="tg">.wrapper:not(:has(.sidebar))</span> {
+    <span class="pr">max-width</span>: <span class="vl">800px</span>;
+    <span class="pr">margin</span>: <span class="vl">0 auto</span>;
+}
+
+<span class="cm">/* 复选框控制兄弟元素样式 */</span>
+<span class="tg">.sidebar:has(#toggle:checked)</span> {
+    <span class="pr">transform</span>: <span class="vl">translateX(0)</span>;
+}
+
+<span class="cm">/* 多选框全选控制 */</span>
+<span class="tg">.select-all:checked</span> ~ <span class="tg">.item-list</span> <span class="tg">.item</span> {
+    <span class="pr">background</span>: <span class="vl">rgba(99, 102, 241, 0.1)</span>;
+}
+
+<span class="cm">/* 卡片组：第一个有图片的卡片占据更多空间 */</span>
+<span class="tg">.card-grid .card:first-child:has(img)</span> {
+    <span class="pr">grid-column</span>: <span class="vl">span 2</span>;
+    <span class="pr">grid-row</span>: <span class="vl">span 2</span>;
+}</code></pre>
+</div>
+
+<!-- ========== 30 Scroll-Driven Animations ========== -->
+<h2 id="scroll-animations">30. Scroll-Driven Animations（滚动驱动动画）</h2>
+<p>Scroll-Driven Animations 让动画进度与<strong>滚动位置</strong>绑定，无需 JavaScript 即可实现视差效果、滚动进度条、元素入场动画。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">CSS</span>
+    </div>
+    <pre><code><span class="cm">/* 滚动进度条 */</span>
+<span class="tg">.progress-bar</span> {
+    <span class="pr">position</span>: <span class="vl">fixed</span>;
+    <span class="pr">top</span>: <span class="vl">0</span>;
+    <span class="pr">left</span>: <span class="vl">0</span>;
+    <span class="pr">width</span>: <span class="vl">100%</span>;
+    <span class="pr">height</span>: <span class="vl">3px</span>;
+    <span class="pr">background</span>: <span class="vl">#6366f1</span>;
+    <span class="pr">transform-origin</span>: <span class="vl">left</span>;
+    <span class="pr">animation</span>: <span class="vl">grow-progress auto linear</span>;
+    <span class="pr">animation-timeline</span>: <span class="vl">scroll(root)</span>;
+}
+
+<span class="kw">@keyframes</span> <span class="fn">grow-progress</span> {
+    <span class="kw">from</span> { <span class="pr">transform</span>: <span class="vl">scaleX(0)</span>; }
+    <span class="kw">to</span>   { <span class="pr">transform</span>: <span class="vl">scaleX(1)</span>; }
+}
+
+<span class="cm">/* 元素滚动入场动画 */</span>
+<span class="tg">.reveal</span> {
+    <span class="pr">animation</span>: <span class="vl">reveal-up auto linear both</span>;
+    <span class="pr">animation-timeline</span>: <span class="vl">view()</span>;          <span class="cm">/* 基于元素自身在视口中的位置 */</span>
+    <span class="pr">animation-range</span>: <span class="vl">entry 0% entry 100%</span>; <span class="cm">/* 元素进入视口时触发 */</span>
+}
+
+<span class="kw">@keyframes</span> <span class="fn">reveal-up</span> {
+    <span class="kw">from</span> {
+        <span class="pr">opacity</span>: <span class="vl">0</span>;
+        <span class="pr">transform</span>: <span class="vl">translateY(50px)</span>;
+    }
+    <span class="kw">to</span> {
+        <span class="pr">opacity</span>: <span class="vl">1</span>;
+        <span class="pr">transform</span>: <span class="vl">translateY(0)</span>;
+    }
+}
+
+<span class="cm">/* 视差效果 */</span>
+<span class="tg">.parallax</span> {
+    <span class="pr">animation</span>: <span class="vl">parallax-shift auto linear</span>;
+    <span class="pr">animation-timeline</span>: <span class="vl">scroll()</span>;
+}
+
+<span class="kw">@keyframes</span> <span class="fn">parallax-shift</span> {
+    <span class="kw">from</span> { <span class="pr">transform</span>: <span class="vl">translateY(-20px)</span>; }
+    <span class="kw">to</span>   { <span class="pr">transform</span>: <span class="vl">translateY(20px)</span>; }
+}
+
+<span class="cm">/* 各种 animation-timeline 值 */</span>
+<span class="cm">/* scroll()           — 最近的滚动容器 */</span>
+<span class="cm">/* scroll(root)       — 文档根滚动容器 */</span>
+<span class="cm">/* scroll(root block) — 垂直滚动 */</span>
+<span class="cm">/* scroll(root x)     — 水平滚动 */</span>
+<span class="cm">/* view()             — 元素在视口中的可见性 */</span>
+
+<span class="cm">/* animation-range 控制触发时机 */</span>
+<span class="cm">/* entry 0% ~ entry 100%  — 进入视口过程 */</span>
+<span class="cm">/* exit 0% ~ exit 100%    — 离开视口过程 */</span>
+<span class="cm">/* cover 0% ~ cover 100%  — 完全覆盖滚动端口 */</span></code></pre>
+</div>
+
+<!-- ========== 31 View Transitions API ========== -->
+<h2 id="view-transitions">31. View Transitions API</h2>
+<p>View Transitions API 让页面状态切换（如 SPA 路由切换、DOM 更新）拥有<strong>原生过渡动画</strong>，类似原生 App 的转场效果。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">CSS + JavaScript</span>
+    </div>
+    <pre><code><span class="cm">/* ===== CSS 部分 ===== */</span>
+
+<span class="cm">/* 默认过渡效果 */</span>
+<span class="kw">::view-transition-old</span>(root) {
+    <span class="pr">animation</span>: <span class="vl">fade-out 0.3s ease-in</span>;
+}
+<span class="kw">::view-transition-new</span>(root) {
+    <span class="pr">animation</span>: <span class="vl">fade-in 0.3s ease-out</span>;
+}
+
+<span class="kw">@keyframes</span> <span class="fn">fade-out</span> {
+    <span class="kw">to</span> { <span class="pr">opacity</span>: <span class="vl">0</span>; <span class="pr">transform</span>: <span class="vl">scale(0.95)</span>; }
+}
+<span class="kw">@keyframes</span> <span class="fn">fade-in</span> {
+    <span class="kw">from</span> { <span class="pr">opacity</span>: <span class="vl">0</span>; <span class="pr">transform</span>: <span class="vl">scale(1.05)</span>; }
+}
+
+<span class="cm">/* 为特定元素命名过渡 */</span>
+<span class="tg">.hero-image</span> {
+    <span class="pr">view-transition-name</span>: <span class="vl">hero</span>;
+}
+<span class="tg">.page-title</span> {
+    <span class="pr">view-transition-name</span>: <span class="vl">title</span>;
+}
+
+<span class="cm">/* 为不同状态设置不同的过渡 */</span>
+<span class="kw">::view-transition-old</span>(hero) {
+    <span class="pr">animation</span>: <span class="vl">slide-left 0.4s ease-in</span>;
+}
+<span class="kw">::view-transition-new</span>(hero) {
+    <span class="pr">animation</span>: <span class="vl">slide-right 0.4s ease-out</span>;
+}
+
+<span class="cm">/* 针对暗色模式的过渡 */</span>
+<span class="kw">@media</span> (<span class="prefers-color-scheme</span>: <span class="vl">dark</span>) {
+    <span class="kw">::view-transition-old</span>(root) {
+        <span class="pr">animation</span>: <span class="vl">none</span>;
+    }
+}</code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">/* ===== JavaScript 部分 ===== */</span>
+
+<span class="cm">// 基本用法：包裹状态变更</span>
+<span class="kw">function</span> <span class="fn">navigateTo</span>(page) {
+    <span class="kw">if</span> (!document.startViewTransition) {
+        <span class="fn">updateDOM</span>(page);
+        <span class="kw">return</span>;
+    }
+    document.<span class="fn">startViewTransition</span>(() <span class="op">=></span> {
+        <span class="fn">updateDOM</span>(page);
+    });
+}
+
+<span class="cm">// 条件式过渡：仅在特定元素存在时才使用过渡</span>
+<span class="kw">function</span> <span class="fn">navigateTo</span>(page) {
+    <span class="kw">const</span> transition <span class="op">=</span> document.<span class="fn">startViewTransition</span>(() <span class="op">=></span> {
+        <span class="fn">updateDOM</span>(page);
+    });
+    transition.ready.<span class="fn">then</span>(() <span class="op">=></span> {
+        <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"过渡完成"</span>);
+    });
+}
+
+<span class="cm">// 控制过渡类型</span>
+document.<span class="fn">startViewTransition</span>({
+    <span class="fn">update</span>() { <span class="fn">updateDOM</span>(page); },
+    <span class="fn">types</span>: [<span class="st">"slide-left"</span>]  <span class="cm">// 自定义过渡类型</span>
+});</code></pre>
+</div>
+
+<!-- ========== 32 Subgrid ========== -->
+<h2 id="subgrid">32. Subgrid 子网格</h2>
+<p>Subgrid 让子元素可以<strong>继承父 Grid 的轨道定义</strong>，解决嵌套网格对齐难题。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">CSS</span>
+    </div>
+    <pre><code><span class="cm">/* 父容器定义网格 */</span>
+<span class="tg">.card-grid</span> {
+    <span class="pr">display</span>: <span class="vl">grid</span>;
+    <span class="pr">grid-template-columns</span>: <span class="vl">repeat(3, 1fr)</span>;
+    <span class="pr">gap</span>: <span class="vl">20px</span>;
+}
+
+<span class="cm">/* 问题：每个卡片内部的 header/body/footer 高度不一致 */</span>
+
+<span class="cm">/* 解决方案：Subgrid */</span>
+<span class="tg">.card</span> {
+    <span class="pr">display</span>: <span class="vl">grid</span>;
+    <span class="pr">grid-template-rows</span>: <span class="vl">subgrid</span>;    <span class="cm">/* 继承父行轨道 */</span>
+    <span class="pr">grid-row</span>: <span class="vl">span 3</span>;               <span class="cm">/* 跨 3 行 */</span>
+}
+<span class="cm">/* 现在所有卡片的 header、body、footer 高度对齐 */</span>
+
+<span class="cm">/* 列也可以用 subgrid */</span>
+<span class="tg">.wide-card</span> {
+    <span class="pr">grid-column</span>: <span class="vl">span 3</span>;
+    <span class="pr">grid-template-columns</span>: <span class="vl">subgrid</span>;  <span class="cm">/* 继承父列轨道 */</span>
+}
+
+<span class="cm">/* 实战：表单标签对齐 */</span>
+<span class="tg">.form</span> {
+    <span class="pr">display</span>: <span class="vl">grid</span>;
+    <span class="pr">grid-template-columns</span>: <span class="vl">auto 1fr auto</span>;
+    <span class="pr">gap</span>: <span class="vl">8px 16px</span>;
+    <span class="pr">align-items</span>: <span class="vl">center</span>;
+}
+<span class="tg">.form-group</span> {
+    <span class="pr">display</span>: <span class="vl">grid</span>;
+    <span class="pr">grid-column</span>: <span class="vl">1 / -1</span>;
+    <span class="pr">grid-template-columns</span>: <span class="vl">subgrid</span>;
+}
+
+<span class="cm">/* 命名轨道 + subgrid */</span>
+<span class="tg">.dashboard</span> {
+    <span class="pr">grid-template-rows</span>: [<span class="vl">header</span>] <span class="vl">60px</span> [<span class="vl">main</span>] <span class="vl">1fr</span> [<span class="vl">footer</span>] <span class="vl">40px</span>;
+}
+<span class="tg">.panel</span> {
+    <span class="pr">grid-row</span>: <span class="vl">header / footer</span>;     <span class="cm">/* 引用命名线 */</span>
+    <span class="pr">grid-template-rows</span>: <span class="vl">subgrid</span>;
+}</code></pre>
+</div>
+
+<!-- ========== 33 Color Spaces ========== -->
+<h2 id="color-spaces">33. 色彩空间（oklch / oklab）</h2>
+<p>现代 CSS 支持 <strong>oklch</strong> 和 <strong>oklab</strong> 等感知均匀色彩空间，生成的色阶更符合人眼感知。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">CSS</span>
+    </div>
+    <pre><code><span class="cm">/* oklch：感知均匀的色彩空间 */</span>
+<span class="cm">/* oklch(亮度 饱和度 色相) */</span>
+<span class="tg">.primary</span> { <span class="pr">color</span>: <span class="vl">oklch(0.62 0.2 264)</span>; }      <span class="cm">/* 靛蓝色 */</span>
+<span class="tg">.danger</span>  { <span class="pr">color</span>: <span class="vl">oklch(0.65 0.25 25)</span>; }      <span class="cm">/* 红色 */</span>
+<span class="tg">.success</span> { <span class="pr">color</span>: <span class="vl">oklch(0.72 0.19 142)</span>; }    <span class="cm">/* 绿色 */</span>
+
+<span class="cm">/* 生成色阶：只需调整亮度 */</span>
+<span class="tg">:root</span> {
+    <span class="pr">--primary-50</span>:  <span class="vl">oklch(0.97 0.02 264)</span>;   <span class="cm">/* 50 — 极浅 */</span>
+    <span class="pr">--primary-100</span>: <span class="vl">oklch(0.93 0.05 264)</span>;
+    <span class="pr">--primary-200</span>: <span class="vl">oklch(0.87 0.1 264)</span>;
+    <span class="pr">--primary-300</span>: <span class="vl">oklch(0.78 0.15 264)</span>;
+    <span class="pr">--primary-400</span>: <span class="vl">oklch(0.7 0.18 264)</span>;
+    <span class="pr">--primary-500</span>: <span class="vl">oklch(0.62 0.2 264)</span>;   <span class="cm">/* 500 — 基准 */</span>
+    <span class="pr">--primary-600</span>: <span class="vl">oklch(0.55 0.2 264)</span>;
+    <span class="pr">--primary-700</span>: <span class="vl">oklch(0.47 0.18 264)</span>;
+    <span class="pr">--primary-800</span>: <span class="vl">oklch(0.38 0.15 264)</span>;
+    <span class="pr">--primary-900</span>: <span class="vl">oklch(0.28 0.1 264)</span>;   <span class="cm">/* 900 — 极深 */</span>
+}
+
+<span class="cm">/* oklab：另一种感知均匀空间 */</span>
+<span class="tg">.accent</span> {
+    <span class="pr">color</span>: <span class="vl">oklab(0.65 -0.05 0.15)</span>;
+}
+
+<span class="cm">/* color-mix() 动态混色 */</span>
+<span class="tg">.hover</span> {
+    <span class="pr">background</span>: <span class="vl">color-mix(in oklch, var(--primary), black 20%)</span>;
+}
+<span class="tg">.light-bg</span> {
+    <span class="pr">background</span>: <span class="vl">color-mix(in oklch, var(--primary), white 90%)</span>;
+}
+
+<span class="cm">/* oklch 相对色彩语法（基于一个颜色生成变体）*/</span>
+<span class="tg">:root</span> {
+    <span class="pr">--primary</span>: <span class="vl">oklch(0.62 0.2 264)</span>;
+    <span class="pr">--primary-light</span>: <span class="vl">oklch(from var(--primary) calc(l + 0.2) c h)</span>;
+    <span class="pr">--primary-dark</span>:  <span class="vl">oklch(from var(--primary) calc(l - 0.2) c h)</span>;
+}
+
+<span class="cm">/* 对比度检查 */</span>
+<span class="tg">.text</span> {
+    <span class="pr">color</span>: <span class="vl">oklch(0.2 0.05 264)</span>;   <span class="cm">/* 深色文字 */</span>
+}
+<span class="cm">/* 白色背景上的对比度 = 0.2/0.97 ≈ 满足 WCAG AAA */</span></code></pre>
+</div>
+
+<!-- ========== 34 @layer Cascade Layers ========== -->
+<h2 id="cascade-layers">34. @layer 级联层</h2>
+<p><code>@layer</code> 让你显式控制 CSS 的<strong>优先级顺序</strong>，无需依赖特异性或 !important。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">CSS</span>
+    </div>
+    <pre><code><span class="cm">/* 定义层级（后定义的层级优先级更高） */</span>
+<span class="kw">@layer</span> reset, base, components, utilities;
+
+<span class="kw">@layer</span> reset {
+    <span class="tg">*</span> { <span class="pr">margin</span>: <span class="vl">0</span>; <span class="pr">padding</span>: <span class="vl">0</span>; <span class="pr">box-sizing</span>: <span class="vl">border-box</span>; }
+}
+
+<span class="kw">@layer</span> base {
+    <span class="tg">body</span> { <span class="pr">font-family</span>: <span class="vl">system-ui, sans-serif</span>; }
+    <span class="tg">a</span>    { <span class="pr">color</span>: <span class="vl">blue</span>; }
+}
+
+<span class="kw">@layer</span> components {
+    <span class="tg">.btn</span> {
+        <span class="pr">padding</span>: <span class="vl">8px 16px</span>;
+        <span class="pr">border-radius</span>: <span class="vl">6px</span>;
+        <span class="pr">background</span>: <span class="vl">var(--primary)</span>;
+    }
+    <span class="tg">.btn-primary</span> { <span class="pr">background</span>: <span class="vl">blue</span>; }
+}
+
+<span class="kw">@layer</span> utilities {
+    <span class="tg">.hidden</span> { <span class="pr">display</span>: <span class="vl">none</span> !important; }
+    <span class="tg">.text-center</span> { <span class="pr">text-align</span>: <span class="vl">center</span>; }
+}
+
+<span class="cm">/* 未分层的样式优先级最高 */</span>
+<span class="tg">.custom</span> {
+    <span class="pr">color</span>: <span class="vl">red</span>;  <span class="cm">/* 优先级高于所有 @layer 中的规则 */</span>
+}
+
+<span class="cm">/* 第三方库的样式放在低优先级层 */</span>
+<span class="kw">@layer</span> vendor {
+    <span class="cm">/* Bootstrap、Tailwind 等第三方样式 */</span>
+}
+
+<span class="cm">/* 你的自定义样式在高优先级层 */</span>
+<span class="kw">@layer</span> app {
+    <span class="cm">/* 项目自定义样式 */</span>
+}
+
+<span class="cm">/* 嵌套层 */</span>
+<span class="kw">@layer</span> components {
+    <span class="kw">@layer</span> buttons {
+        <span class="tg">.btn</span> { <span class="pr">border</span>: <span class="vl">none</span>; }
+    }
+    <span class="kw">@layer</span> forms {
+        <span class="tg">.input</span> { <span class="pr">border</span>: <span class="vl">1px solid #ccc</span>; }
+    }
+}</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：@layer 的优先级规则</div>
+    <p><strong>@layer 的优先级低于未分层的样式</strong>。在 @layer 内部，后声明的层优先级更高。层内的特异性仍然有效，但只在同一层内比较。</p>
+    <p>这解决了"第三方库样式 vs 自定义样式"的优先级冲突问题：将第三方库放入低优先级层，你的样式自然覆盖它们，无需 !important。</p>
+</div>
+
+<!-- ========== 35 Exclusive Accordion ========== -->
+<h2 id="accordion">35. 独占手风琴（Exclusive Accordion）</h2>
+<p>使用 <code>&lt;details&gt;</code> 和 <code>&lt;summary&gt;</code> 实现语义化的手风琴组件，配合 CSS 实现<strong>同一时间只有一个面板展开</strong>。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">HTML</span>
+    </div>
+    <pre><code><span class="tg">&lt;div</span> <span class="at">class</span>=<span class="st">"accordion"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;details</span> <span class="at">name</span>=<span class="st">"faq"</span> <span class="at">open</span><span class="tg">&gt;</span>
+        <span class="tg">&lt;summary&gt;</span>什么是 CSS Grid？<span class="tg">&lt;/summary&gt;</span>
+        <span class="tg">&lt;p&gt;</span>CSS Grid 是一个二维布局系统...<span class="tg">&lt;/p&gt;</span>
+    <span class="tg">&lt;/details&gt;</span>
+    <span class="tg">&lt;details</span> <span class="at">name</span>=<span class="st">"faq"</span><span class="tg">&gt;</span>
+        <span class="tg">&lt;summary&gt;</span>Flexbox 和 Grid 有什么区别？<span class="tg">&lt;/summary&gt;</span>
+        <span class="tg">&lt;p&gt;</span>Flexbox 是一维布局，Grid 是二维布局...<span class="tg">&lt;/p&gt;</span>
+    <span class="tg">&lt;/details&gt;</span>
+    <span class="tg">&lt;details</span> <span class="at">name</span>=<span class="st">"faq"</span><span class="tg">&gt;</span>
+        <span class="tg">&lt;summary&gt;</span>什么是 BFC？<span class="tg">&lt;/summary&gt;</span>
+        <span class="tg">&lt;p&gt;</span>BFC 是块级格式化上下文...<span class="tg">&lt;/p&gt;</span>
+    <span class="tg">&lt;/details&gt;</span>
+<span class="tg">&lt;/div&gt;</span>
+
+<span class="cm">&lt;!-- name 属性使 details 互斥：同 name 的 details 只能打开一个 --&gt;</span></code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">CSS</span>
+    </div>
+    <pre><code><span class="cm">/* 手风琴样式 */</span>
+<span class="tg">.accordion</span> {
+    <span class="pr">border</span>: <span class="vl">1px solid #e2e8f0</span>;
+    <span class="pr">border-radius</span>: <span class="vl">8px</span>;
+    <span class="pr">overflow</span>: <span class="vl">hidden</span>;
+}
+
+<span class="tg">.accordion details</span> {
+    <span class="pr">border-bottom</span>: <span class="vl">1px solid #e2e8f0</span>;
+}
+<span class="tg">.accordion details:last-child</span> {
+    <span class="pr">border-bottom</span>: <span class="vl">none</span>;
+}
+
+<span class="tg">.accordion summary</span> {
+    <span class="pr">padding</span>: <span class="vl">16px 20px</span>;
+    <span class="pr">cursor</span>: <span class="vl">pointer</span>;
+    <span class="pr">font-weight</span>: <span class="vl">500</span>;
+    <span class="pr">list-style</span>: <span class="vl">none</span>;          <span class="cm">/* 去掉默认三角 */</span>
+    <span class="pr">display</span>: <span class="vl">flex</span>;
+    <span class="pr">justify-content</span>: <span class="vl">space-between</span>;
+    <span class="pr">align-items</span>: <span class="vl">center</span>;
+    <span class="pr">transition</span>: <span class="vl">background 0.2s</span>;
+}
+<span class="tg">.accordion summary:hover</span> {
+    <span class="pr">background</span>: <span class="vl">#f8fafc</span>;
+}
+
+<span class="cm">/* 自定义展开指示器 */</span>
+<span class="tg">.accordion summary::after</span> {
+    <span class="pr">content</span>: <span class="vl">'+'</span>;
+    <span class="pr">font-size</span>: <span class="vl">1.2em</span>;
+    <span class="pr">transition</span>: <span class="vl">transform 0.2s</span>;
+}
+<span class="tg">.accordion details[open] summary::after</span> {
+    <span class="pr">transform</span>: <span class="vl">rotate(45deg)</span>;
+}
+
+<span class="cm">/* 内容区域动画（使用 grid 技巧） */</span>
+<span class="tg">.accordion details[open] &gt; :not(summary)</span> {
+    <span class="pr">padding</span>: <span class="vl">0 20px 16px</span>;
+    <span class="pr">color</span>: <span class="vl">#64748b</span>;
+    <span class="pr">line-height</span>: <span class="vl">1.6</span>;
+}
+
+<span class="cm">/* 减少动画偏好 */</span>
+<span class="kw">@media</span> (<span class="prefers-reduced-motion</span>: <span class="vl">reduce</span>) {
+    <span class="tg">.accordion summary</span>,
+    <span class="tg">.accordion summary::after</span> {
+        <span class="pr">transition</span>: <span class="vl">none</span>;
+    }
+}</code></pre>
+</div>
+
 <hr style="border: none; border-top: 1px solid var(--border); margin: 48px 0;">
 
 <p style="text-align: center; color: var(--text-dim); font-size: 14px;">

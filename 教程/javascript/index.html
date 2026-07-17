@@ -1881,6 +1881,626 @@ cache.<span class="fn">set</span>(<span class="tp">Symbol</span>(), <span class=
     <p>6. 多写代码，多踩坑，在实践中巩固知识（27 章）</p>
 </div>
 
+<!-- ==================== 进阶实战篇 ==================== -->
+
+<!-- 28. 可选链与空值合并进阶 -->
+<h2 id="optional-chaining">28. 可选链与空值合并进阶模式</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 可选链的各种使用场景</span>
+<span class="kw">const</span> user <span class="op">=</span> {
+    name: <span class="st">"张三"</span>,
+    address: {
+        street: <span class="st">"朝阳路"</span>,
+        city: <span class="st">"北京"</span>
+    },
+    orders: [
+        { id: <span class="nm">1</span>, amount: <span class="nm">100</span> }
+    ],
+    <span class="fn">getProfile</span>() {
+        <span class="kw">return</span> { avatar: <span class="st">"url.jpg"</span> };
+    }
+};
+
+<span class="cm">// 1. 属性访问链</span>
+<span class="kw">const</span> city <span class="op">=</span> user<span class="op">?.</span>address<span class="op">?.</span>city;        <span class="cm">// "北京"</span>
+<span class="kw">const</span> zip <span class="op">=</span> user<span class="op">?.</span>address<span class="op">?.</span>zip<span class="op">?.</span>code;  <span class="cm">// undefined（安全）</span>
+
+<span class="cm">// 2. 数组索引访问</span>
+<span class="kw">const</span> firstOrder <span class="op">=</span> user<span class="op">?.</span>orders<span class="op">?.</span>[<span class="nm">0</span>]?.amount;  <span class="cm">// 100</span>
+<span class="kw">const</span> secondOrder <span class="op">=</span> user<span class="op">?.</span>orders<span class="op">?.</span>[<span class="nm">1</span>]?.amount; <span class="cm">// undefined</span>
+
+<span class="cm">// 3. 方法调用</span>
+<span class="kw">const</span> avatar <span class="op">=</span> user<span class="op">?.</span><span class="fn">getProfile</span><span class="op">?.</span>()?.avatar; <span class="cm">// "url.jpg"</span>
+
+<span class="cm">// 4. 动态属性名</span>
+<span class="kw">const</span> key <span class="op">=</span> <span class="st">"name"</span>;
+<span class="kw">const</span> val <span class="op">=</span> user<span class="op">?.</span>[key];  <span class="cm">// "张三"</span>
+
+<span class="cm">// 5. 配合解构使用</span>
+<span class="kw">const</span> { address: { city: c <span class="op">=</span> <span class="st">"未知"</span> } <span class="op">=</span> {} } <span class="op">=</span> user;
+<span class="kw">const</span> { orders: [{ amount: amt } <span class="op">=</span> {}] <span class="op">=</span> [] } <span class="op">=</span> user;</code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 空值合并的进阶用法</span>
+<span class="cm">// ?? 只对 null/undefined 生效，0 和 "" 会被保留</span>
+
+<span class="kw">const</span> config <span class="op">=</span> {
+    port: <span class="nm">0</span>,
+    host: <span class="st">""</span>,
+    debug: <span class="kw">null</span>,
+    verbose: <span class="kw">undefined</span>
+};
+
+<span class="kw">const</span> port <span class="op">=</span> config.port <span class="op">??</span> <span class="nm">3000</span>;       <span class="cm">// 0（0 不是 null/undefined）</span>
+<span class="kw">const</span> host <span class="op">=</span> config.host <span class="op">??</span> <span class="st">"localhost"</span>; <span class="cm">// ""（空字符串不是 null/undefined）</span>
+<span class="kw">const</span> debug <span class="op">=</span> config.debug <span class="op">??</span> <span class="kw">false</span>;    <span class="cm">// false（null 触发默认值）</span>
+<span class="kw">const</span> verbose <span class="op">=</span> config.verbose <span class="op">??</span> <span class="kw">true</span>;  <span class="cm">// true（undefined 触发默认值）</span>
+
+<span class="cm">// 对比 || 运算符</span>
+<span class="kw">const</span> a <span class="op">=</span> config.port <span class="op">||</span> <span class="nm">3000</span>;   <span class="cm">// 3000（0 是 falsy，被替换）</span>
+<span class="kw">const</span> b <span class="op">=</span> config.host <span class="op">||</span> <span class="st">"localhost"</span>; <span class="cm">// "localhost"（"" 是 falsy）</span>
+
+<span class="cm">// ??= 赋值运算符（仅 null/undefined 时赋值）</span>
+<span class="kw">let</span> settings <span class="op">=</span> { theme: <span class="st">"dark"</span>, lang: <span class="kw">null</span> };
+settings.theme <span class="op">??=</span> <span class="st">"light"</span>;  <span class="cm">// 不变，theme 已有值</span>
+settings.lang <span class="op">??=</span> <span class="st">"zh-CN"</span>;   <span class="cm">// lang 变为 "zh-CN"</span>
+settings.font <span class="op">??=</span> <span class="st">"16px"</span>;     <span class="cm">// 新增 font: "16px"</span></code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：?? vs || 的选择原则</div>
+    <p><code>||</code> 会过滤所有 falsy 值（0、""、false、null、undefined、NaN），而 <code>??</code> 只过滤 null 和 undefined。</p>
+    <p><strong>使用 ?? 的场景</strong>：当 0、""、false 是有效的业务值时。例如分页参数 <code>page ?? 1</code>（page 为 0 时不替换），字符串配置 <code>name ?? "默认"</code>（name 为空串时不替换）。</p>
+    <p><strong>使用 || 的场景</strong>：当需要把所有"空/假"值都视为无效时。例如 <code>color || "#000"</code>。</p>
+    <p><strong>注意</strong>：<code>??</code> 和 <code>||</code> 不能混合使用不加括号：<code>a ?? b || c</code> 会报 SyntaxError，必须写成 <code>(a ?? b) || c</code> 或 <code>a ?? (b || c)</code>。</p>
+</div>
+
+<!-- 29. structuredClone 深拷贝 -->
+<h2 id="structured-clone">29. structuredClone 深拷贝模式</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// structuredClone 是浏览器和 Node.js 17+ 内置的深拷贝方法</span>
+<span class="kw">const</span> original <span class="op">=</span> {
+    name: <span class="st">"张三"</span>,
+    address: { city: <span class="st">"北京"</span>, street: <span class="st">"朝阳路"</span> },
+    scores: [<span class="nm">90</span>, <span class="nm">85</span>, <span class="nm">95</span>],
+    date: <span class="kw">new</span> <span class="tp">Date</span>(<span class="st">"2024-01-01"</span>),
+    regex: <span class="op">/</span><span class="st">hello/gi</span>,
+    map: <span class="kw">new</span> <span class="tp">Map</span>([[<span class="nm">1</span>, <span class="st">"one"</span>], [<span class="nm">2</span>, <span class="st">"two"</span>]]),
+    set: <span class="kw">new</span> <span class="tp">Set</span>([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>]),
+    nested: { deep: { value: <span class="nm">42</span> } }
+};
+
+<span class="cm">// 深拷贝</span>
+<span class="kw">const</span> cloned <span class="op">=</span> <span class="fn">structuredClone</span>(original);
+
+<span class="cm">// 修改副本不影响原件</span>
+cloned.address.city <span class="op">=</span> <span class="st">"上海"</span>;
+cloned.scores.<span class="fn">push</span>(<span class="nm">100</span>);
+cloned.nested.deep.value <span class="op">=</span> <span class="nm">99</span>;
+
+<span class="fn">console</span>.<span class="fn">log</span>(original.address.city);       <span class="cm">// "北京"（未改变）</span>
+<span class="fn">console</span>.<span class="fn">log</span>(original.scores.length);      <span class="cm">// 3（未改变）</span>
+<span class="fn">console</span>.<span class="fn">log</span>(original.nested.deep.value);  <span class="cm">// 42（未改变）</span>
+
+<span class="cm">// 支持的类型：Date、RegExp、Map、Set、ArrayBuffer、Blob、File、
+// ImageData、Array、Object、Map、Set 等</span>
+
+<span class="cm">// 拷贝部分属性（结合解构 + structuredClone）</span>
+<span class="kw">const</span> partial <span class="op">=</span> <span class="fn">structuredClone</span>({
+    ...original,
+    scores: original.scores.<span class="fn">slice</span>()  <span class="cm">// 可以自定义部分</span>
+});</code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 深拷贝方案对比</span>
+
+<span class="cm">// 方案1：JSON.parse(JSON.stringify()) — 简单但有限制</span>
+<span class="kw">const</span> a <span class="op">=</span> <span class="tp">JSON</span>.<span class="fn">parse</span>(<span class="tp">JSON</span>.<span class="fn">stringify</span>(original));
+<span class="cm">// 问题：丢失 Date/RegExp/Map/Set、不处理循环引用、undefined 变丢失</span>
+
+<span class="cm">// 方案2：structuredClone — 推荐，原生支持更多类型</span>
+<span class="kw">const</span> b <span class="op">=</span> <span class="fn">structuredClone</span>(original);
+<span class="cm">// 优点：支持循环引用、保留更多类型</span>
+<span class="cm">// 不支持：函数、DOM 节点、原型链</span>
+
+<span class="cm">// 方案3：手动递归深拷贝 — 完全可控</span>
+<span class="kw">function</span> <span class="fn">deepClone</span>(obj, seen <span class="op">=</span> <span class="kw">new</span> <span class="tp">WeakMap</span>()) {
+    <span class="kw">if</span> (<span class="fn">Object</span>.<span class="fn">is</span>(obj, <span class="kw">null</span>) <span class="op">||</span> <span class="kw">typeof</span> obj <span class="op">!==</span> <span class="st">"object"</span>) <span class="kw">return</span> obj;
+    <span class="kw">if</span> (seen.<span class="fn">has</span>(obj)) <span class="kw">return</span> seen.<span class="fn">get</span>(obj);
+
+    <span class="kw">const</span> clone <span class="op">=</span> <span class="tp">Array</span>.<span class="fn">isArray</span>(obj) <span class="op">?</span> [] <span class="op">:</span> <span class="tp">Object</span>.<span class="fn">create</span>(<span class="tp">Object</span>.<span class="fn">getPrototypeOf</span>(obj));
+    seen.<span class="fn">set</span>(obj, clone);
+
+    <span class="kw">for</span> (<span class="kw">const</span> [key, val] <span class="kw">of</span> <span class="tp">Object</span>.<span class="fn">entries</span>(obj)) {
+        clone[key] <span class="op">=</span> <span class="fn">deepClone</span>(val, seen);
+    }
+    <span class="kw">return</span> clone;
+}
+
+<span class="cm">// 方案4：lodash cloneDeep — 最完整（需引入库）</span>
+<span class="cm">// const c = _.cloneDeep(original);</span></code></pre>
+</div>
+
+<!-- 30. Web Workers -->
+<h2 id="web-workers">30. Web Workers 基础</h2>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：Web Workers 的线程模型</div>
+    <p>JavaScript 是单线程的，长时间运行的任务会阻塞主线程，导致页面卡顿。Web Workers 允许在<strong>后台线程</strong>中运行 JavaScript，不会阻塞主线程的 UI 渲染和用户交互。</p>
+    <p><strong>Worker 线程与主线程之间通过消息传递（postMessage）通信</strong>，不能直接访问 DOM 或共享内存（除非使用 SharedArrayBuffer）。Worker 适合 CPU 密集型任务：大数据排序、图像处理、加密解密、复杂计算等。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript — worker.js</span>
+    </div>
+    <pre><code><span class="cm">// worker.js — Worker 线程代码</span>
+self.<span class="fn">onmessage</span> <span class="op">=</span> <span class="kw">function</span>(e) {
+    <span class="kw">const</span> { type, data } <span class="op">=</span> e.data;
+
+    <span class="kw">if</span> (type <span class="op">===</span> <span class="st">"heavy-compute"</span>) {
+        <span class="cm">// 模拟耗时计算</span>
+        <span class="kw">let</span> result <span class="op">=</span> <span class="nm">0</span>;
+        <span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> data.iterations; i<span class="op">++</span>) {
+            result <span class="op">+=</span> Math.<span class="fn">sqrt</span>(i);
+        }
+        self.<span class="fn">postMessage</span>({ type: <span class="st">"result"</span>, value: result });
+    }
+
+    <span class="kw">if</span> (type <span class="op">===</span> <span class="st">"sort"</span>) {
+        <span class="kw">const</span> sorted <span class="op">=</span> data.<span class="fn">sort</span>((a, b) <span class="op">=></span> a <span class="op">-</span> b);
+        self.<span class="fn">postMessage</span>({ type: <span class="st">"sorted"</span>, value: sorted });
+    }
+};</code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript — main.js</span>
+    </div>
+    <pre><code><span class="cm">// 主线程代码</span>
+<span class="kw">const</span> worker <span class="op">=</span> <span class="kw">new</span> <span class="tp">Worker</span>(<span class="st">"worker.js"</span>);
+
+<span class="cm">// 发送数据给 Worker</span>
+worker.<span class="fn">postMessage</span>({
+    type: <span class="st">"sort"</span>,
+    data: [<span class="nm">5</span>, <span class="nm">3</span>, <span class="nm">8</span>, <span class="nm">1</span>, <span class="nm">9</span>, <span class="nm">2</span>, <span class="nm">7</span>]
+});
+
+<span class="cm">// 接收 Worker 的结果</span>
+worker.<span class="fn">onmessage</span> <span class="op">=</span> <span class="kw">function</span>(e) {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"收到结果："</span>, e.data.value);
+};
+
+<span class="cm">// 错误处理</span>
+worker.<span class="fn">onerror</span> <span class="op">=</span> <span class="kw">function</span>(e) {
+    <span class="fn">console</span>.<span class="fn">error</span>(<span class="st">"Worker 错误："</span>, e.message);
+};
+
+<span class="cm">// 终止 Worker</span>
+worker.<span class="fn">terminate</span>();</code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 使用 Promise 封装 Worker（更优雅）</span>
+<span class="kw">function</span> <span class="fn">runWorker</span>(workerUrl, message) {
+    <span class="kw">return new</span> <span class="tp">Promise</span>((resolve, reject) <span class="op">=></span> {
+        <span class="kw">const</span> worker <span class="op">=</span> <span class="kw">new</span> <span class="tp">Worker</span>(workerUrl);
+        worker.<span class="fn">onmessage</span> <span class="op">=</span> (e) <span class="op">=></span> {
+            worker.<span class="fn">terminate</span>();
+            <span class="fn">resolve</span>(e.data);
+        };
+        worker.<span class="fn">onerror</span> <span class="op">=</span> (e) <span class="op">=></span> {
+            worker.<span class="fn">terminate</span>();
+            <span class="fn">reject</span>(e);
+        };
+        worker.<span class="fn">postMessage</span>(message);
+    });
+}
+
+<span class="cm">// 使用</span>
+<span class="kw">const</span> result <span class="op">=</span> <span class="kw">await</span> <span class="fn">runWorker</span>(<span class="st">"worker.js"</span>, {
+    type: <span class="st">"sort"</span>,
+    data: [<span class="nm">5</span>, <span class="nm">3</span>, <span class="nm">8</span>, <span class="nm">1</span>, <span class="nm">9</span>]
+});</code></pre>
+</div>
+
+<!-- 31. Observer 模式 -->
+<h2 id="observers">31. Intersection Observer / Mutation Observer</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// Intersection Observer — 检测元素是否进入视口</span>
+<span class="cm">// 应用：懒加载图片、无限滚动、广告曝光统计</span>
+
+<span class="cm">// 1. 图片懒加载</span>
+<span class="kw">const</span> lazyImages <span class="op">=</span> <span class="tp">Array</span>.<span class="fn">from</span>(document.<span class="fn">querySelectorAll</span>(<span class="st">"img[data-src]"</span>));
+
+<span class="kw">const</span> imageObserver <span class="op">=</span> <span class="kw">new</span> <span class="tp">IntersectionObserver</span>((entries) <span class="op">=></span> {
+    entries.<span class="fn">forEach</span>(entry <span class="op">=></span> {
+        <span class="kw">if</span> (entry.isIntersecting) {
+            <span class="kw">const</span> img <span class="op">=</span> entry.target;
+            img.src <span class="op">=</span> img.dataset.src;
+            img.<span class="fn">removeAttribute</span>(<span class="st">"data-src"</span>);
+            imageObserver.<span class="fn">unobserve</span>(img);  <span class="cm">// 停止观察已加载的</span>
+        }
+    });
+}, {
+    rootMargin: <span class="st">"200px 0px"</span>,  <span class="cm">// 提前 200px 开始加载</span>
+    threshold: <span class="nm">0</span>
+});
+
+lazyImages.<span class="fn">forEach</span>(img <span class="op">=></span> imageObserver.<span class="fn">observe</span>(img));
+
+<span class="cm">// 2. 无限滚动</span>
+<span class="kw">const</span> sentinel <span class="op">=</span> document.<span class="fn">querySelector</span>(<span class="st">"#load-more"</span>);
+<span class="kw">const</span> scrollObserver <span class="op">=</span> <span class="kw">new</span> <span class="tp">IntersectionObserver</span>(<span class="kw">async</span> (entries) <span class="op">=></span> {
+    <span class="kw">if</span> (entries[<span class="nm">0</span>].isIntersecting) {
+        scrollObserver.<span class="fn">unobserve</span>(sentinel);
+        <span class="kw">await</span> <span class="fn">loadNextPage</span>();
+        scrollObserver.<span class="fn">observe</span>(sentinel);
+    }
+}, { rootMargin: <span class="st">"200px"</span> });
+
+scrollObserver.<span class="fn">observe</span>(sentinel);
+
+<span class="cm">// 3. 元素进入视口动画</span>
+<span class="kw">const</span> animObserver <span class="op">=</span> <span class="kw">new</span> <span class="tp">IntersectionObserver</span>((entries) <span class="op">=></span> {
+    entries.<span class="fn">forEach</span>(entry <span class="op">=></span> {
+        <span class="kw">if</span> (entry.isIntersecting) {
+            entry.target.<span class="fn">classList</span>.<span class="fn">add</span>(<span class="st">"animate-in"</span>);
+        }
+    });
+}, { threshold: <span class="nm">0.1</span> });
+
+document.<span class="fn">querySelectorAll</span>(<span class="st">".animate-on-scroll"</span>)
+    .<span class="fn">forEach</span>(el <span class="op">=></span> animObserver.<span class="fn">observe</span>(el));</code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// Mutation Observer — 监听 DOM 变化</span>
+<span class="cm">// 应用：第三方脚本注入检测、动态内容响应、自动保存</span>
+
+<span class="kw">const</span> targetNode <span class="op">=</span> document.<span class="fn">querySelector</span>(<span class="st">"#content"</span>);
+
+<span class="kw">const</span> mutationObserver <span class="op">=</span> <span class="kw">new</span> <span class="tp">MutationObserver</span>((mutations) <span class="op">=></span> {
+    mutations.<span class="fn">forEach</span>(mutation <span class="op">=></span> {
+        <span class="cm">// 监听子节点变化</span>
+        <span class="kw">if</span> (mutation.type <span class="op">===</span> <span class="st">"childList"</span>) {
+            <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"子节点变化："</span>, mutation.addedNodes.length, <span class="st">"新增，"</span>,
+                mutation.removedNodes.length, <span class="st">"移除"</span>);
+        }
+        <span class="cm">// 监听属性变化</span>
+        <span class="kw">if</span> (mutation.type <span class="op">===</span> <span class="st">"attributes"</span>) {
+            <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"属性变化："</span>, mutation.attributeName);
+        }
+    });
+});
+
+mutationObserver.<span class="fn">observe</span>(targetNode, {
+    childList: <span class="kw">true</span>,       <span class="cm">// 监听子节点增删</span>
+    attributes: <span class="kw">true</span>,      <span class="cm">// 监听属性变化</span>
+    characterData: <span class="kw">true</span>,   <span class="cm">// 监听文本内容变化</span>
+    subtree: <span class="kw">true</span>,         <span class="cm">// 监听所有后代节点</span>
+    attributeOldValue: <span class="kw">true</span> <span class="cm">// 记录旧属性值</span>
+});
+
+<span class="cm">// 停止观察</span>
+<span class="cm">// mutationObserver.disconnect();</span>
+
+<span class="cm">// 检测第三方脚本注入（安全防护）</span>
+<span class="kw">const</span> bodyObserver <span class="op">=</span> <span class="kw">new</span> <span class="tp">MutationObserver</span>((mutations) <span class="op">=></span> {
+    mutations.<span class="fn">forEach</span>(mutation <span class="op">=></span> {
+        mutation.addedNodes.<span class="fn">forEach</span>(node <span class="op">=></span> {
+            <span class="kw">if</span> (node.tagName <span class="op">===</span> <span class="st">"SCRIPT"</span> <span class="op">&&</span> <span class="op">!</span>node.src.<span class="fn">includes</span>(<span class="st">"trusted.com"</span>)) {
+                node.<span class="fn">remove</span>();
+                <span class="fn">console</span>.<span class="fn">warn</span>(<span class="st">"拦截了未授权的脚本注入"</span>);
+            }
+        });
+    });
+});
+bodyObserver.<span class="fn">observe</span>(document.body, { childList: <span class="kw">true</span>, subtree: <span class="kw">true</span> });</code></pre>
+</div>
+
+<!-- 32. Proxy 与 Reflect -->
+<h2 id="proxy-reflect">32. Proxy 与 Reflect 验证模式</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// Proxy 拦截对象的基本操作</span>
+<span class="kw">const</span> validator <span class="op">=</span> {
+    <span class="fn">set</span>(target, prop, value) {
+        <span class="kw">if</span> (prop <span class="op">===</span> <span class="st">"age"</span>) {
+            <span class="kw">if</span> (<span class="kw">typeof</span> value <span class="op">!==</span> <span class="st">"number"</span>) {
+                <span class="kw">throw new</span> <span class="tp">TypeError</span>(<span class="st">"age 必须是数字"</span>);
+            }
+            <span class="kw">if</span> (value <span class="op">&lt;</span> <span class="nm">0</span> <span class="op">||</span> value <span class="op">></span> <span class="nm">150</span>) {
+                <span class="kw">throw new</span> <span class="tp">RangeError</span>(<span class="st">"age 必须在 0-150 之间"</span>);
+            }
+        }
+        <span class="kw">if</span> (prop <span class="op">===</span> <span class="st">"email"</span> <span class="op">&&</span> <span class="op">!</span><span class="st">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>.<span class="fn">test</span>(value)) {
+            <span class="kw">throw new</span> <span class="tp">TypeError</span>(<span class="st">"邮箱格式不正确"</span>);
+        }
+        target[prop] <span class="op">=</span> value;
+        <span class="kw">return true</span>;
+    },
+    <span class="fn">get</span>(target, prop) {
+        <span class="kw">if</span> (prop <span class="op">===</span> <span class="st">"fullName"</span>) {
+            <span class="kw">return</span> <span class="st">`${target.firstName} ${target.lastName}`</span>;
+        }
+        <span class="kw">return</span> target[prop];
+    },
+    <span class="fn">deleteProperty</span>(target, prop) {
+        <span class="kw">if</span> (prop <span class="op">===</span> <span class="st">"id"</span>) {
+            <span class="kw">throw new</span> <span class="tp">Error</span>(<span class="st">"id 字段不可删除"</span>);
+        }
+        <span class="kw">delete</span> target[prop];
+        <span class="kw">return true</span>;
+    }
+};
+
+<span class="kw">const</span> person <span class="op">=</span> <span class="kw">new</span> <span class="tp">Proxy</span>({ firstName: <span class="st">"张"</span>, lastName: <span class="st">"三"</span>, id: <span class="nm">1</span> }, validator);
+person.age <span class="op">=</span> <span class="nm">25</span>;          <span class="cm">// OK</span>
+person.email <span class="op">=</span> <span class="st">"a@b.com"</span>; <span class="cm">// OK</span>
+<span class="cm">// person.age = "二十五";  // TypeError</span>
+<span class="cm">// person.age = 200;       // RangeError</span>
+<span class="fn">console</span>.<span class="fn">log</span>(person.fullName);  <span class="cm">// "张 三"</span></code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// Reflect 配合 Proxy 使用（推荐模式）</span>
+<span class="cm">// Reflect 提供与 Proxy trap 对应的静态方法</span>
+<span class="kw">const</span> reactive <span class="op">=</span> <span class="kw">new</span> <span class="tp">Proxy</span>({}, {
+    <span class="fn">get</span>(target, prop, receiver) {
+        <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">`读取 ${String(prop)}`</span>);
+        <span class="kw">return</span> <span class="tp">Reflect</span>.<span class="fn">get</span>(target, prop, receiver);
+    },
+    <span class="fn">set</span>(target, prop, value, receiver) {
+        <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">`设置 ${String(prop)} = ${value}`</span>);
+        <span class="kw">return</span> <span class="tp">Reflect</span>.<span class="fn">set</span>(target, prop, value, receiver);
+    },
+    <span class="fn">has</span>(target, prop) {
+        <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">`检查 ${String(prop)} 是否存在`</span>);
+        <span class="kw">return</span> <span class="tp">Reflect</span>.<span class="fn">has</span>(target, prop);
+    }
+});
+
+reactive.name <span class="op">=</span> <span class="st">"test"</span>;  <span class="cm">// 日志: 设置 name = test</span>
+<span class="st">"name"</span> <span class="kw">in</span> reactive;       <span class="cm">// 日志: 检查 name 是否存在 → true</span>
+
+<span class="cm">// 实际应用：Vue 3 的响应式系统原理</span>
+<span class="kw">function</span> <span class="fn">makeReactive</span>(obj, onUpdate) {
+    <span class="kw">return new</span> <span class="tp">Proxy</span>(obj, {
+        <span class="fn">get</span>(target, prop, receiver) {
+            <span class="kw">const</span> val <span class="op">=</span> <span class="tp">Reflect</span>.<span class="fn">get</span>(target, prop, receiver);
+            <span class="kw">if</span> (<span class="kw">typeof</span> val <span class="op">===</span> <span class="st">"object"</span> <span class="op">&&</span> val <span class="op">!==</span> <span class="kw">null</span>) {
+                <span class="kw">return</span> <span class="fn">makeReactive</span>(val, onUpdate); <span class="cm">// 递归代理</span>
+            }
+            <span class="kw">return</span> val;
+        },
+        <span class="fn">set</span>(target, prop, value, receiver) {
+            <span class="kw">const</span> old <span class="op">=</span> target[prop];
+            <span class="kw">const</span> result <span class="op">=</span> <span class="tp">Reflect</span>.<span class="fn">set</span>(target, prop, value, receiver);
+            <span class="kw">if</span> (old <span class="op">!==</span> value) <span class="fn">onUpdate</span>(prop, value, old);
+            <span class="kw">return</span> result;
+        }
+    });
+}</code></pre>
+</div>
+
+<!-- 33. 迭代器协议 -->
+<h2 id="iterator-patterns">33. Iterator 协议与可迭代模式</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 迭代器协议：对象必须实现 next() 方法</span>
+<span class="cm">// 可迭代协议：对象必须实现 [Symbol.iterator]() 方法</span>
+
+<span class="cm">// 1. 自定义范围迭代器</span>
+<span class="kw">function</span> <span class="fn">range</span>(start, end, step <span class="op">=</span> <span class="nm">1</span>) {
+    <span class="kw">return</span> {
+        [<span class="tp">Symbol</span>.<span class="fn">iterator</span>]() {
+            <span class="kw">let</span> current <span class="op">=</span> start;
+            <span class="kw">return</span> {
+                <span class="fn">next</span>() {
+                    <span class="kw">if</span> (current <span class="op">&lt;=</span> end) {
+                        <span class="kw">return</span> { value: current<span class="op">++</span>, done: <span class="kw">false</span> };
+                    }
+                    <span class="kw">return</span> { done: <span class="kw">true</span> };
+                }
+            };
+        }
+    };
+}
+
+<span class="cm">// 可以用 for...of 遍历</span>
+<span class="kw">for</span> (<span class="kw">const</span> n <span class="kw">of</span> <span class="fn">range</span>(<span class="nm">1</span>, <span class="nm">10</span>, <span class="nm">2</span>)) {
+    <span class="fn">console</span>.<span class="fn">log</span>(n);  <span class="cm">// 1, 3, 5, 7, 9</span>
+}
+
+<span class="cm">// 可以展开</span>
+<span class="kw">const</span> nums <span class="op">=</span> [...<span class="fn">range</span>(<span class="nm">1</span>, <span class="nm">5</span>)];  <span class="cm">// [1, 2, 3, 4, 5]</span>
+<span class="kw">const</span> sum <span class="op">=</span> <span class="tp">Math</span>.<span class="fn">max</span>(...<span class="fn">range</span>(<span class="nm">1</span>, <span class="nm">100</span>));  <span class="cm">// 100</span>
+
+<span class="cm">// 2. 分页数据迭代器</span>
+<span class="kw">async function</span> <span class="fn">paginatedFetch</span>(url) {
+    <span class="kw">return</span> {
+        [<span class="tp">Symbol</span>.<span class="fn">iterator</span>]() {
+            <span class="kw">let</span> page <span class="op">=</span> <span class="nm">1</span>;
+            <span class="kw">let</span> done <span class="op">=</span> <span class="kw">false</span>;
+            <span class="kw">return</span> {
+                <span class="kw">async</span> <span class="fn">next</span>() {
+                    <span class="kw">if</span> (done) <span class="kw">return</span> { done: <span class="kw">true</span> };
+                    <span class="kw">const</span> res <span class="op">=</span> <span class="kw">await</span> <span class="fn">fetch</span>(<span class="st">`${url}?page=${page}`</span>);
+                    <span class="kw">const</span> data <span class="op">=</span> <span class="kw">await</span> res.<span class="fn">json</span>();
+                    <span class="kw">if</span> (data.length <span class="op">===</span> <span class="nm">0</span>) done <span class="op">=</span> <span class="kw">true</span>;
+                    page<span class="op">++</span>;
+                    <span class="kw">return</span> { value: data, done };
+                }
+            };
+        }
+    };
+}</code></pre>
+</div>
+
+<!-- 34. 常见面试模式 -->
+<h2 id="interview-patterns">34. 常见面试模式（手写题）</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 1. 防抖（Debounce）— 延迟执行，重复触发则重新计时</span>
+<span class="kw">function</span> <span class="fn">debounce</span>(fn, delay, immediate <span class="op">=</span> <span class="kw">false</span>) {
+    <span class="kw">let</span> timer;
+    <span class="kw">return function</span>(...args) {
+        <span class="kw">clearTimeout</span>(timer);
+        <span class="kw">if</span> (immediate <span class="op">&&</span> <span class="op">!</span>timer) {
+            <span class="fn">fn</span>.<span class="fn">apply</span>(<span class="kw">this</span>, args);
+        }
+        timer <span class="op">=</span> <span class="fn">setTimeout</span>(() <span class="op">=></span> {
+            <span class="kw">if</span> (<span class="op">!</span>immediate) <span class="fn">fn</span>.<span class="fn">apply</span>(<span class="kw">this</span>, args);
+            timer <span class="op">=</span> <span class="kw">null</span>;
+        }, delay);
+    };
+}
+
+<span class="cm">// 2. 节流（Throttle）— 固定间隔内只执行一次</span>
+<span class="kw">function</span> <span class="fn">throttle</span>(fn, interval) {
+    <span class="kw">let</span> lastTime <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">return function</span>(...args) {
+        <span class="kw">const</span> now <span class="op">=</span> <span class="tp">Date</span>.<span class="fn">now</span>();
+        <span class="kw">if</span> (now <span class="op">-</span> lastTime <span class="op">>=</span> interval) {
+            lastTime <span class="op">=</span> now;
+            <span class="fn">fn</span>.<span class="fn">apply</span>(<span class="kw">this</span>, args);
+        }
+    };
+}
+
+<span class="cm">// 使用示例</span>
+<span class="kw">const</span> handleSearch <span class="op">=</span> <span class="fn">debounce</span>((e) <span class="op">=></span> {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"搜索："</span>, e.target.value);
+}, <span class="nm">300</span>);
+
+<span class="kw">const</span> handleScroll <span class="op">=</span> <span class="fn">throttle</span>(() <span class="op">=></span> {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"滚动位置："</span>, window.scrollY);
+}, <span class="nm">200</span>);</code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 3. 深度扁平化（Deep Flatten）</span>
+<span class="kw">function</span> <span class="fn">deepFlatten</span>(arr) {
+    <span class="kw">return</span> arr.<span class="fn">reduce</span>((acc, val) <span class="op">=></span>
+        <span class="tp">Array</span>.<span class="fn">isArray</span>(val)
+            <span class="op">?</span> acc.<span class="fn">concat</span>(<span class="fn">deepFlatten</span>(val))
+            <span class="op">:</span> acc.<span class="fn">concat</span>(val),
+    []);
+}
+<span class="fn">deepFlatten</span>([<span class="nm">1</span>, [<span class="nm">2</span>, [<span class="nm">3</span>, [<span class="nm">4</span>]]]]);  <span class="cm">// [1, 2, 3, 4]</span>
+
+<span class="cm">// 使用原生 flat：[].flat(Infinity)</span>
+
+<span class="cm">// 4. 柯里化（Curry）</span>
+<span class="kw">function</span> <span class="fn">curry</span>(fn) {
+    <span class="kw">return function</span> <span class="fn">curried</span>(...args) {
+        <span class="kw">if</span> (args.length <span class="op">>=</span> fn.length) {
+            <span class="kw">return</span> fn.<span class="fn">apply</span>(<span class="kw">this</span>, args);
+        }
+        <span class="kw">return</span>(...moreArgs) <span class="op">=></span> <span class="fn">curried</span>(...args, ...moreArgs);
+    };
+}
+
+<span class="kw">const</span> add <span class="op">=</span> <span class="fn">curry</span>((a, b, c) <span class="op">=></span> a <span class="op">+</span> b <span class="op">+</span> c);
+add(<span class="nm">1</span>)(<span class="nm">2</span>)(<span class="nm">3</span>);      <span class="cm">// 6</span>
+add(<span class="nm">1</span>, <span class="nm">2</span>)(<span class="nm">3</span>);      <span class="cm">// 6</span>
+add(<span class="nm">1</span>)(<span class="nm">2</span>, <span class="nm">3</span>);      <span class="cm">// 6</span>
+
+<span class="cm">// 5. 深比较（Deep Equal）</span>
+<span class="kw">function</span> <span class="fn">deepEqual</span>(a, b) {
+    <span class="kw">if</span> (a <span class="op">===</span> b) <span class="kw">return true</span>;
+    <span class="kw">if</span> (<span class="op">!</span>a <span class="op">||</span> <span class="op">!</span>b <span class="op">||</span> <span class="kw">typeof</span> a <span class="op">!==</span> <span class="kw">typeof</span> b) <span class="kw">return false</span>;
+    <span class="kw">if</span> (<span class="kw">typeof</span> a <span class="op">!==</span> <span class="st">"object"</span>) <span class="kw">return false</span>;
+
+    <span class="kw">const</span> keysA <span class="op">=</span> <span class="tp">Object</span>.<span class="fn">keys</span>(a);
+    <span class="kw">const</span> keysB <span class="op">=</span> <span class="tp">Object</span>.<span class="fn">keys</span>(b);
+
+    <span class="kw">if</span> (keysA.length <span class="op">!==</span> keysB.length) <span class="kw">return false</span>;
+
+    <span class="kw">return</span> keysA.<span class="fn">every</span>(key <span class="op">=></span> <span class="fn">deepEqual</span>(a[key], b[key]));
+}
+
+<span class="cm">// 6. 手写 Promise.all</span>
+<span class="kw">function</span> <span class="fn">promiseAll</span>(promises) {
+    <span class="kw">return new</span> <span class="tp">Promise</span>((resolve, reject) <span class="op">=></span> {
+        <span class="kw">const</span> results <span class="op">=</span> [];
+        <span class="kw">let</span> completed <span class="op">=</span> <span class="nm">0</span>;
+        <span class="kw">if</span> (promises.length <span class="op">===</span> <span class="nm">0</span>) <span class="kw">return</span> <span class="fn">resolve</span>([]);
+        promises.<span class="fn">forEach</span>((p, i) <span class="op">=></span> {
+            <span class="tp">Promise</span>.<span class="fn">resolve</span>(p).<span class="fn">then</span>(val <span class="op">=></span> {
+                results[i] <span class="op">=</span> val;
+                completed<span class="op">++</span>;
+                <span class="kw">if</span> (completed <span class="op">===</span> promises.length) <span class="fn">resolve</span>(results);
+            }).<span class="fn">catch</span>(reject);
+        });
+    });
+}</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：防抖 vs 节流的核心区别</div>
+    <p><strong>防抖（Debounce）</strong>：事件触发后等待 N 毫秒，如果期间再次触发则重新计时。适用于搜索输入、窗口 resize 等<strong>只需要最终结果</strong>的场景。</p>
+    <p><strong>节流（Throttle）</strong>：事件触发后立即执行，然后在 N 毫秒内忽略后续触发。适用于滚动、鼠标移动等<strong>需要定期响应</strong>的场景。</p>
+    <p>简单记忆：<strong>防抖是"等你停下来再做"，节流是"每隔一段时间做一次"</strong>。</p>
+</div>
+
 </main>
 
 <!-- 侧边栏导航高亮脚本 -->

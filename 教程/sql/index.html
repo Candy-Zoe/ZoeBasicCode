@@ -1508,11 +1508,608 @@ grouped <span class="kw">AS</span> (
 
     <div class="warning">生产环境操作前的检查清单：1. 备份数据 2. 在测试环境验证 3. 评估影响范围 4. 选择低峰期执行 5. 准备回滚方案。</div>
 
+    <!-- ==================== 进阶专题 ==================== -->
+
+    <!-- 25. 递归 CTE -->
+    <h2 id="sec25">25. 递归公用表表达式（CTE）</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：递归 CTE 的执行机制</div>
+        <p>递归 CTE 由两部分组成：<strong>锚点成员（Anchor Member）</strong>和<strong>递归成员（Recursive Member）</strong>。锚点成员提供初始结果集，递归成员反复引用 CTE 自身，直到不再产生新行为止。</p>
+        <p>语法：<code>WITH RECURSIVE cte AS (锚点 UNION ALL 递归) SELECT * FROM cte</code>。大多数数据库支持 <code>MAXRECURSION</code>（SQL Server）或 <code>max_recursion_depth</code>（MySQL）来防止无限递归。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">SQL</div>
+        </div>
+<pre><code><span class="cm">-- 生成数字序列（1 到 100）</span>
+<span class="kw">WITH RECURSIVE</span> nums <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> <span class="nm">1</span> <span class="kw">AS</span> n          <span class="cm">-- 锚点：起始值</span>
+    <span class="kw">UNION ALL</span>
+    <span class="kw">SELECT</span> n <span class="op">+</span> <span class="nm">1</span> <span class="kw">FROM</span> nums  <span class="cm">-- 递归：引用自身</span>
+    <span class="kw">WHERE</span> n <span class="op">&lt;</span> <span class="nm">100</span>          <span class="cm">-- 终止条件</span>
+)
+<span class="kw">SELECT</span> n <span class="kw">FROM</span> nums;
+
+<span class="cm">-- 遍历组织架构树</span>
+<span class="kw">CREATE TABLE</span> employees (
+    id <span class="tp">INT</span> <span class="kw">PRIMARY KEY</span>,
+    name <span class="tp">VARCHAR</span>(<span class="nm">50</span>),
+    manager_id <span class="tp">INT</span>
+);
+
+<span class="kw">WITH RECURSIVE</span> org_tree <span class="kw">AS</span> (
+    <span class="cm">-- 锚点：CEO（无上级）</span>
+    <span class="kw">SELECT</span> id, name, manager_id, <span class="nm">0</span> <span class="kw">AS</span> level,
+           <span class="fn">CAST</span>(name <span class="kw">AS</span> <span class="tp">VARCHAR</span>(<span class="nm">500</span>)) <span class="kw">AS</span> path
+    <span class="kw">FROM</span> employees
+    <span class="kw">WHERE</span> manager_id <span class="kw">IS NULL</span>
+
+    <span class="kw">UNION ALL</span>
+
+    <span class="cm">-- 递归：逐层查找下属</span>
+    <span class="kw">SELECT</span> e.id, e.name, e.manager_id, t.level <span class="op">+</span> <span class="nm">1</span>,
+           <span class="fn">CONCAT</span>(t.path, <span class="st">' → '</span>, e.name)
+    <span class="kw">FROM</span> employees e
+    <span class="kw">INNER JOIN</span> org_tree t <span class="kw">ON</span> e.manager_id <span class="op">=</span> t.id
+)
+<span class="kw">SELECT</span>
+    <span class="fn">REPEAT</span>(<span class="st">'  '</span>, level) <span class="op">||</span> name <span class="kw">AS</span> org_chart,
+    level,
+    path
+<span class="kw">FROM</span> org_tree
+<span class="kw">ORDER BY</span> path;
+
+<span class="cm">-- 生成日期序列（按月）</span>
+<span class="kw">WITH RECURSIVE</span> months <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> <span class="fn">DATE</span>(<span class="st">'2024-01-01'</span>) <span class="kw">AS</span> month_date
+    <span class="kw">UNION ALL</span>
+    <span class="kw">SELECT</span> <span class="fn">DATE_ADD</span>(month_date, <span class="kw">INTERVAL</span> <span class="nm">1</span> <span class="kw">MONTH</span>)
+    <span class="kw">FROM</span> months
+    <span class="kw">WHERE</span> month_date <span class="op">&lt;</span> <span class="fn">DATE</span>(<span class="st">'2024-12-01'</span>)
+)
+<span class="kw">SELECT</span> month_date, <span class="fn">DATE_FORMAT</span>(month_date, <span class="st">'%Y-%m'</span>) <span class="kw">AS</span> ym
+<span class="kw">FROM</span> months;</code></pre>
+    </div>
+
+    <!-- 26. PIVOT / UNPIVOT -->
+    <h2 id="sec26">26. 行转列与列转行（PIVOT / UNPIVOT）</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">SQL</div>
+        </div>
+<pre><code><span class="cm">-- ===== PIVOT：行转列 =====</span>
+
+<span class="cm">-- 原始数据（行格式）</span>
+<span class="cm">-- student_id | subject | score</span>
+<span class="cm">-- 1          | 语文    | 90</span>
+<span class="cm">-- 1          | 数学    | 85</span>
+<span class="cm">-- 1          | 英语    | 92</span>
+
+<span class="cm">-- MySQL 手动 PIVOT（使用 CASE + 聚合）</span>
+<span class="kw">SELECT</span>
+    student_id,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> subject <span class="op">=</span> <span class="st">'语文'</span> <span class="kw">THEN</span> score <span class="kw">END</span>) <span class="kw">AS</span> chinese,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> subject <span class="op">=</span> <span class="st">'数学'</span> <span class="kw">THEN</span> score <span class="kw">END</span>) <span class="kw">AS</span> math,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> subject <span class="op">=</span> <span class="st">'英语'</span> <span class="kw">THEN</span> score <span class="kw">END</span>) <span class="kw">AS</span> english
+<span class="kw">FROM</span> scores
+<span class="kw">GROUP BY</span> student_id;
+
+<span class="cm">-- SQL Server PIVOT 语法</span>
+<span class="kw">SELECT</span> student_id, 语文, 数学, 英语
+<span class="kw">FROM</span> scores
+<span class="kw">PIVOT</span> (
+    <span class="fn">MAX</span>(score) <span class="kw">FOR</span> subject <span class="kw">IN</span> (语文, 数学, 英语)
+) p;
+
+<span class="cm">-- 动态 PIVOT（MySQL，需要 prepared statement）</span>
+<span class="kw">SET</span> @sql <span class="op">=</span> <span class="fn">NULL</span>;
+<span class="kw">SELECT</span>
+    <span class="fn">GROUP_CONCAT</span>(<span class="fn">DISTINCT</span>
+        <span class="fn">CONCAT</span>(<span class="st">'MAX(CASE WHEN subject = '''</span>, subject,
+               <span class="st">''' THEN score END) AS `'</span>, subject, <span class="st">'`'</span>)
+    ) <span class="kw">INTO</span> @sql
+<span class="kw">FROM</span> scores;
+
+<span class="kw">SET</span> @sql <span class="op">=</span> <span class="fn">CONCAT</span>(<span class="st">'SELECT student_id, '</span>, @sql,
+    <span class="st">' FROM scores GROUP BY student_id'</span>);
+
+<span class="fn">PREPARE</span> stmt <span class="kw">FROM</span> @sql;
+<span class="fn">EXECUTE</span> stmt;
+<span class="fn">DEALLOCATE</span> <span class="kw">PREPARE</span> stmt;
+
+<span class="cm">-- ===== UNPIVOT：列转行 =====</span>
+
+<span class="cm">-- MySQL 手动 UNPIVOT（使用 UNION ALL）</span>
+<span class="kw">SELECT</span> student_id, <span class="st">'语文'</span> <span class="kw">AS</span> subject, chinese <span class="kw">AS</span> score <span class="kw">FROM</span> pivoted
+<span class="kw">UNION ALL</span>
+<span class="kw">SELECT</span> student_id, <span class="st">'数学'</span>, math <span class="kw">FROM</span> pivoted
+<span class="kw">UNION ALL</span>
+<span class="kw">SELECT</span> student_id, <span class="st">'英语'</span>, english <span class="kw">FROM</span> pivoted;
+
+<span class="cm">-- SQL Server UNPIVOT 语法</span>
+<span class="kw">SELECT</span> student_id, subject, score
+<span class="kw">FROM</span> pivoted
+<span class="kw">UNPIVOT</span> (
+    score <span class="kw">FOR</span> subject <span class="kw">IN</span> (语文, 数学, 英语)
+) u;</code></pre>
+    </div>
+
+    <!-- 27. Lateral Join -->
+    <h2 id="sec27">27. LATERAL JOIN</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">SQL</div>
+        </div>
+<pre><code><span class="cm">-- LATERAL JOIN 允许子查询引用前面的表</span>
+<span class="cm">-- 每个用户最近3笔订单（MySQL 8.0+ / PostgreSQL）</span>
+<span class="kw">SELECT</span>
+    u.id,
+    u.name,
+    o.order_id,
+    o.amount,
+    o.created_at
+<span class="kw">FROM</span> users u
+<span class="kw">JOIN LATERAL</span> (
+    <span class="kw">SELECT</span> order_id, amount, created_at
+    <span class="kw">FROM</span> orders
+    <span class="kw">WHERE</span> user_id <span class="op">=</span> u.id
+    <span class="kw">ORDER BY</span> created_at <span class="kw">DESC</span>
+    <span class="kw">LIMIT</span> <span class="nm">3</span>
+) o <span class="kw">ON</span> <span class="nm">1</span> <span class="op">=</span> <span class="nm">1</span>;
+
+<span class="cm">-- 每个部门薪资最高的员工</span>
+<span class="kw">SELECT</span>
+    d.department_name,
+    e.name,
+    e.salary
+<span class="kw">FROM</span> departments d
+<span class="kw">JOIN LATERAL</span> (
+    <span class="kw">SELECT</span> name, salary
+    <span class="kw">FROM</span> employees
+    <span class="kw">WHERE</span> department_id <span class="op">=</span> d.id
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+    <span class="kw">LIMIT</span> <span class="nm">1</span>
+) e <span class="kw">ON</span> <span class="nm">1</span> <span class="op">=</span> <span class="nm">1</span>;
+
+<span class="cm">-- LATERAL 与 LEFT JOIN 配合（保留无数据的行）</span>
+<span class="kw">SELECT</span>
+    u.name,
+    <span class="fn">COALESCE</span>(o.recent_order, <span class="st">'无订单'</span>)
+<span class="kw">FROM</span> users u
+<span class="kw">LEFT JOIN LATERAL</span> (
+    <span class="kw">SELECT</span> <span class="fn">CONCAT</span>(<span class="st">'订单#'</span>, order_id, <span class="st">' ¥'</span>, amount) <span class="kw">AS</span> recent_order
+    <span class="kw">FROM</span> orders
+    <span class="kw">WHERE</span> user_id <span class="op">=</span> u.id
+    <span class="kw">ORDER BY</span> created_at <span class="kw">DESC</span>
+    <span class="kw">LIMIT</span> <span class="nm">1</span>
+) o <span class="kw">ON</span> <span class="nm">1</span> <span class="op">=</span> <span class="nm">1</span>;</code></pre>
+    </div>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：LATERAL JOIN vs 子查询</div>
+        <p>普通子查询是<strong>独立执行</strong>的，不能引用外层表的列。LATERAL JOIN 让子查询可以像函数一样<strong>对外层每一行执行一次</strong>，类似于 <code>for each row in outer_table, run inner_query</code>。</p>
+        <p>典型场景："每组取 Top N"、"最近 N 条记录"、"每个用户的最新评论"。在没有 LATERAL 的数据库中，通常需要窗口函数 + 子查询来实现类似效果。</p>
+    </div>
+
+    <!-- 28. JSON 函数 -->
+    <h2 id="sec28">28. JSON 函数</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">SQL</div>
+        </div>
+<pre><code><span class="cm">-- ===== MySQL JSON 函数 =====</span>
+
+<span class="cm">-- 创建包含 JSON 列的表</span>
+<span class="kw">CREATE TABLE</span> products (
+    id <span class="tp">INT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+    name <span class="tp">VARCHAR</span>(<span class="nm">100</span>),
+    attributes <span class="tp">JSON</span>
+);
+
+<span class="kw">INSERT INTO</span> products (name, attributes) <span class="kw">VALUES</span>
+(<span class="st">'iPhone 15'</span>, <span class="st">'{"color":"黑色","storage":256,"features":["5G","FaceID"]}'</span>),
+(<span class="st">'MacBook Pro'</span>, <span class="st">'{"color":"银色","ram":16,"cpu":"M3 Pro"}'</span>);
+
+<span class="cm">-- 提取 JSON 值</span>
+<span class="kw">SELECT</span>
+    name,
+    attributes<span class="op">->></span><span class="st">'$.color'</span> <span class="kw">AS</span> color,          <span class="cm">-- 提取字符串（无引号）</span>
+    attributes<span class="op">->></span><span class="st">'$.storage'</span> <span class="kw">AS</span> storage,
+    attributes<span class="op">->></span><span class="st">'$.features[0]'</span> <span class="kw">AS</span> first_feature
+<span class="kw">FROM</span> products;
+
+<span class="cm">-- JSON_EXTRACT 和 JSON_UNQUOTE</span>
+<span class="kw">SELECT</span>
+    <span class="fn">JSON_UNQUOTE</span>(<span class="fn">JSON_EXTRACT</span>(attributes, <span class="st">'$.color'</span>)) <span class="kw">AS</span> color
+<span class="kw">FROM</span> products;
+
+<span class="cm">-- JSON 数组查询</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> products
+<span class="kw">WHERE</span> <span class="fn">JSON_CONTAINS</span>(attributes<span class="op">->></span><span class="st">'$.features'</span>, <span class="st">'"5G"'</span>);
+
+<span class="cm">-- JSON 表函数（MySQL 8.0+，展开 JSON 数组为行）</span>
+<span class="kw">SELECT</span>
+    p.name,
+    j.feature
+<span class="kw">FROM</span> products p,
+<span class="fn">JSON_TABLE</span>(
+    p.attributes<span class="op">->></span><span class="st">'$.features'</span>,
+    <span class="st">'$[*]'</span> <span class="kw">COLUMNS</span> (feature <span class="tp">VARCHAR</span>(<span class="nm">50</span>) <span class="kw">PATH</span> <span class="st">'$'</span>)
+) j;
+
+<span class="cm">-- ===== PostgreSQL JSON 函数 =====</span>
+
+<span class="cm">-- -> 返回 JSON 值，->> 返回文本</span>
+<span class="kw">SELECT</span>
+    attributes<span class="op">-></span><span class="st">'color'</span>,          <span class="cm">-- 返回 JSON: "黑色"</span>
+    attributes<span class="op">->></span><span class="st">'color'</span>          <span class="cm">-- 返回文本: 黑色</span>
+<span class="kw">FROM</span> products;
+
+<span class="cm">-- jsonb_object_keys：提取所有键</span>
+<span class="kw">SELECT</span> <span class="fn">jsonb_object_keys</span>(attributes) <span class="kw">FROM</span> products;
+
+<span class="cm">-- @> 包含查询（JSONB 索引加速）</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> products
+<span class="kw">WHERE</span> attributes <span class="op">@></span> <span class="st">'{"color": "黑色"}'</span>;</code></pre>
+    </div>
+
+    <!-- 29. 全文搜索 -->
+    <h2 id="sec29">29. 全文搜索</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">SQL</div>
+        </div>
+<pre><code><span class="cm">-- ===== MySQL 全文搜索 =====</span>
+
+<span class="cm">-- 创建全文索引</span>
+<span class="kw">ALTER TABLE</span> articles
+<span class="kw">ADD FULLTEXT INDEX</span> ft_content (title, content);
+
+<span class="cm">-- 自然语言模式（默认）</span>
+<span class="kw">SELECT</span> *, <span class="fn">MATCH</span>(title, content) <span class="kw">AGAINST</span>(<span class="st">'机器学习'</span>) <span class="kw">AS</span> relevance
+<span class="kw">FROM</span> articles
+<span class="kw">WHERE</span> <span class="fn">MATCH</span>(title, content) <span class="kw">AGAINST</span>(<span class="st">'机器学习'</span>)
+<span class="kw">ORDER BY</span> relevance <span class="kw">DESC</span>;
+
+<span class="cm">-- 布尔模式（支持运算符）</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> articles
+<span class="kw">WHERE</span> <span class="fn">MATCH</span>(title, content)
+    <span class="kw">AGAINST</span>(<span class="st">'+机器 +学习 -深度'</span> <span class="kw">IN BOOLEAN MODE</span>);
+<span class="cm">-- + 必须包含  - 必须不包含  * 通配符  "" 精确短语</span>
+
+<span class="cm">-- ===== PostgreSQL 全文搜索 =====</span>
+
+<span class="cm">-- 使用 tsvector 和 tsquery</span>
+<span class="kw">SELECT</span> title
+<span class="kw">FROM</span> articles
+<span class="kw">WHERE</span> <span class="fn">to_tsvector</span>(<span class="st">'english'</span>, title <span class="op">||</span> <span class="st">' '</span> <span class="op">||</span> content)
+    <span class="op">@@</span> <span class="fn">to_tsquery</span>(<span class="st">'english'</span>, <span class="st">'machine & learning'</span>);
+
+<span class="cm">-- 添加权重和排序</span>
+<span class="kw">SELECT</span>
+    title,
+    <span class="fn">ts_rank</span>(
+        <span class="fn">to_tsvector</span>(<span class="st">'english'</span>, content),
+        <span class="fn">to_tsquery</span>(<span class="st">'english'</span>, <span class="st">'neural network'</span>)
+    ) <span class="kw">AS</span> rank
+<span class="kw">FROM</span> articles
+<span class="kw">WHERE</span> <span class="fn">to_tsvector</span>(<span class="st">'english'</span>, content)
+    <span class="op">@@</span> <span class="fn">to_tsquery</span>(<span class="st">'english'</span>, <span class="st">'neural & network'</span>)
+<span class="kw">ORDER BY</span> rank <span class="kw">DESC</span>;</code></pre>
+    </div>
+
+    <!-- 30. 查询性能分析（EXPLAIN） -->
+    <h2 id="sec30">30. 查询性能分析（EXPLAIN）</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">SQL</div>
+        </div>
+<pre><code><span class="cm">-- ===== EXPLAIN 分析查询 =====</span>
+
+<span class="cm">-- 基本 EXPLAIN</span>
+<span class="kw">EXPLAIN SELECT</span> * <span class="kw">FROM</span> employees
+<span class="kw">WHERE</span> department <span class="op">=</span> <span class="st">'技术部'</span> <span class="kw">AND</span> salary <span class="op">></span> <span class="nm">15000</span>;
+
+<span class="cm">-- EXPLAIN FORMAT=JSON（更详细）</span>
+<span class="kw">EXPLAIN FORMAT</span><span class="op">=</span>JSON <span class="kw">SELECT</span> * <span class="kw">FROM</span> orders
+<span class="kw">WHERE</span> user_id <span class="op">=</span> <span class="nm">100</span> <span class="kw">AND</span> amount <span class="op">></span> <span class="nm">1000</span>;
+
+<span class="cm">-- EXPLAIN ANALYZE（实际执行 + 分析，MySQL 8.0+）</span>
+<span class="kw">EXPLAIN ANALYZE</span>
+<span class="kw">SELECT</span> department, <span class="fn">AVG</span>(salary)
+<span class="kw">FROM</span> employees
+<span class="kw">GROUP BY</span> department;
+
+<span class="cm">-- 关键字段解读：</span>
+<span class="cm">-- type（访问类型，从好到差）：</span>
+<span class="cm">--   system > const > eq_ref > ref > range > index > ALL</span>
+<span class="cm">-- key：实际使用的索引（NULL = 未使用索引）</span>
+<span class="cm">-- rows：预估扫描行数（越少越好）</span>
+<span class="cm">-- Extra 重要值：</span>
+<span class="cm">--   Using index    → 覆盖索引（好）</span>
+<span class="cm">--   Using where    → 使用了 WHERE 过滤</span>
+<span class="cm">--   Using temporary → 使用临时表（需关注）</span>
+<span class="cm">--   Using filesort → 文件排序（需关注）</span>
+
+<span class="cm">-- ===== 索引优化实战 =====</span>
+
+<span class="cm">-- 查看表的索引</span>
+<span class="kw">SHOW INDEX FROM</span> employees;
+
+<span class="cm">-- 创建联合索引</span>
+<span class="kw">CREATE INDEX</span> idx_dept_salary <span class="kw">ON</span> employees (department, salary);
+
+<span class="cm">-- 索引列顺序原则（最左前缀）：</span>
+<span class="cm">-- idx(a, b, c) 可以加速：</span>
+<span class="cm">--   WHERE a = 1          ✓</span>
+<span class="cm">--   WHERE a = 1 AND b = 2  ✓</span>
+<span class="cm">--   WHERE a = 1 AND b = 2 AND c = 3  ✓</span>
+<span class="cm">--   WHERE b = 2            ✗（跳过了 a）</span>
+<span class="cm">--   WHERE a = 1 AND c = 3  ✓（仅使用 a 部分）</span>
+
+<span class="cm">-- ===== 索引失效场景 =====</span>
+<span class="cm">-- 1. 对索引列使用函数：WHERE YEAR(created_at) = 2024  ✗</span>
+<span class="cm">--    改为：WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01'  ✓</span>
+
+<span class="cm">-- 2. 隐式类型转换：WHERE varchar_col = 123  ✗（列是字符串，参数是数字）</span>
+<span class="cm">--    改为：WHERE varchar_col = '123'  ✓</span>
+
+<span class="cm">-- 3. LIKE 左模糊：WHERE name LIKE '%张'  ✗</span>
+<span class="cm">--    改为：WHERE name LIKE '张%'  ✓ 或使用全文索引</span>
+
+<span class="cm">-- 4. OR 条件中含非索引列：WHERE indexed_col = 1 OR non_indexed_col = 2  ✗</span>
+<span class="cm">--    改为：使用 UNION ALL 替代 OR</span>
+
+<span class="cm">-- 5. NOT IN / NOT EXISTS（部分场景优化器无法使用索引）</span>
+<span class="cm">--    改为：使用 LEFT JOIN ... IS NULL 替代</span>
+
+<span class="cm">-- 6. 列运算：WHERE salary * 12 > 200000  ✗</span>
+<span class="cm">--    改为：WHERE salary > 200000 / 12  ✓</span>
+
+<span class="cm">-- ===== 缓慢查询诊断 =====</span>
+<span class="cm">-- 开启慢查询日志</span>
+<span class="kw">SET GLOBAL</span> slow_query_log = <span class="kw">ON</span>;
+<span class="kw">SET GLOBAL</span> long_query_time = <span class="nm">1</span>;   <span class="cm">-- 超过 1 秒记录</span>
+<span class="kw">SET GLOBAL</span> log_queries_not_using_indexes = <span class="kw">ON</span>;
+
+<span class="cm">-- 查看慢查询状态</span>
+<span class="kw">SHOW GLOBAL STATUS</span> <span class="kw">LIKE</span> <span class="st">'Slow_queries'</span>;
+
+<span class="cm">-- 使用 EXPLAIN FORMAT=JSON 获取详细执行计划</span>
+<span class="kw">EXPLAIN FORMAT</span><span class="op">=</span>JSON <span class="kw">SELECT</span>
+    u.name, <span class="fn">COUNT</span>(o.id) <span class="kw">AS</span> order_count
+<span class="kw">FROM</span> users u
+<span class="kw">INNER JOIN</span> orders o <span class="kw">ON</span> u.id <span class="op">=</span> o.user_id
+<span class="kw">WHERE</span> o.created_at <span class="op">>=</span> <span class="st">'2024-01-01'</span>
+<span class="kw">GROUP BY</span> u.id;</code></pre>
+    </div>
+
+    <!-- 33. 数据库设计模式 -->
+    <h2 id="sec33">33. 数据库设计常见模式</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">SQL</div>
+        </div>
+<pre><code><span class="cm">-- ===== 多态关联（Polymorphic Association）=====</span>
+<span class="cm">-- 一个表关联多种父表（评论系统）</span>
+<span class="kw">CREATE TABLE</span> comments (
+    id           <span class="tp">BIGINT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+    commentable_type <span class="tp">VARCHAR</span>(<span class="nm">50</span>) <span class="kw">NOT NULL</span>,  <span class="cm">'post' / 'video' / 'product'</span>
+    commentable_id   <span class="tp">BIGINT</span> <span class="kw">NOT NULL</span>,
+    user_id      <span class="tp">BIGINT</span> <span class="kw">NOT NULL</span>,
+    content      <span class="tp">TEXT</span> <span class="kw">NOT NULL</span>,
+    <span class="kw">INDEX</span> idx_commentable (commentable_type, commentable_id)
+);
+
+<span class="cm">-- ===== 属性表模式（Entity-Attribute-Value）=====</span>
+<span class="cm">-- 适合属性不确定的场景（商品自定义属性）</span>
+<span class="kw">CREATE TABLE</span> product_attributes (
+    product_id  <span class="tp">INT</span> <span class="kw">NOT NULL</span>,
+    attr_name   <span class="tp">VARCHAR</span>(<span class="nm">50</span>) <span class="kw">NOT NULL</span>,
+    attr_value  <span class="tp">VARCHAR</span>(<span class="nm">200</span>) <span class="kw">NOT NULL</span>,
+    <span class="kw">PRIMARY KEY</span> (product_id, attr_name)
+);
+
+<span class="cm">-- 查询时动态行转列</span>
+<span class="kw">SELECT</span>
+    p.name,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> pa.attr_name <span class="op">=</span> <span class="st">'颜色'</span> <span class="kw">THEN</span> pa.attr_value <span class="kw">END</span>) <span class="kw">AS</span> color,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> pa.attr_name <span class="op">=</span> <span class="st">'重量'</span> <span class="kw">THEN</span> pa.attr_value <span class="kw">END</span>) <span class="kw">AS</span> weight,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> pa.attr_name <span class="op">=</span> <span class="st">'材质'</span> <span class="kw">THEN</span> pa.attr_value <span class="kw">END</span>) <span class="kw">AS</span> material
+<span class="kw">FROM</span> products p
+<span class="kw">LEFT JOIN</span> product_attributes pa <span class="kw">ON</span> p.id <span class="op">=</span> pa.product_id
+<span class="kw">GROUP BY</span> p.id;
+
+<span class="cm">-- ===== 树形结构存储（邻接表 vs 闭包表 vs 路径枚举）=====</span>
+
+<span class="cm">-- 方案1：邻接表（最常用，简单但查询慢）</span>
+<span class="kw">CREATE TABLE</span> categories (
+    id <span class="tp">INT</span> <span class="kw">PRIMARY KEY</span>,
+    name <span class="tp">VARCHAR</span>(<span class="nm">100</span>),
+    parent_id <span class="tp">INT</span>,
+    <span class="kw">FOREIGN KEY</span> (parent_id) <span class="kw">REFERENCES</span> categories(id)
+);
+
+<span class="cm">-- 方案2：路径枚举（查询快，维护稍复杂）</span>
+<span class="kw">CREATE TABLE</span> categories_path (
+    id <span class="tp">INT</span> <span class="kw">PRIMARY KEY</span>,
+    name <span class="tp">VARCHAR</span>(<span class="nm">100</span>),
+    path <span class="tp">VARCHAR</span>(<span class="nm">500</span>) <span class="kw">NOT NULL</span>  <span class="cm">-- '/1/3/7/'</span>
+);
+<span class="cm">-- 查找所有后代：WHERE path LIKE '/1/3/%'</span>
+<span class="cm">-- 查找所有祖先：WHERE '/1/3/7/' LIKE CONCAT(path, '%')</span>
+
+<span class="cm">-- 方案3：闭包表（查询最快，存储开销大）</span>
+<span class="kw">CREATE TABLE</span> category_closure (
+    ancestor_id   <span class="tp">INT</span> <span class="kw">NOT NULL</span>,
+    descendant_id <span class="tp">INT</span> <span class="kw">NOT NULL</span>,
+    depth         <span class="tp">INT</span> <span class="kw">NOT NULL DEFAULT</span> <span class="nm">0</span>,
+    <span class="kw">PRIMARY KEY</span> (ancestor_id, descendant_id)
+);
+<span class="cm">-- 查找所有后代：SELECT * FROM category_closure WHERE ancestor_id = 1</span>
+<span class="cm">-- 查找所有祖先：SELECT * FROM category_closure WHERE descendant_id = 7</span></code></pre>
+    </div>
+
+    <!-- 31. 数据仓库概念 -->
+    <h2 id="sec31">31. 数据仓库概念（星型模型）</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：星型模型 vs 雪花模型</div>
+        <p><strong>星型模型（Star Schema）</strong>：一个事实表（Fact Table）连接多个维度表（Dimension Table），维度表不做进一步规范化。查询简单、JOIN 少、性能好，但存在数据冗余。</p>
+        <p><strong>雪花模型（Snowflake Schema）</strong>：维度表进一步规范化，减少冗余但增加 JOIN 复杂度。适合维度数据量大、需要严格一致性分析的场景。</p>
+        <p><strong>事实表</strong>存储度量值（销售额、数量等数值），<strong>维度表</strong>存储描述性属性（产品名称、时间、地区等）。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">SQL</div>
+        </div>
+<pre><code><span class="cm">-- 星型模型示例：电商销售数据仓库</span>
+
+<span class="cm">-- 事实表</span>
+<span class="kw">CREATE TABLE</span> fact_sales (
+    sale_id     <span class="tp">BIGINT</span> <span class="kw">PRIMARY KEY</span>,
+    date_id     <span class="tp">INT</span> <span class="kw">NOT NULL</span>,
+    product_id  <span class="tp">INT</span> <span class="kw">NOT NULL</span>,
+    customer_id <span class="tp">INT</span> <span class="kw">NOT NULL</span>,
+    store_id    <span class="tp">INT</span> <span class="kw">NOT NULL</span>,
+    quantity    <span class="tp">INT</span> <span class="kw">NOT NULL</span>,
+    unit_price  <span class="tp">DECIMAL</span>(<span class="nm">10</span>,<span class="nm">2</span>),
+    total_amount <span class="tp">DECIMAL</span>(<span class="nm">12</span>,<span class="nm">2</span>),
+    <span class="kw">FOREIGN KEY</span> (date_id) <span class="kw">REFERENCES</span> dim_date(date_id),
+    <span class="kw">FOREIGN KEY</span> (product_id) <span class="kw">REFERENCES</span> dim_product(product_id),
+    <span class="kw">FOREIGN KEY</span> (customer_id) <span class="kw">REFERENCES</span> dim_customer(customer_id)
+);
+
+<span class="cm">-- 维度表</span>
+<span class="kw">CREATE TABLE</span> dim_date (
+    date_id    <span class="tp">INT</span> <span class="kw">PRIMARY KEY</span>,
+    full_date  <span class="tp">DATE</span>,
+    year       <span class="tp">INT</span>,
+    quarter    <span class="tp">INT</span>,
+    month      <span class="tp">INT</span>,
+    month_name <span class="tp">VARCHAR</span>(<span class="nm">10</span>),
+    day_of_week <span class="tp">VARCHAR</span>(<span class="nm">10</span>),
+    is_weekend <span class="tp">BOOLEAN</span>
+);
+
+<span class="kw">CREATE TABLE</span> dim_product (
+    product_id    <span class="tp">INT</span> <span class="kw">PRIMARY KEY</span>,
+    product_name  <span class="tp">VARCHAR</span>(<span class="nm">100</span>),
+    category      <span class="tp">VARCHAR</span>(<span class="nm">50</span>),
+    brand         <span class="tp">VARCHAR</span>(<span class="nm">50</span>),
+    unit_cost     <span class="tp">DECIMAL</span>(<span class="nm">10</span>,<span class="nm">2</span>)
+);
+
+<span class="cm">-- 数据仓库典型查询</span>
+<span class="kw">SELECT</span>
+    d.year,
+    d.quarter,
+    p.category,
+    <span class="fn">SUM</span>(f.total_amount) <span class="kw">AS</span> revenue,
+    <span class="fn">SUM</span>(f.quantity) <span class="kw">AS</span> units_sold,
+    <span class="fn">COUNT</span>(<span class="fn">DISTINCT</span> f.customer_id) <span class="kw">AS</span> unique_customers
+<span class="kw">FROM</span> fact_sales f
+<span class="kw">JOIN</span> dim_date d <span class="kw">ON</span> f.date_id <span class="op">=</span> d.date_id
+<span class="kw">JOIN</span> dim_product p <span class="kw">ON</span> f.product_id <span class="op">=</span> p.product_id
+<span class="kw">GROUP BY</span> d.year, d.quarter, p.category
+<span class="kw">ORDER BY</span> d.year, d.quarter, revenue <span class="kw">DESC</span>;</code></pre>
+    </div>
+
+    <!-- 32. 常见 SQL 模式 -->
+    <h2 id="sec32">32. 常见 SQL 模式</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">SQL</div>
+        </div>
+<pre><code><span class="cm">-- ===== 缺口检测（Gap Detection）=====</span>
+<span class="cm">-- 找出连续 ID 中的缺失值</span>
+<span class="kw">WITH</span> ids <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> id <span class="kw">FROM</span> users
+),
+all_nums <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> <span class="fn">GENERATE_SERIES</span>(
+        (<span class="kw">SELECT</span> <span class="fn">MIN</span>(id) <span class="kw">FROM</span> ids),
+        (<span class="kw">SELECT</span> <span class="fn">MAX</span>(id) <span class="kw">FROM</span> ids)
+    ) <span class="kw">AS</span> num  <span class="cm">-- PostgreSQL</span>
+)
+<span class="kw">SELECT</span> num <span class="kw">AS</span> missing_id
+<span class="kw">FROM</span> all_nums
+<span class="kw">WHERE</span> num <span class="kw">NOT IN</span> (<span class="kw">SELECT</span> id <span class="kw">FROM</span> ids);
+
+<span class="cm">-- ===== 累计求和（Running Total）=====</span>
+<span class="kw">SELECT</span>
+    order_date,
+    amount,
+    <span class="fn">SUM</span>(amount) <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> order_date) <span class="kw">AS</span> running_total
+<span class="kw">FROM</span> orders;
+
+<span class="cm">-- ===== 中位数（Median）=====</span>
+<span class="cm">-- PostgreSQL</span>
+<span class="kw">SELECT</span> <span class="fn">PERCENTILE_CONT</span>(<span class="nm">0.5</span>) <span class="kw">WITHIN GROUP</span> (<span class="kw">ORDER BY</span> salary) <span class="kw">AS</span> median
+<span class="kw">FROM</span> employees;
+
+<span class="cm">-- MySQL 中位数</span>
+<span class="kw">WITH</span> ranked <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> salary,
+           <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> salary) <span class="kw">AS</span> rn,
+           <span class="fn">COUNT</span>(*) <span class="kw">OVER</span> () <span class="kw">AS</span> total
+    <span class="kw">FROM</span> employees
+)
+<span class="kw">SELECT</span> <span class="fn">AVG</span>(salary) <span class="kw">AS</span> median
+<span class="kw">FROM</span> ranked
+<span class="kw">WHERE</span> rn <span class="kw">IN</span> (<span class="fn">FLOOR</span>((total + <span class="nm">1</span>) / <span class="nm">2</span>), <span class="fn">CEIL</span>((total + <span class="nm">1</span>) / <span class="nm">2</span>));
+
+<span class="cm">-- ===== 同比/环比增长率 =====</span>
+<span class="kw">WITH</span> monthly <span class="kw">AS</span> (
+    <span class="kw">SELECT</span>
+        <span class="fn">DATE_FORMAT</span>(created_at, <span class="st">'%Y-%m'</span>) <span class="kw">AS</span> month,
+        <span class="fn">SUM</span>(amount) <span class="kw">AS</span> revenue
+    <span class="kw">FROM</span> orders
+    <span class="kw">GROUP BY</span> <span class="fn">DATE_FORMAT</span>(created_at, <span class="st">'%Y-%m'</span>)
+)
+<span class="kw">SELECT</span>
+    month,
+    revenue,
+    <span class="fn">LAG</span>(revenue, <span class="nm">1</span>) <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> month) <span class="kw">AS</span> prev_month,
+    <span class="fn">ROUND</span>((revenue - <span class="fn">LAG</span>(revenue, <span class="nm">1</span>) <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> month))
+        <span class="op">*</span> <span class="nm">100.0</span> / <span class="fn">LAG</span>(revenue, <span class="nm">1</span>) <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> month), <span class="nm">2</span>) <span class="kw">AS</span> mom_growth_pct
+<span class="kw">FROM</span> monthly
+<span class="kw">ORDER BY</span> month;
+
+<span class="cm">-- ===== 累计去重计数（Distinct Running Count）=====</span>
+<span class="kw">SELECT</span>
+    login_date,
+    <span class="kw">COUNT</span>(<span class="kw">DISTINCT</span> user_id) <span class="kw">OVER</span> (
+        <span class="kw">ORDER BY</span> login_date
+        <span class="kw">ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</span>
+    ) <span class="kw">AS</span> cumulative_users
+<span class="kw">FROM</span> user_logins;</code></pre>
+    </div>
+
     <div class="principle">
         <div class="principle-title">总结：SQL 学习路线</div>
         <p><strong>初级</strong>：掌握 SELECT、WHERE、JOIN、聚合函数、子查询——能完成 80% 的日常查询工作。</p>
         <p><strong>中级</strong>：掌握事务、索引原理、查询优化、视图、存储过程——能设计合理的表结构并优化慢查询。</p>
-        <p><strong>高级</strong>：掌握窗口函数、执行计划分析、分库分表、读写分离、数据库内核原理——能解决复杂业务场景和高并发问题。</p>
+        <p><strong>高级</strong>：掌握窗口函数、递归 CTE、执行计划分析、JSON 操作、分库分表——能解决复杂业务场景和高并发问题。</p>
         <p>SQL 是一门"容易学、难精通"的语言。基础语法几天就能上手，但写出高性能、高可维护的 SQL 需要对数据库底层原理的深入理解。持续学习，持续实践。</p>
     </div>
 

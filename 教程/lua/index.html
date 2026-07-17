@@ -44,6 +44,16 @@
         <h3 style="padding: 10px 20px; color: #888; font-size: 0.9em; text-transform: uppercase;">实战</h3>
         <a href="#gamedev" class="sidebar-link"><span class="num">20</span>游戏开发应用</a>
         <a href="#best-practices" class="sidebar-link"><span class="num">21</span>最佳实践</a>
+
+        <h3 style="padding: 10px 20px; color: #888; font-size: 0.9em; text-transform: uppercase;">高级专题</h3>
+        <a href="#strict-mode" class="sidebar-link"><span class="num">22</span>强类型检查</a>
+        <a href="#advanced-tables" class="sidebar-link"><span class="num">23</span>表操作高级</a>
+        <a href="#advanced-strings" class="sidebar-link"><span class="num">24</span>字符串高级</a>
+        <a href="#error-patterns" class="sidebar-link"><span class="num">25</span>错误处理模式</a>
+        <a href="#memory-mgmt" class="sidebar-link"><span class="num">26</span>内存管理</a>
+        <a href="#luajit-ffi" class="sidebar-link"><span class="num">27</span>LuaJIT FFI</a>
+        <a href="#metatables-advanced" class="sidebar-link"><span class="num">28</span>元表高级用法</a>
+        <a href="#lua-practice" class="sidebar-link"><span class="num">29</span>实战项目</a>
     </div>
 
     <div class="main">
@@ -2070,6 +2080,553 @@ sm:.<span class="fn">change</span>(<span class="st">"playing"</span>)</code></pr
 
             <div class="tip">
                 Lua虽然小巧，但通过元表、闭包和协程等机制，可以实现极其复杂的编程模式。掌握这些机制是成为Lua高手的关键。记住：Lua的设计哲学是"提供机制而非策略"——不要试图在Lua中套用其他语言的模式，而是理解Lua的原语，用它们组合出你想要的解决方案。
+            </div>
+        </section>
+
+        <!-- 第22章：强类型检查 -->
+        <section id="strict-mode">
+            <h1>22. 强类型检查模式</h1>
+
+            <div class="principle">
+                <div class="principle-title">Lua的动态类型与类型安全</div>
+                <p>Lua是动态类型语言，变量没有固定类型。但通过运行时类型检查和约定，可以实现强类型风格的编程，减少因类型错误导致的bug。这在大型项目中尤为重要。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                </div>
+                <pre><code data-lang="lua"><span class="cm">-- 类型检查工具函数</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">assert_type</span>(value, expected, name)
+    <span class="kw">local</span> actual = <span class="fn">type</span>(value)
+    <span class="kw">if</span> actual ~= expected <span class="kw">then</span>
+        <span class="fn">error</span>(<span class="fn">string.format</span>(
+            <span class="st">"Type error: '%s' expected %s, got %s"</span>,
+            name, expected, actual), <span class="nm">2</span>)
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="cm">-- 使用断言检查参数类型</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">add</span>(a, b)
+    <span class="fn">assert_type</span>(a, <span class="st">"number"</span>, <span class="st">"a"</span>)
+    <span class="fn">assert_type</span>(b, <span class="st">"number"</span>, <span class="st">"b"</span>)
+    <span class="kw">return</span> a + b
+<span class="kw">end</span>
+
+<span class="cm">-- 类型约束的构造器</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">new_point</span>(x, y)
+    <span class="fn">assert_type</span>(x, <span class="st">"number"</span>, <span class="st">"x"</span>)
+    <span class="fn">assert_type</span>(y, <span class="st">"number"</span>, <span class="st">"y"</span>)
+    <span class="kw">return</span> { x = x, y = y }
+<span class="kw">end</span>
+
+<span class="cm">-- 可选类型检查</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">assert_optional</span>(value, expected, name)
+    <span class="kw">if</span> value ~= <span class="kw">nil</span> <span class="kw">then</span>
+        <span class="fn">assert_type</span>(value, expected, name)
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="cm">-- 使用 metatable 实现类型标记</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">typed</span>(typename, constructor)
+    <span class="kw">local</span> mt = {}
+    mt.__index = {
+        <span class="fn">is_a</span> = <span class="kw">function</span>(self) <span class="kw">return</span> self.__type == <span class="kw">typename</span> <span class="kw">end</span>,
+    }
+    <span class="kw">return</span> <span class="kw">function</span>(...)
+        <span class="kw">local</span> obj = <span class="fn">constructor</span>(...)
+        obj.__type = <span class="kw">typename</span>
+        <span class="kw">return</span> <span class="fn">setmetatable</span>(obj, mt)
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="cm">-- 使用</span>
+<span class="kw">local</span> Player = <span class="fn">typed</span>(<span class="st">"Player"</span>, <span class="kw">function</span>(name, hp)
+    <span class="fn">assert_type</span>(name, <span class="st">"string"</span>, <span class="st">"name"</span>)
+    <span class="fn">assert_type</span>(hp, <span class="st">"number"</span>, <span class="st">"hp"</span>)
+    <span class="kw">return</span> { name = name, hp = hp }
+<span class="kw">end</span>)
+
+<span class="kw">local</span> p = <span class="fn">Player</span>(<span class="st">"Hero"</span>, <span class="nm">100</span>)
+<span class="fn">print</span>(p:<span class="fn">is_a</span>())  <span class="cm">-- true</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第23章：表操作高级 -->
+        <section id="advanced-tables">
+            <h1>23. 表操作高级</h1>
+
+            <div class="principle">
+                <div class="principle-title">表的高级操作</div>
+                <p>Lua 5.3+ 引入了 <code>table.pack</code>、<code>table.move</code> 等新函数。掌握这些工具和常见的表合并模式，能大幅提升代码的表达力和性能。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                </div>
+                <pre><code data-lang="lua"><span class="cm">-- table.pack：保留 nil 值的打包</span>
+<span class="kw">local</span> args = <span class="fn">table.pack</span>(<span class="nm">1</span>, <span class="kw">nil</span>, <span class="nm">3</span>, <span class="kw">nil</span>, <span class="nm">5</span>)
+<span class="fn">print</span>(args.n)  <span class="cm">-- 5（记录实际参数数量）</span>
+
+<span class="cm">-- table.move：高效移动数组元素</span>
+<span class="kw">local</span> t = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>}
+<span class="fn">table.move</span>(t, <span class="nm">1</span>, <span class="nm">3</span>, <span class="nm">4</span>)  <span class="cm">-- 将 [1,3] 移动到从位置4开始</span>
+<span class="cm">-- t 现在是 {1, 2, 3, 1, 2, 3}</span>
+
+<span class="cm">-- 表浅合并</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">shallow_merge</span>(target, source)
+    <span class="kw">for</span> k, v <span class="kw">in</span> <span class="fn">pairs</span>(source) <span class="kw">do</span>
+        target[k] = v
+    <span class="kw">end</span>
+    <span class="kw">return</span> target
+<span class="kw">end</span>
+
+<span class="cm">-- 表深合并</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">deep_merge</span>(target, source)
+    <span class="kw">for</span> k, v <span class="kw">in</span> <span class="fn">pairs</span>(source) <span class="kw">do</span>
+        <span class="kw">if</span> <span class="fn">type</span>(v) == <span class="st">"table"</span> <span class="kw">and</span> <span class="fn">type</span>(target[k]) == <span class="st">"table"</span> <span class="kw">then</span>
+            <span class="fn">deep_merge</span>(target[k], v)
+        <span class="kw">else</span>
+            target[k] = v
+        <span class="kw">end</span>
+    <span class="kw">end</span>
+    <span class="kw">return</span> target
+<span class="kw">end</span>
+
+<span class="cm">-- 表过滤</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">filter</span>(t, predicate)
+    <span class="kw">local</span> result = {}
+    <span class="kw">for</span> i, v <span class="kw">in</span> <span class="fn">ipairs</span>(t) <span class="kw">do</span>
+        <span class="kw">if</span> <span class="fn">predicate</span>(v, i) <span class="kw">then</span>
+            result[#result + <span class="nm">1</span>] = v
+        <span class="kw">end</span>
+    <span class="kw">end</span>
+    <span class="kw">return</span> result
+<span class="kw">end</span>
+
+<span class="cm">-- 表映射</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">map</span>(t, func)
+    <span class="kw">local</span> result = {}
+    <span class="kw">for</span> i, v <span class="kw">in</span> <span class="fn">ipairs</span>(t) <span class="kw">do</span>
+        result[i] = <span class="fn">func</span>(v, i)
+    <span class="kw">end</span>
+    <span class="kw">return</span> result
+<span class="kw">end</span>
+
+<span class="cm">-- 使用示例</span>
+<span class="kw">local</span> nums = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>, <span class="nm">7</span>, <span class="nm">8</span>}
+<span class="kw">local</span> evens = <span class="fn">filter</span>(nums, <span class="kw">function</span>(n) <span class="kw">return</span> n % <span class="nm">2</span> == <span class="nm">0</span> <span class="kw">end</span>)
+<span class="kw">local</span> doubled = <span class="fn">map</span>(nums, <span class="kw">function</span>(n) <span class="kw">return</span> n * <span class="nm">2</span> <span class="kw">end</span>)
+
+<span class="cm">-- 默认值配置合并模式</span>
+<span class="kw">local</span> defaults = { width = <span class="nm">800</span>, height = <span class="nm">600</span>, fullscreen = <span class="kw">false</span> }
+<span class="kw">local</span> user_config = { width = <span class="nm">1920</span>, fullscreen = <span class="kw">true</span> }
+<span class="kw">local</span> config = <span class="fn">shallow_merge</span>(<span class="fn">deep_merge</span>({}, defaults), user_config)</code></pre>
+            </div>
+        </section>
+
+        <!-- 第24章：字符串高级 -->
+        <section id="advanced-strings">
+            <h1>24. 字符串处理高级</h1>
+
+            <div class="principle">
+                <div class="principle-title">模式匹配进阶</div>
+                <p>Lua 的模式匹配比正则表达式更简洁但功能略少。掌握捕获组、模式修饰符和 Unicode 处理技巧，可以高效处理各种文本任务。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                </div>
+                <pre><code data-lang="lua"><span class="cm">-- 捕获组</span>
+<span class="kw">local</span> date = <span class="st">"2024-01-15"</span>
+<span class="kw">local</span> year, month, day = <span class="fn">date:match</span>(<span class="st">"(%d+)%-(%d+)%-(%d+)"</span>)
+
+<span class="cm">-- 使用捕获组提取信息</span>
+<span class="kw">local</span> url = <span class="st">"https://example.com:8080/path?q=1"</span>
+<span class="kw">local</span> scheme, host, port, path = url:match(
+    <span class="st">"^(%w+)://([^:/]+):?(%d*)(/?[^?]*)"</span>)
+
+<span class="cm">-- 非贪婪匹配（最短匹配）</span>
+<span class="kw">local</span> html = <span class="st">"&lt;b&gt;bold&lt;/b&gt; and &lt;i&gt;italic&lt;/i&gt;"</span>
+<span class="kw">for</span> tag <span class="kw">in</span> html:<span class="fn">gmatch</span>(<span class="st">"&lt;(.-)&gt;"</span>) <span class="kw">do</span>
+    <span class="fn">print</span>(tag)
+<span class="kw">end</span>
+
+<span class="cm">-- 模式修饰符</span>
+<span class="kw">local</span> text = <span class="st">"Hello World hello world HELLO"</span>
+<span class="kw">local</span> count = <span class="nm">0</span>
+<span class="kw">for</span> _ <span class="kw">in</span> text:<span class="fn">gmatch</span>(<span class="st">"[hH][eE][lL][lL][oO]"</span>) <span class="kw">do</span>
+    count = count + <span class="nm">1</span>
+<span class="kw">end</span>
+
+<span class="cm">-- Unicode 字符串处理（UTF-8）</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">utf8_len</span>(s)
+    <span class="kw">local</span> count = <span class="nm">0</span>
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">utf8.codes</span>(s) <span class="kw">do</span>
+        count = count + <span class="nm">1</span>
+    <span class="kw">end</span>
+    <span class="kw">return</span> count
+<span class="kw">end</span>
+
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">utf8_sub</span>(s, i, j)
+    <span class="kw">local</span> result = {}
+    <span class="kw">local</span> pos = <span class="nm">1</span>
+    <span class="kw">for</span> codepoint <span class="kw">in</span> <span class="fn">utf8.codes</span>(s) <span class="kw">do</span>
+        <span class="kw">if</span> pos >= i <span class="kw">and</span> pos <= j <span class="kw">then</span>
+            result[#result + <span class="nm">1</span>] = <span class="fn">utf8.char</span>(codepoint)
+        <span class="kw">end</span>
+        pos = pos + <span class="nm">1</span>
+    <span class="kw">end</span>
+    <span class="kw">return</span> <span class="fn">table.concat</span>(result)
+<span class="kw">end</span>
+
+<span class="kw">local</span> chinese = <span class="st">"你好世界"</span>
+<span class="fn">print</span>(<span class="fn">utf8_len</span>(chinese))   <span class="cm">-- 4</span>
+<span class="fn">print</span>(<span class="fn">utf8_sub</span>(chinese, <span class="nm">1</span>, <span class="nm">2</span>))  <span class="cm">-- 你好</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第25章：错误处理模式 -->
+        <section id="error-patterns">
+            <h1>25. 错误处理模式</h1>
+
+            <div class="principle">
+                <div class="principle-title">Lua的错误处理哲学</div>
+                <p>Lua 提供两种错误处理机制：<code>error()</code> 抛出异常，<code>pcall/xpcall</code> 捕获异常。xpcall 还支持错误处理器，可以记录堆栈信息。合理使用错误处理是编写健壮 Lua 代码的关键。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                </div>
+                <pre><code data-lang="lua"><span class="cm">-- error() 的 level 参数控制错误位置</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">validate</span>(value, msg)
+    <span class="kw">if</span> <span class="kw">not</span> value <span class="kw">then</span>
+        <span class="fn">error</span>(msg, <span class="nm">2</span>)  <span class="cm">-- level 2 表示报告调用者的行号</span>
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="cm">-- pcall：保护调用</span>
+<span class="kw">local</span> ok, result = <span class="fn">pcall</span>(<span class="kw">function</span>()
+    <span class="kw">return</span> <span class="fn">io.open</span>(<span class="st">"nonexistent.txt"</span>)
+<span class="kw">end</span>)
+<span class="kw">if</span> <span class="kw">not</span> ok <span class="kw">then</span>
+    <span class="fn">print</span>(<span class="st">"Error: "</span> .. result)
+<span class="kw">end</span>
+
+<span class="cm">-- xpcall：带错误处理器的保护调用</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">error_handler</span>(err)
+    <span class="kw">return</span> <span class="fn">debug.traceback</span>(err, <span class="nm">2</span>)
+<span class="kw">end</span>
+
+<span class="kw">local</span> ok, result = <span class="fn">xpcall</span>(<span class="kw">function</span>()
+    <span class="kw">error</span>(<span class="st">"something went wrong"</span>)
+<span class="kw">end</span>, error_handler)
+
+<span class="kw">if</span> <span class="kw">not</span> ok <span class="kw">then</span>
+    <span class="fn">print</span>(result)  <span class="cm">-- 包含完整堆栈跟踪</span>
+<span class="kw">end</span>
+
+<span class="cm">-- assert 模式：快速失败</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">connect</span>(host, port)
+    <span class="fn">assert</span>(<span class="fn">type</span>(host) == <span class="st">"string"</span>, <span class="st">"host must be string"</span>)
+    <span class="fn">assert</span>(<span class="fn">type</span>(port) == <span class="st">"number"</span>, <span class="st">"port must be number"</span>)
+    <span class="fn">assert</span>(port > <span class="nm">0</span> <span class="kw">and</span> port < <span class="nm">65536</span>, <span class="st">"port out of range"</span>)
+    <span class="cm">-- ... 连接逻辑</span>
+<span class="kw">end</span>
+
+<span class="cm">-- Result 模式（类似 Rust）</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">safe_divide</span>(a, b)
+    <span class="kw">if</span> b == <span class="nm">0</span> <span class="kw">then</span>
+        <span class="kw">return</span> <span class="kw">nil</span>, <span class="st">"division by zero"</span>
+    <span class="kw">end</span>
+    <span class="kw">return</span> a / b
+<span class="kw">end</span>
+
+<span class="kw">local</span> result, err = <span class="fn">safe_divide</span>(<span class="nm">10</span>, <span class="nm">0</span>)
+<span class="kw">if</span> <span class="kw">not</span> result <span class="kw">then</span>
+    <span class="fn">print</span>(<span class="st">"Error: "</span> .. err)
+<span class="kw">end</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第26章：内存管理 -->
+        <section id="memory-mgmt">
+            <h1>26. 内存管理</h1>
+
+            <div class="principle">
+                <div class="principle-title">垃圾回收与弱引用</div>
+                <p>Lua 使用自动垃圾回收（GC），但通过 <code>collectgarbage</code> 可以控制 GC 行为。弱引用表（weak tables）允许创建不阻止 GC 回收的引用，常用于缓存和元数据存储。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                </div>
+                <pre><code data-lang="lua"><span class="cm">-- collectgarbage 控制</span>
+<span class="fn">collectgarbage</span>(<span class="st">"collect"</span>)    <span class="cm">-- 执行一次完整 GC</span>
+<span class="fn">collectgarbage</span>(<span class="st">"stop"</span>)      <span class="cm">-- 暂停自动 GC</span>
+<span class="fn">collectgarbage</span>(<span class="st">"restart"</span>)   <span class="cm">-- 恢复自动 GC</span>
+<span class="fn">collectgarbage</span>(<span class="st">"count"</span>)     <span class="cm">-- 返回内存使用量（KB）</span>
+
+<span class="cm">-- 设置 GC 增量步长（控制暂停时间）</span>
+<span class="fn">collectgarbage</span>(<span class="st">"setpause"</span>, <span class="nm">100</span>)   <span class="cm">-- 暂停时间百分比</span>
+<span class="fn">collectgarbage</span>(<span class="st">"setstepmul"</span>, <span class="nm">200</span>) <span class="cm">-- 步长乘数</span>
+
+<span class="cm">-- 弱引用表（三种模式）</span>
+<span class="kw">local</span> cache = <span class="fn">setmetatable</span>({}, { __mode = <span class="st">"k"</span> })  <span class="cm">-- 弱键</span>
+<span class="kw">local</span> values = <span class="fn">setmetatable</span>({}, { __mode = <span class="st">"v"</span> })  <span class="cm">-- 弱值</span>
+<span class="kw">local</span> both = <span class="fn">setmetatable</span>({}, { __mode = <span class="st">"kv"</span> })  <span class="cm">-- 键和值都弱</span>
+
+<span class="cm">-- 弱键表：对象 ID 缓存</span>
+<span class="kw">local</span> object_ids = <span class="fn">setmetatable</span>({}, { __mode = <span class="st">"k"</span> })
+<span class="kw">local</span> next_id = <span class="nm">1</span>
+
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">get_id</span>(obj)
+    <span class="kw">if</span> <span class="kw">not</span> object_ids[obj] <span class="kw">then</span>
+        object_ids[obj] = next_id
+        next_id = next_id + <span class="nm">1</span>
+    <span class="kw">end</span>
+    <span class="kw">return</span> object_ids[obj]
+<span class="kw">end</span>
+
+<span class="cm">-- 弱值表：LRU 缓存</span>
+<span class="kw">local</span> lru = <span class="fn">setmetatable</span>({}, { __mode = <span class="st">"v"</span> })
+
+<span class="kw">function</span> <span class="fn">cache_get</span>(key)
+    <span class="kw">return</span> lru[key]
+<span class="kw">end</span>
+
+<span class="kw">function</span> <span class="fn">cache_set</span>(key, value)
+    lru[key] = value
+<span class="kw">end</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第27章：LuaJIT FFI -->
+        <section id="luajit-ffi">
+            <h1>27. LuaJIT FFI 基础</h1>
+
+            <div class="principle">
+                <div class="principle-title">FFI：调用C代码的桥梁</div>
+                <p>LuaJIT 的 FFI（Foreign Function Interface）允许 Lua 代码直接调用 C 函数和访问 C 数据结构，无需编写 C 绑定代码。FFI 生成的代码性能接近手写 C。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua (LuaJIT)</span>
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                </div>
+                <pre><code data-lang="lua"><span class="kw">local</span> ffi = <span class="kw">require</span>(<span class="st">"ffi"</span>)
+
+<span class="cm">-- 声明 C 函数</span>
+ffi.cdef[[
+    <span class="kw">int</span> <span class="fn">printf</span>(<span class="kw">const</span> <span class="kw">char</span>* fmt, ...);
+    <span class="kw">double</span> <span class="fn">sin</span>(<span class="kw">double</span> x);
+    <span class="kw">int</span> <span class="fn">strcmp</span>(<span class="kw">const</span> <span class="kw">char</span>* s1, <span class="kw">const</span> <span class="kw">char</span>* s2);
+]]
+
+<span class="cm">-- 直接调用 C 函数</span>
+ffi.C.<span class="fn">printf</span>(<span class="st">"Hello from C: %f\n"</span>, ffi.C.<span class="fn">sin</span>(<span class="nm">1.0</span>))
+
+<span class="cm">-- 声明 C 结构体</span>
+ffi.cdef[[
+    <span class="kw">typedef struct</span> {
+        <span class="kw">double</span> x, y;
+    } <span class="fn">Point</span>;
+    
+    <span class="kw">typedef struct</span> {
+        <span class="kw">int</span> width, height;
+        <span class="kw">uint8_t</span>* data;
+    } <span class="fn">Image</span>;
+]]
+
+<span class="cm">-- 创建 C 结构体实例</span>
+<span class="kw">local</span> p = ffi.<span class="fn">new</span>(<span class="st">"Point"</span>)
+p.x = <span class="nm">1.0</span>
+p.y = <span class="nm">2.0</span>
+
+<span class="cm">-- 使用 metatype 为 C 类型添加方法</span>
+ffi.metatype(<span class="st">"Point"</span>, {
+    __index = {
+        <span class="fn">length</span> = <span class="kw">function</span>(self)
+            <span class="kw">return</span> <span class="fn">math.sqrt</span>(self.x^<span class="nm">2</span> + self.y^<span class="nm">2</span>)
+        <span class="kw">end</span>,
+        <span class="fn">__tostring</span> = <span class="kw">function</span>(self)
+            <span class="kw">return</span> <span class="fn">string.format</span>(<span class="st">"(%f, %f)"</span>, self.x, self.y)
+        <span class="kw">end</span>,
+    }
+})
+
+<span class="cm">-- 分配数组</span>
+<span class="kw">local</span> arr = ffi.<span class="fn">new</span>(<span class="st">"int[10]"</span>)
+<span class="kw">for</span> i = <span class="nm">0</span>, <span class="nm">9</span> <span class="kw">do</span> arr[i] = i * i <span class="kw">end</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第28章：元表高级用法 -->
+        <section id="metatables-advanced">
+            <h1>28. 元表高级用法</h1>
+
+            <div class="principle">
+                <div class="principle-title">元方法的完整列表</div>
+                <p>元表除了常见的 <code>__index</code>、<code>__newindex</code>、<code>__add</code> 外，还有 <code>__gc</code>（垃圾回收）、<code>__close</code>（to-be-closed变量，Lua 5.4）、<code>__name</code>（类型名称）等高级元方法。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                </div>
+                <pre><code data-lang="lua"><span class="cm">-- __gc：析构器（对象被GC回收时调用）</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">make_resource</span>(name)
+    <span class="kw">local</span> self = { name = name, opened = <span class="kw">true</span> }
+    
+    <span class="kw">local</span> mt = {
+        __gc = <span class="kw">function</span>(obj)
+            <span class="kw">if</span> obj.opened <span class="kw">then</span>
+                <span class="fn">print</span>(<span class="st">"Auto-closing: "</span> .. obj.name)
+                obj.opened = <span class="kw">false</span>
+            <span class="kw">end</span>
+        <span class="kw">end</span>,
+        __name = <span class="st">"Resource"</span>,
+    }
+    
+    <span class="kw">return</span> <span class="fn">setmetatable</span>(self, mt)
+<span class="kw">end</span>
+
+<span class="cm">-- __close (Lua 5.4)：to-be-closed 变量</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">make_closeable</span>(name, on_close)
+    <span class="kw">return</span> <span class="fn">setmetatable</span>({ name = name }, {
+        __close = <span class="kw">function</span>(self, err)
+            <span class="fn">on_close</span>(self, err)
+        <span class="kw">end</span>
+    })
+<span class="kw">end</span>
+
+<span class="cm">-- 使用 __close（Lua 5.4）</span>
+<span class="kw">do</span>
+    <span class="kw">local</span> <span class="kw">function</span> <span class="fn">on_exit</span>(self, err)
+        <span class="fn">print</span>(<span class="st">"Closing: "</span> .. self.name)
+        <span class="kw">if</span> err <span class="kw">then</span>
+            <span class="fn">print</span>(<span class="st">"Error: "</span> .. <span class="fn">tostring</span>(err))
+        <span class="kw">end</span>
+    <span class="kw">end</span>
+    
+    <span class="kw">local</span> <span class="kw">closeable</span> <span class="kw">close</span> = <span class="fn">make_closeable</span>(<span class="st">"file"</span>, on_exit)
+    <span class="fn">print</span>(<span class="st">"Using resource..."</span>)
+    <span class="cm">-- 离开 do 块时自动调用 __close</span>
+<span class="kw">end</span>
+
+<span class="cm">-- __name 元方法（Lua 5.4+）</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">new_class</span>(name)
+    <span class="kw">local</span> cls = {}
+    cls.__index = cls
+    cls.__name = name
+    
+    <span class="kw">function</span> cls:<span class="fn">__tostring</span>()
+        <span class="kw">return</span> <span class="fn">string.format</span>(<span class="st">"%s: %p"</span>, name, self)
+    <span class="kw">end</span>
+    
+    <span class="kw">return</span> cls
+<span class="kw">end</span>
+
+<span class="kw">local</span> Player = <span class="fn">new_class</span>(<span class="st">"Player"</span>)
+<span class="kw">local</span> p = <span class="fn">setmetatable</span>({}, Player)
+<span class="fn">print</span>(p)  <span class="cm">-- Player: 0x7f...</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第29章：实战项目 -->
+        <section id="lua-practice">
+            <h1>29. 实战项目</h1>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua — 简单HTTP服务器</span>
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                </div>
+                <pre><code data-lang="lua"><span class="cm">-- 需要 LuaSocket 库</span>
+<span class="kw">local</span> socket = <span class="kw">require</span>(<span class="st">"socket"</span>)
+
+<span class="kw">local</span> server = socket.<span class="fn">tcp</span>()
+server:<span class="fn">bind</span>(<span class="st">"0.0.0.0"</span>, <span class="nm">8080</span>)
+server:<span class="fn">listen</span>()
+
+<span class="fn">print</span>(<span class="st">"Server running on port 8080"</span>)
+
+<span class="kw">while</span> <span class="kw">true</span> <span class="kw">do</span>
+    <span class="kw">local</span> client = server:<span class="fn">accept</span>()
+    <span class="kw">local</span> request = client:<span class="fn">receive</span>(<span class="st">"*l"</span>)
+    
+    <span class="kw">local</span> method, path = request:<span class="fn">match</span>(<span class="st">"(%w+)%s+(.-)%s"</span>)
+    
+    <span class="kw">local</span> response_body
+    <span class="kw">if</span> path == <span class="st">"/"</span> <span class="kw">then</span>
+        response_body = <span class="st">"&lt;h1&gt;Hello, Lua!&lt;/h1&gt;"</span>
+    <span class="kw">elseif</span> path == <span class="st">"/time"</span> <span class="kw">then</span>
+        response_body = <span class="fn">os.date</span>(<span class="st">"%Y-%m-%d %H:%M:%S"</span>)
+    <span class="kw">else</span>
+        response_body = <span class="st">"404 Not Found"</span>
+    <span class="kw">end</span>
+    
+    client:<span class="fn">send</span>(<span class="fn">string.format</span>(
+        <span class="st">"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %d\r\n\r\n%s"</span>,
+        #response_body, response_body))
+    client:<span class="fn">close</span>()
+<span class="kw">end</span></code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua — 配置文件解析器</span>
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                </div>
+                <pre><code data-lang="lua"><span class="cm">-- 解析 key = value 格式的配置文件</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">parse_config</span>(filename)
+    <span class="kw">local</span> config = {}
+    <span class="kw">local</span> file = <span class="fn">io.open</span>(filename, <span class="st">"r"</span>)
+    <span class="kw">if</span> <span class="kw">not</span> file <span class="kw">then</span>
+        <span class="kw">return</span> <span class="kw">nil</span>, <span class="st">"Cannot open file"</span>
+    <span class="kw">end</span>
+    
+    <span class="kw">for</span> line <span class="kw">in</span> file:<span class="fn">lines</span>() <span class="kw">do</span>
+        line = line:<span class="fn">match</span>(<span class="st">"^%s*(.-)%s*$"</span>)  <span class="cm">-- trim</span>
+        <span class="kw">if</span> line ~= <span class="st">""</span> <span class="kw">and</span> <span class="kw">not</span> line:<span class="fn">match</span>(<span class="st">"^#"</span>) <span class="kw">then</span>
+            <span class="kw">local</span> key, value = line:<span class="fn">match</span>(<span class="st">"^(%w+)%s*=%s*(.+)$"</span>)
+            <span class="kw">if</span> key <span class="kw">then</span>
+                <span class="cm">-- 类型推断</span>
+                <span class="kw">if</span> value == <span class="st">"true"</span> <span class="kw">then</span>
+                    config[key] = <span class="kw">true</span>
+                <span class="kw">elseif</span> value == <span class="st">"false"</span> <span class="kw">then</span>
+                    config[key] = <span class="kw">false</span>
+                <span class="kw">elseif</span> <span class="fn">tonumber</span>(value) <span class="kw">then</span>
+                    config[key] = <span class="fn">tonumber</span>(value)
+                <span class="kw">else</span>
+                    config[key] = value:<span class="fn">match</span>(<span class="st">'^"?(.-)"?$'</span>)
+                <span class="kw">end</span>
+            <span class="kw">end</span>
+        <span class="kw">end</span>
+    <span class="kw">end</span>
+    
+    file:<span class="fn">close</span>()
+    <span class="kw">return</span> config
+<span class="kw">end</span>
+
+<span class="cm">-- 使用</span>
+<span class="kw">local</span> config, err = <span class="fn">parse_config</span>(<span class="st">"app.conf"</span>)
+<span class="kw">if</span> config <span class="kw">then</span>
+    <span class="fn">print</span>(<span class="st">"host:"</span>, config.host)
+    <span class="fn">print</span>(<span class="st">"port:"</span>, config.port)
+    <span class="fn">print</span>(<span class="st">"debug:"</span>, config.debug)
+<span class="kw">end</span></code></pre>
             </div>
         </section>
     </div>

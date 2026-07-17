@@ -336,6 +336,17 @@
             <div class="sidebar-section-title">实战</div>
             <a class="sidebar-link" href="#ch23"><span class="num">23</span>最佳实践</a>
         </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">高级专题</div>
+            <a class="sidebar-link" href="#ch24"><span class="num">24</span>高级数据操作</a>
+            <a class="sidebar-link" href="#ch25"><span class="num">25</span>ggplot2 高级</a>
+            <a class="sidebar-link" href="#ch26"><span class="num">26</span>函数式编程</a>
+            <a class="sidebar-link" href="#ch27"><span class="num">27</span>时间序列分析</a>
+            <a class="sidebar-link" href="#ch28"><span class="num">28</span>文本挖掘</a>
+            <a class="sidebar-link" href="#ch29"><span class="num">29</span>交互式可视化</a>
+            <a class="sidebar-link" href="#ch30"><span class="num">30</span>R Markdown</a>
+            <a class="sidebar-link" href="#ch31"><span class="num">31</span>Shiny 入门</a>
+        </div>
     </nav>
 
     <!-- ==================== MAIN CONTENT ==================== -->
@@ -1918,8 +1929,399 @@ result <span class="op">&lt;-</span> df <span class="op">|&gt;</span>
 
         <div class="tip">R 社区非常活跃。推荐关注 <a href="https://www.tidyverse.org">Tidyverse</a>、<a href="https://www.tidymodels.org">Tidymodels</a>、R-bloggers，以及 Stack Overflow 的 [r] 标签。</div>
 
+        <!-- ==================== 24. 高级数据操作 ==================== -->
+        <h2 id="ch24">24. 高级数据操作 (dplyr)</h2>
+
+        <div class="principle">
+            <div class="principle-title">管道与 across</div>
+            <p><code>dplyr</code> 的管道操作符 <code>%&gt;%</code>（或 <code>|&gt;</code>）让数据处理链式调用更清晰。<code>across()</code> 允许对多列同时应用操作，<code>where()</code> 按列类型选择，大幅减少重复代码。</p>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-lang">R</span>
+                <div class="code-dots"><span></span><span></span><span></span></div>
+            </div>
+            <pre><code data-lang="r"><span class="kw">library</span>(tidyverse)
+
+<span class="cm"># 创建示例数据</span>
+df <span class="op">&lt;-</span> tibble(
+  name <span class="op">=</span> <span class="fn">c</span>(<span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Charlie"</span>, <span class="st">"Diana"</span>),
+  age <span class="op">=</span> <span class="fn">c</span>(<span class="nm">25</span>, <span class="nm">30</span>, <span class="nm">35</span>, <span class="nm">28</span>),
+  math <span class="op">=</span> <span class="fn">c</span>(<span class="nm">90</span>, <span class="nm">85</span>, <span class="nm">70</span>, <span class="nm">95</span>),
+  science <span class="op">=</span> <span class="fn">c</span>(<span class="nm">88</span>, <span class="nm">92</span>, <span class="nm">75</span>, <span class="nm">90</span>),
+  english <span class="op">=</span> <span class="fn">c</span>(<span class="nm">78</span>, <span class="nm">80</span>, <span class="nm">85</span>, <span class="nm">92</span>)
+)
+
+<span class="cm"># across：对多列同时计算</span>
+df <span class="op">|&gt;</span>
+  <span class="fn">mutate</span>(
+    <span class="fn">across</span>(<span class="fn">where</span>(is.numeric) <span class="op">&amp;</span> <span class="op">!</span><span class="fn">everything</span>(), <span class="cm"># 除 name 外所有数值列</span>
+           <span class="op">~</span> <span class="fn">round</span>(.x <span class="op">*</span> <span class="nm">0.9</span>),  <span class="cm"># 缩放10%</span>
+           .names <span class="op">=</span> <span class="st">"{.col}_scaled"</span>)
+  )
+
+<span class="cm"># across + 列名模式匹配</span>
+df <span class="op">|&gt;</span>
+  <span class="fn">summarise</span>(
+    <span class="fn">across</span>(<span class="fn">ends_with</span>(<span class="st">"e"</span>), <span class="cm"># 以 e 结尾的列（math, science）</span>
+           <span class="fn">list</span>(
+             mean <span class="op">=</span> mean,
+             sd <span class="op">=</span> sd
+           ),
+           .names <span class="op">=</span> <span class="st">"{.col}_{.fn}"</span>)
+  )
+
+<span class="cm"># where 按条件选列</span>
+df <span class="op">|&gt;</span>
+  <span class="fn">mutate</span>(
+    <span class="fn">across</span>(<span class="fn">where</span>(<span class="op">~</span> <span class="fn">is.numeric</span>(.x) <span class="op">&amp;</span> <span class="fn">max</span>(.x) <span class="op">&gt;</span> <span class="nm">50</span>),
+           rank)
+  )
+
+<span class="cm"># 分组 + across</span>
+iris <span class="op">|&gt;</span>
+  <span class="fn">group_by</span>(Species) <span class="op">|&gt;</span>
+  <span class="fn">summarise</span>(
+    <span class="fn">across</span>(<span class="fn">where</span>(is.numeric), <span class="fn">list</span>(mean <span class="op">=</span> mean, max <span class="op">=</span> max),
+           .names <span class="op">=</span> <span class="st">"{.col}_{.fn}"</span>)
+  )</code></pre>
+        </div>
+
+        <!-- ==================== 25. ggplot2 高级 ==================== -->
+        <h2 id="ch25">25. ggplot2 高级</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-lang">R</span>
+                <div class="code-dots"><span></span><span></span><span></span></div>
+            </div>
+            <pre><code data-lang="r"><span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(patchwork)
+
+<span class="cm"># Faceting：分面显示</span>
+<span class="fn">ggplot</span>(mpg, <span class="fn">aes</span>(displ, hwy)) <span class="op">+</span>
+  <span class="fn">geom_point</span>() <span class="op">+</span>
+  <span class="fn">facet_wrap</span>(<span class="op">~</span> class, ncol <span class="op">=</span> <span class="nm">2</span>) <span class="op">+</span>
+  <span class="fn">labs</span>(title <span class="op">=</span> <span class="st">"按车型分面"</span>)
+
+<span class="cm"># facet_grid：二维分面</span>
+<span class="fn">ggplot</span>(mpg, <span class="fn">aes</span>(displ, hwy)) <span class="op">+</span>
+  <span class="fn">geom_point</span>() <span class="op">+</span>
+  <span class="fn">facet_grid</span>(drv <span class="op">~</span> cyl)
+
+<span class="cm"># 自定义主题</span>
+my_theme <span class="op">&lt;-</span> <span class="fn">theme_minimal</span>() <span class="op">+</span>
+  <span class="fn">theme</span>(
+    plot.title <span class="op">=</span> <span class="fn">element_text</span>(size <span class="op">=</span> <span class="nm">16</span>, face <span class="op">=</span> <span class="st">"bold"</span>),
+    axis.title <span class="op">=</span> <span class="fn">element_text</span>(size <span class="op">=</span> <span class="nm">12</span>),
+    legend.position <span class="op">=</span> <span class="st">"bottom"</span>,
+    panel.grid.minor <span class="op">=</span> <span class="fn">element_blank</span>()
+  )
+
+<span class="cm"># Scale 缩放</span>
+<span class="fn">ggplot</span>(mpg, <span class="fn">aes</span>(displ, hwy, color <span class="op">=</span> class)) <span class="op">+</span>
+  <span class="fn">geom_point</span>(size <span class="op">=</span> <span class="nm">2</span>) <span class="op">+</span>
+  <span class="fn">scale_color_brewer</span>(palette <span class="op">=</span> <span class="st">"Set2"</span>) <span class="op">+</span>
+  <span class="fn">scale_x_continuous</span>(breaks <span class="op">=</span> <span class="fn">seq</span>(<span class="nm">1</span>, <span class="nm">7</span>, <span class="nm">0.5</span>)) <span class="op">+</span>
+  <span class="fn">scale_y_log10</span>() <span class="op">+</span>
+  my_theme
+
+<span class="cm"># Annotation 注解</span>
+<span class="fn">ggplot</span>(mtcars, <span class="fn">aes</span>(wt, mpg)) <span class="op">+</span>
+  <span class="fn">geom_point</span>() <span class="op">+</span>
+  <span class="fn">geom_smooth</span>(method <span class="op">=</span> <span class="st">"lm"</span>) <span class="op">+</span>
+  <span class="fn">annotate</span>(<span class="st">"rect"</span>, xmin <span class="op">=</span> <span class="nm">2</span>, xmax <span class="op">=</span> <span class="nm">3</span>,
+           ymin <span class="op">=</span> <span class="nm">20</span>, ymax <span class="op">=</span> <span class="nm">30</span>,
+           fill <span class="op">=</span> <span class="st">"red"</span>, alpha <span class="op">=</span> <span class="nm">0.1</span>) <span class="op">+</span>
+  <span class="fn">annotate</span>(<span class="st">"text"</span>, x <span class="op">=</span> <span class="nm">2.5</span>, y <span class="op">=</span> <span class="nm">28</span>,
+           label <span class="op">=</span> <span class="st">"关注区域"</span>, color <span class="op">=</span> <span class="st">"red"</span>) <span class="op">+</span>
+  <span class="fn">annotate</span>(<span class="st">"segment"</span>, x <span class="op">=</span> <span class="nm">4</span>, xend <span class="op">=</span> <span class="nm">5</span>,
+           y <span class="op">=</span> <span class="nm">30</span>, yend <span class="op">=</span> <span class="nm">33</span>,
+           arrow <span class="op">=</span> <span class="fn">arrow</span>()) <span class="op">+</span>
+  <span class="fn">labs</span>(title <span class="op">=</span> <span class="st">"带注解的散点图"</span>)</code></pre>
+        </div>
+
+        <!-- ==================== 26. 函数式编程 ==================== -->
+        <h2 id="ch26">26. 函数式编程 (purrr)</h2>
+
+        <div class="principle">
+            <div class="principle-title">purrr 的核心思想</div>
+            <p><code>purrr</code> 提供了一套一致的函数式编程工具。<code>map</code> 系列替代 <code>lapply</code>，<code>possibly()</code> 和 <code>safely()</code> 处理错误，<code>reduce()</code> 折叠。这些函数与管道配合，让数据处理流水线更优雅。</p>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-lang">R</span>
+                <div class="code-dots"><span></span><span></span><span></span></div>
+            </div>
+            <pre><code data-lang="r"><span class="kw">library</span>(purrr)
+
+<span class="cm"># map 及其变体</span>
+nums <span class="op">&lt;-</span> <span class="fn">list</span>(a <span class="op">=</span> <span class="nm">1</span><span class="op">:</span><span class="nm">3</span>, b <span class="op">=</span> <span class="nm">4</span><span class="op">:</span><span class="nm">6</span>, c <span class="op">=</span> <span class="nm">7</span><span class="op">:</span><span class="nm">9</span>)
+<span class="fn">map</span>(nums, sum)           <span class="cm"># 返回 list</span>
+<span class="fn">map_dbl</span>(nums, mean)      <span class="cm"># 返回 double 向量</span>
+<span class="fn">map_chr</span>(nums, <span class="op">~</span><span class="fn">paste</span>(.x, collapse <span class="op">=</span> <span class="st">"-"</span>))
+
+<span class="cm"># map2：同时遍历两个列表</span>
+<span class="fn">map2</span>(<span class="fn">c</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>), <span class="fn">c</span>(<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>), <span class="op">~</span> .x <span class="op">+</span> .y)
+
+<span class="cm"># possibly：容错版 map</span>
+safe_log <span class="op">&lt;-</span> <span class="fn">possibly</span>(log, otherwise <span class="op">=</span> <span class="nm">NA_real_</span>)
+<span class="fn">map_dbl</span>(<span class="fn">c</span>(<span class="nm">1</span>, <span class="nm">-1</span>, <span class="nm">0</span>), safe_log)  <span class="cm"># -1 返回 NA</span>
+
+<span class="cm"># safely：捕获错误详情</span>
+safe_calc <span class="op">&lt;-</span> <span class="fn">safely</span>(<span class="op">~</span> <span class="nm">1</span> <span class="op">/</span> .x)
+results <span class="op">&lt;-</span> <span class="fn">map</span>(<span class="fn">list</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">0</span>), safe_calc)
+<span class="fn">map_dbl</span>(results, <span class="st">"result"</span>)  <span class="cm"># 提取结果</span>
+<span class="fn">map</span>(results, <span class="st">"error"</span>)       <span class="cm"># 提取错误</span>
+
+<span class="cm"># reduce：折叠/归约</span>
+<span class="fn">reduce</span>(<span class="fn">list</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>), <span class="op">~</span> .x <span class="op">+</span> .y)  <span class="cm"># 10</span>
+<span class="fn">reduce</span>(<span class="fn">list</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>), <span class="op">~</span> .x <span class="op">*</span> .y)  <span class="cm"># 24</span>
+
+<span class="cm"># accumulate：带中间结果的 reduce</span>
+<span class="fn">accumulate</span>(<span class="nm">1</span><span class="op">:</span><span class="nm">5</span>, <span class="op">~</span> .x <span class="op">+</span> .y)  <span class="cm"># 1, 3, 6, 10, 15</span>
+
+<span class="cm"># 实际应用：批量读取和处理</span>
+files <span class="op">&lt;-</span> <span class="fn">list.files</span>(<span class="st">"data/"</span>, pattern <span class="op">=</span> <span class="st">"\\.csv$"</span>)
+all_data <span class="op">&lt;-</span> files <span class="op">|&gt;</span>
+  <span class="fn">map</span>(<span class="op">~</span> <span class="fn">read_csv</span>(<span class="fn">paste0</span>(<span class="st">"data/"</span>, .x))) <span class="op">|&gt;</span>
+  <span class="fn">reduce</span>(bind_rows) <span class="op">|&gt;</span>
+  <span class="fn">filter</span>(year <span class="op">>=</span> <span class="nm">2020</span>)</code></pre>
+        </div>
+
+        <!-- ==================== 27. 时间序列分析 ==================== -->
+        <h2 id="ch27">27. 时间序列分析</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-lang">R</span>
+                <div class="code-dots"><span></span><span></span><span></span></div>
+            </div>
+            <pre><code data-lang="r"><span class="kw">library</span>(tsibble)
+<span class="kw">library</span>(fable)
+<span class="kw">library</span>(dplyr)
+
+<span class="cm"># 创建时间序列对象</span>
+ts_data <span class="op">&lt;-</span> <span class="fn">ts</span>(<span class="fn">rnorm</span>(<span class="nm">100</span>, mean <span class="op">=</span> <span class="nm">50</span>, sd <span class="op">=</span> <span class="nm">5</span>),
+               start <span class="op">=</span> <span class="fn">c</span>(<span class="nm">2020</span>, <span class="nm">1</span>), frequency <span class="op">=</span> <span class="nm">12</span>)
+
+<span class="cm"># 滑动窗口计算</span>
+rolling_mean <span class="op">&lt;-</span> <span class="kw">function</span>(x, window) {
+  <span class="fn">stats::filter</span>(x, <span class="fn">rep</span>(<span class="nm">1</span><span class="op">/</span>window, window), sides <span class="op">=</span> <span class="nm">1</span>)
+}
+
+<span class="cm"># 使用 slider 包（更灵活）</span>
+<span class="kw">library</span>(slider)
+df <span class="op">&lt;-</span> tibble(
+  date <span class="op">=</span> <span class="fn">seq</span>(<span class="fn">as.Date</span>(<span class="st">"2020-01-01"</span>), by <span class="op">=</span> <span class="st">"month"</span>, length.out <span class="op">=</span> <span class="nm">36</span>),
+  value <span class="op">=</span> <span class="fn">rnorm</span>(<span class="nm">36</span>, <span class="nm">100</span>, <span class="nm">15</span>)
+) <span class="op">|&gt;</span>
+  <span class="fn">mutate</span>(
+    ma_3 <span class="op">=</span> <span class="fn">slide_dbl</span>(value, mean, .before <span class="op">=</span> <span class="nm">2</span>),
+    ma_6 <span class="op">=</span> <span class="fn">slide_dbl</span>(value, mean, .before <span class="op">=</span> <span class="nm">5</span>),
+    cum_max <span class="op">=</span> <span class="fn">slide_dbl</span>(value, max, .complete <span class="op">=</span> <span class="kw">TRUE</span>)
+  )
+
+<span class="cm"># forecast 基础</span>
+<span class="kw">library</span>(forecast)
+fit <span class="op">&lt;-</span> <span class="fn">auto.arima</span>(AirPassengers)
+fc <span class="op">&lt;-</span> <span class="fn">forecast</span>(fit, h <span class="op">=</span> <span class="nm">12</span>)
+<span class="fn">autoplot</span>(fc) <span class="op">+</span> <span class="fn">labs</title</span>(<span class="st">"12个月预测"</span>)</code></pre>
+        </div>
+
+        <!-- ==================== 28. 文本挖掘 ==================== -->
+        <h2 id="ch28">28. 文本挖掘</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-lang">R</span>
+                <div class="code-dots"><span></span><span></span><span></span></div>
+            </div>
+            <pre><code data-lang="r"><span class="kw">library</span>(stringr)
+<span class="kw">library</span>(tidytext)
+<span class="kw">library</span>(tidyverse)
+
+<span class="cm"># stringr：字符串操作</span>
+text <span class="op">&lt;-</span> <span class="fn">c</span>(<span class="st">"Hello World"</span>, <span class="st">"R is great"</span>, <span class="st">"Data Science"</span>)
+
+<span class="fn">str_detect</span>(text, <span class="st">"great"</span>)        <span class="cm"># TRUE FALSE TRUE</span>
+<span class="fn">str_extract_all</span>(<span class="st">"a1b2c3"</span>, <span class="st">"\\d"</span>) <span class="cm"># 1 2 3</span>
+<span class="fn">str_replace_all</span>(text, <span class="st">" "</span>, <span class="st">"_"</span>)
+<span class="fn">str_pad</span>(<span class="st">"hi"</span>, <span class="nm">10</span>, side <span class="op">=</span> <span class="st">"both"</span>, pad <span class="op">=</span> <span class="st">"."</span>)
+
+<span class="cm"># tidytext：文本分析</span>
+<span class="kw">library</span>(janeaustenr)
+
+<span class="cm"># 分词</span>
+book_words <span class="op">&lt;-</span> <span class="fn">austen_books</span>() <span class="op">|&gt;</span>
+  <span class="fn">unnest_tokens</span>(word, text) <span class="op">|&gt;</span>
+  <span class="fn">count</span>(book, word, sort <span class="op">=</span> <span class="kw">TRUE</span>)
+
+<span class="cm"># TF-IDF</span>
+book_tfidf <span class="op">&lt;-</span> book_words <span class="op">|&gt;</span>
+  <span class="fn">bind_tf_idf</span>(word, book, n)
+
+<span class="cm"># 情感分析</span>
+<span class="kw">library</span>(textdata)
+book_sentiment <span class="op">&lt;-</span> <span class="fn">austen_books</span>() <span class="op">|&gt;</span>
+  <span class="fn">unnest_tokens</span>(word, text) <span class="op">|&gt;</span>
+  <span class="fn">inner_join</span>(<span class="fn">get_sentiments</span>(<span class="st">"bing"</span>)) <span class="op">|&gt;</span>
+  <span class="fn">count</span>(book, sentiment) <span class="op">|&gt;</span>
+  <span class="fn">pivot_wider</span>(names_from <span class="op">=</span> sentiment,
+              values_from <span class="op">=</span> n,
+              values_fill <span class="op">=</span> <span class="nm">0</span>) <span class="op">|&gt;</span>
+  <span class="fn">mutate</span>(sentiment_score <span class="op">=</span> positive <span class="op">-</span> negative)</code></pre>
+        </div>
+
+        <!-- ==================== 29. 交互式可视化 ==================== -->
+        <h2 id="ch29">29. 交互式可视化</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-lang">R</span>
+                <div class="code-dots"><span></span><span></span><span></span></div>
+            </div>
+            <pre><code data-lang="r"><span class="kw">library</span>(plotly)
+
+<span class="cm"># plotly 交互式图</span>
+p <span class="op">&lt;-</span> <span class="fn">ggplot</span>(mtcars, <span class="fn">aes</span>(wt, mpg, color <span class="op">=</span> <span class="fn">factor</span>(cyl),
+                        text <span class="op">=</span> <span class="fn">paste</span>(<span class="st">"Weight:"</span>, wt,
+                                   <span class="st">"MPG:"</span>, mpg))) <span class="op">+</span>
+  <span class="fn">geom_point</span>(size <span class="op">=</span> <span class="nm">3</span>) <span class="op">+</span>
+  <span class="fn">theme_minimal</span>()
+
+<span class="fn">ggplotly</span>(p, tooltip <span class="op">=</span> <span class="st">"text"</span>)
+
+<span class="cm"># 交互式数据表</span>
+<span class="kw">library</span>(DT)
+
+<span class="fn">datatable</span>(mtcars,
+          filter <span class="op">=</span> <span class="st">"top"</span>,
+          options <span class="op">=</span> <span class="fn">list</span>(
+            pageLength <span class="op">=</span> <span class="nm">10</span>,
+            searchHighlight <span class="op">=</span> <span class="kw">TRUE</span>
+          )) <span class="op">|&gt;</span>
+  <span class="fn">formatStyle</span>(<span class="st">"mpg"</span>,
+              background <span class="op">=</span> <span class="fn">styleColorBar</span>(mtcars<span class="op">$</span>mpg, <span class="st">"steelblue"</span>),
+              backgroundSize <span class="op">=</span> <span class="st">"98%"</span>,
+              backgroundRepeat <span class="op">=</span> <span class="st">"no-repeat"</span>)</code></pre>
+        </div>
+
+        <!-- ==================== 30. R Markdown ==================== -->
+        <h2 id="ch30">30. R Markdown</h2>
+
+        <div class="principle">
+            <div class="principle-title">可复现的文档</div>
+            <p>R Markdown 将 R 代码、结果和叙述文本结合在一个文档中。支持输出为 HTML、PDF、Word 等格式，是数据科学报告和可复现研究的标准工具。</p>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-lang">R Markdown</span>
+                <div class="code-dots"><span></span><span></span><span></span></div>
+            </div>
+            <pre><code data-lang="markdown">---
+title: "数据分析报告"
+author: "分析师"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    code_folding: hide
+    theme: flatly
+---
+
+## 概述
+
+本报告分析了 `r nrow(mtcars)` 辆汽车的数据。
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library(tidyverse)
+```
+
+## 数据探索
+
+```{r summary}
+mtcars |>
+  summarise(across(where(is.numeric),
+    list(mean = mean, sd = sd),
+    .names = "{.col}_{.fn}"))
+```
+
+## 可视化
+
+```{r plot, fig.width=8, fig.height=5}
+ggplot(mtcars, aes(wt, mpg, color = factor(cyl))) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(title = "重量与燃油效率")
+```
+
+## 结论
+
+重量与 MPG 呈负相关。</code></pre>
+        </div>
+
+        <!-- ==================== 31. Shiny 入门 ==================== -->
+        <h2 id="ch31">31. Shiny 入门</h2>
+
+        <div class="principle">
+            <div class="principle-title">交互式 Web 应用</div>
+            <p>Shiny 让 R 用户无需学习 HTML/CSS/JavaScript 即可构建交互式 Web 应用。通过响应式编程模型，用户输入自动驱动输出更新。</p>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-lang">R (Shiny)</span>
+                <div class="code-dots"><span></span><span></span><span></span></div>
+            </div>
+            <pre><code data-lang="r"><span class="kw">library</span>(shiny)
+<span class="kw">library</span>(ggplot2)
+
+ui <span class="op">&lt;-</span> <span class="fn">fluidPage</span>(
+  <span class="fn">titlePanel</span>(<span class="st">"汽车数据分析"</span>),
+  
+  <span class="fn">sidebarLayout</span>(
+    <span class="fn">sidebarPanel</span>(
+      <span class="fn">selectInput</span>(<span class="st">"x_var"</span>, <span class="st">"X 轴变量:"</span>,
+                  choices <span class="op">=</span> <span class="fn">names</span>(mtcars),
+                  selected <span class="op">=</span> <span class="st">"wt"</span>),
+      <span class="fn">selectInput</span>(<span class="st">"y_var"</span>, <span class="st">"Y 轴变量:"</span>,
+                  choices <span class="op">=</span> <span class="fn">names</span>(mtcars),
+                  selected <span class="op">=</span> <span class="st">"mpg"</span>),
+      <span class="fn">sliderInput</span>(<span class="st">"point_size"</span>, <span class="st">"点大小:"</span>,
+                  min <span class="op">=</span> <span class="nm">1</span>, max <span class="op">=</span> <span class="nm">10</span>, value <span class="op">=</span> <span class="nm">3</span>)
+    ),
+    
+    <span class="fn">mainPanel</span>(
+      <span class="fn">plotOutput</span>(<span class="st">"scatter"</span>),
+      <span class="fn">verbatimTextOutput</span>(<span class="st">"summary"</span>)
+    )
+  )
+)
+
+server <span class="op">&lt;-</span> <span class="kw">function</span>(input, output) {
+  output<span class="op">$</span>scatter <span class="op">&lt;-</span> <span class="fn">renderPlot</span>({
+    <span class="fn">ggplot</span>(mtcars, <span class="fn">aes</span>(.data[[input<span class="op">$</span>x_var]],
+                        .data[[input<span class="op">$</span>y_var]])) <span class="op">+</span>
+      <span class="fn">geom_point</span>(size <span class="op">=</span> input<span class="op">$</span>point_size) <span class="op">+</span>
+      <span class="fn">geom_smooth</span>(method <span class="op">=</span> <span class="st">"lm"</span>) <span class="op">+</span>
+      <span class="fn">theme_minimal</span>()
+  })
+  
+  output<span class="op">$</span>summary <span class="op">&lt;-</span> <span class="fn">renderPrint</span>({
+    <span class="fn">summary</span>(mtcars[<span class="kw">c</span>(input<span class="op">$</span>x_var, input<span class="op">$</span>y_var)])
+  })
+}
+
+<span class="fn">shinyApp</span>(ui <span class="op">=</span> ui, server <span class="op">=</span> server)</code></pre>
+        </div>
+
         <p style="margin-top: 60px; color: var(--text-muted); font-size: 13px; text-align: center;">
-            — R 语言完全教程 · 23 章 · 完 —
+            — R 语言完全教程 · 31 章 · 完 —
         </p>
     </main>
 

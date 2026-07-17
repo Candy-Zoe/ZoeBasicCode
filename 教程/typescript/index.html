@@ -60,6 +60,17 @@
         <a href="#section-20" class="sidebar-link"><span class="num">20</span>与JavaScript互操作</a>
         <a href="#section-21" class="sidebar-link"><span class="num">21</span>最佳实践</a>
     </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">高级专题</div>
+        <a href="#section-22" class="sidebar-link"><span class="num">22</span>装饰器</a>
+        <a href="#section-23" class="sidebar-link"><span class="num">23</span>命名空间与模块</a>
+        <a href="#section-24" class="sidebar-link"><span class="num">24</span>断言函数</a>
+        <a href="#section-25" class="sidebar-link"><span class="num">25</span>Never 类型进阶</a>
+        <a href="#section-26" class="sidebar-link"><span class="num">26</span>Keyof 与索引访问</a>
+        <a href="#section-27" class="sidebar-link"><span class="num">27</span>模板字面量类型进阶</a>
+        <a href="#section-28" class="sidebar-link"><span class="num">28</span>声明合并</a>
+        <a href="#section-29" class="sidebar-link"><span class="num">29</span>类型级编程</a>
+    </div>
 </nav>
 
 <!-- 主内容 -->
@@ -2529,6 +2540,516 @@ emailValidator.<span class="fn">validate</span>(<span class="st">"test@example.c
 
     <div class="tip">
         <strong>学习资源推荐：</strong>TypeScript 官方文档（typescriptlang.org）、TypeScript Playground（在线编辑器）、<code>type-challenges</code>（类型体操练习题）。持续练习和阅读优秀的类型定义代码是提高 TypeScript 技能的最佳途径。
+    </div>
+
+    <!-- ==================== 22. 装饰器 ==================== -->
+    <h2 id="section-22">22. 装饰器 (Decorators)</h2>
+
+    <div class="principle">
+        <div class="principle-title">Stage 3 装饰器</div>
+        <p>TypeScript 5.0+ 支持 TC39 Stage 3 标准的装饰器。装饰器是可以在类声明、方法、属性或访问器上附加元数据或修改行为的函数。它们是 Angular、NestJS 等框架的核心机制。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <span class="code-lang">TypeScript</span>
+            <div class="code-dots"><span></span><span></span><span></span></div>
+        </div>
+        <pre><code data-lang="typescript"><span class="cm">// 类装饰器</span>
+<span class="kw">function</span> <span class="fn">sealed</span>(<span class="tp">constructor</span>: <span class="tp">Function</span>) {
+    <span class="tp">Object</span>.<span class="fn">seal</span>(<span class="tp">constructor</span>);
+    <span class="tp">Object</span>.<span class="fn">seal</span>(<span class="tp">constructor</span>.<span class="kw">prototype</span>);
+}
+
+<span class="cm">// 方法装饰器</span>
+<span class="kw">function</span> <span class="fn">log</span>(
+    <span class="tp">target</span>: <span class="tp">any</span>,
+    <span class="tp">context</span>: <span class="tp">ClassMethodDecoratorContext</span>&lt;<span class="tp">any</span>, <span class="tp">any</span>&gt;
+) {
+    <span class="kw">const</span> name = <span class="tp">context</span>.name;
+    <span class="kw">return</span> <span class="kw">function</span>(<span class="kw">this</span>: <span class="tp">any</span>, ...<span class="tp">args</span>: <span class="tp">any</span>[]) {
+        <span class="tp">console</span>.<span class="fn">log</span>(<span class="st">`Calling ${<span class="nm">String</span>(name)} with`</span>, args);
+        <span class="kw">const</span> result = <span class="tp">context</span>.value.<span class="fn">call</span>(<span class="kw">this</span>, ...<span class="tp">args</span>);
+        <span class="tp">console</span>.<span class="fn">log</span>(<span class="st">`Result: ${<span class="nm">result</span>}`</span>);
+        <span class="kw">return</span> result;
+    };
+}
+
+<span class="cm">// 带参数的装饰器工厂</span>
+<span class="kw">function</span> <span class="fn">throttle</span>(<span class="tp">ms</span>: <span class="tp">number</span>) {
+    <span class="kw">return</span> <span class="kw">function</span>(
+        <span class="tp">target</span>: <span class="tp">any</span>,
+        <span class="tp">context</span>: <span class="tp">ClassMethodDecoratorContext</span>&lt;<span class="tp">any</span>, <span class="tp">Function</span>&gt;
+    ) {
+        <span class="kw">let</span> lastCall = <span class="nm">0</span>;
+        <span class="tp">context</span>.<span class="fn">addInitializer</span>(<span class="kw">function</span>() {
+            <span class="kw">const</span> original = <span class="kw">this</span>[<span class="tp">context</span>.name] <span class="kw">as</span> <span class="tp">Function</span>;
+            (<span class="kw">this</span> <span class="kw">as</span> <span class="tp">any</span>)[<span class="tp">context</span>.name] = <span class="kw">function</span>(...<span class="tp">args</span>: <span class="tp">any</span>[]) {
+                <span class="kw">const</span> now = <span class="tp">Date</span>.<span class="fn">now</span>();
+                <span class="kw">if</span> (now - lastCall >= ms) {
+                    lastCall = now;
+                    <span class="kw">return</span> original.<span class="fn">apply</span>(<span class="kw">this</span>, <span class="tp">args</span>);
+                }
+            };
+        });
+    };
+}
+
+<span class="cm">// 属性装饰器</span>
+<span class="kw">function</span> <span class="fn">range</span>(<span class="tp">min</span>: <span class="tp">number</span>, <span class="tp">max</span>: <span class="tp">number</span>) {
+    <span class="kw">return</span> <span class="kw">function</span>(
+        <span class="tp">target</span>: <span class="tp">any</span>,
+        <span class="tp">context</span>: <span class="tp">ClassFieldDecoratorContext</span>
+    ) {
+        <span class="tp">context</span>.<span class="fn">addInitializer</span>(<span class="kw">function</span>() {
+            <span class="kw">const</span> value = (<span class="kw">this</span> <span class="kw">as</span> <span class="tp">any</span>)[<span class="tp">context</span>.name];
+            <span class="kw">if</span> (value < min || value > max) {
+                <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">Error</span>(<span class="st">`${<span class="nm">String</span>(context.name)} must be between ${<span class="nm">min</span>} and ${<span class="nm">max</span>}`</span>);
+            }
+        });
+    };
+}
+
+<span class="cm">// 使用装饰器</span>
+@<span class="fn">sealed</span>
+<span class="kw">class</span> <span class="tp">User</span> {
+    @<span class="fn">range</span>(<span class="nm">0</span>, <span class="nm">150</span>)
+    age = <span class="nm">25</span>;
+
+    @<span class="fn">log</span>
+    <span class="fn">greet</span>(<span class="tp">name</span>: <span class="tp">string</span>): <span class="tp">string</span> {
+        <span class="kw">return</span> <span class="st">`Hello, ${<span class="nm">name</span>}`</span>;
+    }
+
+    @<span class="fn">throttle</span>(<span class="nm">1000</span>)
+    <span class="fn">save</span>() {
+        <span class="tp">console</span>.<span class="fn">log</span>(<span class="st">"Saved!"</span>);
+    }
+}</code></pre>
+    </div>
+
+    <!-- ==================== 23. 命名空间与模块 ==================== -->
+    <h2 id="section-23">23. 命名空间与模块模式</h2>
+
+    <div class="principle">
+        <div class="principle-title">模块 vs 命名空间</div>
+        <p>现代 TypeScript 优先使用 ES 模块（<code>import/export</code>）。命名空间（<code>namespace</code>）主要用于声明合并和类型分组。两者可以混合使用，但新项目应优先选择模块。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <span class="code-lang">TypeScript</span>
+            <div class="code-dots"><span></span><span></span><span></span></div>
+        </div>
+        <pre><code data-lang="typescript"><span class="cm">// ES 模块（推荐）</span>
+<span class="cm">// math.ts</span>
+<span class="kw">export</span> <span class="kw">const</span> <span class="fn">add</span> = (<span class="tp">a</span>: <span class="tp">number</span>, <span class="tp">b</span>: <span class="tp">number</span>) => a + b;
+<span class="kw">export</span> <span class="kw">const</span> <span class="fn">multiply</span> = (<span class="tp">a</span>: <span class="tp">number</span>, <span class="tp">b</span>: <span class="tp">number</span>) => a * b;
+
+<span class="cm">// main.ts</span>
+<span class="kw">import</span> { add, multiply } <span class="kw">from</span> <span class="st">'./math'</span>;
+
+<span class="cm">// 命名空间：用于类型分组和全局声明合并</span>
+<span class="kw">namespace</span> <span class="tp">API</span> {
+    <span class="kw">export</span> <span class="kw">interface</span> <span class="tp">User</span> {
+        id: <span class="tp">number</span>;
+        name: <span class="tp">string</span>;
+    }
+    
+    <span class="kw">export</span> <span class="kw">interface</span> <span class="tp">Response</span>&lt;<span class="tp">T</span>&gt; {
+        data: <span class="tp">T</span>;
+        status: <span class="tp">number</span>;
+    }
+    
+    <span class="kw">export</span> <span class="kw">type</span> <span class="tp">UserResponse</span> = <span class="tp">Response</span>&lt;<span class="tp">User</span>&gt;;
+}
+
+<span class="cm">// 声明合并：扩展全局类型</span>
+<span class="kw">declare</span> <span class="kw">global</span> {
+    <span class="kw">interface</span> <span class="tp">Window</span> {
+        appConfig: {
+            apiUrl: <span class="tp">string</span>;
+            debug: <span class="tp">boolean</span>;
+        };
+    }
+}
+
+<span class="cm">// 模块 vs 命名空间的最佳实践</span>
+<span class="cm">// 1. 新项目用 import/export</span>
+<span class="cm">// 2. 命名空间用于：声明合并、类型分组、全局类型扩展</span>
+<span class="cm">// 3. .d.ts 文件中的全局类型用 namespace</span>
+<span class="cm">// 4. 避免 namespace 用于运行时逻辑</span></code></pre>
+    </div>
+
+    <!-- ==================== 24. 断言函数 ==================== -->
+    <h2 id="section-24">24. 断言函数</h2>
+
+    <div class="principle">
+        <div class="principle-title">类型收窄的断言</div>
+        <p>断言函数（Assertion Functions）是一种特殊的函数，调用时如果条件不满足会抛出异常。TypeScript 知道调用后条件一定为真，从而自动收窄类型。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <span class="code-lang">TypeScript</span>
+            <div class="code-dots"><span></span><span></span><span></span></div>
+        </div>
+        <pre><code data-lang="typescript"><span class="cm">// 断言函数声明</span>
+<span class="kw">function</span> <span class="fn">assertString</span>(<span class="tp">value</span>: <span class="tp">unknown</span>): <span class="tp">asserts</span> <span class="tp">value</span> <span class="kw">is</span> <span class="tp">string</span> {
+    <span class="kw">if</span> (<span class="kw">typeof</span> value !== <span class="st">'string'</span>) {
+        <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">TypeError</span>(<span class="st">`Expected string, got ${<span class="kw">typeof</span> value}`</span>);
+    }
+}
+
+<span class="kw">function</span> <span class="fn">assertDefined</span>&lt;<span class="tp">T</span>&gt;(<span class="tp">value</span>: <span class="tp">T</span> | <span class="tp">null</span> | <span class="tp">undefined</span>, <span class="tp">name</span>: <span class="tp">string</span>): <span class="tp">asserts</span> <span class="tp">value</span> <span class="kw">is</span> <span class="tp">T</span> {
+    <span class="kw">if</span> (value == <span class="kw">null</span>) {
+        <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">Error</span>(<span class="st">`${<span class="nm">name</span>} is required`</span>);
+    }
+}
+
+<span class="kw">function</span> <span class="fn">assertNonEmpty</span>(<span class="tp">arr</span>: <span class="tp">unknown</span>[]): <span class="tp">asserts</span> <span class="tp">arr</span> <span class="kw">is</span> [<span class="tp">unknown</span>, ...<span class="tp">unknown</span>[]] {
+    <span class="kw">if</span> (arr.length === <span class="nm">0</span>) {
+        <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">Error</span>(<span class="st">'Array must not be empty'</span>);
+    }
+}
+
+<span class="cm">// 使用示例</span>
+<span class="kw">function</span> <span class="fn">processInput</span>(<span class="tp">input</span>: <span class="tp">unknown</span>) {
+    <span class="fn">assertString</span>(input);
+    <span class="cm">// 此处 input 类型自动收窄为 string</span>
+    <span class="tp">console</span>.<span class="fn">log</span>(input.<span class="fn">toUpperCase</span>());
+}
+
+<span class="kw">function</span> <span class="fn">getElement</span>(<span class="tp">id</span>: <span class="tp">string</span>): <span class="tp">HTMLElement</span> {
+    <span class="kw">const</span> el = document.<span class="fn">getElementById</span>(id);
+    <span class="fn">assertDefined</span>(el, <span class="st">'Element'</span>);
+    <span class="kw">return</span> el;  <span class="cm">// HTMLElement（非 null）</span>
+}
+
+<span class="cm">// 自定义守卫 vs 断言</span>
+<span class="kw">function</span> <span class="fn">isString</span>(<span class="tp">value</span>: <span class="tp">unknown</span>): <span class="tp">value</span> <span class="kw">is</span> <span class="tp">string</span> {
+    <span class="kw">return</span> <span class="kw">typeof</span> value === <span class="st">'string'</span>;
+}
+
+<span class="cm">// 选择哪个？</span>
+<span class="cm">// - isXxx：用于条件分支（if 语句）</span>
+<span class="cm">// - asserts X is Y：用于"不满足就抛异常"的场景</span></code></pre>
+    </div>
+
+    <!-- ==================== 25. Never 类型进阶 ==================== -->
+    <h2 id="section-25">25. Never 类型进阶</h2>
+
+    <div class="principle">
+        <div class="principle-title">穷尽性检查</div>
+        <p><code>never</code> 表示永远不会发生的值。它在联合类型穷尽检查、不可能的类型转换、以及类型体操中扮演关键角色。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <span class="code-lang">TypeScript</span>
+            <div class="code-dots"><span></span><span></span><span></span></div>
+        </div>
+        <pre><code data-lang="typescript"><span class="cm">// 穷尽性检查：确保所有情况都被处理</span>
+<span class="kw">type</span> <span class="tp">Shape</span> =
+    | { kind: <span class="st">'circle'</span>; radius: <span class="tp">number</span> }
+    | { kind: <span class="st">'rectangle'</span>; width: <span class="tp">number</span>; height: <span class="tp">number</span> }
+    | { kind: <span class="st">'triangle'</span>; base: <span class="tp">number</span>; height: <span class="tp">number</span> };
+
+<span class="kw">function</span> <span class="fn">area</span>(<span class="tp">shape</span>: <span class="tp">Shape</span>): <span class="tp">number</span> {
+    <span class="kw">switch</span> (shape.kind) {
+        <span class="kw">case</span> <span class="st">'circle'</span>:
+            <span class="kw">return</span> Math.PI * shape.radius ** <span class="nm">2</span>;
+        <span class="kw">case</span> <span class="st">'rectangle'</span>:
+            <span class="kw">return</span> shape.width * shape.height;
+        <span class="kw">case</span> <span class="st">'triangle'</span>:
+            <span class="kw">return</span> <span class="nm">0.5</span> * shape.base * shape.height;
+        <span class="kw">default</span>:
+            <span class="kw">const</span> _exhaustive: <span class="tp">never</span> = shape;
+            <span class="kw">return</span> _exhaustive;
+    }
+}
+
+<span class="cm">// never 在类型运算中</span>
+<span class="kw">type</span> <span class="tp">Exclude2</span>&lt;<span class="tp">T</span>, <span class="tp">U</span>&gt; = <span class="tp">T</span> <span class="kw">extends</span> <span class="tp">U</span> ? <span class="tp">never</span> : <span class="tp">T</span>;
+<span class="kw">type</span> <span class="tp">NonNullable2</span>&lt;<span class="tp">T</span>&gt; = <span class="tp">T</span> <span class="kw">extends</span> <span class="tp">null</span> | <span class="tp">undefined</span> ? <span class="tp">never</span> : <span class="tp">T</span>;
+
+<span class="cm">// never 表示空联合</span>
+<span class="kw">type</span> <span class="tp">EmptyUnion</span> = <span class="tp">never</span>;
+<span class="kw">type</span> <span class="tp">Test</span> = <span class="tp">EmptyUnion</span> <span class="kw">extends</span> <span class="tp">string</span> ? <span class="st">'yes'</span> : <span class="st">'no'</span>;
+<span class="cm">// 结果是 'no'（因为 never 是空联合，无成员可匹配）</span>
+
+<span class="cm">// never 用于不可能的函数</span>
+<span class="kw">function</span> <span class="fn">infiniteLoop</span>(): <span class="tp">never</span> {
+    <span class="kw">while</span> (<span class="kw">true</span>) {}
+}
+
+<span class="kw">function</span> <span class="fn">throwError</span>(<span class="tp">msg</span>: <span class="tp">string</span>): <span class="tp">never</span> {
+    <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">Error</span>(msg);
+}
+
+<span class="cm">// 使用 never 实现 assertNever</span>
+<span class="kw">function</span> <span class="fn">assertNever</span>(<span class="tp">x</span>: <span class="tp">never</span>): <span class="tp">never</span> {
+    <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">Error</span>(<span class="st">`Unexpected: ${<span class="nm">x</span>}`</span>);
+}</code></pre>
+    </div>
+
+    <!-- ==================== 26. Keyof 与索引访问 ==================== -->
+    <h2 id="section-26">26. Keyof 与索引访问模式</h2>
+
+    <div class="principle">
+        <div class="principle-title">类型安全的属性访问</div>
+        <p><code>keyof</code> 提取类型的所有键，<code>T[K]</code> 按键访问值类型。这两个操作符组合使用，可以实现类型安全的属性操作函数，是 TypeScript 类型编程的基础。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <span class="code-lang">TypeScript</span>
+            <div class="code-dots"><span></span><span></span><span></span></div>
+        </div>
+        <pre><code data-lang="typescript"><span class="cm">// keyof 基础</span>
+<span class="kw">interface</span> <span class="tp">Person</span> {
+    name: <span class="tp">string</span>;
+    age: <span class="tp">number</span>;
+    email: <span class="tp">string</span>;
+}
+
+<span class="kw">type</span> <span class="tp">PersonKeys</span> = <span class="kw">keyof</span> <span class="tp">Person</span>;
+<span class="cm">// "name" | "age" | "email"</span>
+
+<span class="cm">// 索引访问</span>
+<span class="kw">type</span> <span class="tp">NameType</span> = <span class="tp">Person</span>[<span class="st">'name'</span>];  <span class="cm">// string</span>
+<span class="kw">type</span> <span class="tp">ValueType</span> = <span class="tp">Person</span>[<span class="tp">PersonKeys</span>];  <span class="cm">// string | number</span>
+
+<span class="cm">// 类型安全的 getter</span>
+<span class="kw">function</span> <span class="fn">get</span>&lt;<span class="tp">T</span>, <span class="tp">K</span> <span class="kw">extends</span> <span class="kw">keyof</span> <span class="tp">T</span>&gt;(<span class="tp">obj</span>: <span class="tp">T</span>, <span class="tp">key</span>: <span class="tp">K</span>): <span class="tp">T</span>[<span class="tp">K</span>] {
+    <span class="kw">return</span> obj[key];
+}
+
+<span class="kw">const</span> person: <span class="tp">Person</span> = { name: <span class="st">'Alice'</span>, age: <span class="nm">30</span>, email: <span class="st">'a@b.com'</span> };
+<span class="kw">const</span> name = <span class="fn">get</span>(person, <span class="st">'name'</span>);  <span class="cm">// string（自动推断）</span>
+<span class="cm">// get(person, 'invalid');  // 编译错误</span>
+
+<span class="cm">// 类型安全的 setter</span>
+<span class="kw">function</span> <span class="fn">set</span>&lt;<span class="tp">T</span>, <span class="tp">K</span> <span class="kw">extends</span> <span class="kw">keyof</span> <span class="tp">T</span>&gt;(
+    <span class="tp">obj</span>: <span class="tp">T</span>, <span class="tp">key</span>: <span class="tp">K</span>, <span class="tp">value</span>: <span class="tp">T</span>[<span class="tp">K</span>]
+): <span class="tp">void</span> {
+    obj[key] = value;
+}
+
+<span class="cm">// pick：从对象中选取指定属性</span>
+<span class="kw">function</span> <span class="fn">pick</span>&lt;<span class="tp">T</span>, <span class="tp">K</span> <span class="kw">extends</span> <span class="kw">keyof</span> <span class="tp">T</span>&gt;(
+    <span class="tp">obj</span>: <span class="tp">T</span>, <span class="tp">keys</span>: <span class="tp">K</span>[]
+): <span class="tp">Pick</span>&lt;<span class="tp">T</span>, <span class="tp">K</span>&gt; {
+    <span class="kw">const</span> result = {} <span class="kw">as</span> <span class="tp">Pick</span>&lt;<span class="tp">T</span>, <span class="tp">K</span>&gt;;
+    <span class="kw">for</span> (<span class="kw">const</span> key <span class="kw">of</span> keys) {
+        result[key] = obj[key];
+    }
+    <span class="kw">return</span> result;
+}
+
+<span class="cm">// 类型安全的事件系统</span>
+<span class="kw">type</span> <span class="tp">EventMap</span> = {
+    click: { x: <span class="tp">number</span>; y: <span class="tp">number</span> };
+    keydown: { key: <span class="tp">string</span> };
+    scroll: { top: <span class="tp">number</span> };
+};
+
+<span class="kw">function</span> <span class="fn">on</span>&lt;<span class="tp">K</span> <span class="kw">extends</span> <span class="kw">keyof</span> <span class="tp">EventMap</span>&gt;(
+    <span class="tp">event</span>: <span class="tp">K</span>,
+    <span class="tp">handler</span>: (<span class="tp">payload</span>: <span class="tp">EventMap</span>[<span class="tp">K</span>]) => <span class="tp">void</span>
+) {
+    <span class="cm">// ... 实现</span>
+}
+
+<span class="fn">on</span>(<span class="st">'click'</span>, (<span class="tp">e</span>) => <span class="tp">console</span>.<span class="fn">log</span>(e.x, e.y));  <span class="cm">// OK</span>
+<span class="cm">// on('click', (e) => console.log(e.key));  // 编译错误</span></code></pre>
+    </div>
+
+    <!-- ==================== 27. 模板字面量类型进阶 ==================== -->
+    <h2 id="section-27">27. 模板字面量类型进阶</h2>
+
+    <div class="code-block">
+        <div class="code-header">
+            <span class="code-lang">TypeScript</span>
+            <div class="code-dots"><span></span><span></span><span></span></div>
+        </div>
+        <pre><code data-lang="typescript"><span class="cm">// 模板字面量类型运算</span>
+<span class="kw">type</span> <span class="tp">HTTPMethod</span> = <span class="st">'GET'</span> | <span class="st">'POST'</span> | <span class="st">'PUT'</span> | <span class="st">'DELETE'</span>;
+<span class="kw">type</span> <span class="tp">APIPath</span> = <span class="st">'/users'</span> | <span class="st">'/posts'</span> | <span class="st">'/comments'</span>;
+
+<span class="cm">// 组合：生成所有 HTTP 端点</span>
+<span class="kw">type</span> <span class="tp">Endpoint</span> = <span class="tp">HTTPMethod</span> | <span class="tp">APIPath</span>;
+<span class="cm">// 结果是联合类型，不是我们要的</span>
+
+<span class="cm">// 正确：交叉组合</span>
+<span class="kw">type</span> <span class="tp">APIEndpoint</span> = <span class="st">`<span class="tp">${<span class="tp">HTTPMethod</span>}</span> <span class="tp">${<span class="tp">APIPath</span>}</span>`</span>;
+<span class="cm">// "GET /users" | "GET /posts" | ... | "DELETE /comments"</span>
+
+<span class="cm">// 类型安全的路由参数提取</span>
+<span class="kw">type</span> <span class="tp">ExtractParams</span>&lt;<span class="tp">T</span> <span class="kw">extends</span> <span class="tp">string</span>&gt; =
+    <span class="tp">T</span> <span class="kw">extends</span> <span class="st">`:${<span class="kw">infer</span> <span class="tp">Param</span>}/${<span class="kw">infer</span> <span class="tp">Rest</span>}`</span>
+        ? { [<span class="tp">K</span> <span class="kw">in</span> <span class="tp">Param</span>]: <span class="tp">string</span> } & <span class="tp">ExtractParams</span>&lt;<span class="tp">Rest</span>&gt;
+        : <span class="tp">T</span> <span class="kw">extends</span> <span class="st">`:${<span class="kw">infer</span> <span class="tp">Param</span>}`</span>
+            ? { [<span class="tp">K</span> <span class="kw">in</span> <span class="tp">Param</span>]: <span class="tp">string</span> }
+            : {};
+
+<span class="kw">type</span> <span class="tp">RouteParams</span> = <span class="tp">ExtractParams</span>&lt;<span class="st">'/users/:id/posts/:postId'</span>&gt;
+<span class="cm">// { id: string; postId: string }</span>
+
+<span class="cm">// 类型安全的 SQL 列名</span>
+<span class="kw">type</span> <span class="tp">Column</span> = <span class="st">'users'</span> | <span class="st">'posts'</span>;
+<span class="kw">type</span> <span class="tp">Field</span> = <span class="st">'id'</span> | <span class="st">'name'</span> | <span class="st">'created_at'</span>;
+<span class="kw">type</span> <span class="tp">SelectExpr</span> = <span class="st">`SELECT <span class="tp">${<span class="tp">Field</span>}</span> FROM <span class="tp">${<span class="tp">Column</span>}</span>`</span>;
+
+<span class="cm">// Uppercase / Lowercase 工具类型</span>
+<span class="kw">type</span> <span class="tp">UpperName</span> = <span class="tp">Uppercase</span>&lt;<span class="st">'hello'</span>&gt;;  <span class="cm">// "HELLO"</span>
+<span class="kw">type</span> <span class="tp">LowerName</span> = <span class="tp">Lowercase</span>&lt;<span class="st">'HELLO'</span>&gt;;  <span class="cm">// "hello"</span>
+<span class="kw">type</span> <span class="tp">Cap</span> = <span class="tp">Capitalize</span>&lt;<span class="st">'hello'</span>&gt;;  <span class="cm">// "Hello"</span>
+<span class="kw">type</span> <span class="tp">Unc</span> = <span class="tp">Uncapitalize</span>&lt;<span class="st">'Hello'</span>&gt;;  <span class="cm">// "hello"</span>
+
+<span class="cm">// 驼峰转换</span>
+<span class="kw">type</span> <span class="tp">CamelCase</span>&lt;<span class="tp">T</span> <span class="kw">extends</span> <span class="tp">string</span>&gt; =
+    <span class="tp">T</span> <span class="kw">extends</span> <span class="st">`${<span class="kw">infer</span> <span class="tp">H</span>}_${<span class="kw">infer</span> <span class="tp">R</span>}`</span>
+        ? <span class="st">`<span class="tp">${<span class="tp">H</span>}</span><span class="tp">${<span class="tp">Capitalize</span>&lt;<span class="tp">CamelCase</span>&lt;<span class="tp">R</span>&gt;&gt;}</span>`</span>
+        : <span class="tp">T</span>;
+
+<span class="kw">type</span> <span class="tp">SnakeToCamel</span> = <span class="tp">CamelCase</span>&lt;<span class="st">'user_name'</span>&gt;;  <span class="cm">// "userName"</span>
+<span class="kw">type</span> <span class="tp">CamelToSnake</span> = <span class="st">`<span class="tp">${<span class="tp">Lowercase</span>&lt;<span class="tp">T</span>&gt;}`</span> <span class="cm">// 简化版</span></code></pre>
+    </div>
+
+    <!-- ==================== 28. 声明合并 ==================== -->
+    <h2 id="section-28">28. 声明合并</h2>
+
+    <div class="principle">
+        <div class="principle-title">合并同名声明</div>
+        <p>TypeScript 允许同名的接口、命名空间和类型自动合并。这是扩展第三方库类型（如给 Window 添加属性）和构建插件系统的核心机制。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <span class="code-lang">TypeScript</span>
+            <div class="code-dots"><span></span><span></span><span></span></div>
+        </div>
+        <pre><code data-lang="typescript"><span class="cm">// 接口合并</span>
+<span class="kw">interface</span> <span class="tp">Box</span> {
+    width: <span class="tp">number</span>;
+    height: <span class="tp">number</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Box</span> {  <span class="cm">// 自动合并</span>
+    depth: <span class="tp">number</span>;
+}
+
+<span class="kw">const</span> box: <span class="tp">Box</span> = { width: <span class="nm">1</span>, height: <span class="nm">2</span>, depth: <span class="nm">3</span> };
+
+<span class="cm">// 命名空间与接口合并（给类添加静态成员）</span>
+<span class="kw">interface</span> <span class="tp">jQuery</span> {
+    (selector: <span class="tp">string</span>): <span class="tp">JQueryElement</span>;
+}
+
+<span class="kw">namespace</span> <span class="tp">jQuery</span> {
+    <span class="kw">export</span> <span class="kw">const</span> version = <span class="st">'3.6.0'</span>;
+}
+
+<span class="cm">// 扩展全局类型</span>
+<span class="cm">// types/global.d.ts</span>
+<span class="kw">declare</span> <span class="kw">global</span> {
+    <span class="kw">interface</span> <span class="tp">Window</span> {
+        myApp: {
+            config: <span class="tp">Record</span>&lt;<span class="tp">string</span>, <span class="tp">unknown</span>&gt;;
+            version: <span class="tp">string</span>;
+        };
+    }
+}
+
+<span class="cm">// 扩展第三方库类型</span>
+<span class="kw">declare</span> <span class="kw">module</span> <span class="st">'express'</span> {
+    <span class="kw">interface</span> <span class="tp">Request</span> {
+        user?: {
+            id: <span class="tp">number</span>;
+            name: <span class="tp">string</span>;
+        };
+    }
+}
+
+<span class="cm">// 模块增强（给已有模块添加类型）</span>
+<span class="kw">declare</span> <span class="kw">module</span> <span class="st">'my-lib'</span> {
+    <span class="kw">interface</span> <span class="tp">Options</span> {
+        timeout?: <span class="tp">number</span>;
+    }
+}
+
+<span class="cm">// 使用：Express 的 req.user 现在有类型了</span>
+app.<span class="fn">get</span>(<span class="st">'/profile'</span>, (<span class="tp">req</span>, <span class="tp">res</span>) => {
+    <span class="tp">console</span>.<span class="fn">log</span>(req.user?.name);  <span class="cm">// 类型安全</span>
+});</code></pre>
+    </div>
+
+    <!-- ==================== 29. 类型级编程 ==================== -->
+    <h2 id="section-29">29. 类型级编程模式</h2>
+
+    <div class="principle">
+        <div class="principle-title">类型体操的系统方法</div>
+        <p>类型级编程利用 TypeScript 的条件类型、映射类型和递归类型，在编译时进行"计算"。掌握核心模式后，可以实现任意复杂的类型转换。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <span class="code-lang">TypeScript</span>
+            <div class="code-dots"><span></span><span></span><span></span></div>
+        </div>
+        <pre><code data-lang="typescript"><span class="cm">// 递归类型：深度 Readonly</span>
+<span class="kw">type</span> <span class="tp">DeepReadonly</span>&lt;<span class="tp">T</span>&gt; = <span class="tp">T</span> <span class="kw">extends</span> <span class="tp">object</span>
+    ? { <span class="kw">readonly</span> [<span class="tp">K</span> <span class="kw">in</span> <span class="kw">keyof</span> <span class="tp">T</span>]: <span class="tp">DeepReadonly</span>&lt;<span class="tp">T</span>[<span class="tp">K</span>]&gt; }
+    : <span class="tp">T</span>;
+
+<span class="cm">// 递归类型：Flatten 嵌套数组</span>
+<span class="kw">type</span> <span class="tp">DeepFlatten</span>&lt;<span class="tp">T</span>&gt; = <span class="tp">T</span> <span class="kw">extends</span> (<span class="kw">infer</span> <span class="tp">U</span>)[]
+    ? <span class="tp">DeepFlatten</span>&lt;<span class="tp">U</span>&gt;
+    : <span class="tp">T</span>;
+
+<span class="kw">type</span> <span class="tp">Nested</span> = (<span class="tp">number</span> | (<span class="tp">string</span> | <span class="tp">boolean</span>)[])[];
+<span class="kw">type</span> <span class="tp">Flat</span> = <span class="tp">DeepFlatten</span>&lt;<span class="tp">Nested</span>&gt;;  <span class="cm">// number | string | boolean</span>
+
+<span class="cm">// 递归类型：对象路径提取</span>
+<span class="kw">type</span> <span class="tp">ObjectPaths</span>&lt;<span class="tp">T</span>, <span class="tp">P</span> <span class="kw">extends</span> <span class="tp">string</span> = <span class="st">''</span>&gt; =
+    <span class="tp">T</span> <span class="kw">extends</span> <span class="tp">object</span>
+        ? {
+            [<span class="tp">K</span> <span class="kw">in</span> <span class="kw">keyof</span> <span class="tp">T</span>]: <span class="tp">K</span> <span class="kw">extends</span> <span class="tp">string</span>
+                ? <span class="tp">ObjectPaths</span>&lt;<span class="tp">T</span>[<span class="tp">K</span>], <span class="tp">P</span> <span class="kw">extends</span> <span class="st">''</span> ? <span class="tp">K</span> : <span class="st">`<span class="tp">${<span class="tp">P</span>}</span>.<span class="tp">${<span class="tp">K</span>}</span>`</span>&gt;
+                : <span class="kw">never</span>
+        }[<span class="kw">keyof</span> <span class="tp">T</span>]
+        : <span class="tp">P</span>;
+
+<span class="kw">interface</span> <span class="tp">Config</span> {
+    db: { host: <span class="tp">string</span>; port: <span class="tp">number</span> };
+    cache: { ttl: <span class="tp">number</span> };
+}
+
+<span class="kw">type</span> <span class="tp">ConfigPaths</span> = <span class="tp">ObjectPaths</span>&lt;<span class="tp">Config</span>&gt;;
+<span class="cm">// "db" | "db.host" | "db.port" | "cache" | "cache.ttl"</span>
+
+<span class="cm">// 条件类型分发</span>
+<span class="kw">type</span> <span class="tp">ToPromise</span>&lt;<span class="tp">T</span>&gt; = <span class="tp">T</span> <span class="kw">extends</span> <span class="tp">any</span> ? <span class="tp">Promise</span>&lt;<span class="tp">T</span>&gt; : <span class="kw">never</span>;
+<span class="kw">type</span> <span class="tp">A</span> = <span class="tp">ToPromise</span>&lt;<span class="tp">string</span> | <span class="tp">number</span>&gt;;  <span class="cm">// Promise&lt;string&gt; | Promise&lt;number&gt;</span>
+
+<span class="cm">// infer 模式：提取函数参数</span>
+<span class="kw">type</span> <span class="tp">FirstParam</span>&lt;<span class="tp">F</span>&gt; = <span class="tp">F</span> <span class="kw">extends</span> (<span class="tp">first</span>: <span class="kw">infer</span> <span class="tp">P</span>, ...<span class="tp">rest</span>: <span class="tp">any</span>[]) => <span class="tp">any</span>
+    ? <span class="tp">P</span> : <span class="kw">never</span>;
+
+<span class="cm">// infer 模式：提取 Promise 值类型</span>
+<span class="kw">type</span> <span class="tp">Awaited</span>&lt;<span class="tp">T</span>&gt; = <span class="tp">T</span> <span class="kw">extends</span> <span class="tp">Promise</span>&lt;<span class="kw">infer</span> <span class="tp">U</span>&gt;
+    ? <span class="tp">Awaited</span>&lt;<span class="tp">U</span>&gt;
+    : <span class="tp">T</span>;
+
+<span class="cm">// 实用：类型安全的 builder 模式</span>
+<span class="kw">type</span> <span class="tp">Builder</span>&lt;<span class="tp">T</span> <span class="kw">extends</span> <span class="tp">Record</span>&lt;<span class="tp">string</span>, <span class="tp">any</span>&gt;&gt; = {
+    [<span class="tp">K</span> <span class="kw">in</span> <span class="kw">keyof</span> <span class="tp">T</span>]?: (<span class="tp">value</span>: <span class="tp">T</span>[<span class="tp">K</span>]) => <span class="tp">Builder</span>&lt;<span class="tp">Omit</span>&lt;<span class="tp">T</span>, <span class="tp">K</span>&gt;&gt;
+} & { <span class="fn">build</span>(): <span class="tp">T</span> };</code></pre>
+    </div>
+
+    <div class="tip">
+        <strong>类型编程的思维路径</strong>：1) 先确定输入和输出类型；2) 用 <code>infer</code> 提取需要的部分；3) 用条件类型做分支；4) 用映射类型做变换；5) 用递归处理嵌套结构。掌握这五步，任何类型转换都能实现。
     </div>
 
 </main>

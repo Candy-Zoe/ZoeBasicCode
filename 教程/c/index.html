@@ -74,6 +74,17 @@
         <div class="sidebar-title">实战</div>
         <a class="sidebar-link" href="#ch27"><span class="num">27</span>最佳实践与常见陷阱</a>
     </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">高级专题</div>
+        <a class="sidebar-link" href="#ch28"><span class="num">28</span>可变参数函数</a>
+        <a class="sidebar-link" href="#ch29"><span class="num">29</span>位域与位操作</a>
+        <a class="sidebar-link" href="#ch30"><span class="num">30</span>_Generic 泛型选择</a>
+        <a class="sidebar-link" href="#ch31"><span class="num">31</span>原子操作</a>
+        <a class="sidebar-link" href="#ch32"><span class="num">32</span>边界检查</a>
+        <a class="sidebar-link" href="#ch33"><span class="num">33</span>自定义排序函数</a>
+        <a class="sidebar-link" href="#ch34"><span class="num">34</span>字符串处理高级</a>
+        <a class="sidebar-link" href="#ch35"><span class="num">35</span>内存对齐详解</a>
+    </div>
 </nav>
 
 <!-- Main Content -->
@@ -2258,6 +2269,691 @@ a = a + <span class="nm">1</span>;            <span class="cm">// ✗ 有符号�
     <p><strong>进阶阶段</strong>：学习结构体、文件 I/O、预处理器、位运算和多文件项目组织。</p>
     <p><strong>实战阶段</strong>：通过小型项目巩固知识——实现简单链表、二叉树、文件解析器、网络编程等。</p>
     <p><strong>推荐资源</strong>：《C 程序设计语言》（K&R）、《C 和指针》、《C 专家编程》、《C 陷阱与缺陷》。</p>
+</div>
+
+<!-- ==================== 28. 可变参数函数 ==================== -->
+<h2 id="ch28">28. 可变参数函数</h2>
+
+<div class="principle">
+    <div class="principle-title">可变参数的原理</div>
+    <p>C 语言通过 <code>&lt;stdarg.h&gt;</code> 头文件提供可变参数支持。函数签名中使用 <code>...</code> 表示可变参数部分，必须至少有一个固定参数。运行时通过 <code>va_list</code> 类型和 <code>va_start</code>、<code>va_arg</code>、<code>va_end</code> 宏逐个提取参数。</p>
+    <p><strong>关键限制</strong>：可变参数没有类型安全，函数必须通过固定参数或约定（如最后一个参数为 NULL 哨兵）确定参数数量和类型。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="c"><span class="kw">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;stdarg.h&gt;</span>
+
+<span class="cm">// 基本可变参数函数：求和</span>
+<span class="tp">int</span> <span class="fn">sum</span>(<span class="tp">int</span> count, ...) {
+    <span class="tp">va_list</span> args;
+    <span class="fn">va_start</span>(args, count);  <span class="cm">// 从 count 之后开始</span>
+    
+    <span class="tp">int</span> total = <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="tp">int</span> i = <span class="nm">0</span>; i < count; i++) {
+        total += <span class="fn">va_arg</span>(args, <span class="tp">int</span>);  <span class="cm">// 按 int 类型提取</span>
+    }
+    
+    <span class="fn">va_end</span>(args);  <span class="cm">// 清理</span>
+    <span class="kw">return</span> total;
+}
+
+<span class="cm">// 使用 NULL 哨兵的可变参数函数</span>
+<span class="tp">void</span> <span class="fn">print_strings</span>(<span class="kw">const</span> <span class="tp">char</span>* first, ...) {
+    <span class="tp">va_list</span> args;
+    <span class="fn">va_start</span>(args, first);
+    
+    <span class="kw">const</span> <span class="tp">char</span>* str = first;
+    <span class="kw">while</span> (str != <span class="nm">NULL</span>) {
+        <span class="fn">printf</span>(<span class="st">"%s "</span>, str);
+        str = <span class="fn">va_arg</span>(args, <span class="kw">const</span> <span class="tp">char</span>*);
+    }
+    
+    <span class="fn">va_end</span>(args);
+    <span class="fn">printf</span>(<span class="st">"\n"</span>);
+}
+
+<span class="cm">// 自定义 printf 格式化函数（简化版）</span>
+<span class="tp">void</span> <span class="fn">my_printf</span>(<span class="kw">const</span> <span class="tp">char</span>* fmt, ...) {
+    <span class="tp">va_list</span> args;
+    <span class="fn">va_start</span>(args, fmt);
+    
+    <span class="kw">while</span> (*fmt) {
+        <span class="kw">if</span> (*fmt == <span class="st">'%'</span>) {
+            fmt++;
+            <span class="kw">switch</span> (*fmt) {
+                <span class="kw">case</span> <span class="st">'d'</span>: <span class="fn">printf</span>(<span class="st">"%d"</span>, <span class="fn">va_arg</span>(args, <span class="tp">int</span>)); <span class="kw">break</span>;
+                <span class="kw">case</span> <span class="st">'f'</span>: <span class="fn">printf</span>(<span class="st">"%f"</span>, <span class="fn">va_arg</span>(args, <span class="tp">double</span>)); <span class="kw">break</span>;
+                <span class="kw">case</span> <span class="st">'s'</span>: <span class="fn">printf</span>(<span class="st">"%s"</span>, <span class="fn">va_arg</span>(args, <span class="tp">char</span>*)); <span class="kw">break</span>;
+                <span class="kw">case</span> <span class="st">'c'</span>: <span class="fn">printf</span>(<span class="st">"%c"</span>, (<span class="tp">char</span>)<span class="fn">va_arg</span>(args, <span class="tp">int</span>)); <span class="kw">break</span>;
+            }
+        } <span class="kw">else</span> {
+            <span class="fn">putchar</span>(*fmt);
+        }
+        fmt++;
+    }
+    
+    <span class="fn">va_end</span>(args);
+}
+
+<span class="tp">int</span> <span class="fn">main</span>(<span class="tp">void</span>) {
+    <span class="fn">printf</span>(<span class="st">"Sum: %d\n"</span>, <span class="fn">sum</span>(<span class="nm">4</span>, <span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>));
+    <span class="fn">print_strings</span>(<span class="st">"Hello"</span>, <span class="st">"World"</span>, <span class="st">"Lua"</span>, <span class="nm">NULL</span>);
+    <span class="fn">my_printf</span>(<span class="st">"Name: %s, Age: %d\n"</span>, <span class="st">"Alice"</span>, <span class="nm">30</span>);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<div class="tip">
+<strong>va_copy 宏</strong>：C99 引入了 <code>va_copy(dest, src)</code>，用于复制 <code>va_list</code>，在需要多次遍历可变参数时非常有用。使用后记得调用 <code>va_end(dest)</code>。
+</div>
+
+<!-- ==================== 29. 位域与位操作 ==================== -->
+<h2 id="ch29">29. 位域与位操作</h2>
+
+<div class="principle">
+    <div class="principle-title">位域的意义</div>
+    <p>位域（Bit Fields）允许在结构体中指定成员占用的位数，常用于硬件寄存器映射、网络协议解析和节省内存的紧凑数据结构。位域的内存布局是<strong>实现定义的</strong>，不同编译器可能有不同的对齐和打包策略。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="c"><span class="kw">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;stdint.h&gt;</span>
+
+<span class="cm">// 位域结构体：网络包头</span>
+<span class="kw">struct</span> <span class="tp">packet_flags</span> {
+    <span class="tp">unsigned</span> <span class="tp">int</span> version  : <span class="nm">4</span>;   <span class="cm">// 4 位</span>
+    <span class="tp">unsigned</span> <span class="tp">int</span> ihl      : <span class="nm">4</span>;   <span class="cm">// 4 位</span>
+    <span class="tp">unsigned</span> <span class="tp">int</span> dscp     : <span class="nm">6</span>;   <span class="cm">// 6 位</span>
+    <span class="tp">unsigned</span> <span class="tp">int</span> ecn      : <span class="nm">2</span>;   <span class="cm">// 2 位</span>
+    <span class="tp">unsigned</span> <span class="tp">int</span> length   : <span class="nm">16</span>;  <span class="cm">// 16 位</span>
+};
+
+<span class="cm">// 颜色结构体（RGBA）</span>
+<span class="kw">struct</span> <span class="tp">color_rgba</span> {
+    <span class="tp">uint8_t</span> r : <span class="nm">8</span>;
+    <span class="tp">uint8_t</span> g : <span class="nm">8</span>;
+    <span class="tp">uint8_t</span> b : <span class="nm">8</span>;
+    <span class="tp">uint8_t</span> a : <span class="nm">8</span>;
+};
+
+<span class="cm">// 位操作技巧</span>
+<span class="tp">void</span> <span class="fn">bit_tricks</span>(<span class="tp">void</span>) {
+    <span class="tp">uint32_t</span> x = <span class="nm">0xFF00FF00</span>;
+    
+    <span class="cm">// 检查第 n 位是否为 1</span>
+    <span class="tp">int</span> n = <span class="nm">4</span>;
+    <span class="tp">int</span> is_set = (x >> n) & <span class="nm">1</span>;
+    
+    <span class="cm">// 设置第 n 位为 1</span>
+    x |= (<span class="nm">1</span>u << n);
+    
+    <span class="cm">// 清除第 n 位</span>
+    x &= ~(<span class="nm">1</span>u << n);
+    
+    <span class="cm">// 翻转第 n 位</span>
+    x ^= (<span class="nm">1</span>u << n);
+    
+    <span class="cm">// 计算二进制中 1 的个数（Brian Kernighan 算法）</span>
+    <span class="tp">uint32_t</span> v = <span class="nm">0x12345678</span>;
+    <span class="tp">int</span> count = <span class="nm">0</span>;
+    <span class="kw">while</span> (v) {
+        v &= (v - <span class="nm">1</span>);  <span class="cm">// 清除最低位的 1</span>
+        count++;
+    }
+    <span class="fn">printf</span>(<span class="st">"Popcount: %d\n"</span>, count);
+    
+    <span class="cm">// 检查是否为 2 的幂</span>
+    <span class="tp">int</span> is_pow2 = (x != <span class="nm">0</span>) && ((x & (x - <span class="nm">1</span>)) == <span class="nm">0</span>);
+    
+    <span class="cm">// 位掩码遍历子集</span>
+    <span class="tp">uint8_t</span> mask = <span class="nm">0b10110</span>;
+    <span class="tp">uint8_t</span> subset = mask;
+    <span class="kw">do</span> {
+        <span class="fn">printf</span>(<span class="st">"Subset: 0b%05b\n"</span>, subset);
+        subset = (subset - <span class="nm">1</span>) & mask;
+    } <span class="kw">while</span> (subset != mask);
+}
+
+<span class="tp">int</span> <span class="fn">main</span>(<span class="tp">void</span>) {
+    <span class="kw">struct</span> <span class="tp">color_rgba</span> c = {.<span class="nm">r</span>=<span class="nm">255</span>, .<span class="nm">g</span>=<span class="nm">128</span>, .<span class="nm">b</span>=<span class="nm">0</span>, .<span class="nm">a</span>=<span class="nm">255</span>};
+    <span class="fn">printf</span>(<span class="st">"Color size: %zu bytes\n"</span>, <span class="kw">sizeof</span>(c));
+    
+    <span class="kw">struct</span> <span class="tp">packet_flags</span> p = {.<span class="nm">version</span>=<span class="nm">4</span>, .<span class="nm">ihl</span>=<span class="nm">5</span>};
+    <span class="fn">printf</span>(<span class="st">"Packet flags size: %zu bytes\n"</span>, <span class="kw">sizeof</span>(p));
+    
+    <span class="fn">bit_tricks</span>();
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 30. _Generic 泛型选择 ==================== -->
+<h2 id="ch30">30. _Generic 泛型选择 (C11)</h2>
+
+<div class="principle">
+    <div class="principle-title">C11 泛型选择</div>
+    <p><code>_Generic</code> 是 C11 引入的编译时类型分发机制，类似于其他语言的模式匹配。它根据表达式的类型选择不同的代码分支，实现类型安全的泛型函数。这是 C 语言中最接近"泛型编程"的特性。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="c"><span class="kw">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;math.h&gt;</span>
+
+<span class="cm">// _Generic 实现类型安全的"通用"函数</span>
+<span class="kw">#define</span> <span class="fn">SQUARE</span>(x) <span class="fn">_Generic</span>((x), \
+    <span class="tp">int</span>:       (x) * (x), \
+    <span class="tp">long</span>:      (x) * (x), \
+    <span class="tp">float</span>:     (x) * (x), \
+    <span class="tp">double</span>:    (x) * (x), \
+    <span class="tp">long</span> <span class="tp">long</span>: (x) * (x), \
+    <span class="kw">default</span>:   <span class="fn">SQUARE_generic</span>(x) \
+)
+
+<span class="cm">// 自动选择正确的 printf 格式符</span>
+<span class="kw">#define</span> <span class="fn">PRINT_VAL</span>(x) <span class="fn">printf</span>(<span class="fn">_Generic</span>((x), \
+    <span class="tp">int</span>:       <span class="st">"%d\n"</span>, \
+    <span class="tp">long</span>:      <span class="st">"%ld\n"</span>, \
+    <span class="tp">float</span>:     <span class="st">"%f\n"</span>, \
+    <span class="tp">double</span>:    <span class="st">"%lf\n"</span>, \
+    <span class="kw">const</span> <span class="tp">char</span>*: <span class="st">"%s\n"</span>, \
+    <span class="tp">char</span>*:      <span class="st">"%s\n"</span> \
+), (x))
+
+<span class="cm">// 计算绝对值的泛型版本</span>
+<span class="kw">#define</span> <span class="fn">ABS</span>(x) <span class="fn">_Generic</span>((x), \
+    <span class="tp">int</span>:       <span class="fn">abs</span>(x), \
+    <span class="tp">long</span>:      <span class="fn">labs</span>(x), \
+    <span class="tp">long</span> <span class="tp">long</span>: <span class="fn">llabs</span>(x), \
+    <span class="tp">float</span>:     <span class="fn">fabsf</span>(x), \
+    <span class="tp">double</span>:    <span class="fn">fabs</span>(x) \
+)
+
+<span class="cm">// 类型名称字符串</span>
+<span class="kw">#define</span> <span class="fn">TYPE_NAME</span>(x) <span class="fn">_Generic</span>((x), \
+    <span class="tp">int</span>:       <span class="st">"int"</span>, \
+    <span class="tp">long</span>:      <span class="st">"long"</span>, \
+    <span class="tp">float</span>:     <span class="st">"float"</span>, \
+    <span class="tp">double</span>:    <span class="st">"double"</span>, \
+    <span class="tp">char</span>*:     <span class="st">"string"</span>, \
+    <span class="kw">default</span>:   <span class="st">"unknown"</span> \
+)
+
+<span class="tp">int</span> <span class="fn">main</span>(<span class="tp">void</span>) {
+    <span class="fn">PRINT_VAL</span>(<span class="nm">42</span>);          <span class="cm">// 输出: 42</span>
+    <span class="fn">PRINT_VAL</span>(<span class="nm">3.14</span>);        <span class="cm">// 输出: 3.140000</span>
+    <span class="fn">PRINT_VAL</span>(<span class="st">"hello"</span>);     <span class="cm">// 输出: hello</span>
+    
+    <span class="fn">printf</span>(<span class="st">"abs(-5) = %d\n"</span>, <span class="fn">ABS</span>(-<span class="nm">5</span>));
+    <span class="fn">printf</span>(<span class="st">"Type of 3.14: %s\n"</span>, <span class="fn">TYPE_NAME</span>(<span class="nm">3.14</span>));
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 31. 原子操作 ==================== -->
+<h2 id="ch31">31. 原子操作 (C11)</h2>
+
+<div class="principle">
+    <div class="principle-title">原子类型与内存序</div>
+    <p>C11 引入了 <code>&lt;stdatomic.h&gt;</code> 头文件，提供无锁并发编程支持。<code>_Atomic</code> 类型限定符确保对变量的读写操作是原子的，不会被其他线程的读写操作"撕裂"。配合内存序（memory ordering）指令，可以实现高效的无锁数据结构。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="c"><span class="kw">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;stdatomic.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;threads.h&gt;</span>
+
+<span class="cm">// 原子计数器</span>
+<span class="kw">static</span> <span class="tp">_Atomic</span> <span class="tp">int</span> counter = <span class="nm">0</span>;
+
+<span class="cm">// 原子标志</span>
+<span class="kw">static</span> <span class="tp">_Atomic</span> <span class="tp">int</span> ready = <span class="nm">0</span>;
+
+<span class="tp">void</span> <span class="fn">worker</span>(<span class="tp">void</span>* arg) {
+    <span class="tp">int</span> id = *(<span class="tp">int</span>*)arg;
+    
+    <span class="cm">// 原子自增（默认 memory_order_seq_cst）</span>
+    <span class="fn">atomic_fetch_add</span>(&counter, <span class="nm">1</span>);
+    
+    <span class="cm">// 等待主线程发信号</span>
+    <span class="kw">while</span> (!<span class="fn">atomic_load_explicit</span>(&ready, <span class="tp">memory_order_acquire</span>)) {
+        <span class="cm">// 自旋等待</span>
+    }
+    
+    <span class="fn">printf</span>(<span class="st">"Worker %d done, counter = %d\n"</span>, id,
+           <span class="fn">atomic_load</span>(&counter));
+}
+
+<span class="cm">// 自旋锁实现</span>
+<span class="kw">typedef</span> <span class="kw">struct</span> {
+    <span class="tp">_Atomic</span> <span class="tp">int</span> lock;
+} <span class="tp">spinlock_t</span>;
+
+<span class="tp">void</span> <span class="fn">spinlock_lock</span>(<span class="tp">spinlock_t</span>* s) {
+    <span class="kw">while</span> (<span class="fn">atomic_exchange_explicit</span>(&s->lock, <span class="nm">1</span>, <span class="tp">memory_order_acquire</span>)) {
+        <span class="cm">// 自旋</span>
+    }
+}
+
+<span class="tp">void</span> <span class="fn">spinlock_unlock</span>(<span class="tp">spinlock_t</span>* s) {
+    <span class="fn">atomic_store_explicit</span>(&s->lock, <span class="nm">0</span>, <span class="tp">memory_order_release</span>);
+}
+
+<span class="cm">// CAS (Compare-And-Swap) 实现无锁栈</span>
+<span class="kw">typedef</span> <span class="kw">struct</span> <span class="tp">node</span> {
+    <span class="tp">int</span> data;
+    <span class="kw">struct</span> <span class="tp">node</span>* next;
+} <span class="tp">node_t</span>;
+
+<span class="kw">static</span> <span class="tp">_Atomic</span>(<span class="tp">node_t</span>*) stack_top = <span class="nm">NULL</span>;
+
+<span class="tp">void</span> <span class="fn">push</span>(<span class="tp">int</span> value) {
+    <span class="tp">node_t</span>* new_node = <span class="fn">malloc</span>(<span class="kw">sizeof</span>(*new_node));
+    new_node->data = value;
+    <span class="tp">node_t</span>* old_top;
+    <span class="kw">do</span> {
+        old_top = <span class="fn">atomic_load</span>(&stack_top);
+        new_node->next = old_top;
+    } <span class="kw">while</span> (!<span class="fn">atomic_compare_exchange_weak</span>(
+        &stack_top, &old_top, new_node));
+}
+
+<span class="tp">int</span> <span class="fn">main</span>(<span class="tp">void</span>) {
+    <span class="tp">thrd_t</span> threads[<span class="nm">4</span>];
+    <span class="tp">int</span> ids[<span class="nm">4</span>] = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>};
+    
+    <span class="kw">for</span> (<span class="tp">int</span> i = <span class="nm">0</span>; i < <span class="nm">4</span>; i++)
+        <span class="fn">thrd_create</span>(&threads[i], worker, &ids[i]);
+    
+    <span class="fn">atomic_store</span>(&ready, <span class="nm">1</span>);  <span class="cm">// 发信号</span>
+    
+    <span class="kw">for</span> (<span class="tp">int</span> i = <span class="nm">0</span>; i < <span class="nm">4</span>; i++)
+        <span class="fn">thrd_join</span>(threads[i], <span class="nm">NULL</span>);
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 32. 边界检查 ==================== -->
+<h2 id="ch32">32. 边界检查 (Annex K)</h2>
+
+<div class="principle">
+    <div class="principle-title">安全的字符串和内存操作</div>
+    <p>C11 Annex K（可选附件）提供了一系列带边界检查的函数替代品，如 <code>strcpy_s</code>、<code>strcat_s</code>、<code>scanf_s</code> 等。这些函数要求调用者提供目标缓冲区大小，在检测到越界时调用约束处理器（通常终止程序），从而避免缓冲区溢出。</p>
+    <p><strong>注意</strong>：Annex K 在 Linux/GCC 上支持有限，MSVC 完全支持。实际项目中更推荐使用 <code>strncpy</code>、<code>snprintf</code> 等可移植方案。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="c"><span class="kw">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string.h&gt;</span>
+
+<span class="cm">// 约束处理器（Annex K 的回调函数）</span>
+<span class="tp">int</span> <span class="fn">my_constraint_handler</span>(<span class="kw">const</span> <span class="tp">char</span>* msg, <span class="kw">const</span> <span class="tp">char</span>* file,
+                          <span class="tp">int</span> line, <span class="tp">errno_t</span> err) {
+    <span class="fn">fprintf</span>(stderr, <span class="st">"SECURITY: %s (file: %s, line: %d, err: %d)\n"</span>,
+            msg, file, line, err);
+    <span class="kw">return</span> <span class="nm">0</span>;  <span class="cm">// 0=继续, 非0=终止</span>
+}
+
+<span class="cm">// 可移植的字符串安全操作（不依赖 Annex K）</span>
+<span class="tp">errno_t</span> <span class="fn">safe_strcpy</span>(<span class="tp">char</span>* dest, <span class="tp">size_t</span> destsz,
+                    <span class="kw">const</span> <span class="tp">char</span>* src) {
+    <span class="tp">size_t</span> len = <span class="fn">strlen</span>(src);
+    <span class="kw">if</span> (len >= destsz) {
+        <span class="kw">if</span> (destsz > <span class="nm">0</span>) {
+            <span class="fn">memcpy</span>(dest, src, destsz - <span class="nm">1</span>);
+            dest[destsz - <span class="nm">1</span>] = <span class="st">'\0'</span>;
+        }
+        <span class="kw">return</span> <span class="nm">1</span>;  <span class="cm">// 截断</span>
+    }
+    <span class="fn">memcpy</span>(dest, src, len + <span class="nm">1</span>);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}
+
+<span class="cm">// 使用 snprintf 安全格式化</span>
+<span class="tp">void</span> <span class="fn">safe_format</span>(<span class="tp">char</span>* buf, <span class="tp">size_t</span> sz, <span class="kw">const</span> <span class="tp">char</span>* fmt, ...) {
+    <span class="tp">va_list</span> args;
+    <span class="fn">va_start</span>(args, fmt);
+    <span class="tp">int</span> n = <span class="fn">vsnprintf</span>(buf, sz, fmt, args);
+    <span class="fn">va_end</span>(args);
+    
+    <span class="kw">if</span> (n < <span class="nm">0</span>) {
+        <span class="fn">fprintf</span>(stderr, <span class="st">"Encoding error\n"</span>);
+    } <span class="kw">else</span> <span class="kw">if</span> ((<span class="tp">size_t</span>)n >= sz) {
+        <span class="fn">fprintf</span>(stderr, <span class="st">"Truncated: needed %d, had %zu\n"</span>, n, sz);
+    }
+}
+
+<span class="cm">// 数组越界检查包装</span>
+<span class="kw">#define</span> <span class="fn">SAFE_GET</span>(arr, idx, size) \
+    ((idx) >= <span class="nm">0</span> && (idx) < (size) ? (arr)[(idx)] : \
+     (<span class="fn">fprintf</span>(stderr, <span class="st">"Bounds check failed: %s:%d\n"</span>, \
+             __FILE__, __LINE__), (arr)[<span class="nm">0</span>]))
+
+<span class="tp">int</span> <span class="fn">main</span>(<span class="tp">void</span>) {
+    <span class="tp">char</span> buf[<span class="nm">32</span>];
+    <span class="fn">safe_strcpy</span>(buf, <span class="kw">sizeof</span>(buf), <span class="st">"Hello, World!"</span>);
+    <span class="fn">printf</span>(<span class="st">"%s\n"</span>, buf);
+    
+    <span class="fn">safe_format</span>(buf, <span class="kw">sizeof</span>(buf), <span class="st">"%s = %d"</span>, <span class="st">"score"</span>, <span class="nm">100</span>);
+    <span class="fn">printf</span>(<span class="st">"%s\n"</span>, buf);
+    
+    <span class="tp">int</span> arr[] = {<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>};
+    <span class="fn">printf</span>(<span class="st">"arr[1] = %d\n"</span>, <span class="fn">SAFE_GET</span>(arr, <span class="nm">1</span>, <span class="nm">3</span>));
+    <span class="fn">printf</span>(<span class="st">"arr[5] = %d\n"</span>, <span class="fn">SAFE_GET</span>(arr, <span class="nm">5</span>, <span class="nm">3</span>));  <span class="cm">// 安全失败</span>
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 33. 自定义排序函数 ==================== -->
+<h2 id="ch33">33. 自定义排序函数 (qsort)</h2>
+
+<div class="principle">
+    <div class="principle-title">qsort 的使用模式</div>
+    <p><code>qsort</code> 是 C 标准库提供的通用排序函数，通过函数指针实现比较逻辑的自定义。回调函数返回负数、零或正数来表示元素的大小关系。掌握 qsort 的不同用法是 C 语言进阶的重要技能。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="c"><span class="kw">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;stdlib.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string.h&gt;</span>
+
+<span class="cm">// 整数升序比较</span>
+<span class="tp">int</span> <span class="fn">cmp_int_asc</span>(<span class="kw">const</span> <span class="tp">void</span>* a, <span class="kw">const</span> <span class="tp">void</span>* b) {
+    <span class="kw">return</span> *(<span class="tp">int</span>*)a - *(<span class="tp">int</span>*)b;
+}
+
+<span class="cm">// 整数降序比较</span>
+<span class="tp">int</span> <span class="fn">cmp_int_desc</span>(<span class="kw">const</span> <span class="tp">void</span>* a, <span class="kw">const</span> <span class="tp">void</span>* b) {
+    <span class="kw">return</span> *(<span class="tp">int</span>*)b - *(<span class="tp">int</span>*)a;
+}
+
+<span class="cm">// 浮点数比较（安全版本，避免减法溢出）</span>
+<span class="tp">int</span> <span class="fn">cmp_double</span>(<span class="kw">const</span> <span class="tp">void</span>* a, <span class="kw">const</span> <span class="tp">void</span>* b) {
+    <span class="tp">double</span> da = *(<span class="tp">double</span>*)a, db = *(<span class="tp">double</span>*)b;
+    <span class="kw">return</span> (da > db) - (da < db);
+}
+
+<span class="cm">// 字符串比较</span>
+<span class="tp">int</span> <span class="fn">cmp_string</span>(<span class="kw">const</span> <span class="tp">void</span>* a, <span class="kw">const</span> <span class="tp">void</span>* b) {
+    <span class="kw">return</span> <span class="fn">strcmp</span>(*(<span class="kw">const</span> <span class="tp">char</span>**)a, *(<span class="kw">const</span> <span class="tp">char</span>**)b);
+}
+
+<span class="cm">// 结构体按字段排序</span>
+<span class="kw">typedef</span> <span class="kw">struct</span> {
+    <span class="tp">char</span> name[<span class="nm">32</span>];
+    <span class="tp">int</span> age;
+    <span class="tp">double</span> score;
+} <span class="tp">Student</span>;
+
+<span class="cm">// 按分数降序排序</span>
+<span class="tp">int</span> <span class="fn">cmp_student_score</span>(<span class="kw">const</span> <span class="tp">void</span>* a, <span class="kw">const</span> <span class="tp">void</span>* b) {
+    <span class="tp">double</span> diff = ((<span class="kw">const</span> <span class="tp">Student</span>*)b)->score -
+                  ((<span class="kw">const</span> <span class="tp">Student</span>*)a)->score;
+    <span class="kw">return</span> (diff > <span class="nm">0</span>) - (diff < <span class="nm">0</span>);
+}
+
+<span class="cm">// 按姓名字母序排序</span>
+<span class="tp">int</span> <span class="fn">cmp_student_name</span>(<span class="kw">const</span> <span class="tp">void</span>* a, <span class="kw">const</span> <span class="tp">void</span>* b) {
+    <span class="kw">return</span> <span class="fn">strcmp</span>((<span class="kw">const</span> <span class="tp">Student</span>*)a->name,
+                  (<span class="kw">const</span> <span class="tp">Student</span>*)b->name);
+}
+
+<span class="cm">// 使用全局变量实现多字段排序</span>
+<span class="kw">static</span> <span class="tp">int</span> sort_field = <span class="nm">0</span>;
+
+<span class="tp">int</span> <span class="fn">cmp_student_multi</span>(<span class="kw">const</span> <span class="tp">void</span>* a, <span class="kw">const</span> <span class="tp">void</span>* b) {
+    <span class="kw">const</span> <span class="tp">Student</span>* sa = a, *sb = b;
+    <span class="kw">if</span> (sort_field == <span class="nm">0</span>) <span class="kw">return</span> <span class="fn">cmp_student_score</span>(a, b);
+    <span class="kw">if</span> (sort_field == <span class="nm">1</span>) <span class="kw">return</span> <span class="fn">cmp_student_name</span>(a, b);
+    <span class="kw">return</span> sa->age - sb->age;
+}
+
+<span class="cm">// qsort_r：线程安全版本（BSD 扩展）</span>
+<span class="tp">int</span> <span class="fn">cmp_with_context</span>(<span class="kw">const</span> <span class="tp">void</span>* a, <span class="kw">const</span> <span class="tp">void</span>* b, <span class="tp">void</span>* ctx) {
+    <span class="tp">int</span> desc = *(<span class="tp">int</span>*)ctx;
+    <span class="tp">int</span> diff = *(<span class="tp">int</span>*)a - *(<span class="tp">int</span>*)b;
+    <span class="kw">return</span> desc ? -diff : diff;
+}
+
+<span class="tp">int</span> <span class="fn">main</span>(<span class="tp">void</span>) {
+    <span class="tp">int</span> nums[] = {<span class="nm">5</span>, <span class="nm">2</span>, <span class="nm">8</span>, <span class="nm">1</span>, <span class="nm">9</span>, <span class="nm">3</span>};
+    <span class="tp">int</span> n = <span class="kw">sizeof</span>(nums) / <span class="kw">sizeof</span>(nums[<span class="nm">0</span>]);
+    
+    <span class="fn">qsort</span>(nums, n, <span class="kw">sizeof</span>(<span class="tp">int</span>), cmp_int_asc);
+    <span class="fn">printf</span>(<span class="st">"Ascending: "</span>);
+    <span class="kw">for</span> (<span class="tp">int</span> i = <span class="nm">0</span>; i < n; i++) <span class="fn">printf</span>(<span class="st">"%d "</span>, nums[i]);
+    <span class="fn">printf</span>(<span class="st">"\n"</span>);
+    
+    <span class="fn">qsort</span>(nums, n, <span class="kw">sizeof</span>(<span class="tp">int</span>), cmp_int_desc);
+    <span class="fn">printf</span>(<span class="st">"Descending: "</span>);
+    <span class="kw">for</span> (<span class="tp">int</span> i = <span class="nm">0</span>; i < n; i++) <span class="fn">printf</span>(<span class="st">"%d "</span>, nums[i]);
+    <span class="fn">printf</span>(<span class="st">"\n"</span>);
+    
+    <span class="tp">Student</span> students[] = {
+        {<span class="st">"Alice"</span>, <span class="nm">20</span>, <span class="nm">92.5</span>},
+        {<span class="st">"Bob"</span>, <span class="nm">22</span>, <span class="nm">88.0</span>},
+        {<span class="st">"Charlie"</span>, <span class="nm">21</span>, <span class="nm">95.0</span>}
+    };
+    <span class="tp">int</span> sn = <span class="kw">sizeof</span>(students) / <span class="kw">sizeof</span>(students[<span class="nm">0</span>]);
+    
+    <span class="fn">qsort</span>(students, sn, <span class="kw">sizeof</span>(<span class="tp">Student</span>), cmp_student_score);
+    <span class="fn">printf</span>(<span class="st">"By score: "</span>);
+    <span class="kw">for</span> (<span class="tp">int</span> i = <span class="nm">0</span>; i < sn; i++)
+        <span class="fn">printf</span>(<span class="st">"%s(%.1f) "</span>, students[i].name, students[i].score);
+    <span class="fn">printf</span>(<span class="st">"\n"</span>);
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 34. 字符串处理高级 ==================== -->
+<h2 id="ch34">34. 字符串处理高级</h2>
+
+<div class="principle">
+    <div class="principle-title">字符串安全与动态内存</div>
+    <p>C 标准库提供了 <code>strdup</code>（POSIX）和 <code>getline</code>（POSIX）等实用函数，大大简化了字符串的动态分配和读取。C23 还引入了 <code>strndup</code> 用于限制复制长度。正确使用这些函数可以避免常见的内存错误。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="c"><span class="kw">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;stdlib.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string.h&gt;</span>
+
+<span class="cm">// strdup：复制字符串并分配内存</span>
+<span class="cm">// 返回值需要 free() 释放</span>
+<span class="tp">char</span>* <span class="fn">create_message</span>(<span class="kw">const</span> <span class="tp">char</span>* name) {
+    <span class="tp">char</span>* msg = <span class="fn">malloc</span>(<span class="fn">strlen</span>(name) + <span class="nm">20</span>);
+    <span class="fn">sprintf</span>(msg, <span class="st">"Hello, %s!"</span>, name);
+    <span class="kw">return</span> msg;
+}
+
+<span class="cm">// strndup：限制最大长度的字符串复制</span>
+<span class="tp">char</span>* <span class="fn">safe_copy</span>(<span class="kw">const</span> <span class="tp">char</span>* src, <span class="tp">size_t</span> max_len) {
+    <span class="kw">if</span> (!src) <span class="kw">return</span> <span class="nm">NULL</span>;
+    <span class="tp">size_t</span> len = <span class="fn">strlen</span>(src);
+    <span class="kw">if</span> (len > max_len) len = max_len;
+    <span class="tp">char</span>* copy = <span class="fn">malloc</span>(len + <span class="nm">1</span>);
+    <span class="fn">memcpy</span>(copy, src, len);
+    copy[len] = <span class="st">'\0'</span>;
+    <span class="kw">return</span> copy;
+}
+
+<span class="cm">// getline：从文件流读取整行（自动扩展缓冲区）</span>
+<span class="tp">void</span> <span class="fn">read_file_lines</span>(<span class="kw">const</span> <span class="tp">char</span>* filename) {
+    <span class="tp">FILE</span>* fp = <span class="fn">fopen</span>(filename, <span class="st">"r"</span>);
+    <span class="kw">if</span> (!fp) <span class="kw">return</span>;
+    
+    <span class="tp">char</span>* line = <span class="nm">NULL</span>;
+    <span class="tp">size_t</span> len = <span class="nm">0</span>;
+    <span class="tp">ssize_t</span> read;
+    <span class="tp">int</span> line_num = <span class="nm">0</span>;
+    
+    <span class="kw">while</span> ((read = <span class="fn">getline</span>(&line, &len, fp)) != -<span class="nm">1</span>) {
+        line_num++;
+        <span class="fn">printf</span>(<span class="st">"%3d: %s"</span>, line_num, line);
+    }
+    
+    <span class="fn">free</span>(line);  <span class="cm">// getline 分配的内存需要释放</span>
+    <span class="fn">fclose</span>(fp);
+}
+
+<span class="cm">// 字符串分割（strtok 的安全版本）</span>
+<span class="tp">void</span> <span class="fn">tokenize</span>(<span class="kw">const</span> <span class="tp">char</span>* str, <span class="kw">const</span> <span class="tp">char</span>* delim) {
+    <span class="tp">char</span>* copy = <span class="fn">strdup</span>(str);  <span class="cm">// 原始 strtok 会修改输入</span>
+    <span class="tp">char</span>* saveptr;
+    
+    <span class="tp">char</span>* token = <span class="fn">strtok_r</span>(copy, delim, &saveptr);
+    <span class="kw">while</span> (token) {
+        <span class="fn">printf</span>(<span class="st">"Token: [%s]\n"</span>, token);
+        token = <span class="fn">strtok_r</span>(<span class="nm">NULL</span>, delim, &saveptr);
+    }
+    
+    <span class="fn">free</span>(copy);
+}
+
+<span class="cm">// 字符串拼接（高效版本）</span>
+<span class="tp">char</span>* <span class="fn">str_join</span>(<span class="kw">const</span> <span class="tp">char</span>* sep, <span class="kw">const</span> <span class="tp">char</span>* a, <span class="kw">const</span> <span class="tp">char</span>* b) {
+    <span class="tp">size_t</span> len = <span class="fn">strlen</span>(a) + <span class="fn">strlen</span>(sep) + <span class="fn">strlen</span>(b) + <span class="nm">1</span>;
+    <span class="tp">char</span>* result = <span class="fn">malloc</span>(len);
+    <span class="fn">snprintf</span>(result, len, <span class="st">"%s%s%s"</span>, a, sep, b);
+    <span class="kw">return</span> result;
+}
+
+<span class="tp">int</span> <span class="fn">main</span>(<span class="tp">void</span>) {
+    <span class="tp">char</span>* msg = <span class="fn">create_message</span>(<span class="st">"World"</span>);
+    <span class="fn">printf</span>(<span class="st">"%s\n"</span>, msg);
+    <span class="fn">free</span>(msg);
+    
+    <span class="tp">char</span>* partial = <span class="fn">safe_copy</span>(<span class="st">"Hello, World!"</span>, <span class="nm">5</span>);
+    <span class="fn">printf</span>(<span class="st">"Partial: %s\n"</span>, partial);
+    <span class="fn">free</span>(partial);
+    
+    <span class="fn">tokenize</span>(<span class="st">"one,two,three"</span>, <span class="st">","</span>);
+    
+    <span class="tp">char</span>* joined = <span class="fn">str_join</span>(<span class="st">" - "</span>, <span class="st">"Hello"</span>, <span class="st">"World"</span>);
+    <span class="fn">printf</span>(<span class="st">"%s\n"</span>, joined);
+    <span class="fn">free</span>(joined);
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<!-- ==================== 35. 内存对齐详解 ==================== -->
+<h2 id="ch35">35. 内存对齐详解</h2>
+
+<div class="principle">
+    <div class="principle-title">对齐的重要性</div>
+    <p>内存对齐（Memory Alignment）是指数据在内存中的起始地址是某个值（对齐要求）的整数倍。现代 CPU 要求特定类型的数据按特定边界对齐，否则可能导致性能下降甚至硬件异常。C11 引入了 <code>alignas</code> 和 <code>_Alignof</code> 来精确控制对齐。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <span class="code-lang">C</span>
+        <div class="code-dots"><span></span><span></span><span></span></div>
+    </div>
+    <pre><code data-lang="c"><span class="kw">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;stddef.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;stdalign.h&gt;</span>
+
+<span class="cm">// 查看类型的对齐要求</span>
+<span class="kw">#define</span> <span class="fn">SHOW_ALIGN</span>(type) \
+    <span class="fn">printf</span>(<span class="st">"%-15s align: %zu, size: %zu\n"</span>, \
+           #type, <span class="fn">_Alignof</span>(type), <span class="kw">sizeof</span>(type))
+
+<span class="cm">// 使用 alignas 控制对齐</span>
+<span class="kw">struct</span> <span class="tp">aligned_example</span> {
+    <span class="tp">char</span> a;
+    <span class="cm">// 编译器自动填充 3 字节以对齐 int</span>
+    <span class="tp">int</span> b;
+    <span class="tp">char</span> c;
+    <span class="cm">// 编译器自动填充 7 字节以对齐 double</span>
+    <span class="tp">double</span> d;
+};
+
+<span class="cm">// 紧凑排列（无填充）</span>
+<span class="kw">struct</span> __attribute__((<span class="fn">packed</span>)) <span class="tp">packed_example</span> {
+    <span class="tp">char</span> a;
+    <span class="tp">int</span> b;
+    <span class="tp">char</span> c;
+    <span class="tp">double</span> d;
+};
+
+<span class="cm">// 手动控制对齐</span>
+<span class="kw">struct</span> <span class="tp">manual_aligned</span> {
+    <span class="tp">char</span> a;
+    <span class="kw">alignas</span>(<span class="nm">4</span>) <span class="tp">int</span> b;      <span class="cm">// 强制 4 字节对齐</span>
+    <span class="tp">char</span> c;
+    <span class="kw">alignas</span>(<span class="nm">8</span>) <span class="tp">double</span> d;   <span class="cm">// 强制 8 字节对齐</span>
+};
+
+<span class="cm">// 缓存行对齐（避免伪共享）</span>
+<span class="kw">alignas</span>(<span class="nm">64</span>) <span class="tp">int</span> shared_counter = <span class="nm">0</span>;
+
+<span class="cm">// aligned_alloc：分配对齐的内存</span>
+<span class="tp">void</span> <span class="fn">aligned_malloc_example</span>(<span class="tp">void</span>) {
+    <span class="cm">// 分配 64 字节对齐的 256 字节内存</span>
+    <span class="tp">void</span>* ptr = <span class="fn">aligned_alloc</span>(<span class="nm">64</span>, <span class="nm">256</span>);
+    <span class="kw">if</span> (ptr) {
+        <span class="fn">printf</span>(<span class="st">"Aligned address: %p\n"</span>, ptr);
+        <span class="fn">printf</span>(<span class="st">"Is 64-aligned: %s\n"</span>,
+               ((<span class="tp">uintptr_t</span>)ptr % <span class="nm">64</span> == <span class="nm">0</span>) ? <span class="st">"yes"</span> : <span class="st">"no"</span>);
+        <span class="fn">free</span>(ptr);
+    }
+}
+
+<span class="tp">int</span> <span class="fn">main</span>(<span class="tp">void</span>) {
+    <span class="fn">SHOW_ALIGN</span>(<span class="tp">char</span>);
+    <span class="fn">SHOW_ALIGN</span>(<span class="tp">short</span>);
+    <span class="fn">SHOW_ALIGN</span>(<span class="tp">int</span>);
+    <span class="fn">SHOW_ALIGN</span>(<span class="tp">long</span>);
+    <span class="fn">SHOW_ALIGN</span>(<span class="tp">long</span> <span class="tp">long</span>);
+    <span class="fn">SHOW_ALIGN</span>(<span class="tp">float</span>);
+    <span class="fn">SHOW_ALIGN</span>(<span class="tp">double</span>);
+    <span class="fn">SHOW_ALIGN</span>(<span class="tp">void</span>*);
+    
+    <span class="fn">printf</span>(<span class="st">"\nStruct sizes:\n"</span>);
+    <span class="fn">printf</span>(<span class="st">"Normal:    %zu\n"</span>, <span class="kw">sizeof</span>(<span class="kw">struct</span> <span class="tp">aligned_example</span>));
+    <span class="fn">printf</span>(<span class="st">"Packed:    %zu\n"</span>, <span class="kw">sizeof</span>(<span class="kw">struct</span> <span class="tp">packed_example</span>));
+    <span class="fn">printf</span>(<span class="st">"Manual:    %zu\n"</span>, <span class="kw">sizeof</span>(<span class="kw">struct</span> <span class="tp">manual_aligned</span>));
+    
+    <span class="fn">aligned_malloc_example</span>();
+    
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</code></pre>
+</div>
+
+<div class="tip">
+<strong>对齐经验法则</strong>：结构体成员按声明顺序排列时，编译器会自动插入填充字节以满足对齐要求。将成员按从大到小的顺序排列可以减少填充浪费。在性能敏感的场景（如 SIMD、缓存行），使用 <code>alignas</code> 确保数据对齐到缓存行边界。
 </div>
 
 </main>
