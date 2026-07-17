@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R 语言完全教程</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        :root {
+            --primary: #276DC2;
+            --primary-light: #3b82f6;
+            --accent: #1d4ed8;
+            --bg: #f8fafc;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --sidebar-active: #1e40af;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --code-bg: #1e293b;
+            --tip-bg: #ecfdf5;
+            --tip-border: #10b981;
+            --warn-bg: #fffbeb;
+            --warn-border: #f59e0b;
+            --danger-bg: #fef2f2;
+            --danger-border: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: #cbd5e1;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s;
+        }
+        .sidebar-header {
+            padding: 24px 20px 16px;
+            border-bottom: 1px solid #1e293b;
+        }
+        .sidebar-header h2 {
+            color: #f1f5f9;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        .sidebar-header p {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .sidebar-section {
+            padding: 12px 0;
+        }
+        .sidebar-section-title {
+            padding: 0 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+        .sidebar-link {
+            display: block;
+            padding: 8px 20px 8px 32px;
+            font-size: 13px;
+            color: #94a3b8;
+            text-decoration: none;
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-link:hover {
+            background: var(--sidebar-hover);
+            color: #e2e8f0;
+            border-left-color: var(--primary-light);
+        }
+        .sidebar-link.active {
+            background: var(--sidebar-active);
+            color: #ffffff;
+            border-left-color: var(--primary-light);
+        }
+        .sidebar-link .num {
+            color: #475569;
+            margin-right: 6px;
+            font-size: 11px;
+        }
+
+        /* Main */
+        .main {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px 60px;
+            max-width: 960px;
+        }
+        h1 {
+            font-size: 32px;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+        h2 {
+            font-size: 22px;
+            color: var(--text);
+            margin: 48px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary);
+        }
+        h3 {
+            font-size: 17px;
+            color: var(--text);
+            margin: 32px 0 12px;
+        }
+        p, li {
+            line-height: 1.8;
+            font-size: 15px;
+            color: #334155;
+        }
+        p { margin-bottom: 12px; }
+        ul, ol {
+            margin: 0 0 16px 24px;
+        }
+        li { margin-bottom: 4px; }
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Principle card */
+        .principle {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin: 16px 0;
+        }
+        .principle-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .principle p {
+            margin-bottom: 8px;
+        }
+
+        /* Code blocks */
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+        }
+        .code-dots {
+            display: flex;
+            gap: 6px;
+        }
+        .code-dots span {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .code-dots span:nth-child(1) { background: #ef4444; }
+        .code-dots span:nth-child(2) { background: #f59e0b; }
+        .code-dots span:nth-child(3) { background: #22c55e; }
+        .code-lang {
+            font-size: 12px;
+            color: #64748b;
+        }
+        pre {
+            padding: 16px 20px;
+            overflow-x: auto;
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: #e2e8f0;
+        }
+        code { font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; }
+        pre code { background: none; padding: 0; }
+        .inline-code {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: "JetBrains Mono", Consolas, monospace;
+        }
+        .inline-code { color: #be185d; background: #fdf2f8; }
+
+        /* Syntax spans */
+        .kw { color: #c084fc; font-weight: 600; }
+        .st { color: #86efac; }
+        .cm { color: #64748b; font-style: italic; }
+        .fn { color: #7dd3fc; }
+        .nm { color: #fbbf24; }
+        .tp { color: #67e8f9; }
+        .op { color: #f472b6; }
+
+        /* Tip / Warning / Danger */
+        .tip, .warning, .danger {
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        .tip {
+            background: var(--tip-bg);
+            border-left: 4px solid var(--tip-border);
+            color: #065f46;
+        }
+        .tip::before { content: "💡 提示："; font-weight: 700; }
+        .warning {
+            background: var(--warn-bg);
+            border-left: 4px solid var(--warn-border);
+            color: #92400e;
+        }
+        .warning::before { content: "⚠️ 注意："; font-weight: 700; }
+        .danger {
+            background: var(--danger-bg);
+            border-left: 4px solid var(--danger-border);
+            color: #991b1b;
+        }
+        .danger::before { content: "🚫 危险："; font-weight: 700; }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+        th {
+            background: #f1f5f9;
+            font-weight: 600;
+        }
+        tr:nth-child(even) { background: #f8fafc; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; padding: 24px 20px; }
+            .menu-toggle { display: block; }
+        }
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 12px; left: 12px;
+            z-index: 200;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2>R 语言教程</h2>
+            <p>从入门到精通 · 23 章</p>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">入门</div>
+            <a class="sidebar-link" href="#ch1"><span class="num">01</span>简介</a>
+            <a class="sidebar-link" href="#ch2"><span class="num">02</span>环境搭建</a>
+            <a class="sidebar-link" href="#ch3"><span class="num">03</span>基本语法</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">基础</div>
+            <a class="sidebar-link" href="#ch4"><span class="num">04</span>变量与数据类型</a>
+            <a class="sidebar-link" href="#ch5"><span class="num">05</span>向量</a>
+            <a class="sidebar-link" href="#ch6"><span class="num">06</span>矩阵与数组</a>
+            <a class="sidebar-link" href="#ch7"><span class="num">07</span>列表与数据框</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">流程</div>
+            <a class="sidebar-link" href="#ch8"><span class="num">08</span>条件判断</a>
+            <a class="sidebar-link" href="#ch9"><span class="num">09</span>循环语句</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">函数</div>
+            <a class="sidebar-link" href="#ch10"><span class="num">10</span>函数</a>
+            <a class="sidebar-link" href="#ch11"><span class="num">11</span>apply 族函数</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">数据分析</div>
+            <a class="sidebar-link" href="#ch12"><span class="num">12</span>数据导入导出</a>
+            <a class="sidebar-link" href="#ch13"><span class="num">13</span>数据清洗</a>
+            <a class="sidebar-link" href="#ch14"><span class="num">14</span>数据聚合</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">可视化</div>
+            <a class="sidebar-link" href="#ch15"><span class="num">15</span>base 绑图</a>
+            <a class="sidebar-link" href="#ch16"><span class="num">16</span>ggplot2</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">统计</div>
+            <a class="sidebar-link" href="#ch17"><span class="num">17</span>描述统计</a>
+            <a class="sidebar-link" href="#ch18"><span class="num">18</span>假设检验</a>
+            <a class="sidebar-link" href="#ch19"><span class="num">19</span>回归分析</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">进阶</div>
+            <a class="sidebar-link" href="#ch20"><span class="num">20</span>面向对象 (S3/S4)</a>
+            <a class="sidebar-link" href="#ch21"><span class="num">21</span>包开发</a>
+            <a class="sidebar-link" href="#ch22"><span class="num">22</span>并行计算</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">实战</div>
+            <a class="sidebar-link" href="#ch23"><span class="num">23</span>最佳实践</a>
+        </div>
+    </nav>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="main">
+        <h1>R 语言完全教程</h1>
+        <p class="subtitle">统计计算与数据分析的利器 · 从基础语法到高级应用</p>
+
+        <!-- ============================================================ -->
+        <!-- 第1章 简介 -->
+        <!-- ============================================================ -->
+        <h2 id="ch1">1. R 语言简介</h2>
+
+        <p>R 语言是为统计计算和图形绘制而设计的开源编程语言与软件环境。自 1993 年由 Ross Ihaka 和 Robert Gentleman 发布以来，R 已成为数据科学、生物信息学、金融分析等领域最流行的工具之一。</p>
+
+        <div class="principle">
+            <div class="principle-title">为什么选择 R？</div>
+            <p><strong>统计原生</strong>：R 的核心库由统计学家设计，内置了海量的统计函数与概率分布，无需额外依赖即可进行假设检验、回归分析、时间序列等操作。</p>
+            <p><strong>向量化计算</strong>：R 默认以向量为基本运算单元，无需显式循环即可对整个数据集进行批量操作。这不仅使代码更简洁，还利用了底层 C/Fortran 的 SIMD 优化。</p>
+            <p><strong>可视化生态</strong>：从 base R 的绑图到 ggplot2 的图形语法，R 拥有最成熟的可视化体系。ggplot2 基于 Leland Wilkinson 的图形语法理论，将图形分解为数据、映射、几何对象、统计变换、坐标系和分面等组件。</p>
+            <p><strong>CRAN 生态</strong>：CRAN 上收录了超过 20,000 个包，覆盖从机器学习 (caret, mlr3) 到地理空间分析 (sf, terra) 的几乎所有领域。</p>
+        </div>
+
+        <h3>R 的版本历史</h3>
+        <ul>
+            <li><strong>R 1.0.0</strong> (2000)：正式发布，奠定核心语法</li>
+            <li><strong>R 3.0</strong> (2013)：引入长向量支持 (>2^31 元素)</li>
+            <li><strong>R 4.0</strong> (2020)：默认字符串编码改为 UTF-8，引入新管道操作符 <span class="inline-code">|&gt;</span></li>
+            <li><strong>R 4.3</strong> (2023)：改进错误提示，原生管线 <span class="inline-code">|&gt;</span> 更成熟</li>
+        </ul>
+
+        <div class="tip">R 语言的名称来源于两位作者名字首字母 R &amp; R，也有人说它致敬了 S 语言（R 是 S 的开源实现）。</div>
+
+        <!-- ============================================================ -->
+        <!-- 第2章 环境搭建 -->
+        <!-- ============================================================ -->
+        <h2 id="ch2">2. 环境搭建</h2>
+
+        <h3>安装 R 与 RStudio</h3>
+        <ol>
+            <li>从 <a href="https://cran.r-project.org">CRAN</a> 下载并安装 R</li>
+            <li>从 <a href="https://posit.co/downloads/">Posit (RStudio)</a> 下载 RStudio IDE</li>
+            <li>安装后在 RStudio 中验证：<span class="inline-code">R.version.string</span></li>
+        </ol>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 查看 R 版本</span>
+<span class="fn">R.version.string</span>
+<span class="cm"># [1] "R version 4.3.2 (2023-10-31)"</span>
+
+<span class="cm"># 查看默认库路径</span>
+<span class="fn">.libPaths</span>()
+<span class="cm"># [1] "C:/Program Files/R/R-4.3.2/library"</span>
+
+<span class="cm"># 安装包</span>
+<span class="fn">install.packages</span>(<span class="st">"ggplot2"</span>)
+
+<span class="cm"># 加载包</span>
+<span class="kw">library</span>(ggplot2)</code></pre>
+        </div>
+
+        <h3>RStudio 界面</h3>
+        <p>RStudio IDE 分为四个面板：</p>
+        <ul>
+            <li><strong>左上 - 源代码编辑器</strong>：编写 .R 脚本</li>
+            <li><strong>右上 - 环境/历史</strong>：查看当前变量</li>
+            <li><strong>左下 - 控制台</strong>：交互式执行 R 命令</li>
+            <li><strong>右下 - 文件/绘图/包/帮助</strong>：多标签辅助面板</li>
+        </ul>
+
+        <h3>项目管理</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 创建 RStudio 项目（推荐每个项目独立目录）</span>
+<span class="cm"># File → New Project → New Directory → New Project</span>
+
+<span class="cm"># 使用命令行创建</span>
+<span class="cm"># 在终端运行：</span>
+<span class="cm"># RStudio -e "projectile::create_project('my_project')"</span>
+
+<span class="cm"># 设置工作目录</span>
+<span class="kw">setwd</span>(<span class="st">"E:/my_project"</span>)
+
+<span class="cm"># 获取当前工作目录</span>
+<span class="kw">getwd</span>()</code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第3章 基本语法 -->
+        <!-- ============================================================ -->
+        <h2 id="ch3">3. 基本语法</h2>
+
+        <h3>注释</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 这是单行注释</span>
+
+<span class="cm"># 这是多行注释
+# R 没有多行注释语法
+# 只能逐行添加 #</span></code></pre>
+        </div>
+
+        <h3>基本运算</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 算术运算</span>
+<span class="nm">3</span> <span class="op">+</span> <span class="nm">4</span>       <span class="cm"># 加法 → 7</span>
+<span class="nm">10</span> <span class="op">-</span> <span class="nm">3</span>      <span class="cm"># 减法 → 7</span>
+<span class="nm">6</span> <span class="op">*</span> <span class="nm">7</span>       <span class="cm"># 乘法 → 42</span>
+<span class="nm">15</span> <span class="op">/</span> <span class="nm">4</span>      <span class="cm"># 除法 → 3.75</span>
+<span class="nm">2</span> <span class="op">^</span> <span class="nm">8</span>       <span class="cm"># 幂运算 → 256</span>
+<span class="nm">17</span> <span class="op">%%</span> <span class="nm">5</span>     <span class="cm"># 取余 → 2</span>
+<span class="nm">17</span> <span class="op">%/%</span> <span class="nm">5</span>    <span class="cm"># 整除 → 3</span>
+
+<span class="cm"># 比较运算</span>
+<span class="nm">5</span> <span class="op">></span> <span class="nm">3</span>       <span class="cm"># TRUE</span>
+<span class="nm">5</span> <span class="op">==</span> <span class="nm">5</span>      <span class="cm"># TRUE</span>
+<span class="nm">5</span> <span class="op">!=</span> <span class="nm">3</span>      <span class="cm"># TRUE</span>
+<span class="nm">10</span> <span class="op">&gt;=</span> <span class="nm">10</span>    <span class="cm"># TRUE</span>
+
+<span class="cm"># 逻辑运算</span>
+<span class="kw">TRUE</span> <span class="op">&amp;</span> <span class="kw">FALSE</span>    <span class="cm"># FALSE（与）</span>
+<span class="kw">TRUE</span> <span class="op">|</span> <span class="kw">FALSE</span>    <span class="cm"># TRUE（或）</span>
+<span class="op">!</span><span class="kw">TRUE</span>             <span class="cm"># FALSE（非）</span></code></pre>
+        </div>
+
+        <h3>赋值</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># R 支持多种赋值符号</span>
+x <span class="op">&lt;-</span> <span class="nm">10</span>        <span class="cm"># 推荐：左箭头</span>
+x <span class="op">-&gt;</span> <span class="nm">10</span>        <span class="cm"># 右箭头（少用）</span>
+x <span class="op">=</span> <span class="nm">10</span>         <span class="cm"># 等号（也可以）</span>
+
+<span class="cm"># R 的赋值是引用语义，不是复制</span>
+a <span class="op">&lt;-</span> <span class="nm">1</span><span class="op">:</span><span class="nm">5</span>
+b <span class="op">&lt;-</span> a          <span class="cm"># b 引用同一块内存</span>
+b[<span class="nm">1</span>] <span class="op">&lt;-</span> <span class="nm">99</span>      <span class="cm"># 修改 b 会影响 a！</span>
+a               <span class="cm"># [1] 99  2  3  4  5</span>
+
+<span class="cm"># 使用 copy-on-modify 避免意外</span>
+b <span class="op">&lt;-</span> <span class="fn">copy</span>(a)    <span class="cm"># 手动复制（R 4.0+）</span>
+<span class="cm"># 或使用 base::duplicate()</span></code></pre>
+        </div>
+
+        <div class="principle">
+            <div class="principle-title">惰性求值 (Lazy Evaluation)</div>
+            <p>R 的函数参数使用惰性求值——参数不会在函数调用时立即计算，而是等到实际使用时才求值。这意味着：</p>
+            <ul>
+                <li>未使用的参数不会触发错误（即使表达式非法）</li>
+                <li>函数可以安全地包裹用户表达式</li>
+                <li><span class="inline-code">substitute()</span> 和 <span class="inline-code">enquo()</span> 可以捕获未求值的表达式</li>
+            </ul>
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">R</span>
+                </div>
+                <pre><code><span class="cm"># 惰性求值示例</span>
+f <span class="op">&lt;-</span> <span class="kw">function</span>(x, y) x    <span class="cm"># y 从未被使用</span>
+<span class="fn">f</span>(<span class="nm">1</span>, <span class="fn">stop</span>(<span class="st">"error!"</span>))      <span class="cm"># 正常返回 1，不会报错</span>
+
+<span class="cm"># 利用惰性求值做延迟计算</span>
+lazy_val <span class="op">&lt;-</span> <span class="kw">function</span>(expr) <span class="kw">function</span>() expr
+expensive <span class="op">&lt;-</span> <span class="fn">lazy_val</span>(<span class="fn">heavy_computation</span>())  <span class="cm"># 立即调用时不计算</span>
+<span class="fn">expensive</span>()  <span class="cm"># 只在调用时才真正计算</span></code></pre>
+            </div>
+        </div>
+
+        <h3>帮助系统</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 查看函数帮助</span>
+?<span class="fn">mean</span>
+<span class="fn">help</span>(<span class="fn">mean</span>)
+
+<span class="cm"># 模糊搜索</span>
+<span class="fn">help.search</span>(<span class="st">"regression"</span>)
+
+<span class="cm"># 查看包的 vignette（教程文档）</span>
+<span class="fn">vignette</span>(<span class="st">"ggplot2-specs"</span>)</code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第4章 变量与数据类型 -->
+        <!-- ============================================================ -->
+        <h2 id="ch4">4. 变量与数据类型</h2>
+
+        <h3>基本数据类型</h3>
+        <table>
+            <thead>
+                <tr><th>类型</th><th>说明</th><th>示例</th><th>检测函数</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><span class="tp">numeric</span></td><td>数值（双精度浮点）</td><td><span class="nm">3.14</span></td><td><span class="fn">is.numeric</span>()</td></tr>
+                <tr><td><span class="tp">integer</span></td><td>整数</td><td><span class="nm">42L</span></td><td><span class="fn">is.integer</span>()</td></tr>
+                <tr><td><span class="tp">character</span></td><td>字符串</td><td><span class="st">"hello"</span></td><td><span class="fn">is.character</span>()</td></tr>
+                <tr><td><span class="tp">logical</span></td><td>逻辑值</td><td><span class="kw">TRUE</span> / <span class="kw">FALSE</span></td><td><span class="fn">is.logical</span>()</td></tr>
+                <tr><td><span class="tp">complex</span></td><td>复数</td><td><span class="nm">3</span> <span class="op">+</span> <span class="nm">4i</span></td><td><span class="fn">is.complex</span>()</td></tr>
+                <tr><td><span class="tp">raw</span></td><td>原始字节</td><td><span class="fn">charToRaw</span>(<span class="st">"A"</span>)</td><td><span class="fn">is.raw</span>()</td></tr>
+            </tbody>
+        </table>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 类型检查与转换</span>
+x <span class="op">&lt;-</span> <span class="nm">42</span>
+<span class="fn">typeof</span>(x)       <span class="cm"># "double"</span>
+<span class="fn">class</span>(x)        <span class="cm"># "numeric"</span>
+<span class="fn">is.numeric</span>(x)   <span class="cm"># TRUE</span>
+<span class="fn">is.integer</span>(x)   <span class="cm"># FALSE</span>
+
+<span class="cm"># 强制转换</span>
+<span class="fn">as.character</span>(<span class="nm">42</span>)       <span class="cm"># "42"</span>
+<span class="fn">as.numeric</span>(<span class="st">"3.14"</span>)   <span class="cm"># 3.14</span>
+<span class="fn">as.logical</span>(<span class="nm">0</span>)         <span class="cm"># FALSE</span>
+<span class="fn">as.integer</span>(<span class="nm">3.9</span>)       <span class="cm"># 3（截断，不四舍五入）</span>
+
+<span class="cm"># NA — 缺失值的统一类型</span>
+<span class="fn">is.na</span>(<span class="kw">NA</span>)       <span class="cm"># TRUE</span>
+<span class="fn">is.na</span>(<span class="kw">NaN</span>)      <span class="cm"># TRUE（NaN 是 NA 的子类型）</span>
+<span class="fn">is.nan</span>(<span class="kw">NA</span>)      <span class="cm"># FALSE</span>
+
+<span class="cm"># NULL — 空对象</span>
+x <span class="op">&lt;-</span> <span class="kw">NULL</span>
+<span class="fn">length</span>(x)       <span class="cm"># 0</span>
+<span class="fn">is.null</span>(x)      <span class="cm"># TRUE</span></code></pre>
+        </div>
+
+        <div class="warning">R 的数字默认都是 double 精度。要创建整数，需加 <span class="inline-code">L</span> 后缀（如 <span class="inline-code">42L</span>），否则 <span class="inline-code">is.integer(42)</span> 返回 <span class="inline-code">FALSE</span>。</div>
+
+        <!-- ============================================================ -->
+        <!-- 第5章 向量 -->
+        <!-- ============================================================ -->
+        <h2 id="ch5">5. 向量</h2>
+
+        <div class="principle">
+            <div class="principle-title">向量化计算原则</div>
+            <p>R 的核心设计哲学：<strong>向量是基本运算单元</strong>。几乎所有内置函数都自动对向量逐元素操作，无需显式循环。向量化有两个关键优势：</p>
+            <ol>
+                <li><strong>性能</strong>：向量化操作在 C 层执行，避免了 R 解释器的循环开销。处理百万级数据时，向量化通常比 for 循环快 10-100 倍。</li>
+                <li><strong>可读性</strong>：<span class="inline-code">x * 2</span> 比 <span class="inline-code">for(i in seq_along(x)) x[i] &lt;- x[i] * 2</span> 更直观。</li>
+            </ol>
+            <p>编写 R 代码时，应始终优先考虑向量化方案，仅在无法向量化时才使用显式循环。</p>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 创建向量</span>
+v1 <span class="op">&lt;-</span> <span class="kw">c</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>)       <span class="cm"># c() 是 combine/concatenate</span>
+v2 <span class="op">&lt;-</span> <span class="nm">1</span><span class="op">:</span><span class="nm">10</span>                   <span class="cm"># 序列：1, 2, ..., 10</span>
+v3 <span class="op">&lt;-</span> <span class="kw">seq</span>(<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">0.2</span>)        <span class="cm"># 等间隔序列</span>
+v4 <span class="op">&lt;-</span> <span class="kw">rep</span>(<span class="nm">1</span>, <span class="nm">5</span>)              <span class="cm"># 重复：1 1 1 1 1</span>
+v5 <span class="op">&lt;-</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="nm">1</span>, <span class="nm">2</span>), <span class="kw">each</span><span class="op">=</span><span class="nm">3</span>) <span class="cm"># 1 1 1 2 2 2</span>
+
+<span class="cm"># 向量化运算</span>
+v1 <span class="op">*</span> <span class="nm">2</span>                  <span class="cm"># [1]  2  4  6  8 10</span>
+v1 <span class="op">^</span> <span class="nm">2</span>                  <span class="cm"># [1]  1  4  9 16 25</span>
+v1 <span class="op">+</span> <span class="kw">c</span>(<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>, <span class="nm">50</span>)  <span class="cm"># [1] 11 22 33 44 55</span>
+
+<span class="cm"># 向量函数</span>
+<span class="fn">length</span>(v1)     <span class="cm"># 5</span>
+<span class="fn">sum</span>(v1)        <span class="cm"># 15</span>
+<span class="fn">mean</span>(v1)       <span class="cm"># 3</span>
+<span class="fn">sort</span>(v1, <span class="kw">decreasing</span><span class="op">=</span><span class="kw">TRUE</span>)  <span class="cm"># [1] 5 4 3 2 1</span>
+<span class="fn">rev</span>(v1)        <span class="cm"># [1] 5 4 3 2 1</span>
+<span class="fn">unique</span>(<span class="kw">c</span>(<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">3</span>,<span class="nm">3</span>))  <span class="cm"># [1] 1 2 3</span>
+
+<span class="cm"># 命名向量</span>
+score <span class="op">&lt;-</span> <span class="kw">c</span>(<span class="kw">Alice</span><span class="op">=</span><span class="nm">90</span>, <span class="kw">Bob</span><span class="op">=</span><span class="nm">85</span>, <span class="kw">Carol</span><span class="op">=</span><span class="nm">92</span>)
+score[<span class="st">"Bob"</span>]      <span class="cm"># 85</span>
+<span class="fn">names</span>(score)    <span class="cm"># "Alice" "Bob" "Carol"</span></code></pre>
+        </div>
+
+        <h3>向量索引</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># R 索引从 1 开始（不是 0）</span>
+v <span class="op">&lt;-</span> <span class="kw">c</span>(<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>, <span class="nm">50</span>)
+
+v[<span class="nm">1</span>]            <span class="cm"># 10（第一个元素）</span>
+v[<span class="nm">3</span>]            <span class="cm"># 30</span>
+v[<span class="kw">c</span>(<span class="nm">1</span>, <span class="nm">3</span>, <span class="nm">5</span>)]    <span class="cm"># [1] 10 30 50</span>
+
+<span class="cm"># 负索引 = 排除</span>
+v[<span class="op">-</span><span class="nm">2</span>]           <span class="cm"># [1] 10 30 40 50（排除第2个）</span>
+
+<span class="cm"># 逻辑索引</span>
+v[v <span class="op">></span> <span class="nm">25</span>]       <span class="cm"># [1] 30 40 50</span>
+v[<span class="kw">c</span>(<span class="kw">TRUE</span>, <span class="kw">FALSE</span>, <span class="kw">TRUE</span>, <span class="kw">FALSE</span>, <span class="kw">TRUE</span>)]  <span class="cm"># [1] 10 30 50</span>
+
+<span class="cm"># which() — 获取满足条件的索引位置</span>
+<span class="fn">which</span>(v <span class="op">></span> <span class="nm">25</span>)  <span class="cm"># [1] 3 4 5</span>
+
+<span class="cm">%in% — 判断是否在向量中</span>
+<span class="nm">30</span> <span class="op">%in%</span> v      <span class="cm"># TRUE</span></code></pre>
+        </div>
+
+        <h3>命名向量的使用</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 命名向量本质上是 key-value 映射</span>
+capital <span class="op">&lt;-</span> <span class="kw">c</span>(
+  <span class="kw">中国</span> <span class="op">=</span> <span class="st">"北京"</span>,
+  <span class="kw">日本</span> <span class="op">=</span> <span class="st">"东京"</span>,
+  <span class="kw">韩国</span> <span class="op">=</span> <span class="st">"首尔"</span>
+)
+
+<span class="cm"># 按名访问</span>
+capital[<span class="st">"日本"</span>]           <span class="cm"># "东京"</span>
+capital[<span class="kw">c</span>(<span class="st">"中国"</span>, <span class="st">"韩国"</span>)] <span class="cm"># "北京" "首尔"</span>
+
+<span class="cm"># names() 可读写</span>
+<span class="fn">names</span>(capital)     <span class="cm"># "中国" "日本" "韩国"</span>
+<span class="fn">names</span>(capital)[<span class="nm">2</span>] <span class="op">&lt;-</span> <span class="st">"Japan"</span></code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第6章 矩阵与数组 -->
+        <!-- ============================================================ -->
+        <h2 id="ch6">6. 矩阵与数组</h2>
+
+        <div class="principle">
+            <div class="principle-title">矩阵：二维同质容器</div>
+            <p>矩阵 (matrix) 是二维的同质数据结构——所有元素必须是同一类型。R 的矩阵在内存中以<strong>列优先</strong>（column-major）方式存储，这源自 Fortran 传统。理解这一点对重塑和索引操作至关重要。</p>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 创建矩阵</span>
+m <span class="op">&lt;-</span> <span class="kw">matrix</span>(<span class="nm">1</span><span class="op">:</span><span class="nm">12</span>, <span class="kw">nrow</span><span class="op">=</span><span class="nm">3</span>, <span class="kw">ncol</span><span class="op">=</span><span class="nm">4</span>)
+m
+<span class="cm">#      [,1] [,2] [,3] [,4]</span>
+<span class="cm"># [1,]    1    4    7   10</span>
+<span class="cm"># [2,]    2    5    8   11</span>
+<span class="cm"># [3,]    3    6    9   12</span>
+
+<span class="cm"># 列优先填充！</span>
+<span class="fn">matrix</span>(<span class="nm">1</span><span class="op">:</span><span class="nm">6</span>, <span class="kw">nrow</span><span class="op">=</span><span class="nm">2</span>, <span class="kw">byrow</span><span class="op">=</span><span class="kw">TRUE</span>)  <span class="cm"># 按行填充</span>
+
+<span class="cm"># 按行绑定</span>
+<span class="fn">rbind</span>(<span class="kw">c</span>(<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>), <span class="kw">c</span>(<span class="nm">4</span>,<span class="nm">5</span>,<span class="nm">6</span>))
+
+<span class="cm"># 按列绑定</span>
+<span class="fn">cbind</span>(<span class="kw">c</span>(<span class="nm">1</span>,<span class="nm">4</span>), <span class="kw">c</span>(<span class="nm">2</span>,<span class="nm">5</span>), <span class="kw">c</span>(<span class="nm">3</span>,<span class="nm">6</span>))
+
+<span class="cm"># 矩阵运算</span>
+m <span class="op">+</span> <span class="nm">10</span>             <span class="cm"># 所有元素 +10</span>
+m <span class="op">*</span> <span class="nm">2</span>              <span class="cm"># 所有元素 *2（逐元素）</span>
+m <span class="op">%*%</span> <span class="fn">t</span>(m)          <span class="cm"># 矩阵乘法（3×3 结果）</span>
+
+<span class="cm"># 常用矩阵函数</span>
+<span class="fn">t</span>(m)              <span class="cm"># 转置（4×3）</span>
+<span class="fn">dim</span>(m)            <span class="cm"># c(3, 4)</span>
+<span class="fn">nrow</span>(m)           <span class="cm"># 3</span>
+<span class="fn">ncol</span>(m)           <span class="cm"># 4</span>
+<span class="fn">diag</span>(<span class="nm">3</span>)           <span class="cm"># 3×3 单位矩阵</span>
+<span class="fn">det</span>(<span class="kw">matrix</span>(<span class="kw">c</span>(<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">4</span>), <span class="nm">2</span>, <span class="nm">2</span>))  <span class="cm"># 行列式 = -2</span>
+<span class="fn">solve</span>(<span class="kw">matrix</span>(<span class="kw">c</span>(<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">4</span>), <span class="nm">2</span>, <span class="nm">2</span>))  <span class="cm"># 求逆</span></code></pre>
+        </div>
+
+        <h3>数组 (Array)</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 数组是矩阵的高维推广</span>
+a <span class="op">&lt;-</span> <span class="kw">array</span>(<span class="nm">1</span><span class="op">:</span><span class="nm">24</span>, <span class="kw">dim</span><span class="op">=</span><span class="kw">c</span>(<span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">2</span>))  <span class="cm"># 3×4×2 三维数组</span>
+a[,,<span class="nm">1</span>]           <span class="cm"># 第一个"层"</span>
+a[<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">2</span>]        <span class="cm"># 第二层的 (1,1) 位置</span></code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第7章 列表与数据框 -->
+        <!-- ============================================================ -->
+        <h2 id="ch7">7. 列表与数据框</h2>
+
+        <h3>列表 (List)</h3>
+        <p>列表是 R 中最灵活的数据结构——可以容纳任意类型、任意长度的元素，包括其他列表。</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 创建列表</span>
+person <span class="op">&lt;-</span> <span class="kw">list</span>(
+  <span class="kw">name</span>    <span class="op">=</span> <span class="st">"张三"</span>,
+  <span class="kw">age</span>     <span class="op">=</span> <span class="nm">28</span>,
+  <span class="kw">scores</span>  <span class="op">=</span> <span class="kw">c</span>(<span class="nm">85</span>, <span class="nm">92</span>, <span class="nm">78</span>),
+  <span class="kw">address</span> <span class="op">=</span> <span class="kw">list</span>(<span class="kw">city</span><span class="op">=</span><span class="st">"北京"</span>, <span class="kw">district</span><span class="op">=</span><span class="st">"海淀"</span>)
+)
+
+<span class="cm"># 访问列表</span>
+person$name           <span class="cm"># "张三"（同 person[["name"]])</span>
+person[[<span class="nm">3</span>]]          <span class="cm"># [1] 85 92 78</span>
+person$scores[<span class="nm">2</span>]    <span class="cm"># 92</span>
+person$address$city  <span class="cm"># "北京"（嵌套访问）</span>
+
+<span class="cm"># 添加/修改元素</span>
+person$email <span class="op">&lt;-</span> <span class="st">"zhangsan@example.com"</span>
+person$age <span class="op">&lt;-</span> <span class="nm">29</span>
+
+<span class="cm"># 列表的结构</span>
+<span class="fn">str</span>(person)
+<span class="cm"># List of 5</span>
+<span class="cm">#  $ name   : chr "张三"</span>
+<span class="cm">#  $ age    : num 29</span>
+<span class="cm">#  $ scores : num [1:3] 85 92 78</span>
+<span class="cm">#  $ address: List of 2</span>
+<span class="cm">#   ..$ city    : chr "北京"</span>
+<span class="cm">#   ..$ district: chr "海淀"</span>
+<span class="cm">#  $ email  : chr "zhangsan@example.com"</span></code></pre>
+        </div>
+
+        <h3>数据框 (Data Frame)</h3>
+        <div class="principle">
+            <div class="principle-title">数据框：R 的表格数据核心</div>
+            <p>数据框是列表的特化形式——每个元素是等长的向量（列），不同列可以是不同类型。它是 R 处理表格数据的主力结构，也是大多数统计函数和建模函数的输入格式。</p>
+            <p><strong>tibble</strong> 是现代替代品（来自 tibble/dplyr 包），提供了更友好的打印、更严格的子集行为和更好的大表处理能力。</p>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 创建数据框</span>
+df <span class="op">&lt;-</span> <span class="kw">data.frame</span>(
+  <span class="kw">name</span>   <span class="op">=</span> <span class="kw">c</span>(<span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Carol"</span>),
+  <span class="kw">age</span>    <span class="op">=</span> <span class="kw">c</span>(<span class="nm">25</span>, <span class="nm">30</span>, <span class="nm">28</span>),
+  <span class="kw">score</span>  <span class="op">=</span> <span class="kw">c</span>(<span class="nm">92.5</span>, <span class="nm">88.0</span>, <span class="nm">95.3</span>),
+  <span class="kw">grade</span>  <span class="op">=</span> <span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"A"</span>))
+)
+
+df                   <span class="cm"># 打印整个数据框</span>
+<span class="fn">head</span>(df, <span class="nm">2</span>)        <span class="cm"># 前 2 行</span>
+<span class="fn">str</span>(df)            <span class="cm"># 结构概览</span>
+<span class="fn">summary</span>(df)        <span class="cm"># 各列摘要</span>
+
+<span class="cm"># 数据框索引</span>
+df$name              <span class="cm"># 按列名（向量）</span>
+df[[<span class="st">"score"</span>]]       <span class="cm"># 等价方式</span>
+df[<span class="nm">1</span>, ]             <span class="cm"># 第 1 行（所有列）</span>
+df[, <span class="nm">3</span>]             <span class="cm"># 第 3 列</span>
+df[<span class="nm">1</span><span class="op">:</span><span class="nm">2</span>, <span class="kw">c</span>(<span class="st">"name"</span>, <span class="st">"score"</span>)]  <span class="cm"># 子集</span>
+df[df$score <span class="op">></span> <span class="nm">90</span>, ]  <span class="cm"># 条件筛选</span>
+
+<span class="cm"># 增加列</span>
+df$pass <span class="op">&lt;-</span> df$score <span class="op">>=</span> <span class="nm">90</span>
+
+<span class="cm"># 删除列</span>
+df$pass <span class="op">&lt;-</span> <span class="kw">NULL</span></code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第8章 条件判断 -->
+        <!-- ============================================================ -->
+        <h2 id="ch8">8. 条件判断</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># if / else if / else</span>
+score <span class="op">&lt;-</span> <span class="nm">85</span>
+
+<span class="kw">if</span> (score <span class="op">>=</span> <span class="nm">90</span>) {
+  grade <span class="op">&lt;-</span> <span class="st">"优秀"</span>
+} <span class="kw">else if</span> (score <span class="op">>=</span> <span class="nm">80</span>) {
+  grade <span class="op">&lt;-</span> <span class="st">"良好"</span>
+} <span class="kw">else if</span> (score <span class="op">>=</span> <span class="nm">70</span>) {
+  grade <span class="op">&lt;-</span> <span class="st">"中等"</span>
+} <span class="kw">else if</span> (score <span class="op">>=</span> <span class="nm">60</span>) {
+  grade <span class="op">&lt;-</span> <span class="st">"及格"</span>
+} <span class="kw">else</span> {
+  grade <span class="op">&lt;-</span> <span class="st">"不及格"</span>
+}
+
+<span class="cm"># ifelse() — 向量化条件判断（适用于向量）</span>
+scores <span class="op">&lt;-</span> <span class="kw">c</span>(<span class="nm">95</span>, <span class="nm">72</span>, <span class="nm">58</span>, <span class="nm">88</span>)
+grades <span class="op">&lt;-</span> <span class="fn">ifelse</span>(scores <span class="op">>=</span> <span class="nm">60</span>, <span class="st">"通过"</span>, <span class="st">"不通过"</span>)
+<span class="cm"># [1] "通过" "通过" "不通过" "通过"</span>
+
+<span class="cm"># case_when() — 多条件向量化判断（dplyr）</span>
+<span class="kw">library</span>(dplyr)
+grades <span class="op">&lt;-</span> <span class="fn">case_when</span>(
+  scores <span class="op">>=</span> <span class="nm">90</span> <span class="op">~</span> <span class="st">"优秀"</span>,
+  scores <span class="op">>=</span> <span class="nm">80</span> <span class="op">~</span> <span class="st">"良好"</span>,
+  scores <span class="op">>=</span> <span class="nm">70</span> <span class="op">~</span> <span class="st">"中等"</span>,
+  scores <span class="op">>=</span> <span class="nm">60</span> <span class="op">~</span> <span class="st">"及格"</span>,
+  <span class="kw">TRUE</span> <span class="op">~</span> <span class="st">"不及格"</span>
+)
+
+<span class="cm"># switch() — 值匹配</span>
+day <span class="op">&lt;-</span> <span class="st">"Mon"</span>
+<span class="kw">switch</span>(day,
+  <span class="st">"Mon"</span> <span class="op">=</span> <span class="st">"星期一"</span>,
+  <span class="st">"Tue"</span> <span class="op">=</span> <span class="st">"星期二"</span>,
+  <span class="st">"Wed"</span> <span class="op">=</span> <span class="st">"星期三"</span>,
+  <span class="st">"未知"</span>
+)
+
+<span class="cm"># 任何/所有</span>
+<span class="fn">any</span>(<span class="kw">c</span>(<span class="kw">TRUE</span>, <span class="kw">FALSE</span>, <span class="kw">FALSE</span>))  <span class="cm"># TRUE（至少一个为 TRUE）</span>
+<span class="fn">all</span>(<span class="kw">c</span>(<span class="kw">TRUE</span>, <span class="kw">TRUE</span>, <span class="kw">TRUE</span>))   <span class="cm"># TRUE（全部为 TRUE）</span></code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第9章 循环语句 -->
+        <!-- ============================================================ -->
+        <h2 id="ch9">9. 循环语句</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># for 循环</span>
+<span class="kw">for</span> (i <span class="kw">in</span> <span class="nm">1</span><span class="op">:</span><span class="nm">5</span>) {
+  <span class="fn">cat</span>(<span class="st">"i ="</span>, i, <span class="st">"\n"</span>)
+}
+
+<span class="cm"># 遍历向量</span>
+fruits <span class="op">&lt;-</span> <span class="kw">c</span>(<span class="st">"苹果"</span>, <span class="st">"香蕉"</span>, <span class="st">"橘子"</span>)
+<span class="kw">for</span> (fruit <span class="kw">in</span> fruits) {
+  <span class="fn">cat</span>(<span class="st">"我喜欢"</span>, fruit, <span class="st">"\n"</span>)
+}
+
+<span class="cm"># while 循环</span>
+n <span class="op">&lt;-</span> <span class="nm">1</span>
+<span class="kw">while</span> (n <span class="op">&lt;=</span> <span class="nm">5</span>) {
+  <span class="fn">cat</span>(<span class="st">"n ="</span>, n, <span class="st">"\n"</span>)
+  n <span class="op">&lt;-</span> n <span class="op">+</span> <span class="nm">1</span>
+}
+
+<span class="cm"># repeat + break</span>
+x <span class="op">&lt;-</span> <span class="nm">1</span>
+<span class="kw">repeat</span> {
+  <span class="kw">if</span> (x<span class="op">^</span><span class="nm">2</span> <span class="op">></span> <span class="nm">100</span>) <span class="kw">break</span>
+  x <span class="op">&lt;-</span> x <span class="op">+</span> <span class="nm">1</span>
+}
+
+<span class="cm"># next — 跳过当前迭代</span>
+<span class="kw">for</span> (i <span class="kw">in</span> <span class="nm">1</span><span class="op">:</span><span class="nm">10</span>) {
+  <span class="kw">if</span> (i <span class="op">%%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>) <span class="kw">next</span>  <span class="cm"># 跳过偶数</span>
+  <span class="fn">cat</span>(i, <span class="st">" "</span>)
+}
+<span class="cm"># 1 3 5 7 9</span></code></pre>
+        </div>
+
+        <div class="warning">R 的 for 循环比其他语言慢。对于大规模数据，应优先使用向量化操作或 apply 族函数。for 循环适合：<strong>迭代次数少（&lt;1000）</strong>、<strong>每步需要副作用（绘图、写文件）</strong>、<strong>无法向量化的算法</strong>。</div>
+
+        <!-- ============================================================ -->
+        <!-- 第10章 函数 -->
+        <!-- ============================================================ -->
+        <h2 id="ch10">10. 函数</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 基本函数定义</span>
+add <span class="op">&lt;-</span> <span class="kw">function</span>(x, y) {
+  x <span class="op">+</span> y
+}
+<span class="fn">add</span>(<span class="nm">3</span>, <span class="nm">4</span>)  <span class="cm"># 7</span>
+
+<span class="cm"># 默认参数</span>
+greet <span class="op">&lt;-</span> <span class="kw">function</span>(name, greeting <span class="op">=</span> <span class="st">"你好"</span>) {
+  <span class="fn">paste</span>(greeting, name)
+}
+<span class="fn">greet</span>(<span class="st">"Alice"</span>)          <span class="cm"># "你好 Alice"</span>
+<span class="fn">greet</span>(<span class="st">"Alice"</span>, <span class="st">"Hi"</span>)    <span class="cm"># "Hi Alice"</span>
+
+<span class="cm"># ... 可变参数</span>
+<span class="fn">sum_all</span> <span class="op">&lt;-</span> <span class="kw">function</span>(...) {
+  args <span class="op">&lt;-</span> <span class="kw">list</span>(...)
+  <span class="fn">Reduce</span>(<span class="st">`+`</span>, args)
+}
+<span class="fn">sum_all</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>)  <span class="cm"># 10</span>
+
+<span class="cm"># 函数是一等公民</span>
+operations <span class="op">&lt;-</span> <span class="kw">list</span>(
+  <span class="kw">add</span>      <span class="op">=</span> <span class="kw">function</span>(a, b) a <span class="op">+</span> b,
+  <span class="kw">multiply</span> <span class="op">=</span> <span class="kw">function</span>(a, b) a <span class="op">*</span> b
+)
+operations<span class="op">$</span><span class="fn">add</span>(<span class="nm">2</span>, <span class="nm">3</span>)        <span class="cm"># 5</span>
+operations[[<span class="st">"multiply"</span>]](<span class="nm">2</span>, <span class="nm">3</span>) <span class="cm"># 6</span>
+
+<span class="cm"># 匿名函数</span>
+<span class="kw">lapply</span>(<span class="nm">1</span><span class="op">:</span><span class="nm">5</span>, <span class="kw">function</span>(x) x<span class="op">^</span><span class="nm">2</span>)
+<span class="cm"># [[1]] 1  [[2]] 4  [[3]] 9  [[4]] 16  [[5]] 25</span>
+
+<span class="cm"># 闭包（函数捕获外部变量）</span>
+make_counter <span class="op">&lt;-</span> <span class="kw">function</span>() {
+  count <span class="op">&lt;-</span> <span class="nm">0</span>
+  <span class="kw">function</span>() {
+    count <span class="op">&lt;-</span> count <span class="op">+</span> <span class="nm">1</span>
+    count
+  }
+}
+counter <span class="op">&lt;-</span> <span class="fn">make_counter</span>()
+<span class="fn">counter</span>()  <span class="cm"># 1</span>
+<span class="fn">counter</span>()  <span class="cm"># 2</span>
+<span class="fn">counter</span>()  <span class="cm"># 3</span></code></pre>
+        </div>
+
+        <h3>错误处理</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># try / tryCatch</span>
+result <span class="op">&lt;-</span> <span class="fn">try</span>(<span class="fn">sqrt</span>(<span class="op">-</span><span class="nm">1</span>))
+<span class="kw">if</span> (<span class="fn">inherits</span>(result, <span class="st">"try-error"</span>)) {
+  <span class="fn">cat</span>(<span class="st">"计算失败："</span>, <span class="fn">conditionMessage</span>(result))
+}
+
+<span class="cm"># tryCatch — 更精细的错误处理</span>
+<span class="fn">tryCatch</span>(
+  {
+    result <span class="op">&lt;-</span> <span class="fn">read.csv</span>(<span class="st">"不存在的文件.csv"</span>)
+  },
+  <span class="kw">error</span> <span class="op">=</span> <span class="kw">function</span>(e) {
+    <span class="fn">cat</span>(<span class="st">"文件不存在："</span>, <span class="fn">conditionMessage</span>(e), <span class="st">"\n"</span>)
+  },
+  <span class="kw">warning</span> <span class="op">=</span> <span class="kw">function</span>(w) {
+    <span class="fn">cat</span>(<span class="st">"警告："</span>, <span class="fn">conditionMessage</span>(w), <span class="st">"\n"</span>)
+  }
+)
+
+<span class="cm"># stop() — 主动抛出错误</span>
+validate_age <span class="op">&lt;-</span> <span class="kw">function</span>(age) {
+  <span class="kw">if</span> (<span class="op">!</span><span class="fn">is.numeric</span>(age) <span class="op">||</span> age <span class="op">&lt;</span> <span class="nm">0</span>) {
+    <span class="fn">stop</span>(<span class="st">"age 必须是非负数字"</span>)
+  }
+  <span class="kw">TRUE</span>
+}
+
+<span class="cm"># warning() — 警告</span>
+<span class="fn">warning</span>(<span class="st">"这是一个警告"</span>)</code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第11章 apply 族函数 -->
+        <!-- ============================================================ -->
+        <h2 id="ch11">11. apply 族函数</h2>
+
+        <div class="principle">
+            <div class="principle-title">函数式编程思想</div>
+            <p>apply 族函数体现了函数式编程的核心思想：<strong>将函数应用于数据结构的每个元素</strong>，而不是手动遍历。这比 for 循环更简洁、更安全（避免了索引错误），且在某些场景下性能更优。</p>
+            <p>R 的函数式编程工具还包括 <span class="inline-code">Reduce()</span>、<span class="inline-code">Map()</span>、<span class="inline-code">Filter()</span>、<span class="inline-code">Reduce()</span> 等高阶函数。</p>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># apply — 对矩阵的行或列应用函数</span>
+m <span class="op">&lt;-</span> <span class="kw">matrix</span>(<span class="nm">1</span><span class="op">:</span><span class="nm">12</span>, <span class="nm">3</span>, <span class="nm">4</span>)
+<span class="fn">apply</span>(m, <span class="nm">1</span>, sum)    <span class="cm"># 按行求和 → c(22, 26, 30)</span>
+<span class="fn">apply</span>(m, <span class="nm">2</span>, mean)   <span class="cm"># 按列求均值 → c(2, 5, 8, 11)</span>
+
+<span class="cm"># lapply — 对列表/向量的每个元素应用函数，返回列表</span>
+nums <span class="op">&lt;-</span> <span class="kw">list</span>(<span class="kw">a</span><span class="op">=</span><span class="nm">1</span><span class="op">:</span><span class="nm">10</span>, <span class="kw">b</span><span class="op">=</span><span class="nm">21</span><span class="op">:</span><span class="nm">30</span>)
+<span class="kw">lapply</span>(nums, mean)
+<span class="cm"># $a → 5.5</span>
+<span class="cm"># $b → 25.5</span>
+
+<span class="cm"># sapply — 同 lapply，但尽量返回向量（简化结果）</span>
+<span class="kw">sapply</span>(nums, mean)   <span class="cm"># named vector: a=5.5, b=25.5</span>
+
+<span class="cm"># vapply — 指定返回类型（更安全的 sapply）</span>
+<span class="kw">vapply</span>(nums, mean, <span class="kw">numeric</span>(<span class="nm">1</span>))
+
+<span class="cm"># tapply — 对分组数据应用函数（类似 SQL GROUP BY）</span>
+scores <span class="op">&lt;-</span> <span class="kw">c</span>(<span class="nm">85</span>, <span class="nm">92</span>, <span class="nm">78</span>, <span class="nm">95</span>, <span class="nm">88</span>, <span class="nm">76</span>)
+groups <span class="op">&lt;-</span> <span class="kw">c</span>(<span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>)
+<span class="kw">tapply</span>(scores, groups, mean)
+<span class="cm">#     A     B</span>
+<span class="cm"># 90.00 83.00</span>
+
+<span class="cm"># mapply — 多参数版本的 lapply</span>
+<span class="kw">mapply</span>(<span class="fn">rep</span>, <span class="nm">1</span><span class="op">:</span><span class="nm">3</span>, <span class="nm">3</span><span class="op">:</span><span class="nm">1</span>)
+<span class="cm"># [[1]] 1 1 1</span>
+<span class="cm"># [[2]] 2 2</span>
+<span class="cm"># [[3]] 3</span>
+
+<span class="cm"># Reduce / Map / Filter（函数式编程）</span>
+<span class="fn">Reduce</span>(<span class="st">`+`</span>, <span class="nm">1</span><span class="op">:</span><span class="nm">10</span>)           <span class="cm"># 55</span>
+<span class="fn">Map</span>(<span class="kw">function</span>(x,y) x<span class="op">+</span>y, <span class="nm">1</span><span class="op">:</span><span class="nm">3</span>, <span class="nm">10</span><span class="op">:</span><span class="nm">12</span>)  <span class="cm"># list(11, 13, 15)</span>
+<span class="fn">Filter</span>(<span class="kw">function</span>(x) x <span class="op">%%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>, <span class="nm">1</span><span class="op">:</span><span class="nm">10</span>)  <span class="cm"># [1] 2 4 6 8 10</span></code></pre>
+        </div>
+
+        <div class="tip">推荐使用 <span class="inline-code">purrr</span> 包的 <span class="inline-code">map()</span>、<span class="inline-code">map_dbl()</span>、<span class="inline-code">map_chr()</span> 等函数替代 base R 的 apply 族。它们更一致、类型更安全，且支持公式语法（<span class="inline-code">~ .x^2</span>）。</div>
+
+        <!-- ============================================================ -->
+        <!-- 第12章 数据导入导出 -->
+        <!-- ============================================================ -->
+        <h2 id="ch12">12. 数据导入导出</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># ============ CSV ============</span>
+<span class="cm"># 读取</span>
+df <span class="op">&lt;-</span> <span class="fn">read.csv</span>(<span class="st">"data.csv"</span>, <span class="kw">stringsAsFactors</span><span class="op">=</span><span class="kw">FALSE</span>)
+<span class="cm"># readr::read_csv() 更快且默认不转换字符串为因子</span>
+<span class="kw">library</span>(readr)
+df <span class="op">&lt;-</span> <span class="fn">read_csv</span>(<span class="st">"data.csv"</span>)
+
+<span class="cm"># 写入</span>
+<span class="fn">write.csv</span>(df, <span class="st">"output.csv"</span>, <span class="kw">row.names</span><span class="op">=</span><span class="kw">FALSE</span>)
+<span class="fn">write_csv</span>(df, <span class="st">"output.csv"</span>)   <span class="cm"># readr 版本</span>
+
+<span class="cm"># ============ Excel ============</span>
+<span class="kw">library</span>(readxl)
+df <span class="op">&lt;-</span> <span class="fn">read_excel</span>(<span class="st">"data.xlsx"</span>, <span class="kw">sheet</span><span class="op">=</span><span class="st">"Sheet1"</span>)
+<span class="fn">excel_sheets</span>(<span class="st">"data.xlsx"</span>)     <span class="cm"># 列出所有 sheet 名</span>
+
+<span class="cm"># 写入 Excel</span>
+<span class="kw">library</span>(writexl)
+<span class="fn">write_xlsx</span>(df, <span class="st">"output.xlsx"</span>)
+
+<span class="cm"># ============ JSON ============</span>
+<span class="kw">library</span>(jsonlite)
+data <span class="op">&lt;-</span> <span class="fn">fromJSON</span>(<span class="st">"data.json"</span>)
+<span class="fn">toJSON</span>(df, <span class="kw">pretty</span><span class="op">=</span><span class="kw">TRUE</span>) <span class="op">|&gt;</span> <span class="fn">writeLines</span>(<span class="st">"output.json"</span>)
+
+<span class="cm"># ============ 数据库 ============</span>
+<span class="kw">library</span>(DBI)
+<span class="kw">library</span>(RSQLite)
+conn <span class="op">&lt;-</span> <span class="fn">dbConnect</span>(<span class="fn">SQLite</span>(), <span class="st">"mydb.sqlite"</span>)
+df <span class="op">&lt;-</span> <span class="fn">dbGetQuery</span>(conn, <span class="st">"SELECT * FROM users WHERE age > 18"</span>)
+<span class="fn">dbWriteTable</span>(conn, <span class="st">"new_table"</span>, df)
+<span class="fn">dbDisconnect</span>(conn)</code></pre>
+        </div>
+
+        <h3>大文件处理</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># data.table::fread — 最快的文本读取</span>
+<span class="kw">library</span>(data.table)
+dt <span class="op">&lt;-</span> <span class="fn">fread</span>(<span class="st">"huge_file.csv"</span>, <span class="kw">nThread</span><span class="op">=</span><span class="nm">4</span>)
+
+<span class="cm"># vroom — 快速读取</span>
+<span class="kw">library</span>(vroom)
+df <span class="op">&lt;-</span> <span class="fn">vroom</span>(<span class="st">"huge_file.csv"</span>)
+
+<span class="cm"># 分块读取超大文件</span>
+<span class="kw">library</span>(readr)
+df <span class="op">&lt;-</span> <span class="fn">read_csv_chunked</span>(
+  <span class="st">"huge.csv"</span>,
+  <span class="fn">DataFrameCallback</span>(<span class="kw">function</span>(x, pos) {
+    x[x<span class="op">$</span>age <span class="op">></span> <span class="nm">18</span>, ]
+  }),
+  <span class="kw">chunk_size</span><span class="op">=</span><span class="nm">10000</span>
+)</code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第13章 数据清洗 -->
+        <!-- ============================================================ -->
+        <h2 id="ch13">13. 数据清洗</h2>
+
+        <h3>缺失值处理</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 检测缺失值</span>
+<span class="fn">is.na</span>(<span class="kw">c</span>(<span class="nm">1</span>, <span class="kw">NA</span>, <span class="nm">3</span>))       <span class="cm"># FALSE TRUE FALSE</span>
+<span class="fn">sum</span>(<span class="fn">is.na</span>(df<span class="op">$</span>col))       <span class="cm"># 该列 NA 的数量</span>
+<span class="fn">colSums</span>(<span class="fn">is.na</span>(df))        <span class="cm"># 各列 NA 数</span>
+
+<span class="cm"># 删除含 NA 的行</span>
+df_clean <span class="op">&lt-</span> <span class="fn">na.omit</span>(df)
+df_clean <span class="op">&lt;-</span> <span class="fn">drop_na</span>(df)             <span class="cm"># tidyr 版本</span>
+
+<span class="cm"># 填充缺失值</span>
+df<span class="op">$</span>col[<span class="fn">is.na</span>(df<span class="op">$</span>col)] <span class="op">&lt;-</span> <span class="nm">0</span>       <span class="cm"># 用 0 填充</span>
+df<span class="op">$</span>col[<span class="fn">is.na</span>(df<span class="op">$</span>col)] <span class="op">&lt;-</span> <span class="fn">mean</span>(df<span class="op">$</span>col, <span class="kw">na.rm</span><span class="op">=</span><span class="kw">TRUE</span>)  <span class="cm"># 用均值填充</span>
+
+<span class="cm"># tidyr::fill — 向前/向后填充</span>
+<span class="kw">library</span>(tidyr)
+df <span class="op">|&gt;</span> <span class="fn">fill</span>(col, <span class="kw">.direction</span><span class="op">=</span><span class="st">"down"</span>)
+
+<span class="cm"># tidyr::replace_na</span>
+df <span class="op">|&gt;</span> <span class="fn">replace_na</span>(<span class="kw">list</span>(<span class="kw">col</span><span class="op">=</span><span class="nm">0</span>))</code></pre>
+        </div>
+
+        <h3>dplyr 数据操作</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="kw">library</span>(dplyr)
+
+<span class="cm"># 管道操作符 |&gt; 或 %>%</span>
+result <span class="op">&lt;-</span> df <span class="op">|&gt;</span>
+  <span class="fn">filter</span>(age <span class="op">></span> <span class="nm">18</span>) <span class="op">|&gt;</span>                <span class="cm"># 筛选行</span>
+  <span class="fn">select</span>(name, score) <span class="op">|&gt;</span>              <span class="cm"># 选择列</span>
+  <span class="fn">mutate</span>(                               <span class="cm"># 新增/修改列</span>
+    grade <span class="op">=</span> <span class="fn">case_when</span>(
+      score <span class="op">>=</span> <span class="nm">90</span> <span class="op">~</span> <span class="st">"A"</span>,
+      score <span class="op">>=</span> <span class="nm">80</span> <span class="op">~</span> <span class="st">"B"</span>,
+      <span class="kw">TRUE</span> <span class="op">~</span> <span class="st">"C"</span>
+    )
+  ) <span class="op">|&gt;</span>
+  <span class="fn">arrange</span>(<span class="fn">desc</span>(score)) <span class="op">|&gt;</span>            <span class="cm"># 降序排列</span>
+  <span class="fn">slice_head</span>(<span class="kw">n</span><span class="op">=</span><span class="nm">10</span>)                    <span class="cm"># 取前 10 行</span>
+
+<span class="cm"># 常用 dplyr 动词</span>
+<span class="cm"># filter()    — 按条件筛选行</span>
+<span class="cm"># select()    — 选择/排除列</span>
+<span class="cm"># mutate()    — 新增或修改列</span>
+<span class="cm"># rename()    — 重命名列</span>
+<span class="cm"># arrange()   — 排序</span>
+<span class="cm"># slice_*()   — 按位置取行</span>
+<span class="cm"># distinct()  — 去重</span>
+<span class="cm"># count()     — 计数</span>
+
+<span class="cm"># 字符串处理（stringr）</span>
+<span class="kw">library</span>(stringr)
+df<span class="op">$</span>name <span class="op">|&gt;</span> <span class="fn">str_to_lower</span>()     <span class="cm"># 转小写</span>
+df<span class="op">$</span>name <span class="op">|&gt;</span> <span class="fn">str_extract</span>(<span class="st">"\\d+"</span>) <span class="cm"># 提取数字</span>
+df<span class="op">$</span>name <span class="op">|&gt;</span> <span class="fn">str_replace</span>(<span class="st">"old"</span>, <span class="st">"new"</span>) <span class="cm"># 替换</span></code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第14章 数据聚合 -->
+        <!-- ============================================================ -->
+        <h2 id="ch14">14. 数据聚合</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="kw">library</span>(dplyr)
+
+<span class="cm"># group_by + summarise — 分组聚合</span>
+mtcars <span class="op">|&gt;</span>
+  <span class="fn">group_by</span>(cyl) <span class="op">|&gt;</span>
+  <span class="fn">summarise</span>(
+    <span class="kw">avg_mpg</span>  <span class="op">=</span> <span class="fn">mean</span>(mpg),
+    <span class="kw">avg_hp</span>   <span class="op">=</span> <span class="fn">mean</span>(hp),
+    <span class="kw">n</span>        <span class="op">=</span> <span class="fn">n</span>(),
+    <span class="kw">sd_mpg</span>   <span class="op">=</span> <span class="fn">sd</span>(mpg),
+    <span class="kw">max_hp</span>   <span class="op">=</span> <span class="fn">max</span>(hp)
+  )
+
+<span class="cm"># 多列分组</span>
+df <span class="op">|&gt;</span>
+  <span class="fn">group_by</span>(department, year) <span class="op">|&gt;</span>
+  <span class="fn">summarise</span>(<span class="kw">avg_salary</span> <span class="op">=</span> <span class="fn">mean</span>(salary, <span class="kw">na.rm</span><span class="op">=</span><span class="kw">TRUE</span>))
+
+<span class="cm"># across() — 对多列应用相同聚合</span>
+df <span class="op">|&gt;</span>
+  <span class="fn">group_by</span>(group) <span class="op">|&gt;</span>
+  <span class="fn">summarise</span>(<span class="fn">across</span>(<span class="kw">where</span>(is.numeric), mean, <span class="kw">na.rm</span><span class="op">=</span><span class="kw">TRUE</span>))
+
+<span class="cm"># data.table 版本（更快）</span>
+<span class="kw">library</span>(data.table)
+dt <span class="op">&lt;-</span> <span class="fn">as.data.table</span>(mtcars)
+dt[, .(<span class="kw">avg_mpg</span><span class="op">=</span><span class="fn">mean</span>(mpg), <span class="kw">count</span><span class="op">=</span>.N), <span class="kw">by</span><span class="op">=</span>cyl]
+
+<span class="cm"># reshape2 / tidyr — 宽长转换</span>
+<span class="kw">library</span>(tidyr)
+
+<span class="cm"># 宽 → 长（pivot_longer）</span>
+df_long <span class="op">&lt;-</span> df <span class="op">|&gt;</span>
+  <span class="fn">pivot_longer</span>(
+    <span class="kw">cols</span> <span class="op">=</span> <span class="kw">starts_with</span>(<span class="st">"Q"</span>),
+    <span class="kw">names_to</span> <span class="op">=</span> <span class="st">"quarter"</span>,
+    <span class="kw">values_to</span> <span class="op">=</span> <span class="st">"revenue"</span>
+  )
+
+<span class="cm"># 长 → 宽（pivot_wider）</span>
+df_wide <span class="op">&lt;-</span> df_long <span class="op">|&gt;</span>
+  <span class="fn">pivot_wider</span>(
+    <span class="kw">names_from</span> <span class="op">=</span> quarter,
+    <span class="kw">values_from</span> <span class="op">=</span> revenue
+  )</code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第15章 base 绑图 -->
+        <!-- ============================================================ -->
+        <h2 id="ch15">15. base 绑图</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 散点图</span>
+<span class="fn">plot</span>(mtcars<span class="op">$</span>wt, mtcars<span class="op">$</span>mpg,
+  <span class="kw">main</span>  <span class="op">=</span> <span class="st">"重量 vs 油耗"</span>,
+  <span class="kw">xlab</span>  <span class="op">=</span> <span class="st">"重量 (1000 lbs)"</span>,
+  <span class="kw">ylab</span>  <span class="op">=</span> <span class="st">"每加仑英里数"</span>,
+  <span class="kw">col</span>   <span class="op">=</span> <span class="st">"steelblue"</span>,
+  <span class="kw">pch</span>   <span class="op">=</span> <span class="nm">19</span>,
+  <span class="kw">cex</span>   <span class="op">=</span> <span class="nm">1.2</span>
+)
+
+<span class="cm"># 直方图</span>
+<span class="fn">hist</span>(mtcars<span class="op">$</span>mpg,
+  <span class="kw">main</span>  <span class="op">=</span> <span class="st">"MPG 分布"</span>,
+  <span class="kw">xlab</span>  <span class="op">=</span> <span class="st">"MPG"</span>,
+  <span class="kw">col</span>   <span class="op">=</span> <span class="st">"lightblue"</span>,
+  <span class="kw">border</span> <span class="op">=</span> <span class="st">"white"</span>,
+  <span class="kw">breaks</span> <span class="op">=</span> <span class="nm">15</span>
+)
+
+<span class="cm"># 箱线图</span>
+<span class="fn">boxplot</span>(mpg <span class="op">~</span> cyl, <span class="kw">data</span><span class="op">=</span>mtcars,
+  <span class="kw">main</span>  <span class="op">=</span> <span class="st">"不同气缸数的油耗"</span>,
+  <span class="kw">xlab</span>  <span class="op">=</span> <span class="st">"气缸数"</span>,
+  <span class="kw">ylab</span>  <span class="op">=</span> <span class="st">"MPG"</span>,
+  <span class="kw">col</span>   <span class="op">=</span> <span class="kw">c</span>(<span class="st">"lightgreen"</span>, <span class="st">"lightyellow"</span>, <span class="st">"lightsalmon"</span>)
+)
+
+<span class="cm"># 折线图</span>
+<span class="fn">plot</span>(AirPassengers, <span class="kw">type</span><span class="op">=</span><span class="st">"l"</span>,
+  <span class="kw">main</span> <span class="op">=</span> <span class="st">"航空乘客数"</span>,
+  <span class="kw">col</span>  <span class="op">=</span> <span class="st">"darkblue"</span>,
+  <span class="kw">lwd</span>  <span class="op">=</span> <span class="nm">2</span>
+)
+
+<span class="cm"># 饼图</span>
+<span class="fn">pie</span>(<span class="kw">c</span>(<span class="nm">30</span>, <span class="nm">25</span>, <span class="nm">20</span>, <span class="nm">15</span>, <span class="nm">10</span>),
+  <span class="kw">labels</span> <span class="op">=</span> <span class="kw">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>),
+  <span class="kw">col</span>    <span class="op">=</span> <span class="fn">rainbow</span>(<span class="nm">5</span>),
+  <span class="kw">main</span>   <span class="op">=</span> <span class="st">"市场份额"</span>
+)
+
+<span class="cm"># 多图布局</span>
+<span class="fn">par</span>(<span class="kw">mfrow</span><span class="op">=</span><span class="kw">c</span>(<span class="nm">2</span>, <span class="nm">2</span>))
+<span class="fn">hist</span>(mtcars<span class="op">$</span>mpg)
+<span class="fn">plot</span>(mtcars<span class="op">$</span>wt, mtcars<span class="op">$</span>mpg)
+<span class="fn">boxplot</span>(mpg <span class="op">~</span> cyl, <span class="kw">data</span><span class="op">=</span>mtcars)
+<span class="fn">barplot</span>(<span class="kw">table</span>(mtcars<span class="op">$</span>cyl))</code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第16章 ggplot2 -->
+        <!-- ============================================================ -->
+        <h2 id="ch16">16. ggplot2</h2>
+
+        <div class="principle">
+            <div class="principle-title">图形语法 (Grammar of Graphics)</div>
+            <p>ggplot2 基于 Leland Wilkinson 的图形语法理论，将每个统计图形分解为以下<strong>核心组件</strong>：</p>
+            <ol>
+                <li><strong>数据 (Data)</strong>：要可视化的数据集</li>
+                <li><strong>映射 (Aesthetics)</strong>：将数据变量映射到视觉属性（x, y, color, fill, size, shape, alpha）</li>
+                <li><strong>几何对象 (Geom)</strong>：数据的视觉表现（点、线、柱、面等）</li>
+                <li><strong>统计变换 (Stat)</strong>：对数据的数学处理（密度估计、分箱、回归拟合）</li>
+                <li><strong>坐标系 (Coord)</strong>：数据在平面上的映射方式（笛卡尔、极坐标）</li>
+                <li><strong>分面 (Facet)</strong>：按变量将图形分组展示</li>
+                <li><strong>主题 (Theme)</strong>：非数据驱动的视觉样式</li>
+            </ol>
+            <p>这些组件通过 <span class="inline-code">+</span> 号叠加组合，形成完整的图形。这种分层思想让同一份数据可以通过更换 geom 快速生成不同类型的图表。</p>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="kw">library</span>(ggplot2)
+
+<span class="cm"># 基本散点图</span>
+<span class="fn">ggplot</span>(mtcars, <span class="kw">aes</span>(<span class="kw">x</span><span class="op">=</span>wt, <span class="kw">y</span><span class="op">=</span>mpg, <span class="kw">color</span><span class="op">=</span><span class="fn">factor</span>(cyl))) <span class="op">+</span>
+  <span class="fn">geom_point</span>(<span class="kw">size</span><span class="op">=</span><span class="nm">3</span>, <span class="kw">alpha</span><span class="op">=</span><span class="nm">0.7</span>) <span class="op">+</span>
+  <span class="fn">labs</span>(
+    <span class="kw">title</span> <span class="op">=</span> <span class="st">"汽车重量与油耗的关系"</span>,
+    <span class="kw">x</span>     <span class="op">=</span> <span class="st">"重量 (1000 lbs)"</span>,
+    <span class="kw">y</span>     <span class="op">=</span> <span class="st">"每加仑英里数"</span>,
+    <span class="kw">color</span> <span class="op">=</span> <span class="st">"气缸数"</span>
+  ) <span class="op">+</span>
+  <span class="fn">theme_minimal</span>()
+
+<span class="cm"># 直方图 + 密度曲线</span>
+<span class="fn">ggplot</span>(mtcars, <span class="kw">aes</span>(<span class="kw">x</span><span class="op">=</span>mpg, <span class="kw">fill</span><span class="op">=</span><span class="fn">factor</span>(cyl))) <span class="op">+</span>
+  <span class="fn">geom_histogram</span>(<span class="kw">binwidth</span><span class="op">=</span><span class="nm">2</span>, <span class="kw">alpha</span><span class="op">=</span><span class="nm">0.6</span>, <span class="kw">position</span><span class="op">=</span><span class="st">"identity"</span>) <span class="op">+</span>
+  <span class="fn">geom_density</span>(<span class="kw">alpha</span><span class="op">=</span><span class="nm">0.3</span>) <span class="op">+</span>
+  <span class="fn">labs</span>(<span class="kw">title</span><span class="op">=</span><span class="st">"MPG 分布"</span>, <span class="kw">fill</span><span class="op">=</span><span class="st">"气缸数"</span>)
+
+<span class="cm"># 箱线图 + 点</span>
+<span class="fn">ggplot</span>(mtcars, <span class="kw">aes</span>(<span class="kw">x</span><span class="op">=</span><span class="fn">factor</span>(cyl), <span class="kw">y</span><span class="op">=</span>mpg, <span class="kw">fill</span><span class="op">=</span><span class="fn">factor</span>(cyl))) <span class="op">+</span>
+  <span class="fn">geom_boxplot</span>(<span class="kw">alpha</span><span class="op">=</span><span class="nm">0.7</span>) <span class="op">+</span>
+  <span class="fn">geom_jitter</span>(<span class="kw">width</span><span class="op">=</span><span class="nm">0.1</span>, <span class="kw">alpha</span><span class="op">=</span><span class="nm">0.5</span>) <span class="op">+</span>
+  <span class="fn">theme_classic</span>()
+
+<span class="cm"># 分面</span>
+<span class="fn">ggplot</span>(mtcars, <span class="kw">aes</span>(<span class="kw">x</span><span class="op">=</span>wt, <span class="kw">y</span><span class="op">=</span>mpg)) <span class="op">+</span>
+  <span class="fn">geom_point</span>() <span class="op">+</span>
+  <span class="fn">geom_smooth</span>(<span class="kw">method</span><span class="op">=</span><span class="st">"lm"</span>) <span class="op">+</span>
+  <span class="fn">facet_wrap</span>(<span class="op">~</span>gear) <span class="op">+</span>
+  <span class="fn">labs</span>(<span class="kw">title</span><span class="op">=</span><span class="st">"按档位分面"</span>)
+
+<span class="cm"># 自定义主题</span>
+my_theme <span class="op">&lt;-</span> <span class="kw">function</span>() {
+  <span class="fn">theme_minimal</span>() <span class="op">+</span>
+    <span class="fn">theme</span>(
+      <span class="kw">plot.title</span>   <span class="op">=</span> <span class="fn">element_text</span>(<span class="kw">hjust</span><span class="op">=</span><span class="nm">0.5</span>, <span class="kw">size</span><span class="op">=</span><span class="nm">14</span>, <span class="kw">face</span><span class="op">=</span><span class="st">"bold"</span>),
+      <span class="kw">axis.title</span>   <span class="op">=</span> <span class="fn">element_text</span>(<span class="kw">size</span><span class="op">=</span><span class="nm">12</span>),
+      <span class="kw">legend.position</span> <span class="op">=</span> <span class="st">"bottom"</span>
+    )
+}
+
+<span class="fn">ggplot</span>(mtcars, <span class="kw">aes</span>(wt, mpg, <span class="kw">color</span><span class="op">=</span><span class="fn">factor</span>(cyl))) <span class="op">+</span>
+  <span class="fn">geom_point</span>() <span class="op">+</span>
+  <span class="fn">geom_smooth</span>(<span class="kw">se</span><span class="op">=</span><span class="kw">FALSE</span>) <span class="op">+</span>
+  <span class="fn">my_theme</span>()</code></pre>
+        </div>
+
+        <div class="tip">ggplot2 中 <span class="inline-code">+</span> 不能换行放在行首——它必须紧跟在前一行之后，否则 R 会将其解析为新的一行开头的加号。</div>
+
+        <!-- ============================================================ -->
+        <!-- 第17章 描述统计 -->
+        <!-- ============================================================ -->
+        <h2 id="ch17">17. 描述统计</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 基础描述统计</span>
+x <span class="op">&lt;-</span> mtcars<span class="op">$</span>mpg
+
+<span class="fn">length</span>(x)          <span class="cm"># 样本量</span>
+<span class="fn">mean</span>(x)            <span class="cm"># 均值</span>
+<span class="fn">median</span>(x)          <span class="cm"># 中位数</span>
+<span class="fn">sd</span>(x)              <span class="cm"># 标准差</span>
+<span class="fn">var</span>(x)             <span class="cm"># 方差</span>
+<span class="fn">range</span>(x)           <span class="cm"># 极差</span>
+<span class="fn">min</span>(x)             <span class="cm"># 最小值</span>
+<span class="fn">max</span>(x)             <span class="cm"># 最大值</span>
+<span class="fn">quantile</span>(x)        <span class="cm"># 分位数 (0%, 25%, 50%, 75%, 100%)</span>
+<span class="fn">IQR</span>(x)             <span class="cm"># 四分位距</span>
+<span class="fn">mad</span>(x)             <span class="cm"># 中位绝对偏差</span>
+<span class="fn">summary</span>(x)         <span class="cm"># 五数概括 + 均值</span>
+
+<span class="cm"># 偏度与峰度</span>
+<span class="kw">library</span>(e1071)
+<span class="fn">skewness</span>(x)        <span class="cm"># 偏度（0 = 对称）</span>
+<span class="fn">kurtosis</span>(x)        <span class="cm"># 峰度（3 = 正态）</span>
+
+<span class="cm"># 频率表</span>
+<span class="fn">table</span>(mtcars<span class="op">$</span>cyl)           <span class="cm"># 频数表</span>
+<span class="fn">prop.table</span>(<span class="fn">table</span>(mtcars<span class="op">$</span>cyl)) <span class="cm"># 频率表（比例）</span>
+
+<span class="cm"># 交叉表</span>
+<span class="fn">table</span>(mtcars<span class="op">$</span>cyl, mtcars<span class="op">$</span>gear)
+
+<span class="cm"># skimr — 全面的描述统计</span>
+<span class="kw">library</span>(skimr)
+<span class="fn">skim</span>(mtcars)</code></pre>
+        </div>
+
+        <h3>相关性分析</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 相关矩阵</span>
+<span class="fn">cor</span>(mtcars[, <span class="kw">c</span>(<span class="st">"mpg"</span>, <span class="st">"wt"</span>, <span class="st">"hp"</span>, <span class="st">"disp"</span>)])
+
+<span class="cm"># 指定相关系数类型</span>
+<span class="fn">cor</span>(x, y, <span class="kw">method</span><span class="op">=</span><span class="st">"pearson"</span>)   <span class="cm"># 默认</span>
+<span class="fn">cor</span>(x, y, <span class="kw">method</span><span class="op">=</span><span class="st">"spearman"</span>)  <span class="cm"># 秩相关</span>
+<span class="fn">cor</span>(x, y, <span class="kw">method</span><span class="op">=</span><span class="st">"kendall"</span>)   <span class="cm"># Kendall tau</span>
+
+<span class="cm"># 相关性检验</span>
+<span class="fn">cor.test</span>(mtcars<span class="op">$</span>mpg, mtcars<span class="op">$</span>wt)
+
+<span class="cm"># corrplot — 相关性可视化</span>
+<span class="kw">library</span>(corrplot)
+cor_mat <span class="op">&lt;-</span> <span class="fn">cor</span>(mtcars[, <span class="kw">c</span>(<span class="st">"mpg"</span>, <span class="st">"wt"</span>, <span class="st">"hp"</span>, <span class="st">"disp"</span>, <span class="st">"qsec"</span>)])
+<span class="fn">corrplot</span>(cor_mat, <span class="kw">method</span><span class="op">=</span><span class="st">"color"</span>, <span class="kw">type</span><span class="op">=</span><span class="st">"upper"</span>, <span class="kw">addCoef.col</span><span class="op">=</span><span class="st">"black"</span>)</code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第18章 假设检验 -->
+        <!-- ============================================================ -->
+        <h2 id="ch18">18. 假设检验</h2>
+
+        <div class="principle">
+            <div class="principle-title">假设检验框架</div>
+            <p>假设检验是统计推断的核心方法：</p>
+            <ol>
+                <li><strong>建立假设</strong>：零假设 H₀ 和备择假设 H₁</li>
+                <li><strong>选择检验</strong>：根据数据类型和分布选择合适的检验方法</li>
+                <li><strong>计算检验统计量</strong>和 <strong>p 值</strong></li>
+                <li><strong>决策</strong>：p 值 < α（通常 0.05）则拒绝 H₀</li>
+            </ol>
+            <p>R 的 <span class="inline-code">t.test()</span>、<span class="inline-code">chisq.test()</span>、<span class="inline-code">wilcox.test()</span> 等函数返回完整的检验结果对象，包含 p 值、置信区间、统计量等。</p>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># ============ t 检验 ============</span>
+
+<span class="cm"># 单样本 t 检验（均值是否等于某值）</span>
+<span class="fn">t.test</span>(mtcars<span class="op">$</span>mpg, <span class="kw">mu</span><span class="op">=</span><span class="nm">20</span>)
+
+<span class="cm"># 双样本 t 检验（两组均值是否相等）</span>
+group1 <span class="op">&lt;-</span> <span class="fn">rnorm</span>(<span class="nm">30</span>, <span class="kw">mean</span><span class="op">=</span><span class="nm">5</span>)
+group2 <span class="op">&lt;-</span> <span class="fn">rnorm</span>(<span class="nm">30</span>, <span class="kw">mean</span><span class="op">=</span><span class="nm">6</span>)
+<span class="fn">t.test</span>(group1, group2)
+
+<span class="cm"># 配对 t 检验</span>
+before <span class="op">&lt;-</span> <span class="fn">rnorm</span>(<span class="nm">20</span>, <span class="kw">mean</span><span class="op">=</span><span class="nm">100</span>)
+after  <span class="op">&lt;-</span> before <span class="op">+</span> <span class="fn">rnorm</span>(<span class="nm">20</span>, <span class="kw">mean</span><span class="op">=</span><span class="nm">5</span>)
+<span class="fn">t.test</span>(before, after, <span class="kw">paired</span><span class="op">=</span><span class="kw">TRUE</span>)
+
+<span class="cm"># ============ 非参数检验 ============</span>
+
+<span class="cm"># Wilcoxon 秩和检验（Mann-Whitney U）</span>
+<span class="fn">wilcox.test</span>(group1, group2)
+
+<span class="cm"># Wilcoxon 符号秩检验</span>
+<span class="fn">wilcox.test</span>(before, after, <span class="kw">paired</span><span class="op">=</span><span class="kw">TRUE</span>)
+
+<span class="cm"># ============ 方差分析 (ANOVA) ============</span>
+result <span class="op">&lt;-</span> <span class="fn">aov</span>(mpg <span class="op">~</span> <span class="fn">factor</span>(cyl), <span class="kw">data</span><span class="op">=</span>mtcars)
+<span class="fn">summary</span>(result)
+
+<span class="cm"># 多重比较</span>
+<span class="fn">TukeyHSD</span>(result)
+
+<span class="cm"># ============ 卡方检验 ============</span>
+<span class="cm"># 独立性检验</span>
+<span class="fn">chisq.test</span>(<span class="fn">table</span>(mtcars<span class="op">$</span>cyl, mtcars<span class="op">$</span>gear))
+
+<span class="cm"># ============ 正态性检验 ============</span>
+<span class="fn">shapiro.test</span>(mtcars<span class="op">$</span>mpg)
+<span class="fn">ks.test</span>(mtcars<span class="op">$</span>mpg, <span class="st">"pnorm"</span>, <span class="kw">mean</span><span class="op">=</span><span class="fn">mean</span>(mtcars<span class="op">$</span>mpg), <span class="kw">sd</span><span class="op">=</span><span class="fn">sd</span>(mtcars<span class="op">$</span>mpg))</code></pre>
+        </div>
+
+        <div class="warning">p 值不能证明零假设为"真"——它只是表示在零假设为真的条件下，观测到当前数据的概率。不要将 p < 0.05 理解为"有 95% 的把握"。</div>
+
+        <!-- ============================================================ -->
+        <!-- 第19章 回归分析 -->
+        <!-- ============================================================ -->
+        <h2 id="ch19">19. 回归分析</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># ============ 线性回归 ============</span>
+model <span class="op">&lt;-</span> <span class="fn">lm</span>(mpg <span class="op">~</span> wt <span class="op">+</span> hp <span class="op">+</span> <span class="fn">factor</span>(cyl), <span class="kw">data</span><span class="op">=</span>mtcars)
+<span class="fn">summary</span>(model)
+<span class="cm"># 输出包含：R², 调整 R², F 统计量, 各系数的 p 值</span>
+
+<span class="cm"># 置信区间</span>
+<span class="fn">confint</span>(model)
+
+<span class="cm"># 预测</span>
+new_data <span class="op">&lt;-</span> <span class="kw">data.frame</span>(
+  <span class="kw">wt</span>  <span class="op">=</span> <span class="kw">c</span>(<span class="nm">3.0</span>, <span class="nm">2.5</span>),
+  <span class="kw">hp</span>  <span class="op">=</span> <span class="kw">c</span>(<span class="nm">150</span>, <span class="nm">100</span>),
+  <span class="kw">cyl</span> <span class="op">=</span> <span class="kw">c</span>(<span class="nm">6</span>, <span class="nm">4</span>)
+)
+<span class="fn">predict</span>(model, new_data, <span class="kw">interval</span><span class="op">=</span><span class="st">"prediction"</span>)
+
+<span class="cm"># 模型诊断</span>
+<span class="fn">par</span>(<span class="kw">mfrow</span><span class="op">=</span><span class="kw">c</span>(<span class="nm">2</span>, <span class="nm">2</span>))
+<span class="fn">plot</span>(model)
+
+<span class="cm"># ============ 广义线性模型 (GLM) ============</span>
+<span class="cm"># 逻辑回归（二分类）</span>
+mtcars<span class="op">$</span>am_factor <span class="op">&lt;-</span> <span class="kw">as.factor</span>(mtcars<span class="op">$</span>am)
+glm_model <span class="op">&lt;-</span> <span class="fn">glm</span>(am_factor <span class="op">~</span> wt <span class="op">+</span> hp, <span class="kw">data</span><span class="op">=</span>mtcars, <span class="kw">family</span><span class="op">=</span><span class="fn">binomial</span>())
+<span class="fn">summary</span>(glm_model)
+
+<span class="cm"># 预测概率</span>
+<span class="fn">predict</span>(glm_model, <span class="kw">type</span><span class="op">=</span><span class="st">"response"</span>)
+
+<span class="cm"># ============ 模型比较 ============</span>
+model1 <span class="op">&lt;-</span> <span class="fn">lm</span>(mpg <span class="op">~</span> wt, <span class="kw">data</span><span class="op">=</span>mtcars)
+model2 <span class="op">&lt;-</span> <span class="fn">lm</span>(mpg <span class="op">~</span> wt <span class="op">+</span> hp, <span class="kw">data</span><span class="op">=</span>mtcars)
+<span class="fn">anova</span>(model1, model2)       <span class="cm"># F 检验比较嵌套模型</span>
+<span class="fn">AIC</span>(model1, model2)         <span class="cm"># AIC 越小越好</span>
+<span class="fn">BIC</span>(model1, model2)         <span class="cm"># BIC 越小越好</span></code></pre>
+        </div>
+
+        <h3>非线性回归与高级模型</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 非线性最小二乘</span>
+nls_model <span class="op">&lt;-</span> <span class="fn">nls</span>(
+  y <span class="op">~</span> a <span class="op">*</span> <span class="fn">exp</span>(b <span class="op">*</span> x),
+  <span class="kw">data</span>   <span class="op">=</span> <span class="kw">data.frame</span>(x, y),
+  <span class="kw">start</span>  <span class="op">=</span> <span class="kw">list</span>(<span class="kw">a</span><span class="op">=</span><span class="nm">1</span>, <span class="kw">b</span><span class="op">=</span><span class="nm">0.1</span>)
+)
+
+<span class="cm"># 混合效应模型</span>
+<span class="kw">library</span>(lme4)
+lmer_model <span class="op">&lt;-</span> <span class="fn">lmer</span>(mpg <span class="op">~</span> wt <span class="op">+</span> (<span class="nm">1</span> <span class="op">|</span> <span class="fn">factor</span>(cyl)), <span class="kw">data</span><span class="op">=</span>mtcars)
+<span class="fn">summary</span>(lmer_model)
+
+<span class="cm"># 广义可加模型（非线性平滑）</span>
+<span class="kw">library</span>(mgcv)
+gam_model <span class="op">&lt;-</span> <span class="fn">gam</span>(mpg <span class="op">~</span> <span class="fn">s</span>(wt) <span class="op">+</span> <span class="fn">s</span>(hp), <span class="kw">data</span><span class="op">=</span>mtcars)
+<span class="fn">summary</span>(gam_model)
+<span class="fn">plot</span>(gam_model)</code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第20章 面向对象 (S3/S4) -->
+        <!-- ============================================================ -->
+        <h2 id="ch20">20. 面向对象 (S3/S4)</h2>
+
+        <div class="principle">
+            <div class="principle-title">R 的对象系统</div>
+            <p>R 拥有三套面向对象系统，它们的设计哲学不同：</p>
+            <ul>
+                <li><strong>S3</strong>：最轻量、最常用。基于属性 (attribute) 的"鸭子类型"，无需显式定义类。print、summary、plot 等泛型函数通过 <span class="inline-code">UseMethod()</span> 分派到类特定的方法。</li>
+                <li><strong>S4</strong>：更严格的 OOP。需要显式定义类 (<span class="inline-code">setClass</span>)、方法 (<span class="inline-code">setMethod</span>) 和泛型 (<span class="inline-code">setGeneric</span>)。支持多分派和参数验证。</li>
+                <li><strong>R5/Reference Classes</strong>：可变对象（引用语义），类似于其他语言的类。使用 <span class="inline-code">setRefClass()</span> 定义。</li>
+                <li><strong>R6</strong>：第三方包，轻量级可变类，语法类似 Python/Java。</li>
+            </ul>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># ============ S3 系统 ============</span>
+
+<span class="cm"># 创建 S3 对象</span>
+person <span class="op">&lt;-</span> <span class="kw">list</span>(<span class="kw">name</span><span class="op">=</span><span class="st">"Alice"</span>, <span class="kw">age</span><span class="op">=</span><span class="nm">30</span>)
+<span class="kw">class</span>(person) <span class="op">&lt;-</span> <span class="st">"Person"</span>    <span class="cm"># 设置类属性</span>
+
+<span class="cm"># S3 方法</span>
+print.Person <span class="op">&lt;-</span> <span class="kw">function</span>(x, ...) {
+  <span class="fn">cat</span>(<span class="fn">sprintf</span>(<span class="st">"人物: %s, 年龄: %d\n"</span>, x<span class="op">$</span>name, x<span class="op">$</span>age))
+}
+
+summary.Person <span class="op">&lt;-</span> <span class="kw">function</span>(object, ...) {
+  <span class="fn">cat</span>(<span class="fn">sprintf</span>(<span class="st">"%s 的年龄是 %d 岁\n"</span>, object<span class="op">$</span>name, object<span class="op">$</span>age))
+}
+
+<span class="fn">print</span>(person)    <span class="cm"># 自动调用 print.Person</span>
+<span class="fn">summary</span>(person)  <span class="cm"># 自动调用 summary.Person</span>
+
+<span class="cm"># 构造函数（良好习惯）</span>
+Person <span class="op">&lt;-</span> <span class="kw">function</span>(name, age) {
+  <span class="kw">structure</span>(
+    <span class="kw">list</span>(<span class="kw">name</span><span class="op">=</span>name, <span class="kw">age</span><span class="op">=</span>age),
+    <span class="kw">class</span> <span class="op">=</span> <span class="st">"Person"</span>
+  )
+}
+p <span class="op">&lt;-</span> <span class="fn">Person</span>(<span class="st">"Bob"</span>, <span class="nm">25</span>)
+
+<span class="cm"># ============ S4 系统 ============</span>
+
+<span class="cm"># 定义类</span>
+<span class="fn">setClass</span>(<span class="st">"Animal"</span>,
+  <span class="kw">slots</span> <span class="op">=</span> <span class="kw">list</span>(<span class="kw">name</span><span class="op">=</span><span class="st">"character"</span>, <span class="kw">age</span><span class="op">=</span><span class="st">"numeric"</span>),
+  <span class="kw">prototype</span> <span class="op">=</span> <span class="kw">list</span>(<span class="kw">name</span><span class="op">=</span><span class="st">""</span>, <span class="kw">age</span><span class="op">=</span><span class="nm">0</span>)
+)
+
+<span class="cm"># 创建实例</span>
+dog <span class="op">&lt;-</span> <span class="kw">new</span>(<span class="st">"Animal"</span>, <span class="kw">name</span><span class="op">=</span><span class="st">"旺财"</span>, <span class="kw">age</span><span class="op">=</span><span class="nm">5</span>)
+dog<span class="op">@</span>name     <span class="cm"># "旺财"</span>
+
+<span class="cm"># 定义泛型和方法</span>
+<span class="fn">setGeneric</span>(<span class="st">"speak"</span>, <span class="kw">function</span>(object) <span class="fn">standardGeneric</span>(<span class="st">"speak"</span>))
+<span class="fn">setMethod</span>(<span class="st">"speak"</span>, <span class="st">"Animal"</span>, <span class="kw">function</span>(object) {
+  <span class="fn">cat</span>(object<span class="op">@</span>name, <span class="st">"说: 汪汪!\n"</span>)
+})
+<span class="fn">speak</span>(dog)    <span class="cm"># 旺财 说: 汪汪!</span></code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 第21章 包开发 -->
+        <!-- ============================================================ -->
+        <h2 id="ch21">21. 包开发</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># 使用 usethis 一键创建包骨架</span>
+<span class="kw">library</span>(usethis)
+<span class="fn">create_package</span>(<span class="st">"mypackage"</span>)
+
+<span class="cm"># 包的基本结构：</span>
+<span class="cm"># mypackage/</span>
+<span class="cm"># ├── DESCRIPTION        # 包元数据</span>
+<span class="cm"># ├── NAMESPACE          # 导出/导入声明</span>
+<span class="cm"># ├── R/                 # R 源代码</span>
+<span class="cm"># │   ├── hello.R</span>
+<span class="cm"># │   └── utils.R</span>
+<span class="cm"># ├── man/               # 帮助文档（自动生成）</span>
+<span class="cm"># ├── tests/             # 测试</span>
+<span class="cm"># │   └── testthat/</span>
+<span class="cm"># └── data/              # 内置数据</span>
+
+<span class="cm"># 创建函数文件</span>
+<span class="fn">use_r</span>(<span class="st">"hello"</span>)
+
+<span class="cm"># 在 R/hello.R 中写：</span>
+<span class="cm"># #' 问候函数</span>
+<span class="cm"># #' @param name 名字</span>
+<span class="cm"># #' @return 问候字符串</span>
+<span class="cm"># #' @export</span>
+<span class="cm"># hello <- function(name) {</span>
+<span class="cm">#   paste0("你好, ", name, "!")</span>
+<span class="cm"># }</span>
+
+<span class="cm"># 创建测试</span>
+<span class="fn">use_testthat</span>()
+<span class="fn">use_test</span>(<span class="st">"hello"</span>)
+
+<span class="cm"># 在 tests/testthat/test-hello.R 中写：</span>
+<span class="cm"># test_that("hello works", {</span>
+<span class="cm">#   expect_equal(hello("Alice"), "你好, Alice!")</span>
+<span class="cm"># })</span>
+
+<span class="cm"># 更新文档（roxygen2）</span>
+<span class="kw">library</span>(roxygen2)
+<span class="fn">document</span>()          <span class="cm"># 生成 man/ 和 NAMESPACE</span>
+
+<span class="cm"># 检查包</span>
+<span class="fn">check</span>()             <span class="cm"># R CMD check</span>
+
+<span class="cm"># 安装本地包</span>
+<span class="fn">install</span>()           <span class="cm"># devtools::install()</span>
+
+<span class="cm"># 添加依赖</span>
+<span class="fn">use_package</span>(<span class="st">"dplyr"</span>)  <span class="cm"># 加入 Imports</span>
+
+<span class="cm"># 添加数据</span>
+<span class="fn">use_data</span>(my_data)    <span class="cm"># 保存到 data/my_data.rda</span>
+
+<span class="cm"># 发布到 GitHub</span>
+<span class="fn">use_github</span>()
+<span class="cm"># 然后别人可以用 remotes::install_github("you/mypackage")</span></code></pre>
+        </div>
+
+        <div class="tip">包开发推荐使用 <span class="inline-code">devtools</span> + <span class="inline-code">usethis</span> + <span class="inline-code">roxygen2</span> + <span class="inline-code">testthat</span> 工作流。roxygen2 用 <span class="inline-code">#'</span> 注释自动生成帮助文档和 NAMESPACE。</div>
+
+        <!-- ============================================================ -->
+        <!-- 第22章 并行计算 -->
+        <!-- ============================================================ -->
+        <h2 id="ch22">22. 并行计算</h2>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># ============ parallel 包（内置） ============</span>
+<span class="kw">library</span>(parallel)
+
+<span class="cm"># 检测 CPU 核心数</span>
+<span class="fn">detectCores</span>()       <span class="cm"># 例如 8</span>
+
+<span class="cm"># 创建集群</span>
+cl <span class="op">&lt;-</span> <span class="fn">makeCluster</span>(<span class="nm">4</span>)    <span class="cm"># 使用 4 个核心</span>
+
+<span class="cm"># 并行计算</span>
+results <span class="op">&lt;-</span> <span class="fn">parLapply</span>(cl, <span class="nm">1</span><span class="op">:</span><span class="nm">10</span>, <span class="kw">function</span>(i) {
+  <span class="fn">Sys.sleep</span>(<span class="nm">0.1</span>)    <span class="cm"># 模拟耗时操作</span>
+  i <span class="op">^</span> <span class="nm">2</span>
+})
+
+<span class="cm"># 关闭集群</span>
+<span class="fn">stopCluster</span>(cl)
+
+<span class="cm"># ============ parallelly + future ============</span>
+<span class="kw">library</span>(future)
+<span class="kw">library</span>(furrr)
+
+<span class="cm"># 设置并行策略</span>
+<span class="fn">plan</span>(<span class="fn">multisession</span>, <span class="kw">workers</span><span class="op">=</span><span class="nm">4</span>)
+
+<span class="cm"># 并行 map（替代 lapply）</span>
+results <span class="op">&lt;-</span> <span class="fn">future_map</span>(<span class="nm">1</span><span class="op">:</span><span class="nm">100</span>, <span class="kw">function</span>(x) {
+  <span class="fn">rnorm</span>(<span class="nm">1000</span>) <span class="op">|&gt;</span> <span class="fn">mean</span>()
+})
+
+<span class="cm"># ============ foreach（更灵活） ============</span>
+<span class="kw">library</span>(foreach)
+<span class="kw">library</span>(doParallel)
+
+<span class="fn">registerDoParallel</span>(<span class="nm">4</span>)
+
+results <span class="op">&lt;-</span> <span class="kw">foreach</span>(i <span class="op">=</span> <span class="nm">1</span><span class="op">:</span><span class="nm">100</span>, <span class="kw">.combine</span><span class="op">=</span>cbind) <span class="op">%dopar%</span> {
+  <span class="fn">rnorm</span>(<span class="nm">10</span>) <span class="op">|&gt;</span> <span class="fn">mean</span>()
+}
+
+<span class="fn">stopImplicitCluster</span>()
+
+<span class="cm"># ============ furrr（最推荐） ============</span>
+<span class="kw">library</span>(furrr)
+<span class="fn">plan</span>(<span class="fn">multisession</span>, <span class="kw">workers</span><span class="op">=</span><span class="fn">availableCores</span>() <span class="op">-</span> <span class="nm">1</span>)
+
+<span class="cm"># 无缝替换 lapply</span>
+results <span class="op">&lt;-</span> <span class="fn">future_map_dbl</span>(<span class="nm">1</span><span class="op">:</span><span class="nm">1000</span>, <span class="kw">function</span>(x) {
+  <span class="fn">sqrt</span>(x)
+})</code></pre>
+        </div>
+
+        <div class="warning">并行计算有开销——启动进程、序列化/反序列化数据都需要时间。对于简单计算或小数据集，串行执行可能反而更快。建议只在单次迭代耗时 > 0.1 秒时使用并行。</div>
+
+        <!-- ============================================================ -->
+        <!-- 第23章 最佳实践 -->
+        <!-- ============================================================ -->
+        <h2 id="ch23">23. 最佳实践</h2>
+
+        <div class="principle">
+            <div class="principle-title">R 代码风格指南</div>
+            <p>遵循 <a href="https://style.tidyverse.org">tidyverse 风格指南</a>，主要规则：</p>
+            <ul>
+                <li>使用 <span class="inline-code">&lt;-</span> 进行赋值（不是 <span class="inline-code">=</span>）</li>
+                <li>用 <span class="inline-code">snake_case</span> 命名变量和函数</li>
+                <li>逗号后加空格，运算符两侧加空格</li>
+                <li>花括号另起一行</li>
+                <li>每行不超过 80 个字符</li>
+            </ul>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">R</span>
+            </div>
+            <pre><code><span class="cm"># ============ 项目结构 ============</span>
+<span class="cm"># my_project/</span>
+<span class="cm"># ├── data/            # 原始数据（不修改）</span>
+<span class="cm"># ├── data-processed/  # 清洗后的数据</span>
+<span class="cm"># ├── R/               # 脚本（按流程编号）</span>
+<span class="cm"># │   ├── 01_download.R</span>
+<span class="cm"># │   ├── 02_clean.R</span>
+<span class="cm"># │   ├── 03_analysis.R</span>
+<span class="cm"># │   └── 04_visualize.R</span>
+<span class="cm"># ├── output/          # 图表和结果</span>
+<span class="cm"># ├── docs/            # 文档</span>
+<span class="cm"># ├── my_project.Rproj</span>
+<span class="cm"># └── README.md</span>
+
+<span class="cm"># ============ 数据分析清单 ============</span>
+
+<span class="cm"># 1. 每个脚本开头声明依赖</span>
+<span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(here)
+<span class="kw">library</span>(janitor)
+
+<span class="cm"># 2. 使用 here() 管理路径（而非 setwd）</span>
+<span class="kw">library</span>(here)
+df <span class="op">&lt;-</span> <span class="fn">read_csv</span>(<span class="fn">here</span>(<span class="st">"data"</span>, <span class="st">"raw.csv"</span>))
+
+<span class="cm"># 3. 可复现性</span>
+<span class="fn">set.seed</span>(<span class="nm">42</span>)                    <span class="cm"># 随机种子</span>
+<span class="fn">sessionInfo</span>()                    <span class="cm"># 记录会话信息</span>
+<span class="cm"># 或使用 renv 锁定包版本</span>
+<span class="kw">library</span>(renv)
+<span class="fn">init</span>()                           <span class="cm"># 初始化 renv</span>
+<span class="fn">snapshot</span>()                       <span class="cm"># 锁定当前包版本</span>
+
+<span class="cm"># 4. 代码质量</span>
+<span class="cm"># 使用 lintr 检查代码风格</span>
+<span class="kw">library</span>(lintr)
+<span class="fn">lint</span>(<span class="st">"R/analysis.R"</span>)
+
+<span class="cm"># 使用 styler 自动格式化</span>
+<span class="kw">library</span>(styler)
+<span class="fn">style_file</span>(<span class="st">"R/analysis.R"</span>)
+
+<span class="cm"># 5. 文档化</span>
+<span class="cm"># 使用 Quarto (.qmd) 或 R Markdown (.Rmd) 进行可复现报告</span>
+<span class="cm"># File → New File → Quarto Document</span>
+
+<span class="cm"># 6. 版本控制</span>
+<span class="cm"># .gitignore 中排除：</span>
+<span class="cm"># .Rproj.user</span>
+<span class="cm"># .Rhistory</span>
+<span class="cm"># .RData</span>
+<span class="cm"># .Ruserdata</span>
+<span class="cm"># data/          （如果数据太大不适合版本控制）</span>
+
+<span class="cm"># 7. 高效编码技巧</span>
+<span class="cm"># 用 |&gt; (R 4.1+) 或 %>% (magrittr) 替代嵌套调用</span>
+result <span class="op">&lt;-</span> df <span class="op">|&gt;</span>
+  <span class="fn">filter</span>(year <span class="op">==</span> <span class="nm">2024</span>) <span class="op">|&gt;</span>
+  <span class="fn">group_by</span>(category) <span class="op">|&gt;</span>
+  <span class="fn">summarise</span>(<span class="kw">total</span> <span class="op">=</span> <span class="fn">sum</span>(value))
+
+<span class="cm"># 8. 处理大数据</span>
+<span class="cm"># - 使用 data.table 替代 data.frame</span>
+<span class="cm"># - 使用 arrow/duckdb 处理 GB 级数据</span>
+<span class="cm"># - 使用 ff 或 bigmemory 处理超大数据</span>
+<span class="cm"># - 使用 delayed 评估避免不必要的内存分配</span>
+
+<span class="cm"># 9. 函数设计原则</span>
+<span class="cm"># - 单一职责：一个函数做一件事</span>
+<span class="cm"># - 明确的输入/输出</span>
+<span class="cm"># - 使用 stopifnot() 做参数验证</span>
+<span class="cm"># - 编写 roxygen2 文档</span>
+<span class="cm"># - 编写测试 (testthat)</span></code></pre>
+        </div>
+
+        <h3>推荐学习路径</h3>
+        <table>
+            <thead>
+                <tr><th>阶段</th><th>推荐资源</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>入门</td><td>R for Data Science (R4DS) — Hadley Wickham</td></tr>
+                <tr><td>数据操作</td><td>《R 数据科学》、dplyr/tidyr 官方文档</td></tr>
+                <tr><td>可视化</td><td>ggplot2 官方文档、《R Graphics Cookbook》</td></tr>
+                <tr><td>统计</td><td>《统计学习导论》(ISLR)、《应用线性统计模型》</td></tr>
+                <tr><td>高级</td><td>《Advanced R》(Hadley Wickham)、《R Packages》</td></tr>
+            </tbody>
+        </table>
+
+        <div class="tip">R 社区非常活跃。推荐关注 <a href="https://www.tidyverse.org">Tidyverse</a>、<a href="https://www.tidymodels.org">Tidymodels</a>、R-bloggers，以及 Stack Overflow 的 [r] 标签。</div>
+
+        <p style="margin-top: 60px; color: var(--text-muted); font-size: 13px; text-align: center;">
+            — R 语言完全教程 · 23 章 · 完 —
+        </p>
+    </main>
+
+    <script>
+        // Sidebar active state on scroll
+        const links = document.querySelectorAll('.sidebar-link');
+        const sections = [];
+        links.forEach(link => {
+            const id = link.getAttribute('href').slice(1);
+            const el = document.getElementById(id);
+            if (el) sections.push({ el, link });
+        });
+
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    let current = sections[0];
+                    for (const s of sections) {
+                        if (s.el.getBoundingClientRect().top <= 120) current = s;
+                    }
+                    links.forEach(l => l.classList.remove('active'));
+                    if (current) current.link.classList.add('active');
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // Close sidebar on link click (mobile)
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.sidebar').classList.remove('open');
+            });
+        });
+
+        // Trigger initial scroll check
+        window.dispatchEvent(new Event('scroll'));
+    </script>
+</body>
+</html>

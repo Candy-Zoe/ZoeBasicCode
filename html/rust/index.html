@@ -1,0 +1,2569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust 编程教程 - 从入门到精通</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="../assets/editor.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <a href="../index.html" class="header-logo">📚 Zoe<span>Basic</span>Code</a>
+    <nav class="header-nav">
+        <span class="lang-badge">🦀 Rust</span>
+    </nav>
+</header>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-section">
+        <div class="sidebar-title">入门</div>
+        <a href="#sec1" class="sidebar-link"><span class="num">01</span>简介</a>
+        <a href="#sec2" class="sidebar-link"><span class="num">02</span>环境搭建</a>
+        <a href="#sec3" class="sidebar-link"><span class="num">03</span>基本语法</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">基础</div>
+        <a href="#sec4" class="sidebar-link"><span class="num">04</span>变量与可变性</a>
+        <a href="#sec5" class="sidebar-link"><span class="num">05</span>数据类型</a>
+        <a href="#sec6" class="sidebar-link"><span class="num">06</span>运算符</a>
+        <a href="#sec7" class="sidebar-link"><span class="num">07</span>字符串</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">所有权</div>
+        <a href="#sec8" class="sidebar-link"><span class="num">08</span>所有权系统</a>
+        <a href="#sec9" class="sidebar-link"><span class="num">09</span>引用与借用</a>
+        <a href="#sec10" class="sidebar-link"><span class="num">10</span>生命周期</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">复合类型</div>
+        <a href="#sec11" class="sidebar-link"><span class="num">11</span>元组与数组</a>
+        <a href="#sec12" class="sidebar-link"><span class="num">12</span>结构体</a>
+        <a href="#sec13" class="sidebar-link"><span class="num">13</span>枚举与模式匹配</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">函数</div>
+        <a href="#sec14" class="sidebar-link"><span class="num">14</span>函数</a>
+        <a href="#sec15" class="sidebar-link"><span class="num">15</span>闭包</a>
+        <a href="#sec16" class="sidebar-link"><span class="num">16</span>迭代器</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">面向对象</div>
+        <a href="#sec17" class="sidebar-link"><span class="num">17</span>方法与关联函数</a>
+        <a href="#sec18" class="sidebar-link"><span class="num">18</span>trait</a>
+        <a href="#sec19" class="sidebar-link"><span class="num">19</span>泛型</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">进阶</div>
+        <a href="#sec20" class="sidebar-link"><span class="num">20</span>错误处理</a>
+        <a href="#sec21" class="sidebar-link"><span class="num">21</span>智能指针</a>
+        <a href="#sec22" class="sidebar-link"><span class="num">22</span>并发编程</a>
+        <a href="#sec23" class="sidebar-link"><span class="num">23</span>unsafe</a>
+        <a href="#sec24" class="sidebar-link"><span class="num">24</span>Macros</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">实战</div>
+        <a href="#sec25" class="sidebar-link"><span class="num">25</span>内存模型与最佳实践</a>
+    </div>
+</aside>
+
+<!-- Main Content -->
+<main class="main">
+
+<h1>Rust 编程教程</h1>
+<p class="subtitle">从零基础到高级特性，系统掌握 Rust 编程语言。涵盖所有权系统、生命周期、trait、并发编程、unsafe、宏等核心知识，深入理解零成本抽象与内存安全的设计哲学。</p>
+
+<!-- ==================== 1. 简介 ==================== -->
+<h2 id="sec1">1. Rust 简介</h2>
+
+<p>Rust 是由 Mozilla 研究院于 2010 年启动、2015 年发布 1.0 的系统级编程语言。它的设计目标是在<strong>不牺牲性能</strong>的前提下，提供<strong>内存安全</strong>和<strong>并发安全</strong>保证。Rust 连续多年被 Stack Overflow 评为"最受喜爱的编程语言"。</p>
+
+<div class="principle">
+    <div class="principle-title">Rust 核心特性</div>
+    <p><strong>内存安全：</strong>通过所有权系统在编译期保证内存安全，无需垃圾回收器（GC）。空指针、悬垂引用、数据竞争在编译阶段即被消除。</p>
+    <p><strong>零成本抽象：</strong>高层抽象在编译时被完全内联和优化，运行时没有任何额外开销。你写的高级代码与手写的底层代码性能相当。</p>
+    <p><strong>并发安全：</strong>通过 <code>Send</code> 和 <code>Sync</code> trait 在编译期防止数据竞争。Rust 的类型系统保证共享状态的并发访问是安全的。</p>
+    <p><strong>无 GC 的确定性析构：</strong>每个值都有明确的所有者，所有者离开作用域时值被自动释放（<code>Drop</code> trait），行为完全可预测。</p>
+    <p><strong>模式匹配：</strong>强大的 <code>match</code> 表达式和 <code>if let</code>，让代码更简洁、更安全。</p>
+    <p><strong>跨平台：</strong>支持 Linux、macOS、Windows、WebAssembly、嵌入式等众多平台，可编译为原生二进制。</p>
+</div>
+
+<div class="principle">
+    <div class="principle-title">Rust vs 其他语言</div>
+    <p><strong>对比 C/C++：</strong>Rust 通过编译期检查消除了大部分 C/C++ 中的内存安全问题，同时保持了系统级的性能控制能力。</p>
+    <p><strong>对比 Go：</strong>Rust 无 GC、无运行时开销，适合对性能和内存有严格要求的场景。Go 更适合快速开发网络服务。</p>
+    <p><strong>对比 Java：</strong>Rust 没有虚拟机开销，适合系统编程、嵌入式和 WebAssembly。Java 有成熟的生态和 GC 优化。</p>
+</div>
+
+<table>
+    <thead>
+        <tr><th>版本</th><th>发布时间</th><th>重要特性</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>Rust 1.0</td><td>2015</td><td>稳定版发布，所有权系统、trait</td></tr>
+        <tr><td>Rust 1.26</td><td>2018</td><td>impl Trait、<code>?</code> 操作符稳定</td></tr>
+        <tr><td>Rust 2021</td><td>2021</td><td>新版本edition、IntoIterator for arrays</td></tr>
+        <tr><td>Rust 1.75</td><td>2023</td><td>Async Fn in trait、RPITIT</td></tr>
+        <tr><td>Rust 1.80</td><td>2024</td><td>LazyCell/LazyLock、inline const</td></tr>
+    </tbody>
+</table>
+
+<!-- ==================== 2. 环境搭建 ==================== -->
+<h2 id="sec2">2. 环境搭建</h2>
+
+<h3>2.1 安装 Rust</h3>
+<p>推荐使用 <code>rustup</code> 管理 Rust 工具链。rustup 可以安装、更新和切换不同版本的 Rust 编译器。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">bash</span>
+    </div>
+    <pre><code><span class="cm"># Linux / macOS：通过 curl 安装</span>
+curl --proto <span class="st">'=https'</span> --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+<span class="cm"># Windows：下载并运行 rustup-init.exe</span>
+<span class="cm"># https://rustup.rs</span>
+
+<span class="cm"># 验证安装</span>
+rustc --version
+cargo --version
+
+<span class="cm"># 输出示例：</span>
+<span class="cm"># rustc 1.80.0 (051478957 2024-07-26)</span>
+<span class="cm"># cargo 1.80.0 (37629bc5f 2024-07-16)</span>
+
+<span class="cm"># 更新 Rust</span>
+rustup update
+
+<span class="cm"># 安装文档（离线参考）</span>
+rustup component add rust-docs</code></pre>
+</div>
+
+<h3>2.2 Cargo：包管理与构建工具</h3>
+<p>Cargo 是 Rust 的官方包管理器和构建系统。它负责依赖管理、编译、测试、文档生成等所有构建流程。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">bash</span>
+    </div>
+    <pre><code><span class="cm"># 创建新项目</span>
+cargo new hello_rust
+<span class="cm"># 会在 hello_rust/ 目录下生成 Cargo.toml 和 src/main.rs</span>
+
+<span class="cm"># 构建并运行</span>
+<span class="kw">cd</span> hello_rust
+cargo run
+
+<span class="cm"># 仅构建（不运行）</span>
+cargo build
+
+<span class="cm"># 以 release 模式构建（开启优化）</span>
+cargo build --release
+
+<span class="cm"># 运行测试</span>
+cargo test
+
+<span class="cm"># 生成并打开文档</span>
+cargo doc --open
+
+<span class="cm"># 代码格式化</span>
+cargo fmt
+
+<span class="cm"># 代码检查（比编译更严格）</span>
+cargo clippy</code></pre>
+</div>
+
+<h3>2.3 第一个程序：Hello World</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="cm">// src/main.rs</span>
+<span class="cm">// fn 关键字定义函数，main 是程序入口</span>
+<span class="cm">// () 表示无参数，-> () 省略（返回单元类型）</span>
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// println! 是宏调用（注意 !），不是普通函数</span>
+    <span class="cm">// "Hello, world!" 是字符串字面量，类型为 &str</span>
+    <span class="fn">println!</span>(<span class="st">"Hello, world!"</span>);
+
+    <span class="cm">// 使用格式化输出</span>
+    <span class="kw">let</span> name = <span class="st">"Rust"</span>;
+    <span class="kw">let</span> year = <span class="nm">2024</span>;
+    <span class="fn">println!</span>(<span class="st">"欢迎学习 {} 编程语言！年份：{}"</span>, name, year);
+
+    <span class="cm">// 使用命名参数</span>
+    <span class="fn">println!</span>(<span class="st">"{lang} 的版本是 {ver}"</span>, lang=<span class="st">"Rust"</span>, ver=<span class="st">"1.80"</span>);
+}</code></pre>
+</div>
+
+<!-- ==================== 3. 基本语法 ==================== -->
+<h2 id="sec3">3. 基本语法</h2>
+
+<p>Rust 语法受到 C++、ML、Haskell 等语言的影响，同时有自己独特的设计。以下是 Rust 程序的基本结构。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="cm">// Rust 程序入口必须是 main 函数</span>
+<span class="cm">// 可以有多个模块，但只有一个 main</span>
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 1. let 声明变量（默认不可变！）</span>
+    <span class="kw">let</span> x = <span class="nm">5</span>;
+    <span class="fn">println!</span>(<span class="st">"x = {}"</span>, x);
+
+    <span class="cm">// 2. 可变变量需要 mut</span>
+    <span class="kw">let mut</span> y = <span class="nm">10</span>;
+    y = <span class="nm">20</span>;  <span class="cm">// OK：y 是 mut</span>
+    <span class="fn">println!</span>(<span class="st">"y = {}"</span>, y);
+
+    <span class="cm">// 3. 变量遮蔽（shadowing）</span>
+    <span class="kw">let</span> x = x + <span class="nm">1</span>;       <span class="cm">// 创建了新的 x，遮蔽了上面的 x</span>
+    <span class="kw">let</span> x = x * <span class="nm">2</span>;       <span class="cm">// 可以改变类型！</span>
+    <span class="kw">let</span> x = <span class="st">"hello"</span>;     <span class="cm">// 类型从 i32 变为 &str</span>
+    <span class="fn">println!</span>(<span class="st">"x = {}"</span>, x);
+
+    <span class="cm">// 4. 类型标注（可选，编译器可推断）</span>
+    <span class="kw">let</span> z: <span class="tp">i64</span> = <span class="nm">100</span>;
+    <span class="kw">let</span> pi: <span class="tp">f64</span> = <span class="nm">3.14159</span>;
+    <span class="fn">println!</span>(<span class="st">"z = {}, pi = {}"</span>, z, pi);
+
+    <span class="cm">// 5. 常量（必须标注类型，命名 SCREAMING_SNAKE_CASE）</span>
+    <span class="kw">const</span> MAX_POINTS: <span class="tp">u32</span> = <span class="nm">100_000</span>;
+    <span class="fn">println!</span>(<span class="st">"MAX = {}"</span>, MAX_POINTS);
+
+    <span class="cm">// 6. 注释</span>
+    <span class="cm">// 单行注释</span>
+    <span class="cm">/* 多行注释
+       可以跨行 */</span>
+
+    <span class="cm">// 7. 文档注释（用于生成文档）</span>
+    <span class="cm">/// 计算两个数的和</span>
+    <span class="cm">///</span>
+    <span class="cm">/// # 参数</span>
+    <span class="cm">/// * `a` - 第一个数</span>
+    <span class="cm">/// * `b` - 第二个数</span>
+    <span class="cm">///</span>
+    <span class="cm">/// # 返回值</span>
+    <span class="cm">/// 两数之和</span>
+    <span class="kw">fn</span> <span class="fn">add</span>(a: <span class="tp">i32</span>, b: <span class="tp">i32</span>) -> <span class="tp">i32</span> {
+        a + b  <span class="cm">// 最后一个表达式自动作为返回值（无分号）</span>
+    }
+
+    <span class="fn">println!</span>(<span class="st">"3 + 4 = {}"</span>, <span class="fn">add</span>(<span class="nm">3</span>, <span class="nm">4</span>));
+}</code></pre>
+</div>
+
+<div class="tip">
+    Rust 的核心设计哲学：<strong>如果编译通过，程序不会有内存安全问题</strong>。编译器是你的第一道防线。
+</div>
+
+<!-- ==================== 4. 变量与可变性 ==================== -->
+<h2 id="sec4">4. 变量与可变性</h2>
+
+<p>Rust 的变量默认是<strong>不可变的</strong>，这是它内存安全保证的基础之一。需要修改变量时，必须显式使用 <code>mut</code> 关键字。</p>
+
+<div class="principle">
+    <div class="principle-title">不可变绑定 vs 可变绑定</div>
+    <p><strong>不可变绑定（let）：</strong>变量绑定后不能重新赋值。这防止了意外修改，也让编译器可以做更多优化。</p>
+    <p><strong>可变绑定（let mut）：</strong>变量可以重新赋值，但<strong>不能改变类型</strong>。可变性是绑定层面的，不是值层面的。</p>
+    <p><strong>变量遮蔽（Shadowing）：</strong>可以用 <code>let</code> 重新绑定同名变量，创建新的绑定（遮蔽旧的）。可以改变类型，不可变变量也能遮蔽。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 不可变变量：不能修改</span>
+    <span class="kw">let</span> x = <span class="nm">5</span>;
+    <span class="cm">// x = 6;  // 编译错误！cannot assign twice to immutable variable</span>
+
+    <span class="cm">// 可变变量：可以修改值</span>
+    <span class="kw">let mut</span> y = <span class="nm">5</span>;
+    y = <span class="nm">6</span>;  <span class="cm">// OK</span>
+
+    <span class="cm">// 但不能改变类型</span>
+    <span class="cm">// y = "hello";  // 编译错误！mismatched types</span>
+
+    <span class="cm">// 变量遮蔽：可以改变类型</span>
+    <span class="kw">let</span> spaces = <span class="st">"   "</span>;       <span class="cm">// &str 类型</span>
+    <span class="kw">let</span> spaces = spaces.<span class="fn">len</span>();  <span class="cm">// usize 类型 —— OK！</span>
+
+    <span class="cm">// 遮蔽 vs mut 的区别</span>
+    <span class="kw">let mut</span> r = <span class="nm">10</span>;
+    <span class="cm">// r = "hi";  // 错误：类型不匹配</span>
+    <span class="kw">let</span> r = <span class="st">"hi"</span>;  <span class="cm">// OK：创建了新的绑定</span>
+
+    <span class="cm">// 解构赋值</span>
+    <span class="kw">let</span> (a, b, c) = (<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>);
+    <span class="fn">println!</span>(<span class="st">"a={}, b={}, c={}"</span>, a, b, c);
+
+    <span class="cm">// 忽略不需要的值</span>
+    <span class="kw">let</span> (_, y, _) = (<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>);
+
+    <span class="cm">// 作用域与遮蔽</span>
+    <span class="kw">let</span> name = <span class="st">"Alice"</span>;
+    <span class="fn">println!</span>(<span class="st">"outer: {}"</span>, name);
+    {
+        <span class="kw">let</span> name = <span class="st">"Bob"</span>;
+        <span class="fn">println!</span>(<span class="st">"inner: {}"</span>, name);
+    }
+    <span class="fn">println!</span>(<span class="st">"outer: {}"</span>, name);  <span class="cm">// outer: Alice</span>
+
+    <span class="cm">// _ 丢弃值</span>
+    <span class="kw">let</span> _ = <span class="nm">42</span>;  <span class="cm">// 值不会被绑定</span>
+}</code></pre>
+</div>
+
+<!-- ==================== 5. 数据类型 ==================== -->
+<h2 id="sec5">5. 数据类型</h2>
+
+<p>Rust 是<strong>静态类型</strong>语言，编译器必须在编译期知道每个变量的类型。但大多数情况下类型可以自动推断。</p>
+
+<h3>5.1 标量类型</h3>
+
+<table>
+    <thead>
+        <tr><th>类型</th><th>种类</th><th>范围</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>i8 / u8</code></td><td>整数</td><td>-128~127 / 0~255</td></tr>
+        <tr><td><code>i16 / u16</code></td><td>整数</td><td>-32768~32767 / 0~65535</td></tr>
+        <tr><td><code>i32 / u32</code></td><td>整数</td><td>默认类型，约 ±21 亿</td></tr>
+        <tr><td><code>i64 / u64</code></td><td>整数</td><td>大范围整数</td></tr>
+        <tr><td><code>i128 / u128</code></td><td>整数</td><td>128 位整数</td></tr>
+        <tr><td><code>isize / usize</code></td><td>整数</td><td>平台相关，usize 用于索引</td></tr>
+        <tr><td><code>f32 / f64</code></td><td>浮点数</td><td>f64 为默认，精度更高</td></tr>
+        <tr><td><code>bool</code></td><td>布尔</td><td>true / false</td></tr>
+        <tr><td><code>char</code></td><td>字符</td><td>4 字节 Unicode 标量值</td></tr>
+    </tbody>
+</table>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 整数类型</span>
+    <span class="kw">let</span> a: <span class="tp">i32</span> = <span class="nm">42</span>;
+    <span class="kw">let</span> b: <span class="tp">u8</span> = <span class="nm">255</span>;
+    <span class="kw">let</span> c = <span class="nm">1_000_000</span>;     <span class="cm">// 下划线可读性增强</span>
+    <span class="kw">let</span> d = <span class="nm">0xff</span>;           <span class="cm">// 十六进制</span>
+    <span class="kw">let</span> e = <span class="nm">0o77</span>;           <span class="cm">// 八进制</span>
+    <span class="kw">let</span> f = <span class="nm">0b1111_0000</span>;    <span class="cm">// 二进制</span>
+    <span class="kw">let</span> g = <span class="st">b'A'</span>;           <span class="cm">// 字节字面量（u8）</span>
+
+    <span class="cm">// 浮点数</span>
+    <span class="kw">let</span> x = <span class="nm">3.14</span>;          <span class="cm">// f64（默认）</span>
+    <span class="kw">let</span> y: <span class="tp">f32</span> = <span class="nm">2.718</span>;   <span class="cm">// f32</span>
+
+    <span class="cm">// 布尔</span>
+    <span class="kw">let</span> t = <span class="kw">true</span>;
+    <span class="kw">let</span> f: <span class="tp">bool</span> = <span class="kw">false</span>;
+
+    <span class="cm">// 字符（4 字节 Unicode）</span>
+    <span class="kw">let</span> c1 = <span class="st">'A'</span>;
+    <span class="kw">let</span> c2 = <span class="st">'中'</span>;
+    <span class="kw">let</span> c3 = <span class="st">'🦀'</span>;       <span class="cm">// emoji 也是合法 char</span>
+
+    <span class="cm">// 类型转换必须显式（as）</span>
+    <span class="kw">let</span> val: <span class="tp">i32</span> = <span class="nm">42</span>;
+    <span class="kw">let</span> big: <span class="tp">i64</span> = val <span class="kw">as</span> <span class="tp">i64</span>;
+    <span class="kw">let</span> small: <span class="tp">u8</span> = <span class="nm">255</span>;
+    <span class="kw">let</span> int_val: <span class="tp">i32</span> = small <span class="kw">as</span> <span class="tp">i32</span>;
+}</code></pre>
+</div>
+
+<h3>5.2 复合类型</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 元组：固定长度，可以包含不同类型</span>
+    <span class="kw">let</span> tup: (<span class="tp">i32</span>, <span class="tp">f64</span>, <span class="tp">u8</span>) = (<span class="nm">500</span>, <span class="nm">6.4</span>, <span class="nm">1</span>);
+    <span class="kw">let</span> (x, y, z) = tup;  <span class="cm">// 解构</span>
+    <span class="kw">let</span> first = tup.<span class="nm">0</span>;    <span class="cm">// 索引访问</span>
+
+    <span class="cm">// 单元元组（Unit Type）：空元组 () 表示空值/void</span>
+    <span class="kw">let</span> unit: () = ();
+
+    <span class="cm">// 数组：固定长度，所有元素同类型</span>
+    <span class="kw">let</span> arr = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>];
+    <span class="kw">let</span> arr: [<span class="tp">i32</span>; <span class="nm">5</span>] = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>];
+    <span class="kw">let</span> arr = [<span class="nm">0</span>; <span class="nm">3</span>];  <span class="cm">// [0, 0, 0] —— 3个0</span>
+
+    <span class="cm">// 数组访问（越界会 panic）</span>
+    <span class="kw">let</span> first = arr[<span class="nm">0</span>];
+    <span class="fn">println!</span>(<span class="st">"first = {}"</span>, first);
+
+    <span class="cm">// 切片（Slice）：对数组/Vec的部分引用</span>
+    <span class="kw">let</span> slice = &arr[<span class="nm">1</span>..<span class="nm">3</span>];  <span class="cm">// [2, 3]</span>
+    <span class="kw">let</span> all = &arr[..];      <span class="cm">// 全部元素</span>
+}</code></pre>
+</div>
+
+<!-- ==================== 6. 运算符 ==================== -->
+<h2 id="sec6">6. 运算符</h2>
+
+<p>Rust 的运算符与 C/C++ 类似，但有一些重要区别：不允许隐式类型转换，没有三元运算符（使用 if 表达式），位运算只用于整数类型。</p>
+
+<table>
+    <thead>
+        <tr><th>类别</th><th>运算符</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>算术</td><td><code>+ - * / %</code></td><td>整数除法截断，<code>%</code> 取模（支持负数）</td></tr>
+        <tr><td>比较</td><td><code>== != > < >= <=</code></td><td>要求两侧类型相同</td></tr>
+        <tr><td>逻辑</td><td><code>&& || !</code></td><td>短路求值</td></tr>
+        <tr><td>位运算</td><td><code>& | ^ ! << >></code></td><td>只用于整数类型</td></tr>
+        <tr><td>赋值</td><td><code>= += -= *= /=</code></td><td>没有 <code>++</code> <code>--</code></td></tr>
+        <tr><td>范围</td><td><code>.. ..=</code></td><td><code>1..5</code> (不含5)，<code>1..=5</code> (含5)</td></tr>
+    </tbody>
+</table>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 算术运算</span>
+    <span class="kw">let</span> sum = <span class="nm">5</span> + <span class="nm">10</span>;
+    <span class="kw">let</span> diff = <span class="nm">95.5</span> - <span class="nm">4.3</span>;
+    <span class="kw">let</span> product = <span class="nm">4</span> * <span class="nm">30</span>;
+    <span class="kw">let</span> quotient = <span class="nm">56.7</span> / <span class="nm">32.2</span>;
+    <span class="kw">let</span> remainder = <span class="nm">43</span> % <span class="nm">5</span>;
+
+    <span class="cm">// 比较运算（返回 bool）</span>
+    <span class="kw">let</span> is_equal = <span class="nm">5</span> == <span class="nm">5</span>;   <span class="cm">// true</span>
+    <span class="kw">let</span> is_less = <span class="nm">3</span> < <span class="nm">7</span>;      <span class="cm">// true</span>
+
+    <span class="cm">// 逻辑运算</span>
+    <span class="kw">let</span> a = <span class="kw">true</span> && <span class="kw">false</span>;   <span class="cm">// false</span>
+    <span class="kw">let</span> b = <span class="kw">true</span> || <span class="kw">false</span>;   <span class="cm">// true</span>
+    <span class="kw">let</span> c = !<span class="kw">true</span>;           <span class="cm">// false</span>
+
+    <span class="cm">// 位运算</span>
+    <span class="kw">let</span> x: <span class="tp">u8</span> = <span class="nm">0b1010</span>;
+    <span class="kw">let</span> y: <span class="tp">u8</span> = <span class="nm">0b1100</span>;
+    <span class="fn">println!</span>(<span class="st">"AND: {:08b}"</span>, x & y);   <span class="cm">// 00001000</span>
+    <span class="fn">println!</span>(<span class="st">"OR:  {:08b}"</span>, x | y);   <span class="cm">// 00001110</span>
+    <span class="fn">println!</span>(<span class="st">"XOR: {:08b}"</span>, x ^ y);   <span class="cm">// 00000110</span>
+    <span class="fn">println!</span>(<span class="st">"NOT: {:08b}"</span>, !x);       <span class="cm">// 11110101</span>
+
+    <span class="cm">// 范围</span>
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="nm">1</span>..<span class="nm">5</span> { <span class="fn">print!</span>(<span class="st">"{} "</span>, i); }   <span class="cm">// 1 2 3 4</span>
+    <span class="fn">println!</span>();
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="nm">1</span>..=<span class="nm">5</span> { <span class="fn">print!</span>(<span class="st">"{} "</span>, i); }  <span class="cm">// 1 2 3 4 5</span>
+
+    <span class="cm">// Rust 没有三元运算符，使用 if 表达式</span>
+    <span class="kw">let</span> x = <span class="nm">5</span>;
+    <span class="kw">let</span> result = <span class="kw">if</span> x > <span class="nm">0</span> { <span class="st">"positive"</span> } <span class="kw">else</span> { <span class="st">"non-positive"</span> };
+
+    <span class="cm">// 类型不匹配编译报错</span>
+    <span class="cm">// let bad = 5 + 3.0;  // 错误！i32 和 f64 不能直接相加</span>
+    <span class="kw">let</span> good = <span class="nm">5</span> + <span class="nm">3</span>;          <span class="cm">// OK</span>
+    <span class="kw">let</span> good = <span class="nm">5.0</span> + <span class="nm">3.0</span>;      <span class="cm">// OK</span>
+    <span class="kw">let</span> good = <span class="nm">5</span> <span class="kw">as</span> <span class="tp">f64</span> + <span class="nm">3.0</span>;  <span class="cm">// OK：显式转换</span>
+}</code></pre>
+</div>
+
+<!-- ==================== 7. 字符串 ==================== -->
+<h2 id="sec7">7. 字符串</h2>
+
+<p>Rust 的字符串类型比较特殊。<code>String</code> 是堆分配的可增长字符串，<code>&str</code> 是字符串切片（引用）。这两种类型是 Rust 字符串处理的核心。</p>
+
+<div class="principle">
+    <div class="principle-title">String vs &str</div>
+    <p><strong><code>String</code>：</strong>堆分配、可增长、拥有所有权。类型为 <code>String</code>（来自 <code>std::string::String</code>）。可修改内容。</p>
+    <p><strong><code>&str</code>：</strong>字符串切片，是对某段 UTF-8 字节的引用。不拥有数据，是只读的。字符串字面量的类型就是 <code>&str</code>。</p>
+    <p><strong>转换：</strong><code>s.to_string()</code> 或 <code>String::from(s)</code> 将 <code>&str</code> 转为 <code>String</code>。<code>&s[..]</code> 或 <code>s.as_str()</code> 将 <code>String</code> 转为 <code>&str</code>。</p>
+    <p><strong>为什么有两种？</strong>所有权和借用是 Rust 的核心概念。需要拥有字符串时用 <code>String</code>，只需要读取时用 <code>&str</code>（更高效，不需要复制数据）。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 字符串字面量（&str）—— 编译时嵌入二进制</span>
+    <span class="kw">let</span> s1 = <span class="st">"Hello, world!"</span>;
+
+    <span class="cm">// String —— 堆分配，可修改</span>
+    <span class="kw">let mut</span> s2 = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"Hello"</span>);
+    s2.<span class="fn">push_str</span>(<span class="st">", world!"</span>);  <span class="cm">// 追加 &str</span>
+    s2.<span class="fn">push</span>(<span class="st">'!'</span>);            <span class="cm">// 追加单个字符</span>
+    <span class="fn">println!</span>(<span class="st">"{}"</span>, s2);      <span class="cm">// Hello, world!!</span>
+
+    <span class="cm">// 拼接</span>
+    <span class="kw">let</span> s3 = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"tic"</span>);
+    <span class="kw">let</span> s4 = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"tac"</span>);
+    <span class="kw">let</span> s5 = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"toe"</span>);
+    <span class="cm">// + 运算符：第一个所有权转移，后面的被借用</span>
+    <span class="kw">let</span> s6 = s3 + &s4 + &s5;
+    <span class="cm">// s3 已经被移动，不能再使用！</span>
+
+    <span class="cm">// format! 宏：更灵活的拼接</span>
+    <span class="kw">let</span> s = <span class="fn">format!</span>(<span class="st">"{}-{}-{}"</span>, <span class="st">"tic"</span>, <span class="st">"tac"</span>, <span class="st">"toe"</span>);
+
+    <span class="cm">// 字符串操作</span>
+    <span class="kw">let</span> s = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"hello world"</span>);
+    <span class="fn">println!</span>(<span class="st">"长度: {}"</span>, s.<span class="fn">len</span>());             <span class="cm">// 11 字节</span>
+    <span class="fn">println!</span>(<span class="st">"字符数: {}"</span>, s.<span class="fn">chars</span>().<span class="fn">count</span>()); <span class="cm">// 11 个字符</span>
+    <span class="fn">println!</span>(<span class="st">"大写: {}"</span>, s.<span class="fn">to_uppercase</span>());   <span class="cm">// HELLO WORLD</span>
+    <span class="fn">println!</span>(<span class="st">"包含: {}"</span>, s.<span class="fn">contains</span>(<span class="st">"world"</span>)); <span class="cm">// true</span>
+    <span class="fn">println!</span>(<span class="st">"替换: {}"</span>, s.<span class="fn">replace</span>(<span class="st">"world"</span>, <span class="st">"rust"</span>));
+
+    <span class="cm">// 遍历字符（注意：Rust 字符串是 UTF-8 编码）</span>
+    <span class="kw">for</span> c <span class="kw">in</span> <span class="st">"你好"</span>.<span class="fn">chars</span>() {
+        <span class="fn">print!</span>(<span class="st">"{} "</span>, c);
+    }
+    <span class="fn">println!</span>();
+
+    <span class="cm">// 遍历字节</span>
+    <span class="kw">for</span> b <span class="kw">in</span> <span class="st">"你好"</span>.<span class="fn">bytes</span>() {
+        <span class="fn">print!</span>(<span class="st">"{} "</span>, b);
+    }
+
+    <span class="cm">// 字符串切片（必须在字符边界）</span>
+    <span class="kw">let</span> s = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"hello world"</span>);
+    <span class="kw">let</span> hello = &s[..<span class="nm">5</span>];   <span class="cm">// "hello"</span>
+    <span class="kw">let</span> world = &s[<span class="nm">6</span>..];  <span class="cm">// "world"</span>
+}</code></pre>
+</div>
+
+<div class="warning">
+    Rust 字符串<strong>不支持索引访问</strong>（如 <code>s[0]</code>）。因为 UTF-8 编码中，一个字符可能占用 1~4 字节，索引语义不明确。使用 <code>.chars()</code> 或 <code>.bytes()</code> 遍历。
+</div>
+
+<!-- ==================== 8. 所有权系统 ==================== -->
+<h2 id="sec8">8. 所有权系统</h2>
+
+<p>所有权（Ownership）是 Rust 最独特、最重要的特性。它是 Rust 在<strong>编译期</strong>实现内存安全和无 GC 的核心机制。理解所有权系统是掌握 Rust 的关键。</p>
+
+<div class="principle">
+    <div class="principle-title">所有权三条规则（核心原则）</div>
+    <p><strong>规则 1：</strong>Rust 中每一个值都有一个<strong>所有者</strong>（owner）。</p>
+    <p><strong>规则 2：</strong>值在任意时刻有且仅有<strong>一个所有者</strong>。</p>
+    <p><strong>规则 3：</strong>当所有者<strong>离开作用域</strong>，值将被<strong>丢弃</strong>（drop）。</p>
+    <p>这三条规则是 Rust 内存安全的基石。没有 GC、没有引用计数（除非你显式使用 Rc/Arc），编译器在编译期就能确定每个值的生命周期和内存回收时机。</p>
+</div>
+
+<h3>8.1 栈与堆</h3>
+
+<p>理解所有权之前，需要理解栈（Stack）和堆（Heap）的区别：</p>
+
+<div class="principle">
+    <div class="principle-title">栈与堆的区别</div>
+    <p><strong>栈（Stack）：</strong>后进先出，分配和回收速度极快。存储固定大小的数据（如整数、浮点数、固定大小数组）。函数调用时，参数和局部变量被压入栈。</p>
+    <p><strong>堆（Heap）：</strong>分配时需要找到足够大的空间，速度较慢。存储可变大小的数据（如 String、Vec）。分配后返回一个<strong>指针</strong>，存在栈上。</p>
+    <p><strong>Rust 的选择：</strong>简单类型在栈上（Copy trait），复杂类型在堆上但通过所有权管理。编译器知道何时释放堆内存，所以不需要 GC。</p>
+</div>
+
+<h3>8.2 移动语义（Move）</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// === 移动语义（Move Semantics） ===</span>
+    <span class="cm">// 当一个值被赋给另一个变量时，所有权会转移</span>
+
+    <span class="kw">let</span> s1 = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"hello"</span>);
+    <span class="kw">let</span> s2 = s1;  <span class="cm">// s1 的所有权转移给 s2</span>
+
+    <span class="cm">// 此时 s1 已经无效！</span>
+    <span class="cm">// println!("{}", s1);  // 编译错误：value used here after move</span>
+    <span class="fn">println!</span>(<span class="st">"{}"</span>, s2);    <span class="cm">// OK：s2 拥有这个值</span>
+
+    <span class="cm">// 函数传参也会转移所有权</span>
+    <span class="kw">let</span> name = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"Rust"</span>);
+    <span class="fn">greet</span>(name);         <span class="cm">// name 的所有权转移给函数</span>
+    <span class="cm">// println!("{}", name);  // 编译错误：name 已被移动</span>
+
+    <span class="cm">// 函数返回值也会转移所有权</span>
+    <span class="kw">let</span> greeting = <span class="fn">create_greeting</span>(<span class="st">"World"</span>);
+    <span class="fn">println!</span>(<span class="st">"{}"</span>, greeting);  <span class="cm">// OK</span>
+}
+
+<span class="kw">fn</span> <span class="fn">greet</span>(name: <span class="tp">String</span>) {
+    <span class="fn">println!</span>(<span class="st">"Hello, {}!"</span>, name);
+}  <span class="cm">// name 在这里被 drop</span>
+
+<span class="kw">fn</span> <span class="fn">create_greeting</span>(name: &amp;<span class="tp">str</span>) -> <span class="tp">String</span> {
+    <span class="fn">format!</span>(<span class="st">"Hello, {}!"</span>, name)  <span class="cm">// 返回值的所有权转移给调用者</span>
+}</code></pre>
+</div>
+
+<h3>8.3 Clone 与 Copy</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// === Clone：深拷贝（显式调用，可能昂贵） ===</span>
+    <span class="kw">let</span> s1 = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"hello"</span>);
+    <span class="kw">let</span> s2 = s1.<span class="fn">clone</span>();  <span class="cm">// 深拷贝堆上的数据</span>
+    <span class="fn">println!</span>(<span class="st">"s1 = {}, s2 = {}"</span>, s1, s2);  <span class="cm">// 都有效</span>
+
+    <span class="cm">// === Copy：栈上数据的隐式复制 ===</span>
+    <span class="cm">// 实现了 Copy trait 的类型，赋值时会自动复制而不是移动</span>
+    <span class="kw">let</span> x = <span class="nm">5</span>;
+    <span class="kw">let</span> y = x;   <span class="cm">// x 被复制（Copy），不是移动</span>
+    <span class="fn">println!</span>(<span class="st">"x = {}, y = {}"</span>, x, y);  <span class="cm">// 都有效</span>
+
+    <span class="cm">// 哪些类型实现了 Copy？</span>
+    <span class="cm">// ✅ 所有整数类型（i32, u64 等）</span>
+    <span class="cm">// ✅ 浮点数（f32, f64）</span>
+    <span class="cm">// ✅ 布尔类型（bool）</span>
+    <span class="cm">// ✅ 字符类型（char）</span>
+    <span class="cm">// ✅ 仅包含 Copy 类型的元组</span>
+    <span class="cm">// ❌ String、Vec、Box 等堆上数据不实现 Copy</span>
+
+    <span class="kw">let</span> t1 = (<span class="nm">1</span>, <span class="nm">2.0</span>, <span class="kw">true</span>);  <span class="cm">// 实现了 Copy</span>
+    <span class="kw">let</span> t2 = t1;
+    <span class="fn">println!</span>(<span class="st">"{:?}"</span>, t1);  <span class="cm">// OK</span>
+
+    <span class="kw">let</span> t3 = (<span class="nm">1</span>, <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"hi"</span>));  <span class="cm">// 没有 Copy（因为 String）</span>
+    <span class="kw">let</span> t4 = t3;
+    <span class="cm">// println!("{:?}", t3);  // 编译错误：值已移动</span>
+}</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">Move vs Clone vs Copy 的选择</div>
+    <p><strong>Move（默认）：</strong>零成本，所有权转移。适用于：不再需要原变量的场景。</p>
+    <p><strong>Clone（显式）：</strong>显式深拷贝，可能昂贵。适用于：确实需要两份独立数据的场景。</p>
+    <p><strong>Copy（隐式）：</strong>栈上数据自动复制，零成本。适用于：小数据类型（整数、浮点、布尔）。</p>
+</div>
+
+<h3>8.4 Drop 与 RAII</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">use</span> std::fs::File;
+
+<span class="cm">// RAII（Resource Acquisition Is Initialization）</span>
+<span class="cm">// 资源在创建时获取，在销毁时释放</span>
+<span class="cm">// Rust 通过 Drop trait 实现</span>
+
+<span class="kw">struct</span> <span class="tp">MyStruct</span> {
+    name: <span class="tp">String</span>,
+}
+
+<span class="kw">impl</span> <span class="tp">Drop</span> <span class="kw">for</span> <span class="tp">MyStruct</span> {
+    <span class="kw">fn</span> <span class="fn">drop</span>(&amp;<span class="kw">mut self</span>) {
+        <span class="fn">println!</span>(<span class="st">"Dropping: {}"</span>, <span class="kw">self</span>.name);
+    }
+}
+
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="kw">let</span> a = <span class="tp">MyStruct</span> { name: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"first"</span>) };
+    <span class="kw">let</span> b = <span class="tp">MyStruct</span> { name: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"second"</span>) };
+    <span class="kw">let</span> c = <span class="tp">MyStruct</span> { name: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"third"</span>) };
+
+    <span class="fn">println!</span>(<span class="st">"Created structs"</span>);
+}  <span class="cm">// c, b, a 按逆序被 drop（LIFO 顺序）</span>
+
+<span class="kw">fn</span> <span class="fn">main2</span>() {
+    <span class="cm">// 文件自动关闭（File 实现了 Drop）</span>
+    {
+        <span class="kw">let</span> f = File::<span class="fn">open</span>(<span class="st">"data.txt"</span>);
+        <span class="cm">// 使用 f 做一些操作</span>
+    }  <span class="cm">// f 离开作用域，File::drop 被调用，文件自动关闭</span>
+
+    <span class="cm">// 提前释放：std::mem::drop</span>
+    <span class="kw">let</span> lock = <span class="tp">MyStruct</span> { name: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"lock"</span>) };
+    <span class="fn">drop</span>(lock);        <span class="cm">// 显式 drop，lock 在这里被释放</span>
+    <span class="cm">// drop(lock);      // 错误！lock 已经被 drop 了</span>
+}</code></pre>
+</div>
+
+<!-- ==================== 9. 引用与借用 ==================== -->
+<h2 id="sec9">9. 引用与借用</h2>
+
+<p>引用（Reference）允许你使用值但<strong>不获取所有权</strong>。借用（Borrowing）就是创建引用的行为。这是 Rust 实现"既安全又高效"的核心机制。</p>
+
+<div class="principle">
+    <div class="principle-title">引用与借用规则</div>
+    <p><strong>不可变引用 <code>&amp;T</code>：</strong>可以同时存在多个。只读访问，不能修改值。多个读取者可以并发访问。</p>
+    <p><strong>可变引用 <code>&amp;mut T</code>：</strong>同一时刻只能存在一个。独占写入，不能同时有不可变引用。保证了数据竞争安全。</p>
+    <p><strong>核心约束：</strong>要么有多个不可变引用，要么有且仅有一个可变引用——<strong>不能同时存在</strong>。这个约束在编译期强制执行，消除了数据竞争。</p>
+    <p><strong>悬垂引用（Dangling Reference）：</strong>Rust 编译器保证引用永远有效。如果编译器检测到可能的悬垂引用，会拒绝编译。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// === 不可变引用 ===</span>
+    <span class="kw">let</span> s1 = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"hello"</span>);
+    <span class="kw">let</span> len = <span class="fn">calculate_length</span>(&amp;s1);
+    <span class="fn">println!</span>(<span class="st">"'{}' 的长度是 {}"</span>, s1, len);
+    <span class="cm">// s1 仍然有效！因为只是被借用，没有被移动</span>
+
+    <span class="cm">// 多个不可变引用可以同时存在</span>
+    <span class="kw">let</span> r1 = &amp;s1;
+    <span class="kw">let</span> r2 = &amp;s1;
+    <span class="fn">println!</span>(<span class="st">"{} 和 {}"</span>, r1, r2);
+
+    <span class="cm">// === 可变引用 ===</span>
+    <span class="kw">let mut</span> s2 = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"hello"</span>);
+    <span class="fn">change</span>(&amp;<span class="kw">mut</span> s2);
+    <span class="fn">println!</span>(<span class="st">"修改后: {}"</span>, s2);  <span class="cm">// "hello, world"</span>
+
+    <span class="cm">// 可变引用的限制</span>
+    <span class="kw">let mut</span> s3 = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"hello"</span>);
+    <span class="kw">let</span> r3 = &amp;<span class="kw">mut</span> s3;
+    <span class="cm">// let r4 = &amp;mut s3;  // 错误！不能同时有两个可变引用</span>
+    r3.<span class="fn">push_str</span>(<span class="st">", world"</span>);
+
+    <span class="cm">// 不可变引用和可变引用不能共存</span>
+    <span class="kw">let mut</span> s4 = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"hello"</span>);
+    <span class="kw">let</span> r5 = &amp;s4;
+    <span class="cm">// let r6 = &mut s4;  // 错误！不能在有不可变引用时创建可变引用</span>
+    <span class="fn">println!</span>(<span class="st">"{}"</span>, r5);
+    <span class="cm">// r5 在这里最后一次使用，之后可以创建可变引用</span>
+    <span class="kw">let</span> r6 = &amp;<span class="kw">mut</span> s4;
+    r6.<span class="fn">push_str</span>(<span class="st">"!"</span>);
+
+    <span class="cm">// 悬垂引用（编译不通过）</span>
+    <span class="cm">// let reference_to_nothing = dangle();</span>
+}
+
+<span class="cm">// 函数借用参数（不获取所有权）</span>
+<span class="kw">fn</span> <span class="fn">calculate_length</span>(s: &amp;<span class="tp">String</span>) -> <span class="tp">usize</span> {
+    s.<span class="fn">len</span>()
+}  <span class="cm">// s 离开作用域，但因为不拥有值，所以什么也不发生</span>
+
+<span class="cm">// 函数通过可变引用修改值</span>
+<span class="kw">fn</span> <span class="fn">change</span>(s: &amp;<span class="kw">mut</span> <span class="tp">String</span>) {
+    s.<span class="fn">push_str</span>(<span class="st">", world"</span>);
+}
+
+<span class="cm">// 悬垂引用示例（编译不通过）</span>
+<span class="cm">// fn dangle() -> &String {</span>
+<span class="cm">//     let s = String::from("hello");</span>
+<span class="cm">//     &s  // 返回 s 的引用，但 s 在函数结束时被 drop</span>
+<span class="cm">// }  // 编译错误：returns a reference to data owned by a local variable</span>
+
+<span class="cm">// 正确做法：返回值本身</span>
+<span class="kw">fn</span> <span class="fn">no_dangle</span>() -> <span class="tp">String</span> {
+    <span class="kw">let</span> s = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"hello"</span>);
+    s  <span class="cm">// 所有权转移给调用者</span>
+}</code></pre>
+</div>
+
+<div class="tip">
+    <strong>NLL（Non-Lexical Lifetimes）：</strong>从 Rust 2018 开始，引用的作用域不再是到花括号结束，而是<strong>到最后一次使用</strong>。这大大减少了"借用冲突"的编译错误。
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="kw">let mut</span> s = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"hello"</span>);
+
+    <span class="kw">let</span> r1 = &amp;s;
+    <span class="kw">let</span> r2 = &amp;s;
+    <span class="fn">println!</span>(<span class="st">"{} and {}"</span>, r1, r2);
+    <span class="cm">// r1 和 r2 在此之后不再使用，它们的作用域结束</span>
+
+    <span class="kw">let</span> r3 = &amp;<span class="kw">mut</span> s;  <span class="cm">// OK！因为 r1 和 r2 已经不再使用</span>
+    r3.<span class="fn">push_str</span>(<span class="st">" world"</span>);
+    <span class="fn">println!</span>(<span class="st">"{}"</span>, r3);
+}</code></pre>
+</div>
+
+<!-- ==================== 10. 生命周期 ==================== -->
+<h2 id="sec10">10. 生命周期</h2>
+
+<p>生命周期（Lifetime）是 Rust 引用保持有效的作用范围。编译器通过<strong>生命周期标注</strong>确保所有引用在使用时都是有效的。大部分情况下编译器可以自动推断（生命周期省略），不需要手动标注。</p>
+
+<div class="principle">
+    <div class="principle-title">生命周期核心概念</div>
+    <p><strong>什么是生命周期：</strong>每个引用都有一个生命周期，表示引用保持有效的作用域。大部分情况下编译器自动推断（生命周期省略规则）。</p>
+    <p><strong>为什么需要标注：</strong>当函数接受多个引用并返回引用时，编译器需要知道返回值的生命周期与哪个输入参数相关。</p>
+    <p><strong>语法：</strong>使用 <code>'a</code> 表示生命周期参数，如 <code>&amp;'a str</code>。读作"生命周期 a 的引用"。</p>
+    <p><strong>约束：</strong>如果 <code>&'a str</code> 和 <code>&'b str</code> 都作为参数，返回 <code>&'c str</code>，则 <code>'c</code> 必须是 <code>'a</code> 和 <code>'b</code> 中较短的那个。</p>
+</div>
+
+<h3>10.1 生命周期标注语法</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="cm">// 生命周期标注语法：'a（撇号 + 小写字母）</span>
+<span class="cm">// 放在 & 符号之后，类型之前</span>
+
+<span class="cm">// 函数签名中的生命周期</span>
+<span class="kw">fn</span> <span class="fn">longest</span>&lt;<span class="tp">'a</span>&gt;(x: &amp;<span class="tp">'a</span> <span class="tp">str</span>, y: &amp;<span class="tp">'a</span> <span class="tp">str</span>) -> &amp;<span class="tp">'a</span> <span class="tp">str</span> {
+    <span class="kw">if</span> x.<span class="fn">len</span>() > y.<span class="fn">len</span>() { x } <span class="kw">else</span> { y }
+}
+
+<span class="cm">// 生命周期约束说明：</span>
+<span class="cm">// 'a 表示：返回值的引用至少与 x 和 y 中较短的那个一样长</span>
+<span class="cm">// 编译器保证：只要调用者遵循这个约束，返回值一定有效</span>
+
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="kw">let</span> s1 = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"long string"</span>);
+    <span class="kw">let</span> result;
+    {
+        <span class="kw">let</span> s2 = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"xyz"</span>);
+        result = <span class="fn">longest</span>(s1.<span class="fn">as_str</span>(), s2.<span class="fn">as_str</span>());
+        <span class="fn">println!</span>(<span class="st">"最长的: {}"</span>, result);  <span class="cm">// OK：result 在 s2 仍有效时使用</span>
+    }
+    <span class="cm">// println!("{}", result);  // 错误！s2 已被 drop</span>
+}</code></pre>
+</div>
+
+<h3>10.2 生命周期省略规则</h3>
+
+<p>编译器通过三条<strong>生命周期省略规则</strong>自动推断生命周期，大多数情况下不需要手动标注：</p>
+
+<div class="principle">
+    <div class="principle-title">生命周期省略规则（Elision Rules）</div>
+    <p><strong>规则 1：</strong>每个引用参数都获得自己的生命周期参数。如 <code>fn foo(x: &str, y: &str)</code> 等价于 <code>fn foo&lt;'a, 'b&gt;(x: &'a str, y: &'b str)</code>。</p>
+    <p><strong>规则 2：</strong>如果恰好只有一个输入生命周期参数，该生命周期被赋给所有输出引用。如 <code>fn foo(x: &str) -> &str</code> 等价于 <code>fn foo&lt;'a&gt;(x: &'a str) -> &'a str</code>。</p>
+    <p><strong>规则 3：</strong>如果有多个输入参数，但其中一个是 <code>&self</code> 或 <code>&mut self</code>，则 self 的生命周期被赋给所有输出引用。</p>
+    <p><strong>如果应用完规则后仍有未确定的输出生命周期：</strong>编译器报错，需要手动标注。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="cm">// 省略规则 1：每个引用参数获得自己的生命周期</span>
+<span class="kw">fn</span> <span class="fn">first_word</span>(s: &amp;<span class="tp">str</span>) -> &amp;<span class="tp">str</span> {
+    <span class="cm">// 编译器推断为：fn first_word&lt;'a&gt;(s: &'a str) -> &'a str</span>
+    <span class="cm">// 规则 2：恰好一个输入参数，生命周期赋给输出</span>
+    <span class="kw">let</span> bytes = s.<span class="fn">as_bytes</span>();
+    <span class="kw">for</span> (i, &amp;byte) <span class="kw">in</span> bytes.<span class="fn">iter</span>().<span class="fn">enumerate</span>() {
+        <span class="kw">if</span> byte == <span class="nm">b</span><span class="st">' '</span> {
+            <span class="kw">return</span> &amp;s[..i];
+        }
+    }
+    &amp;s[..]
+}
+
+<span class="cm">// 需要手动标注的情况：多个输入生命周期参数</span>
+<span class="kw">fn</span> <span class="fn">longest_explicit</span>&lt;<span class="tp">'a</span>&gt;(x: &amp;<span class="tp">'a</span> <span class="tp">str</span>, y: &amp;<span class="tp">'a</span> <span class="tp">str</span>) -> &amp;<span class="tp">'a</span> <span class="tp">str</span> {
+    <span class="kw">if</span> x.<span class="fn">len</span>() > y.<span class="fn">len</span>() { x } <span class="kw">else</span> { y }
+}
+
+<span class="cm">// 结构体中的生命周期</span>
+<span class="kw">struct</span> <span class="tp">ImportantExcerpt</span>&lt;<span class="tp">'a</span>&gt; {
+    part: &amp;<span class="tp">'a</span> <span class="tp">str</span>,  <span class="cm">// 结构体必须标注生命周期</span>
+}
+
+<span class="kw">impl</span>&lt;<span class="tp">'a</span>&gt; <span class="tp">ImportantExcerpt</span>&lt;<span class="tp">'a</span>&gt; {
+    <span class="cm">// 规则 3：&self 的生命周期赋给返回值</span>
+    <span class="kw">fn</span> <span class="fn">level</span>(&amp;<span class="kw">self</span>) -> <span class="tp">i32</span> {
+        <span class="nm">3</span>  <span class="cm">// 返回非引用，不需要生命周期</span>
+    }
+
+    <span class="kw">fn</span> <span class="fn">announce_and_return_part</span>(&amp;<span class="kw">self</span>, announcement: &amp;<span class="tp">str</span>) -> &amp;<span class="tp">str</span> {
+        <span class="fn">println!</span>(<span class="st">"注意: {}"</span>, announcement);
+        <span class="kw">self</span>.part  <span class="cm">// 规则 3：返回值的生命周期与 self 相同</span>
+    }
+}
+
+<span class="cm">// 'static 生命周期：引用在程序整个运行期间有效</span>
+<span class="kw">let</span> s: &amp;<span class="tp">'static</span> <span class="tp">str</span> = <span class="st">"我存活在整个程序中"</span>;
+
+<span class="cm">// 泛型、trait 约束和生命周期一起使用</span>
+<span class="kw">use</span> std::fmt::Display;
+
+<span class="kw">fn</span> <span class="fn">longest_with_announcement</span>&lt;<span class="tp">'a</span>, <span class="tp">T</span>: <span class="tp">Display</span>&gt;(
+    x: &amp;<span class="tp">'a</span> <span class="tp">str</span>,
+    y: &amp;<span class="tp">'a</span> <span class="tp">str</span>,
+    ann: <span class="tp">T</span>,
+) -> &amp;<span class="tp">'a</span> <span class="tp">str</span> {
+    <span class="fn">println!</span>(<span class="st">"公告: {}"</span>, ann);
+    <span class="kw">if</span> x.<span class="fn">len</span>() > y.<span class="fn">len</span>() { x } <span class="kw">else</span> { y }
+}</code></pre>
+</div>
+
+<div class="warning">
+    <code>'static</code> 生命周期表示引用在<strong>整个程序运行期间</strong>有效。字符串字面量就是 <code>'static</code>。在泛型约束中谨慎使用 <code>'static</code>，它可能限制灵活性。
+</div>
+
+<!-- ==================== 11. 元组与数组 ==================== -->
+<h2 id="sec11">11. 元组与数组</h2>
+
+<p>Rust 的复合类型中，元组和数组是最基础的。元组可以包含不同类型的值，数组则要求所有元素类型相同且长度固定。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// === 元组 ===</span>
+    <span class="kw">let</span> tup: (<span class="tp">i32</span>, <span class="tp">f64</span>, <span class="tp">u8</span>) = (<span class="nm">500</span>, <span class="nm">6.4</span>, <span class="nm">1</span>);
+
+    <span class="cm">// 解构</span>
+    <span class="kw">let</span> (x, y, z) = tup;
+    <span class="fn">println!</span>(<span class="st">"x={}, y={}, z={}"</span>, x, y, z);
+
+    <span class="cm">// 索引访问</span>
+    <span class="fn">println!</span>(<span class="st">"tup.0 = {}"</span>, tup.<span class="nm">0</span>);
+
+    <span class="cm">// 单元类型 ()：表示空值/void</span>
+    <span class="kw">let</span> unit = ();  <span class="cm">// 类型为 ()</span>
+
+    <span class="cm">// === 数组 ===</span>
+    <span class="kw">let</span> arr = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>];
+    <span class="kw">let</span> arr: [<span class="tp">i32</span>; <span class="nm">5</span>] = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>];
+
+    <span class="cm">// 初始化数组</span>
+    <span class="kw">let</span> arr = [<span class="nm">0</span>; <span class="nm">3</span>];  <span class="cm">// [0, 0, 0]</span>
+
+    <span class="cm">// 访问数组</span>
+    <span class="fn">println!</span>(<span class="st">"第一个元素: {}"</span>, arr[<span class="nm">0</span>]);
+
+    <span class="cm">// 越界访问会 panic</span>
+    <span class="cm">// let out_of_bounds = arr[5];  // 运行时 panic</span>
+
+    <span class="cm">// 遍历数组</span>
+    <span class="kw">for</span> element <span class="kw">in</span> arr {
+        <span class="fn">print!</span>(<span class="st">"{} "</span>, element);
+    }
+
+    <span class="cm">// 切片</span>
+    <span class="kw">let</span> arr = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>];
+    <span class="kw">let</span> slice = &arr[<span class="nm">1</span>..<span class="nm">3</span>];  <span class="cm">// [2, 3]</span>
+    <span class="fn">println!</span>(<span class="st">"切片: {:?}"</span>, slice);
+}</code></pre>
+</div>
+
+<!-- ==================== 12. 结构体 ==================== -->
+<h2 id="sec12">12. 结构体</h2>
+
+<p>结构体（struct）是 Rust 中自定义数据类型的核心方式。它允许你将多个相关的值组合成一个有意义的整体。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="cm">// 基本结构体</span>
+<span class="kw">struct</span> <span class="tp">User</span> {
+    username: <span class="tp">String</span>,
+    email: <span class="tp">String</span>,
+    sign_in_count: <span class="tp">u64</span>,
+    active: <span class="tp">bool</span>,
+}
+
+<span class="cm">// 元组结构体</span>
+<span class="kw">struct</span> <span class="tp">Color</span>(<span class="tp">i32</span>, <span class="tp">i32</span>, <span class="tp">i32</span>);
+<span class="kw">struct</span> <span class="tp">Point</span>(<span class="tp">f64</span>, <span class="tp">f64</span>);
+
+<span class="cm">// 单元结构体（没有字段）</span>
+<span class="kw">struct</span> <span class="tp">AlwaysEqual</span>;
+
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 创建实例</span>
+    <span class="kw">let</span> user = <span class="tp">User</span> {
+        email: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"user@example.com"</span>),
+        username: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"someuser"</span>),
+        active: <span class="kw">true</span>,
+        sign_in_count: <span class="nm">1</span>,
+    };
+
+    <span class="cm">// 访问字段</span>
+    <span class="fn">println!</span>(<span class="st">"用户名: {}"</span>, user.username);
+
+    <span class="cm">// 修改字段（需要 mut）</span>
+    <span class="kw">let mut</span> user2 = <span class="tp">User</span> {
+        email: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"another@example.com"</span>),
+        username: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"anotheruser"</span>),
+        active: <span class="kw">true</span>,
+        sign_in_count: <span class="nm">1</span>,
+    };
+    user2.email = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"new@example.com"</span>);
+
+    <span class="cm">// 结构体更新语法（..other）</span>
+    <span class="kw">let</span> user3 = <span class="tp">User</span> {
+        email: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"third@example.com"</span>),
+        ..user  <span class="cm">// 其余字段从 user 复制（注意所有权）</span>
+    };
+    <span class="cm">// user 的 username 已被移动到 user3</span>
+    <span class="cm">// 但 active 和 sign_in_count 是 Copy，user 仍可用这些字段</span>
+
+    <span class="cm">// 元组结构体</span>
+    <span class="kw">let</span> black = <span class="tp">Color</span>(<span class="nm">0</span>, <span class="nm">0</span>, <span class="nm">0</span>);
+    <span class="kw">let</span> origin = <span class="tp">Point</span>(<span class="nm">0.0</span>, <span class="nm">0.0</span>);
+    <span class="fn">println!</span>(<span class="st">"({}, {})"</span>, origin.<span class="nm">0</span>, origin.<span class="nm">1</span>);
+}
+
+<span class="cm">// 打印结构体：需要 #[derive(Debug)]</span>
+#[<span class="fn">derive</span>(<span class="tp">Debug</span>)]
+<span class="kw">struct</span> <span class="tp">Rectangle</span> {
+    width: <span class="tp">u32</span>,
+    height: <span class="tp">u32</span>,
+}</code></pre>
+</div>
+
+<!-- ==================== 13. 枚举与模式匹配 ==================== -->
+<h2 id="sec13">13. 枚举与模式匹配</h2>
+
+<p>Rust 的枚举（enum）远比 C/Java 的强大——每个变体可以携带不同的数据。配合 <code>match</code> 表达式，枚举是 Rust 最强大的控制流工具。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="cm">// 基本枚举</span>
+<span class="kw">enum</span> <span class="tp">Direction</span> {
+    <span class="tp">North</span>,
+    <span class="tp">South</span>,
+    <span class="tp">East</span>,
+    <span class="tp">West</span>,
+}
+
+<span class="cm">// 携带数据的枚举</span>
+<span class="kw">enum</span> <span class="tp">Message</span> {
+    <span class="tp">Quit</span>,                        <span class="cm">// 无数据</span>
+    <span class="tp">Move</span> { x: <span class="tp">i32</span>, y: <span class="tp">i32</span> },  <span class="cm">// 命名字段</span>
+    <span class="tp">Write</span>(<span class="tp">String</span>),               <span class="cm">// 单个 String</span>
+    <span class="tp">ChangeColor</span>(<span class="tp">i32</span>, <span class="tp">i32</span>, <span class="tp">i32</span>), <span class="cm">// 三个 i32</span>
+}
+
+<span class="cm">// Option 枚举（Rust 没有 null）</span>
+<span class="cm">// enum Option&lt;T&gt; { Some(T), None }</span>
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// match 表达式（必须穷尽所有可能）</span>
+    <span class="kw">let</span> msg = <span class="tp">Message</span>::<span class="tp">Write</span>(<span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"hello"</span>));
+
+    <span class="kw">match</span> msg {
+        <span class="tp">Message</span>::<span class="tp">Quit</span> => {
+            <span class="fn">println!</span>(<span class="st">"Quit 消息"</span>);
+        }
+        <span class="tp">Message</span>::<span class="tp">Move</span> { x, y } => {
+            <span class="fn">println!</span>(<span class="st">"移动到 ({}, {})"</span>, x, y);
+        }
+        <span class="tp">Message</span>::<span class="tp">Write</span>(text) => {
+            <span class="fn">println!</span>(<span class="st">"文本消息: {}"</span>, text);
+        }
+        <span class="tp">Message</span>::<span class="tp">ChangeColor</span>(r, g, b) => {
+            <span class="fn">println!</span>(<span class="st">"颜色: ({}, {}, {})"</span>, r, g, b);
+        }
+    }
+
+    <span class="cm">// Option 的使用</span>
+    <span class="kw">let</span> some_number: <span class="tp">Option</span>&lt;<span class="tp">i32</span>&gt; = <span class="tp">Some</span>(<span class="nm">5</span>);
+    <span class="kw">let</span> no_number: <span class="tp">Option</span>&lt;<span class="tp">i32</span>&gt; = <span class="tp">None</span>;
+
+    <span class="cm">// 必须处理 None 的情况</span>
+    <span class="kw">match</span> some_number {
+        <span class="tp">Some</span>(n) => <span class="fn">println!</span>(<span class="st">"数字: {}"</span>, n),
+        <span class="tp">None</span> => <span class="fn">println!</span>(<span class="st">"没有数字"</span>),
+    }
+
+    <span class="cm">// if let：只关心一个模式</span>
+    <span class="kw">if let</span> <span class="tp">Some</span>(value) = some_number {
+        <span class="fn">println!</span>(<span class="st">"值是: {}"</span>, value);
+    }
+
+    <span class="cm">// while let</span>
+    <span class="kw">let mut</span> stack = <span class="kw">vec!</span>[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];
+    <span class="kw">while let</span> <span class="tp">Some</span>(top) = stack.<span class="fn">pop</span>() {
+        <span class="fn">println!</span>(<span class="st">"pop: {}"</span>, top);
+    }
+
+    <span class="cm">// match 与守卫条件</span>
+    <span class="kw">let</span> num = <span class="nm">4</span>;
+    <span class="kw">match</span> num {
+        <span class="nm">1</span> => <span class="fn">println!</span>(<span class="st">"一"</span>),
+        <span class="nm">2</span> | <span class="nm">3</span> | <span class="nm">5</span> | <span class="nm">7</span> => <span class="fn">println!</span>(<span class="st">"质数"</span>),
+        <span class="nm">4</span>..<span class="nm">=</span><span class="nm">10</span> => <span class="fn">println!</span>(<span class="st">"4到10之间的数"</span>),
+        _ => <span class="fn">println!</span>(<span class="st">"其他"</span>),
+    }
+
+    <span class="cm">// 模式绑定</span>
+    <span class="kw">let</span> x = <span class="nm">5</span>;
+    <span class="kw">match</span> x {
+        n <span class="kw">@</span> <span class="nm">1</span>..<span class="nm">=</span><span class="nm">5</span> => <span class="fn">println!</span>(<span class="st">"在范围内: {}"</span>, n),
+        _ => <span class="fn">println!</span>(<span class="st">"超出范围"</span>),
+    }
+
+    <span class="cm">// 解构嵌套结构</span>
+    <span class="kw">struct</span> <span class="tp">Point3D</span> { x: <span class="tp">i32</span>, y: <span class="tp">i32</span>, z: <span class="tp">i32</span> }
+    <span class="kw">let</span> origin = <span class="tp">Point3D</span> { x: <span class="nm">0</span>, y: <span class="nm">0</span>, z: <span class="nm">0</span> };
+    <span class="kw">match</span> origin {
+        <span class="tp">Point3D</span> { x, y: <span class="nm">0</span>, z: <span class="nm">0</span> } => <span class="fn">println!</span>(<span class="st">"在 x 轴上: x={}"</span>, x),
+        <span class="tp">Point3D</span> { x: <span class="nm">0</span>, y, z: <span class="nm">0</span> } => <span class="fn">println!</span>(<span class="st">"在 y 轴上: y={}"</span>, y),
+        _ => <span class="fn">println!</span>(<span class="st">"不在轴上"</span>),
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 14. 函数 ==================== -->
+<h2 id="sec14">14. 函数</h2>
+
+<p>Rust 函数使用 <code>fn</code> 关键字定义。支持参数、返回值、表达式返回（最后一个表达式自动作为返回值）、多返回值等特性。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="cm">// 基本函数</span>
+<span class="kw">fn</span> <span class="fn">greet</span>(name: &amp;<span class="tp">str</span>) {
+    <span class="fn">println!</span>(<span class="st">"Hello, {}!"</span>, name);
+}
+
+<span class="cm">// 带返回值的函数</span>
+<span class="kw">fn</span> <span class="fn">add</span>(a: <span class="tp">i32</span>, b: <span class="tp">i32</span>) -> <span class="tp">i32</span> {
+    a + b  <span class="cm">// 表达式返回（无分号！）</span>
+}
+
+<span class="cm">// 多返回值（使用元组）</span>
+<span class="kw">fn</span> <span class="fn">swap</span>(a: <span class="tp">i32</span>, b: <span class="tp">i32</span>) -> (<span class="tp">i32</span>, <span class="tp">i32</span>) {
+    (b, a)
+}
+
+<span class="cm">// 提前返回</span>
+<span class="kw">fn</span> <span class="fn">find_first_even</span>(numbers: &amp;[<span class="tp">i32</span>]) -> <span class="tp">Option</span>&lt;<span class="tp">i32</span>&gt; {
+    <span class="kw">for</span> &amp;n <span class="kw">in</span> numbers {
+        <span class="kw">if</span> n % <span class="nm">2</span> == <span class="nm">0</span> {
+            <span class="kw">return</span> <span class="tp">Some</span>(n);
+        }
+    }
+    <span class="tp">None</span>
+}
+
+<span class="cm">// 发散函数（永不返回）</span>
+<span class="kw">fn</span> <span class="fn">never_returns</span>() -> ! {
+    <span class="kw">loop</span> {}
+}
+
+<span class="cm">// 语句 vs 表达式</span>
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 语句（Statement）：执行操作，不返回值</span>
+    <span class="kw">let</span> x = <span class="nm">5</span>;  <span class="cm">// 语句</span>
+
+    <span class="cm">// 表达式（Expression）：计算并产生值</span>
+    <span class="kw">let</span> y = {
+        <span class="kw">let</span> x = <span class="nm">3</span>;
+        x + <span class="nm">1</span>  <span class="cm">// 表达式：没有分号，产生值 4</span>
+    };
+    <span class="fn">println!</span>(<span class="st">"y = {}"</span>, y);  <span class="cm">// 4</span>
+
+    <span class="cm">// 加了分号变成语句，返回 ()</span>
+    <span class="kw">let</span> z = {
+        <span class="kw">let</span> x = <span class="nm">3</span>;
+        x + <span class="nm">1</span>;  <span class="cm">// 加了分号！变成语句，返回 ()</span>
+    };
+    <span class="cm">// z 的类型是 ()，不是 i32</span>
+
+    <span class="fn">greet</span>(<span class="st">"World"</span>);
+    <span class="fn">println!</span>(<span class="st">"3 + 4 = {}"</span>, <span class="fn">add</span>(<span class="nm">3</span>, <span class="nm">4</span>));
+    <span class="kw">let</span> (a, b) = <span class="fn">swap</span>(<span class="nm">1</span>, <span class="nm">2</span>);
+    <span class="fn">println!</span>(<span class="st">"swap: ({}, {})"</span>, a, b);
+
+    <span class="kw">let</span> numbers = [<span class="nm">1</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>];
+    <span class="kw">match</span> <span class="fn">find_first_even</span>(&amp;numbers) {
+        <span class="tp">Some</span>(n) => <span class="fn">println!</span>(<span class="st">"第一个偶数: {}"</span>, n),
+        <span class="tp">None</span> => <span class="fn">println!</span>(<span class="st">"没有偶数"</span>),
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 15. 闭包 ==================== -->
+<h2 id="sec15">15. 闭包</h2>
+
+<p>闭包（Closure）是可以捕获其环境中变量的匿名函数。闭包的语法比函数更简洁，类型可以自动推断，支持三种捕获方式：<code>Fn</code>、<code>FnMut</code>、<code>FnOnce</code>。</p>
+
+<div class="principle">
+    <div class="principle-title">闭包捕获方式</div>
+    <p><strong><code>Fn</code>：</strong>不可变借用捕获的环境变量。可以多次调用。</p>
+    <p><strong><code>FnMut</code>：</strong>可变借用捕获的环境变量。可以多次调用，但会修改捕获的值。</p>
+    <p><strong><code>FnOnce</code>：</strong>获取捕获变量的所有权。只能调用一次（因为所有权被消费了）。</p>
+    <p>编译器自动选择最宽松的捕获方式：<code>Fn</code> 优先，不行则 <code>FnMut</code>，再不行则 <code>FnOnce</code>。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 闭包基本语法</span>
+    <span class="kw">let</span> add_one = |x| x + <span class="nm">1</span>;
+    <span class="fn">println!</span>(<span class="st">"5 + 1 = {}"</span>, <span class="fn">add_one</span>(<span class="nm">5</span>));
+
+    <span class="cm">// 带类型标注的闭包</span>
+    <span class="kw">let</span> add = |x: <span class="tp">i32</span>, y: <span class="tp">i32</span>| -> <span class="tp">i32</span> { x + y };
+
+    <span class="cm">// 多行闭包</span>
+    <span class="kw">let</span> |x: <span class="tp">i32</span>| {
+        <span class="kw">let</span> y = x + <span class="nm">1</span>;
+        <span class="kw">let</span> z = y * <span class="nm">2</span>;
+        z  <span class="cm">// 返回 z</span>
+    };
+
+    <span class="cm">// 闭包捕获环境变量</span>
+    <span class="kw">let</span> offset = <span class="nm">10</span>;
+    <span class="kw">let</span> add_offset = |x| x + offset;
+    <span class="fn">println!</span>(<span class="st">"5 + 10 = {}"</span>, <span class="fn">add_offset</span>(<span class="nm">5</span>));
+
+    <span class="cm">// FnMut：可变捕获</span>
+    <span class="kw">let mut</span> count = <span class="nm">0</span>;
+    <span class="kw">let mut</span> increment = || {
+        count += <span class="nm">1</span>;
+        <span class="fn">println!</span>(<span class="st">"count = {}"</span>, count);
+    };
+    <span class="fn">increment</span>();  <span class="cm">// count = 1</span>
+    <span class="fn">increment</span>();  <span class="cm">// count = 2</span>
+    <span class="fn">increment</span>();  <span class="cm">// count = 3</span>
+
+    <span class="cm">// FnOnce：获取所有权</span>
+    <span class="kw">let</span> name = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"Alice"</span>);
+    <span class="kw">let</span> greet = || {
+        <span class="fn">println!</span>(<span class="st">"Hello, {}!"</span>, name);
+        <span class="cm">// name 在这里被消费（所有权转移给闭包）</span>
+    };
+    <span class="fn">greet</span>();
+    <span class="cm">// greet();  // 错误：闭包已经消费了 name</span>
+
+    <span class="cm">// 显式 move 闭包</span>
+    <span class="kw">let</span> data = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"owned"</span>);
+    <span class="kw">let</span> closure = <span class="kw">move</span> || {
+        <span class="fn">println!</span>(<span class="st">"{}"</span>, data);
+    };
+    <span class="cm">// data 已经被移动到闭包中</span>
+    <span class="fn">closure</span>();
+
+    <span class="cm">// 闭包作为函数参数</span>
+    <span class="kw">let</span> numbers = <span class="kw">vec!</span>[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>];
+    <span class="kw">let</span> evens: <span class="tp">Vec</span>&lt;<span class="tp">i32</span>&gt; = numbers.<span class="fn">into_iter</span>().<span class="fn">filter</span>(|&amp;x| x % <span class="nm">2</span> == <span class="nm">0</span>).<span class="fn">collect</span>();
+    <span class="fn">println!</span>(<span class="st">"偶数: {:?}"</span>, evens);  <span class="cm">// [2, 4]</span>
+}</code></pre>
+</div>
+
+<!-- ==================== 16. 迭代器 ==================== -->
+<h2 id="sec16">16. 迭代器</h2>
+
+<p>迭代器（Iterator）是 Rust 中处理集合数据的核心抽象。通过 <code>Iterator</code> trait 和惰性求值的链式操作，可以写出简洁高效的代码。Rust 的迭代器是<strong>零成本抽象</strong>——编译后的性能与手写循环相当。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// Iterator trait 核心方法</span>
+    <span class="kw">let</span> numbers = <span class="kw">vec!</span>[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>];
+
+    <span class="cm">// iter()：产生 &T 的引用</span>
+    <span class="kw">let</span> sum: <span class="tp">i32</span> = numbers.<span class="fn">iter</span>().<span class="fn">sum</span>();
+    <span class="fn">println!</span>(<span class="st">"sum = {}"</span>, sum);  <span class="cm">// 15</span>
+
+    <span class="cm">// into_iter()：产生 T，消费原集合</span>
+    <span class="kw">let</span> doubled: <span class="tp">Vec</span>&lt;<span class="tp">i32</span>&gt; = numbers.<span class="fn">into_iter</span>().<span class="fn">map</span>(|x| x * <span class="nm">2</span>).<span class="fn">collect</span>();
+
+    <span class="cm">// iter_mut()：产生 &mut T 的可变引用</span>
+    <span class="kw">let mut</span> nums = <span class="kw">vec!</span>[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];
+    nums.<span class="fn">iter_mut</span>().<span class="fn">for_each</span>(|x| *x *= <span class="nm">2</span>);
+    <span class="fn">println!</span>(<span class="st">"{:?}"</span>, nums);  <span class="cm">// [2, 4, 6]</span>
+
+    <span class="cm">// 常用适配器</span>
+    <span class="kw">let</span> numbers = <span class="kw">vec!</span>[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>, <span class="nm">7</span>, <span class="nm">8</span>, <span class="nm">9</span>, <span class="nm">10</span>];
+
+    <span class="cm">// filter：过滤元素</span>
+    <span class="kw">let</span> evens: <span class="tp">Vec</span>&lt;&amp;<span class="tp">i32</span>&gt; = numbers.<span class="fn">iter</span>().<span class="fn">filter</span>(|&&amp;x| x % <span class="nm">2</span> == <span class="nm">0</span>).<span class="fn">collect</span>();
+
+    <span class="cm">// map：转换每个元素</span>
+    <span class="kw">let</span> squares: <span class="tp">Vec</span>&lt;<span class="tp">i32</span>&gt; = numbers.<span class="fn">iter</span>().<span class="fn">map</span>(|&amp;x| x * x).<span class="fn">collect</span>();
+
+    <span class="cm">// 链式操作</span>
+    <span class="kw">let</span> result: <span class="tp">i32</span> = numbers
+        .<span class="fn">iter</span>()
+        .<span class="fn">filter</span>(|&&amp;x| x > <span class="nm">3</span>)    <span class="cm">// 4, 5, 6, 7, 8, 9, 10</span>
+        .<span class="fn">map</span>(|&amp;x| x * <span class="nm">2</span>)           <span class="cm">// 8, 10, 12, 14, 16, 18, 20</span>
+        .<span class="fn">sum</span>();                     <span class="cm">// 98</span>
+
+    <span class="cm">// enumerate：产生索引</span>
+    <span class="kw">for</span> (i, val) <span class="kw">in</span> numbers.<span class="fn">iter</span>().<span class="fn">enumerate</span>() {
+        <span class="fn">println!</span>(<span class="st">"numbers[{}] = {}"</span>, i, val);
+    }
+
+    <span class="cm">// take / skip</span>
+    <span class="kw">let</span> first_three: <span class="tp">Vec</span>&lt;&amp;<span class="tp">i32</span>&gt; = numbers.<span class="fn">iter</span>().<span class="fn">take</span>(<span class="nm">3</span>).<span class="fn">collect</span>();
+    <span class="kw">let</span> skip_three: <span class="tp">Vec</span>&lt;&amp;<span class="tp">i32</span>&gt; = numbers.<span class="fn">iter</span>().<span class="fn">skip</span>(<span class="nm">3</span>).<span class="fn">collect</span>();
+
+    <span class="cm">// zip：合并两个迭代器</span>
+    <span class="kw">let</span> names = <span class="kw">vec!</span>[<span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Charlie"</span>];
+    <span class="kw">let</span> scores = <span class="kw">vec!</span>[<span class="nm">95</span>, <span class="nm">87</span>, <span class="nm">92</span>];
+    <span class="kw">let</span> pairs: <span class="tp">Vec</span>&lt;(&amp;&amp;<span class="tp">str</span>, &amp;<span class="tp">i32</span>)&gt; = names.<span class="fn">iter</span>().<span class="fn">zip</span>(scores.<span class="fn">iter</span>()).<span class="fn">collect</span>();
+
+    <span class="cm">// fold：归约</span>
+    <span class="kw">let</span> product = numbers.<span class="fn">iter</span>().<span class="fn">fold</span>(<span class="nm">1</span>, |acc, &amp;x| acc * x);
+
+    <span class="cm">// any / all</span>
+    <span class="kw">let</span> has_even = numbers.<span class="fn">iter</span>().<span class="fn">any</span>(|&amp;x| x % <span class="nm">2</span> == <span class="nm">0</span>);
+    <span class="kw">let</span> all_positive = numbers.<span class="fn">iter</span>().<span class="fn">all</span>(|&amp;x| x > <span class="nm">0</span>);
+
+    <span class="cm">// 自定义迭代器</span>
+    <span class="kw">struct</span> <span class="tp">Counter</span> {
+        count: <span class="tp">u32</span>,
+        max: <span class="tp">u32</span>,
+    }
+
+    <span class="kw">impl</span> <span class="tp">Counter</span> {
+        <span class="kw">fn</span> <span class="fn">new</span>(max: <span class="tp">u32</span>) -> <span class="tp">Counter</span> {
+            <span class="tp">Counter</span> { count: <span class="nm">0</span>, max }
+        }
+    }
+
+    <span class="kw">impl</span> <span class="tp">Iterator</span> <span class="kw">for</span> <span class="tp">Counter</span> {
+        <span class="kw">type</span> <span class="tp">Item</span> = <span class="tp">u32</span>;
+
+        <span class="kw">fn</span> <span class="fn">next</span>(&amp;<span class="kw">mut self</span>) -> <span class="tp">Option</span>&lt;<span class="kw">Self</span>::<span class="tp">Item</span>&gt; {
+            <span class="kw">if</span> <span class="kw">self</span>.count < <span class="kw">self</span>.max {
+                <span class="kw">self</span>.count += <span class="nm">1</span>;
+                <span class="tp">Some</span>(<span class="kw">self</span>.count)
+            } <span class="kw">else</span> {
+                <span class="tp">None</span>
+            }
+        }
+    }
+
+    <span class="cm">// 使用自定义迭代器</span>
+    <span class="kw">let</span> sum: <span class="tp">u32</span> = <span class="tp">Counter</span>::<span class="fn">new</span>(<span class="nm">5</span>).<span class="fn">sum</span>();
+    <span class="fn">println!</span>(<span class="st">"sum = {}"</span>, sum);  <span class="cm">// 15</span>
+}</code></pre>
+</div>
+
+<!-- ==================== 17. 方法与关联函数 ==================== -->
+<h2 id="sec17">17. 方法与关联函数</h2>
+
+<p>Rust 通过 <code>impl</code> 块为结构体和枚举定义方法和关联函数。方法的第一个参数是 <code>self</code>（类似于其他语言的 <code>this</code>），关联函数则不需要 <code>self</code>（类似于静态方法）。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">#[</span><span class="fn">derive</span>(<span class="tp">Debug</span>)<span class="kw">]</span>
+<span class="kw">struct</span> <span class="tp">Rectangle</span> {
+    width: <span class="tp">u32</span>,
+    height: <span class="tp">u32</span>,
+}
+
+<span class="kw">impl</span> <span class="tp">Rectangle</span> {
+    <span class="cm">// 关联函数（Associated Function）：没有 self</span>
+    <span class="cm">// 通过 Type::function() 调用</span>
+    <span class="kw">fn</span> <span class="fn">new</span>(width: <span class="tp">u32</span>, height: <span class="tp">u32</span>) -> <span class="tp">Rectangle</span> {
+        <span class="tp">Rectangle</span> { width, height }
+    }
+
+    <span class="cm">// 方法（Method）：第一个参数是 &self</span>
+    <span class="cm">// &self 是 self: &Self 的语法糖</span>
+    <span class="kw">fn</span> <span class="fn">area</span>(&amp;<span class="kw">self</span>) -> <span class="tp">u32</span> {
+        <span class="kw">self</span>.width * <span class="kw">self</span>.height
+    }
+
+    <span class="cm">&self：不可变借用</span>
+    <span class="kw">fn</span> <span class="fn">perimeter</span>(&amp;<span class="kw">self</span>) -> <span class="tp">u32</span> {
+        <span class="nm">2</span> * (<span class="kw">self</span>.width + <span class="kw">self</span>.height)
+    }
+
+    <span class="cm">// &mut self：可变借用</span>
+    <span class="kw">fn</span> <span class="fn">scale</span>(&amp;<span class="kw">mut self</span>, factor: <span class="tp">u32</span>) {
+        <span class="kw">self</span>.width *= factor;
+        <span class="kw">self</span>.height *= factor;
+    }
+
+    <span class="cm">// self：获取所有权（消费）</span>
+    <span class="kw">fn</span> <span class="fn">into_square</span>(<span class="kw">self</span>) -> <span class="tp">Rectangle</span> {
+        <span class="kw">let</span> side = <span class="kw">self</span>.width.<span class="fn">min</span>(<span class="kw">self</span>.height);
+        <span class="tp">Rectangle</span> { width: side, height: side }
+    }
+
+    <span class="cm">// 方法接受另一个 Rectangle 作为参数</span>
+    <span class="kw">fn</span> <span class="fn">can_hold</span>(&amp;<span class="kw">self</span>, other: &amp;<span class="tp">Rectangle</span>) -> <span class="tp">bool</span> {
+        <span class="kw">self</span>.width > other.width && <span class="kw">self</span>.height > other.height
+    }
+}
+
+<span class="cm">// 多个 impl 块（可以分开，效果相同）</span>
+<span class="kw">impl</span> <span class="tp">Rectangle</span> {
+    <span class="kw">fn</span> <span class="fn">is_square</span>(&amp;<span class="kw">self</span>) -> <span class="tp">bool</span> {
+        <span class="kw">self</span>.width == <span class="kw">self</span>.height
+    }
+}
+
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 使用关联函数创建实例</span>
+    <span class="kw">let mut</span> rect = <span class="tp">Rectangle</span>::<span class="fn">new</span>(<span class="nm">10</span>, <span class="nm">20</span>);
+
+    <span class="cm">// 调用方法</span>
+    <span class="fn">println!</span>(<span class="st">"面积: {}"</span>, rect.<span class="fn">area</span>());
+    <span class="fn">println!</span>(<span class="st">"周长: {}"</span>, rect.<span class="fn">perimeter</span>());
+    <span class="fn">println!</span>(<span class="st">"是正方形: {}"</span>, rect.<span class="fn">is_square</span>());
+
+    <span class="cm">// 调用可变方法</span>
+    rect.<span class="fn">scale</span>(<span class="nm">2</span>);
+    <span class="fn">println!</span>(<span class="st">"缩放后: {:?}"</span>, rect);
+
+    <span class="cm">// 方法链</span>
+    <span class="kw">let</span> square = <span class="tp">Rectangle</span>::<span class="fn">new</span>(<span class="nm">5</span>, <span class="nm">5</span>);
+    <span class="fn">println!</span>(<span class="st">"面积: {}"</span>, square.<span class="fn">area</span>());
+
+    <span class="cm">// Debug trait 通过 #[derive(Debug)] 自动实现</span>
+    <span class="fn">println!</span>(<span class="st">"调试输出: {:?}"</span>, rect);
+    <span class="fn">println!</span>(<span class="st">"美化输出: {:#?}"</span>, rect);
+}</code></pre>
+</div>
+
+<!-- ==================== 18. trait ==================== -->
+<h2 id="sec18">18. trait</h2>
+
+<p>Trait（特征）定义了类型的行为方式，类似于其他语言的接口（interface）。通过 trait 可以实现多态、默认方法、trait bound 约束等。Trait 是 Rust 实现零成本抽象多态的核心机制。</p>
+
+<div class="principle">
+    <div class="principle-title">Trait 核心概念</div>
+    <p><strong>定义行为：</strong>Trait 定义一组方法签名，类型通过 <code>impl Trait for Type</code> 实现这些方法。</p>
+    <p><strong>默认实现：</strong>Trait 方法可以有默认实现，实现者可以选择性覆盖。</p>
+    <p><strong>Trait Bound：</strong>使用 <code>T: Trait</code> 约束泛型参数必须实现指定的 trait。</p>
+    <p><strong>静态分发：</strong>编译时确定具体类型（<code>impl Trait</code> 或 <code>&lt;T: Trait&gt;</code>），无运行时开销。</p>
+    <p><strong>动态分发：</strong>运行时通过 vtable 查找方法（<code>dyn Trait</code>），有一定开销。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">use</span> std::fmt;
+
+<span class="cm">// 定义 trait</span>
+<span class="kw">trait</span> <span class="tp">Summary</span> {
+    <span class="cm">// 必须实现的方法（无默认实现）</span>
+    <span class="kw">fn</span> <span class="fn">summarize</span>(&amp;<span class="kw">self</span>) -> <span class="tp">String</span>;
+
+    <span class="cm">// 可选的方法（有默认实现）</span>
+    <span class="kw">fn</span> <span class="fn">preview</span>(&amp;<span class="kw">self</span>) -> <span class="tp">String</span> {
+        <span class="fn">format!</span>(<span class="st">"({}...)"</span>, &amp;<span class="kw">self</span>.<span class="fn">summarize</span>()[..<span class="nm">20</span>])
+    }
+}
+
+<span class="kw">struct</span> <span class="tp">Article</span> {
+    title: <span class="tp">String</span>,
+    author: <span class="tp">String</span>,
+    content: <span class="tp">String</span>,
+}
+
+<span class="kw">struct</span> <span class="tp">Tweet</span> {
+    username: <span class="tp">String</span>,
+    content: <span class="tp">String</span>,
+}
+
+<span class="cm">// 为 Article 实现 Summary</span>
+<span class="kw">impl</span> <span class="tp">Summary</span> <span class="kw">for</span> <span class="tp">Article</span> {
+    <span class="kw">fn</span> <span class="fn">summarize</span>(&amp;<span class="kw">self</span>) -> <span class="tp">String</span> {
+        <span class="fn">format!</span>(<span class="st">"{}, 作者 {}"</span>, <span class="kw">self</span>.title, <span class="kw">self</span>.author)
+    }
+}
+
+<span class="cm">// 为 Tweet 实现 Summary（使用默认 preview）</span>
+<span class="kw">impl</span> <span class="tp">Summary</span> <span class="kw">for</span> <span class="tp">Tweet</span> {
+    <span class="kw">fn</span> <span class="fn">summarize</span>(&amp;<span class="kw">self</span>) -> <span class="tp">String</span> {
+        <span class="fn">format!</span>(<span class="st">"{}: {}"</span>, <span class="kw">self</span>.username, <span class="kw">self</span>.content)
+    }
+}
+
+<span class="cm">// Trait Bound 语法</span>
+<span class="kw">fn</span> <span class="fn">notify</span>(item: &amp;<span class="kw">impl</span> <span class="tp">Summary</span>) {
+    <span class="fn">println!</span>(<span class="st">"新闻！{}"</span>, item.<span class="fn">summarize</span>());
+}
+
+<span class="cm">// 完整 trait bound 语法（等价于上面）</span>
+<span class="kw">fn</span> <span class="fn">notify_full</span>&lt;<span class="tp">T</span>: <span class="tp">Summary</span>&gt;(item: &amp;<span class="tp">T</span>) {
+    <span class="fn">println!</span>(<span class="st">"新闻！{}"</span>, item.<span class="fn">summarize</span>());
+}
+
+<span class="cm">// 多个 trait bound</span>
+<span class="kw">fn</span> <span class="fn">display_and_summarize</span>(item: &amp;(<span class="kw">impl</span> <span class="tp">Summary</span> + <span class="tp">fmt::Display</span>)) {
+    <span class="fn">println!</span>(<span class="st">"Display: {}"</span>, item);
+    <span class="fn">println!</span>(<span class="st">"Summary: {}"</span>, item.<span class="fn">summarize</span>());
+}
+
+<span class="cm">// where 子句（更清晰的 bound）</span>
+<span class="kw">fn</span> <span class="fn">complex_function</span>&lt;<span class="tp">T</span>, <span class="tp">U</span>&gt;(t: &amp;<span class="tp">T</span>, u: &amp;<span class="tp">U</span>) -> <span class="tp">String</span>
+<span class="kw">where</span>
+    <span class="tp">T</span>: <span class="tp">Summary</span> + <span class="tp">fmt::Debug</span>,
+    <span class="tp">U</span>: <span class="tp">Summary</span> + <span class="tp">Clone</span>,
+{
+    <span class="fn">format!</span>(<span class="st">"{} | {}"</span>, t.<span class="fn">summarize</span>(), u.<span class="fn">summarize</span>())
+}
+
+<span class="cm">// 返回 impl Trait（静态分发）</span>
+<span class="kw">fn</span> <span class="fn">returns_summarizable</span>() -> <span class="kw">impl</span> <span class="tp">Summary</span> {
+    <span class="tp">Tweet</span> {
+        username: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"rustlang"</span>),
+        content: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"Rust is awesome!"</span>),
+    }
+}
+
+<span class="cm">// Trait 作为参数（动态分发）</span>
+<span class="kw">fn</span> <span class="fn">returns_dyn</span>() -> <span class="tp">Box</span>&lt;<span class="kw">dyn</span> <span class="tp">Summary</span>&gt; {
+    <span class="tp">Box</span>::<span class="fn">new</span>(<span class="tp">Tweet</span> {
+        username: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"rustlang"</span>),
+        content: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"Rust is awesome!"</span>),
+    })
+}
+
+<span class="fn">fn</span> <span class="fn">main</span>() {
+    <span class="kw">let</span> article = <span class="tp">Article</span> {
+        title: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"Rust 发布新版本"</span>),
+        author: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"Rust Team"</span>),
+        content: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"详细内容..."</span>),
+    };
+
+    <span class="kw">let</span> tweet = <span class="tp">Tweet</span> {
+        username: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"user123"</span>),
+        content: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"学习 Rust 第 1 天"</span>),
+    };
+
+    <span class="fn">notify</span>(&amp;article);
+    <span class="fn">notify</span>(&amp;tweet);
+
+    <span class="cm">// 使用返回值</span>
+    <span class="kw">let</span> item = <span class="fn">returns_summarizable</span>();
+    <span class="fn">println!</span>(<span class="st">"{}"</span>, item.<span class="fn">summarize</span>());
+}</code></pre>
+</div>
+
+<div class="tip">
+    <strong>静态分发 vs 动态分发：</strong><code>impl Trait</code> 在编译时确定类型（静态分发），零成本但不能存储不同类型。<code>dyn Trait</code> 在运行时通过 vtable 查找（动态分发），可以存储不同类型但有指针间接开销。
+</div>
+
+<!-- ==================== 19. 泛型 ==================== -->
+<h2 id="sec19">19. 泛型</h2>
+
+<p>泛型（Generics）允许你编写适用于多种类型的代码。Rust 的泛型是<strong>零成本抽象</strong>——编译器为每种具体类型生成专门的代码（单态化），运行时没有额外开销。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="cm">// 泛型函数</span>
+<span class="kw">fn</span> <span class="fn">largest</span>&lt;<span class="tp">T</span>: <span class="tp">PartialOrd</span>&gt;(list: &amp;[<span class="tp">T</span>]) -> &amp;<span class="tp">T</span> {
+    <span class="kw">let mut</span> largest = &amp;list[<span class="nm">0</span>];
+    <span class="kw">for</span> item <span class="kw">in</span> &amp;list[<span class="nm">1</span>..] {
+        <span class="kw">if</span> item > largest {
+            largest = item;
+        }
+    }
+    largest
+}
+
+<span class="cm">// 泛型结构体</span>
+<span class="kw">struct</span> <span class="tp">Point</span>&lt;<span class="tp">T</span>&gt; {
+    x: <span class="tp">T</span>,
+    y: <span class="tp">T</span>,
+}
+
+<span class="cm">// 不同类型的泛型结构体</span>
+<span class="kw">struct</span> <span class="tp">Point2</span>&lt;<span class="tp">T</span>, <span class="tp">U</span>&gt; {
+    x: <span class="tp">T</span>,
+    y: <span class="tp">U</span>,
+}
+
+<span class="cm">// 泛型实现</span>
+<span class="kw">impl</span>&lt;<span class="tp">T</span>&gt; <span class="tp">Point</span>&lt;<span class="tp">T</span>&gt; {
+    <span class="kw">fn</span> <span class="fn">new</span>(x: <span class="tp">T</span>, y: <span class="tp">T</span>) -> <span class="tp">Point</span>&lt;<span class="tp">T</span>&gt; {
+        <span class="tp">Point</span> { x, y }
+    }
+
+    <span class="kw">fn</span> <span class="fn">x</span>(&amp;<span class="kw">self</span>) -> &amp;<span class="tp">T</span> {
+        &amp;<span class="kw">self</span>.x
+    }
+}
+
+<span class="cm">// 仅为特定类型实现方法</span>
+<span class="kw">impl</span> <span class="tp">Point</span>&lt;<span class="tp">f64</span>&gt; {
+    <span class="kw">fn</span> <span class="fn">distance_from_origin</span>(&amp;<span class="kw">self</span>) -> <span class="tp">f64</span> {
+        (<span class="kw">self</span>.x.<span class="fn">powi</span>(<span class="nm">2</span>) + <span class="kw">self</span>.y.<span class="fn">powi</span>(<span class="nm">2</span>)).<span class="fn">sqrt</span>()
+    }
+}
+
+<span class="cm">// 泛型枚举</span>
+<span class="kw">enum</span> <span class="tp">Option</span>&lt;<span class="tp">T</span>&gt; {
+    <span class="tp">Some</span>(<span class="tp">T</span>),
+    <span class="tp">None</span>,
+}
+
+<span class="kw">enum</span> <span class="tp">Result</span>&lt;<span class="tp">T</span>, <span class="tp">E</span>&gt; {
+    <span class="tp">Ok</span>(<span class="tp">T</span>),
+    <span class="tp">Err</span>(<span class="tp">E</span>),
+}
+
+<span class="cm">// 泛型 + trait bound</span>
+<span class="kw">use</span> std::fmt::<span class="tp">Display</span>;
+
+<span class="kw">struct</span> <span class="tp">Wrapper</span>&lt;<span class="tp">T</span>: <span class="tp">Display</span>&gt; {
+    value: <span class="tp">T</span>,
+}
+
+<span class="kw">impl</span>&lt;<span class="tp">T</span>: <span class="tp">Display</span>&gt; <span class="tp">Wrapper</span>&lt;<span class="tp">T</span>&gt; {
+    <span class="kw">fn</span> <span class="fn">show</span>(&amp;<span class="kw">self</span>) {
+        <span class="fn">println!</span>(<span class="st">"Value: {}"</span>, <span class="kw">self</span>.value);
+    }
+}
+
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="kw">let</span> numbers = <span class="kw">vec!</span>[<span class="nm">34</span>, <span class="nm">50</span>, <span class="nm">25</span>, <span class="nm">100</span>, <span class="nm">65</span>];
+    <span class="fn">println!</span>(<span class="st">"最大的数字: {}"</span>, <span class="fn">largest</span>(&amp;numbers));
+
+    <span class="kw">let</span> chars = <span class="kw">vec!</span>[<span class="st">'y'</span>, <span class="st">'m'</span>, <span class="st">'a'</span>, <span class="st">'q'</span>];
+    <span class="fn">println!</span>(<span class="st">"最大的字符: {}"</span>, <span class="fn">largest</span>(&amp;chars));
+
+    <span class="kw">let</span> integer_point = <span class="tp">Point</span>::<span class="fn">new</span>(<span class="nm">5</span>, <span class="nm">10</span>);
+    <span class="kw">let</span> float_point = <span class="tp">Point</span>::<span class="fn">new</span>(<span class="nm">1.0</span>, <span class="nm">4.0</span>);
+
+    <span class="cm">// float_point 可以调用 distance_from_origin</span>
+    <span class="fn">println!</span>(<span class="st">"距离原点: {}"</span>, float_point.<span class="fn">distance_from_origin</span>());
+
+    <span class="cm">// integer_point 不能调用 distance_from_origin（不是 f64）</span>
+    <span class="cm">// integer_point.distance_from_origin();  // 编译错误</span>
+
+    <span class="cm">// 混合类型</span>
+    <span class="kw">let</span> mixed = <span class="tp">Point2</span> { x: <span class="nm">5</span>, y: <span class="nm">4.0</span> };
+    <span class="fn">println!</span>(<span class="st">"mixed: ({}, {})"</span>, mixed.x, mixed.y);
+
+    <span class="cm">// 泛型 + trait</span>
+    <span class="kw">let</span> w = <span class="tp">Wrapper</span> { value: <span class="st">"hello"</span> };
+    w.<span class="fn">show</span>();
+
+    <span class="kw">let</span> w2 = <span class="tp">Wrapper</span> { value: <span class="nm">42</span> };
+    w2.<span class="fn">show</span>();
+}</code></pre>
+</div>
+
+<!-- ==================== 20. 错误处理 ==================== -->
+<h2 id="sec20">20. 错误处理</h2>
+
+<p>Rust 的错误处理没有异常机制，而是通过 <code>Result&lt;T, E&gt;</code> 和 <code>Option&lt;T&gt;</code> 枚举显式处理错误。配合 <code>?</code> 操作符，错误处理代码非常简洁。</p>
+
+<div class="principle">
+    <div class="principle-title">Rust 错误处理哲学</div>
+    <p><strong>可恢复错误：</strong>使用 <code>Result&lt;T, E&gt;</code> 枚举。<code>Ok(T)</code> 表示成功，<code>Err(E)</code> 表示失败。调用者必须处理错误。</p>
+    <p><strong>不可恢复错误：</strong>使用 <code>panic!</code> 宏。程序会立即终止并打印错误信息。用于不应该发生的场景。</p>
+    <p><strong><code>?</code> 操作符：</strong>如果 Result 是 Err，提前返回该错误；如果是 Ok，解包值。极大简化错误传播代码。</p>
+    <p><strong>自定义错误类型：</strong>实现 <code>std::error::Error</code> trait 创建自己的错误类型。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">use</span> std::fs;
+<span class="kw">use</span> std::io;
+<span class="kw">use</span> std::num::<span class="tp">ParseIntError</span>;
+
+<span class="cm">// panic!：不可恢复错误</span>
+<span class="kw">fn</span> <span class="fn">crash</span>() {
+    <span class="kw">panic!</span>(<span class="st">"程序崩溃了！"</span>);
+}
+
+<span class="cm">// Result：可恢复错误</span>
+<span class="kw">fn</span> <span class="fn">read_file</span>(path: &amp;<span class="tp">str</span>) -> <span class="tp">Result</span>&lt;<span class="tp">String</span>, io::<span class="tp">Error</span>&gt; {
+    fs::<span class="fn">read_to_string</span>(path)
+}
+
+<span class="cm">// 使用 ? 操作符传播错误</span>
+<span class="kw">fn</span> <span class="fn">read_username</span>() -> <span class="tp">Result</span>&lt;<span class="tp">String</span>, io::<span class="tp">Error</span>&gt; {
+    <span class="kw">let</span> username = fs::<span class="fn">read_to_string</span>(<span class="st">"username.txt"</span>)?;
+    <span class="tp">Ok</span>(username.<span class="fn">trim</span>().<span class="fn">to_string</span>())
+}
+
+<span class="cm">// 链式 ? 操作符</span>
+<span class="kw">fn</span> <span class="fn">read_first_line</span>(path: &amp;<span class="tp">str</span>) -> <span class="tp">Result</span>&lt;<span class="tp">String</span>, io::<span class="tp">Error</span>&gt; {
+    <span class="kw">let</span> content = fs::<span class="fn">read_to_string</span>(path)?;
+    <span class="tp">Ok</span>(content.<span class="fn">lines</span>().<span class="fn">next</span>().<span class="fn">unwrap_or</span>(<span class="st">""</span>).<span class="fn">to_string</span>())
+}
+
+<span class="cm">// 自定义错误类型</span>
+<span class="kw">#[</span><span class="fn">derive</span>(<span class="tp">Debug</span>)<span class="kw">]</span>
+<span class="kw">enum</span> <span class="tp">AppError</span> {
+    <span class="tp">IoError</span>(io::<span class="tp">Error</span>),
+    <span class="tp">ParseError</span>(<span class="tp">ParseIntError</span>),
+    <span class="tp">Custom</span>(<span class="tp">String</span>),
+}
+
+<span class="kw">impl</span> std::fmt::<span class="tp">Display</span> <span class="kw">for</span> <span class="tp">AppError</span> {
+    <span class="kw">fn</span> <span class="fn">fmt</span>(&amp;<span class="kw">self</span>, f: &amp;<span class="kw">mut</span> std::fmt::<span class="tp">Formatter</span>&lt;<span class="kw">'_</span>&gt;) -> std::fmt::<span class="tp">Result</span> {
+        <span class="kw">match</span> <span class="kw">self</span> {
+            <span class="tp">AppError</span>::<span class="tp">IoError</span>(e) => <span class="fn">write!</span>(f, <span class="st">"IO 错误: {}"</span>, e),
+            <span class="tp">AppError</span>::<span class="tp">ParseError</span>(e) => <span class="fn">write!</span>(f, <span class="st">"解析错误: {}"</span>, e),
+            <span class="tp">AppError</span>::<span class="tp">Custom</span>(msg) => <span class="fn">write!</span>(f, <span class="st">"自定义错误: {}"</span>, msg),
+        }
+    }
+}
+
+<span class="kw">impl</span> std::error::<span class="tp">Error</span> <span class="kw">for</span> <span class="tp">AppError</span> {}
+
+<span class="cm">// 从其他错误类型转换</span>
+<span class="kw">impl</span> <span class="tp">From</span>&lt;io::<span class="tp">Error</span>&gt; <span class="kw">for</span> <span class="tp">AppError</span> {
+    <span class="kw">fn</span> <span class="fn">from</span>(e: io::<span class="tp">Error</span>) -> <span class="tp">Self</span> {
+        <span class="tp">AppError</span>::<span class="tp">IoError</span>(e)
+    }
+}
+
+<span class="kw">impl</span> <span class="tp">From</span>&lt;<span class="tp">ParseIntError</span>&gt; <span class="kw">for</span> <span class="tp">AppError</span> {
+    <span class="kw">fn</span> <span class="fn">from</span>(e: <span class="tp">ParseIntError</span>) -> <span class="tp">Self</span> {
+        <span class="tp">AppError</span>::<span class="tp">ParseError</span>(e)
+    }
+}
+
+<span class="kw">fn</span> <span class="fn">parse_config</span>() -> <span class="tp">Result</span>&lt;<span class="tp">i32</span>, <span class="tp">AppError</span>&gt; {
+    <span class="kw">let</span> content = fs::<span class="fn">read_to_string</span>(<span class="st">"config.txt"</span>)?;  <span class="cm">// io::Error -> AppError</span>
+    <span class="kw">let</span> value: <span class="tp">i32</span> = content.<span class="fn">trim</span>().<span class="fn">parse</span>()?;        <span class="cm">// ParseIntError -> AppError</span>
+    <span class="tp">Ok</span>(value)
+}
+
+<span class="cm">// 常用方法</span>
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="kw">let</span> v: <span class="tp">Result</span>&lt;<span class="tp">i32</span>, <span class="tp">String</span>&gt; = <span class="tp">Ok</span>(<span class="nm">42</span>);
+
+    <span class="cm">// unwrap：成功则返回值，失败则 panic</span>
+    <span class="kw">let</span> val = v.<span class="fn">unwrap</span>();
+
+    <span class="cm">// expect：自定义 panic 信息</span>
+    <span class="kw">let</span> v2: <span class="tp">Result</span>&lt;<span class="tp">i32</span>, &amp;<span class="tp">str</span>&gt; = <span class="tp">Err</span>(<span class="st">"出错了"</span>);
+    <span class="cm">// v2.expect("应成功");  // panic: 应成功: "出错了"</span>
+
+    <span class="cm">// unwrap_or：提供默认值</span>
+    <span class="kw">let</span> val = v2.<span class="fn">unwrap_or</span>(<span class="nm">0</span>);
+
+    <span class="cm">// map / and_then</span>
+    <span class="kw">let</span> doubled = v.<span class="fn">map</span>(|x| x * <span class="nm">2</span>);
+
+    <span class="cm">// Option 的类似方法</span>
+    <span class="kw">let</span> some_val: <span class="tp">Option</span>&lt;<span class="tp">i32</span>&gt; = <span class="tp">Some</span>(<span class="nm">5</span>);
+    <span class="kw">let</span> no_val: <span class="tp">Option</span>&lt;<span class="tp">i32</span>&gt; = <span class="tp">None</span>;
+
+    <span class="fn">println!</span>(<span class="st">"some: {}"</span>, some_val.<span class="fn">unwrap_or</span>(<span class="nm">0</span>));
+    <span class="fn">println!</span>(<span class="st">"none: {}"</span>, no_val.<span class="fn">unwrap_or</span>(<span class="nm">0</span>));
+}</code></pre>
+</div>
+
+<div class="warning">
+    <code>unwrap()</code> 和 <code>expect()</code> 在生产代码中应<strong>尽量避免</strong>。优先使用 <code>?</code> 操作符、<code>unwrap_or</code>、<code>match</code> 等显式处理错误的方式。
+</div>
+
+<!-- ==================== 21. 智能指针 ==================== -->
+<h2 id="sec21">21. 智能指针</h2>
+
+<p>智能指针（Smart Pointer）不仅像普通引用一样指向数据，还拥有额外的元数据和功能。Rust 标准库提供了几种重要的智能指针。</p>
+
+<div class="principle">
+    <div class="principle-title">智能指针 vs 普通引用</div>
+    <p><strong>普通引用（&T）：</strong>借用数据，不拥有数据。编译器保证引用有效。</p>
+    <p><strong>智能指针：</strong>拥有数据，负责数据的生命周期。实现 <code>Deref</code>（可解引用）和 <code>Drop</code>（自动释放）。</p>
+    <p><strong>常见智能指针：</strong><code>Box&lt;T&gt;</code>（堆分配）、<code>Rc&lt;T&gt;</code>（引用计数共享）、<code>Arc&lt;T&gt;</code>（原子引用计数共享）、<code>RefCell&lt;T&gt;</code>（运行时借用检查）。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">use</span> std::rc::<span class="tp">Rc</span>;
+<span class="kw">use</span> std::cell::<span class="tp">RefCell</span>;
+
+<span class="cm">// === Box&lt;T&gt;：堆上分配 ===</span>
+<span class="cm">// 最简单的智能指针：把数据放到堆上</span>
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// Box 基本用法</span>
+    <span class="kw">let</span> b = <span class="tp">Box</span>::<span class="fn">new</span>(<span class="nm">5</span>);
+    <span class="fn">println!</span>(<span class="st">"b = {}"</span>, b);  <span class="cm">// 自动解引用</span>
+
+    <span class="cm">// Box 用于递归类型</span>
+    <span class="cm">// 枚举定义（链表节点）</span>
+    <span class="kw">enum</span> <span class="tp">List</span> {
+        <span class="tp">Cons</span>(<span class="tp">i32</span>, <span class="tp">Box</span>&lt;<span class="tp">List</span>&gt;),
+        <span class="tp">Nil</span>,
+    }
+
+    <span class="kw">use</span> <span class="tp">List</span>::*;
+
+    <span class="cm">// 使用 Box 创建链表</span>
+    <span class="kw">let</span> list = <span class="tp">Cons</span>(<span class="nm">1</span>,
+        <span class="tp">Box</span>::<span class="fn">new</span>(<span class="tp">Cons</span>(<span class="nm">2</span>,
+            <span class="tp">Box</span>::<span class="fn">new</span>(<span class="tp">Cons</span>(<span class="nm">3</span>,
+                <span class="tp">Box</span>::<span class="fn">new</span>(<span class="tp">Nil</span>))))));
+
+    <span class="cm">// === Rc&lt;T&gt;：引用计数（单线程） ===</span>
+    <span class="cm">// 允许一个值有多个所有者</span>
+    <span class="kw">let</span> shared = <span class="tp">Rc</span>::<span class="fn">new</span>(<span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"shared data"</span>));
+    <span class="kw">let</span> clone1 = <span class="tp">Rc</span>::<span class="fn">clone</span>(&amp;shared);
+    <span class="kw">let</span> clone2 = <span class="tp">Rc</span>::<span class="fn">clone</span>(&amp;shared);
+    <span class="fn">println!</span>(<span class="st">"引用计数: {}"</span>, <span class="tp">Rc</span>::<span class="fn">strong_count</span>(&amp;shared));  <span class="cm">// 3</span>
+    <span class="fn">println!</span>(<span class="st">"{}"</span>, shared);
+
+    <span class="cm">// Rc 不能修改内容（因为不是 mut）</span>
+    <span class="cm">// 需要修改时结合 RefCell</span>
+
+    <span class="cm">// === RefCell&lt;T&gt;：运行时借用检查 ===</span>
+    <span class="cm">// 内部可变性：即使不是 mut，也能修改数据</span>
+    <span class="kw">let</span> data = <span class="tp">RefCell</span>::<span class="fn">new</span>(<span class="nm">5</span>);
+
+    <span class="cm">// borrow()：不可变借用</span>
+    <span class="fn">println!</span>(<span class="st">"值: {}"</span>, data.<span class="fn">borrow</span>());
+
+    <span class="cm">// borrow_mut()：可变借用</span>
+    *data.<span class="fn">borrow_mut</span>() += <span class="nm">1</span>;
+    <span class="fn">println!</span>(<span class="st">"修改后: {}"</span>, data.<span class="fn">borrow</span>());
+
+    <span class="cm">// Rc&lt;RefCell&lt;T&gt;&gt;：共享可变数据</span>
+    <span class="kw">let</span> shared_mut = <span class="tp">Rc</span>::<span class="fn">new</span>(<span class="tp">RefCell</span>::<span class="fn">new</span>(<span class="nm">0</span>));
+    <span class="kw">let</span> clone_a = <span class="tp">Rc</span>::<span class="fn">clone</span>(&amp;shared_mut);
+    <span class="kw">let</span> clone_b = <span class="tp">Rc</span>::<span class="fn">clone</span>(&amp;shared_mut);
+
+    *clone_a.<span class="fn">borrow_mut</span>() += <span class="nm">10</span>;
+    *clone_b.<span class="fn">borrow_mut</span>() += <span class="nm">20</span>;
+    <span class="fn">println!</span>(<span class="st">"最终值: {}"</span>, shared_mut.<span class="fn">borrow</span>());  <span class="cm">// 30</span>
+
+    <span class="cm">// === 循环引用问题 ===</span>
+    <span class="kw">use</span> std::rc::<span class="tp">Weak</span>;
+
+    <span class="kw">struct</span> <span class="tp">Node</span> {
+        value: <span class="tp">i32</span>,
+        parent: <span class="tp">RefCell</span>&lt;<span class="tp">Weak</span>&lt;<span class="tp">Node</span>&gt;&gt;,  <span class="cm">// 使用 Weak 打破循环引用</span>
+        children: <span class="tp">RefCell</span>&lt;<span class="tp">Vec</span>&lt;<span class="tp">Rc</span>&lt;<span class="tp">Node</span>&gt;&gt;&gt;,
+    }
+
+    <span class="kw">let</span> leaf = <span class="tp">Rc</span>::<span class="fn">new</span>(<span class="tp">Node</span> {
+        value: <span class="nm">3</span>,
+        parent: <span class="tp">RefCell</span>::<span class="fn">new</span>(<span class="tp">Weak</span>::<span class="fn">new</span>()),
+        children: <span class="tp">RefCell</span>::<span class="fn">new</span>(<span class="kw">vec!</span>[]),
+    });
+
+    <span class="kw">let</span> branch = <span class="tp">Rc</span>::<span class="fn">new</span>(<span class="tp">Node</span> {
+        value: <span class="nm">5</span>,
+        parent: <span class="tp">RefCell</span>::<span class="fn">new</span>(<span class="tp">Weak</span>::<span class="fn">new</span>()),
+        children: <span class="tp">RefCell</span>::<span class::fn">new</span>(<span class="kw">vec!</span>[<span class="tp">Rc</span>::<span class="fn">clone</span>(&amp;leaf)]),
+    });
+
+    <span class="cm">// 设置 leaf 的 parent 为 branch 的 Weak 引用</span>
+    *leaf.parent.<span class="fn">borrow_mut</span>() = <span class="tp">Rc</span>::<span class="fn">downgrade</span>(&amp;branch);
+
+    <span class="cm">// 通过 Weak 访问数据</span>
+    <span class="kw">if let</span> <span class="tp">Some</span>(parent) = leaf.parent.<span class="fn">borrow</span>().<span class="fn">upgrade</span>() {
+        <span class="fn">println!</span>(<span class="st">"父节点值: {}"</span>, parent.value);
+    }
+}</code></pre>
+</div>
+
+<table>
+    <thead>
+        <tr><th>智能指针</th><th>线程安全</th><th>用途</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>Box&lt;T&gt;</code></td><td>是</td><td>堆分配，唯一所有权</td></tr>
+        <tr><td><code>Rc&lt;T&gt;</code></td><td>否</td><td>单线程共享所有权</td></tr>
+        <tr><td><code>Arc&lt;T&gt;</code></td><td>是</td><td>多线程共享所有权</td></tr>
+        <tr><td><code>RefCell&lt;T&gt;</code></td><td>否</td><td>内部可变性（单线程）</td></tr>
+        <tr><td><code>Mutex&lt;T&gt;</code></td><td>是</td><td>内部可变性（多线程）</td></tr>
+        <tr><td><code>RwLock&lt;T&gt;</code></td><td>是</td><td>读写锁（多线程）</td></tr>
+    </tbody>
+</table>
+
+<!-- ==================== 22. 并发编程 ==================== -->
+<h2 id="sec22">22. 并发编程</h2>
+
+<p>Rust 的并发编程是<strong>编译期安全</strong>的。通过 <code>Send</code> 和 <code>Sync</code> trait，编译器在编译期就能防止数据竞争。这是 Rust 并发编程最大的优势。</p>
+
+<div class="principle">
+    <div class="principle-title">Send 与 Sync Trait</div>
+    <p><strong><code>Send</code>：</strong>如果 <code>T: Send</code>，则 <code>T</code> 可以在线程间<strong>转移所有权</strong>。几乎所有类型都实现了 <code>Send</code>（<code>Rc&lt;T&gt;</code> 除外，因为引用计数不是原子操作）。</p>
+    <p><strong><code>Sync</code>：</strong>如果 <code>T: Sync</code>，则 <code>&amp;T</code> 可以在线程间<strong>共享</strong>。即多个线程可以同时读取同一个值。如果 <code>T</code> 的所有字段都是 <code>Sync</code>，则 <code>T</code> 自动是 <code>Sync</code>。</p>
+    <p><strong>核心约束：</strong>如果类型不是 <code>Send</code>，它不能被移动到另一个线程；如果类型不是 <code>Sync</code>，它的引用不能被多个线程共享。这个约束在编译期强制执行，从根源上消除了数据竞争。</p>
+    <p><strong>为什么 Rc 不是 Send/Sync：</strong><code>Rc&lt;T&gt;</code> 使用非原子的引用计数，多线程同时修改计数会导致竞态条件。使用 <code>Arc&lt;T&gt;</code>（原子引用计数）代替。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">use</span> std::thread;
+<span class="kw">use</span> std::time::<span class="tp">Duration</span>;
+<span class="kw">use</span> std::sync::{<span class="tp">Arc</span>, <span class="tp">Mutex</span>, <span class="tp">mpsc</span>};
+
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// === 创建线程 ===</span>
+    <span class="kw">let</span> handle = thread::<span class="fn">spawn</span>(|| {
+        <span class="kw">for</span> i <span class="kw">in</span> <span class="nm">1</span>..<span class="nm">=</span><span class="nm">5</span> {
+            <span class="fn">println!</span>(<span class="st">"子线程: {}"</span>, i);
+            thread::<span class="fn">sleep</span>(<span class="tp">Duration</span>::<span class="fn">from_millis</span>(<span class="nm">100</span>));
+        }
+    });
+
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="nm">1</span>..<span class="nm">=</span><span class="nm">3</span> {
+        <span class="fn">println!</span>(<span class="st">"主线程: {}"</span>, i);
+        thread::<span class="fn">sleep</span>(<span class="tp">Duration</span>::<span class="fn">from_millis</span>(<span class="nm">150</span>));
+    }
+
+    handle.<span class="fn">join</span>().<span class="fn">unwrap</span>();  <span class="cm">// 等待子线程结束</span>
+
+    <span class="cm">// === move 闭包：将数据移入线程 ===</span>
+    <span class="kw">let</span> name = <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"Rust"</span>);
+    <span class="kw">let</span> handle = thread::<span class="fn">spawn</span>(<span class="kw">move</span> || {
+        <span class="fn">println!</span>(<span class="st">"Hello from {}!"</span>, name);
+    });
+    <span class="cm">// println!("{}", name);  // 错误！name 已移动到线程</span>
+    handle.<span class="fn">join</span>().<span class="fn">unwrap</span>();
+
+    <span class="cm">// === 消息传递（channel） ===</span>
+    <span class="kw">let</span> (tx, rx) = <span class="tp">mpsc</span>::<span class="fn">channel</span>();
+
+    thread::<span class="fn">spawn</span>(<span class="kw">move</span> || {
+        <span class="kw">let</span> msgs = <span class="kw">vec!</span>[<span class="st">"hello"</span>, <span class="st">"from"</span>, <span class="st">"thread"</span>];
+        <span class="kw">for</span> msg <span class="kw">in</span> msgs {
+            tx.<span class="fn">send</span>(msg).<span class="fn">unwrap</span>();
+            thread::<span class="fn">sleep</span>(<span class="tp">Duration</span>::<span class="fn">from_millis</span>(<span class="nm">100</span>));
+        }
+    });
+
+    <span class="cm">// 接收消息</span>
+    <span class="kw">for</span> received <span class="kw">in</span> rx {
+        <span class="fn">println!</span>(<span class="st">"收到: {}"</span>, received);
+    }
+
+    <span class="cm">// === 共享状态（Mutex） ===</span>
+    <span class="kw">let</span> counter = <span class="tp">Arc</span>::<span class="fn">new</span>(<span class="tp">Mutex</span>::<span class="fn">new</span>(<span class="nm">0</span>));
+    <span class="kw">let mut</span> handles = <span class="kw">vec!</span>[];
+
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="nm">0</span>..<span class="nm">10</span> {
+        <span class="kw">let</span> counter = <span class="tp">Arc</span>::<span class="fn">clone</span>(&amp;counter);
+        <span class="kw">let</span> handle = thread::<span class="fn">spawn</span>(<span class="kw">move</span> || {
+            <span class="kw">let mut</span> num = counter.<span class="fn">lock</span>().<span class="fn">unwrap</span>();
+            *num += <span class="nm">1</span>;
+        });
+        handles.<span class="fn">push</span>(handle);
+    }
+
+    <span class="kw">for</span> handle <span class="kw">in</span> handles {
+        handle.<span class="fn">join</span>().<span class="fn">unwrap</span>();
+    }
+
+    <span class="fn">println!</span>(<span class="st">"最终结果: {}"</span>, *counter.<span class="fn">lock</span>().<span class="fn">unwrap</span>());  <span class="cm">// 10</span>
+
+    <span class="cm">// === Send 和 Sync 的验证 ===</span>
+    <span class="kw">fn</span> <span class="fn">assert_send</span>&lt;<span class="tp">T</span>: <span class="tp">Send</span>&gt;() {}
+    <span class="kw">fn</span> <span class="fn">assert_sync</span>&lt;<span class="tp">T</span>: <span class="tp">Sync</span>&gt;() {}
+
+    <span class="fn">assert_send</span>::&lt;<span class="tp">String</span>&gt;();   <span class="cm">// ✅ String: Send</span>
+    <span class="fn">assert_send</span>::&lt;<span class="tp">Arc</span>&lt;<span class="tp">Mutex</span>&lt;<span class="tp">i32</span>&gt;&gt;&gt;();  <span class="cm">// ✅ Arc&lt;Mutex&lt;i32&gt;&gt;: Send</span>
+    <span class="fn">assert_sync</span>::&lt;<span class="tp">String</span>&gt;();   <span class="cm">// ✅ String: Sync</span>
+    <span class="fn">assert_sync</span>::&lt;<span class="tp">Mutex</span>&lt;<span class="tp">i32</span>&gt;&gt;();  <span class="cm">// ✅ Mutex&lt;i32&gt;: Sync</span>
+
+    <span class="cm">// Rc 不是 Send（编译错误）</span>
+    <span class="cm">// assert_send::&lt;Rc&lt;i32&gt;&gt;();  // ❌ 编译错误</span>
+}</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">Pin 与 Unpin</div>
+    <p><strong>Pin&lt;P&gt;：</strong>保证被指向的值<strong>不会在内存中移动</strong>。用于自引用结构体和异步编程（async/await 生成的 Future 是自引用的）。</p>
+    <p><strong>Unpin：</strong>大多数类型都实现了 <code>Unpin</code>，表示它们可以安全地在内存中移动。没有实现 <code>Unpin</code> 的类型（如 async 生成的 Future）在被 <code>Pin</code> 之后不能安全移动。</p>
+    <p><strong>为什么需要 Pin：</strong>异步函数编译后生成的 Future 可能包含跨 <code>.await</code> 点的引用（自引用）。如果 Future 被移动，这些引用会变成悬垂引用。Pin 保证 Future 不会被移动，从而确保安全。</p>
+    <p><strong>实际使用：</strong>在 <code>async/await</code> 中，你通常不需要直接操作 <code>Pin</code>。运行时（如 tokio）会自动管理 Future 的 Pinning。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">use</span> std::pin::<span class="tp">Pin</span>;
+<span class="kw">use</span> std::marker::<span class="tp">PhantomPinned</span>;
+
+<span class="cm">// Pin 的基本概念</span>
+<span class="cm">// 假设我们有一个自引用结构体</span>
+<span class="kw">struct</span> <span class="tp">SelfReferential</span> {
+    data: <span class="tp">String</span>,
+    <span class="cm">// 指针指向 data（简化示例）</span>
+    ptr: *<span class="kw">const</span> <span class="tp">String</span>,
+    _pin: <span class="tp">PhantomPinned</span>,  <span class="cm">// 标记类型为 !Unpin</span>
+}
+
+<span class="kw">impl</span> <span class="tp">SelfReferential</span> {
+    <span class="kw">fn</span> <span class="fn">new</span>(data: <span class="tp">String</span>) -> <span class="tp">Pin</span>&lt;<span class="tp">Box</span>&lt;<span class="kw">Self</span>&gt;&gt; {
+        <span class="kw">let</span> boxed = <span class="tp">Box</span>::<span class="fn">pin</span>(<span class="tp">Self</span> {
+            data,
+            ptr: std::ptr::<span class="fn">null</span>(),
+            _pin: <span class="tp">PhantomPinned</span>,
+        });
+        <span class="cm">// 创建指向 data 的指针</span>
+        <span class="kw">let</span> self_ptr: *<span class="kw">const</span> <span class="tp">String</span> = &amp;boxed.data;
+        <span class="kw">let mut</span> this = <span class="tp">Box</span>::<span class="fn">get_mut</span>(unsafe { <span class="tp">Pin</span>::<span class="fn">as_mut</span>(&amp;<span class="kw">mut</span> {boxed}) });
+        this.ptr = self_ptr;
+        boxed
+    }
+
+    <span class="kw">fn</span> <span class="fn">get</span>(self: <span class="tp">Pin</span>&lt;&amp;<span class="kw">Self</span>&gt;) -> &amp;<span class="tp">str</span> {
+        <span class="kw">unsafe</span> { &amp;*<span class="kw">self</span>.ptr }
+    }
+}
+
+<span class="cm">// Pin 的核心用途：</span>
+<span class="cm">// 1. async/await：Future 被 Pin 住后不能移动</span>
+<span class="cm">// 2. 自引用结构体：保证指针有效性</span>
+<span class="cm">// 3. FFI：与 C 库交互时保证内存布局</span>
+
+<span class="cm">// 常见模式：Box::pin 创建 Pin</span>
+<span class="kw">fn</span> <span class="fn">example</span>() {
+    <span class="kw">let</span> pinned = <span class="tp">Box</span>::<span class="fn">pin</span>(<span class="nm">42</span>);
+    <span class="cm">// pinned 是 Pin&lt;Box&lt;i32&gt;&gt;</span>
+    <span class="cm">// i32 实现了 Unpin，所以可以安全移动</span>
+    <span class="fn">println!</span>(<span class="st">"pinned: {}"</span>, *pinned);
+}
+
+<span class="cm">// Unpin 是自动实现的，大多数类型都是 Unpin</span>
+<span class="cm">// 只有少数类型（如 async 生成的 Future）不是 Unpin</span>
+<span class="kw">fn</span> <span class="fn">check_unpin</span>&lt;<span class="tp">T</span>: <span class="tp">Unpin</span>&gt;() {}
+<span class="fn">check_unpin</span>::&lt;<span class="tp">i32</span>&gt;();       <span class="cm">// ✅</span>
+<span class="fn">check_unpin</span>::&lt;<span class="tp">String</span>&gt;();    <span class="cm">// ✅</span></code></pre>
+</div>
+
+<!-- ==================== 23. unsafe ==================== -->
+<h2 id="sec23">23. unsafe</h2>
+
+<p>Rust 的 <code>unsafe</code> 关键字允许你绕过编译器的某些安全检查。这不是说 unsafe 代码不安全，而是<strong>将安全责任从编译器转移到开发者</strong>。unsafe 代码应该尽量封装在安全的抽象中。</p>
+
+<div class="principle">
+    <div class="principle-title">unsafe 能做什么</div>
+    <p><strong>解引用裸指针：</strong>从引用创建裸指针是安全的，但解引用裸指针需要 unsafe。</p>
+    <p><strong>调用 unsafe 函数：</strong>某些函数被标记为 unsafe，因为它们有额外的约定需要遵守。</p>
+    <p><strong>访问/修改可变静态变量：</strong>全局可变状态需要 unsafe。</p>
+    <p><strong>实现 unsafe trait：</strong>某些 trait（如 Send、Sync）需要编译器保证，实现者需要证明安全性。</p>
+    <p><strong>访问 union 的字段：</strong>union 的字段访问是 unsafe 的。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// === 裸指针 ===</span>
+    <span class="kw">let mut</span> num = <span class="nm">5</span>;
+
+    <span class="cm">// 创建裸指针（安全）</span>
+    <span class="kw">let</span> r1 = &amp;num <span class="kw">as</span> *<span class="kw">const</span> <span class="tp">i32</span>;    <span class="cm">// 不可变裸指针</span>
+    <span class="kw">let</span> r2 = &amp;<span class="kw">mut</span> num <span class="kw">as</span> *<span class="kw">mut</span> <span class="tp">i32</span>;  <span class="cm">// 可变裸指针</span>
+
+    <span class="cm">// 可以同时有多个可变裸指针（绕过了借用规则）</span>
+    <span class="kw">let</span> r3 = &amp;num <span class="kw">as</span> *<span class="kw">const</span> <span class="tp">i32</span>;
+    <span class="kw">let</span> r4 = &amp;<span class="kw">mut</span> num <span class="kw">as</span> *<span class="kw">mut</span> <span class="tp">i32</span>;
+
+    <span class="cm">// 解引用裸指针需要 unsafe</span>
+    <span class="kw">unsafe</span> {
+        <span class="fn">println!</span>(<span class="st">"r1 = {}"</span>, *r1);
+        <span class="fn">println!</span>(<span class="st">"r2 = {}"</span>, *r2);
+        *r2 = <span class="nm">10</span>;
+        <span class="fn">println!</span>(<span class="st">"修改后 num = {}"</span>, num);
+    }
+
+    <span class="cm">// === 调用 unsafe 函数 ===</span>
+    <span class="kw">unsafe</span> {
+        <span class="fn">dangerous_function</span>();
+    }
+
+    <span class="cm">// === 可变静态变量 ===</span>
+    <span class="kw">static mut</span> COUNTER: <span class="tp">u32</span> = <span class="nm">0</span>;
+
+    <span class="kw">unsafe</span> {
+        COUNTER += <span class="nm">1</span>;
+        <span class="fn">println!</span>(<span class="st">"COUNTER = {}"</span>, COUNTER);
+    }
+
+    <span class="cm">// === 实现 unsafe trait ===</span>
+    <span class="kw">unsafe trait</span> <span class="tp">Foo</span> {
+        <span class="kw">fn</span> <span class="fn">dangerous</span>(&amp;<span class="kw">self</span>);
+    }
+
+    <span class="kw">unsafe impl</span> <span class="tp">Foo</span> <span class="kw">for</span> <span class="tp">i32</span> {
+        <span class="kw">fn</span> <span class="fn">dangerous</span>(&amp;<span class="kw">self</span>) {
+            <span class="fn">println!</span>(<span class="st">"i32: {}"</span>, <span class="kw">self</span>);
+        }
+    }
+
+    <span class="cm">// === 封装 unsafe 为安全抽象 ===</span>
+    <span class="kw">fn</span> <span class="fn">split_at_mut</span>(slice: &amp;<span class="kw">mut</span> [<span class="tp">i32</span>], mid: <span class="tp">usize</span>) -> (&amp;<span class="kw">mut</span> [<span class="tp">i32</span>], &amp;<span class="kw">mut</span> [<span class="tp">i32</span>]) {
+        <span class="kw">let</span> len = slice.<span class="fn">len</span>();
+        <span class="kw">let</span> ptr = slice.<span class="fn">as_mut_ptr</span>();
+
+        <span class="kw">assert!</span>(mid <= len);
+
+        <span class="kw">unsafe</span> {
+            (
+                std::slice::<span class="fn">from_raw_parts_mut</span>(ptr, mid),
+                std::slice::<span class="fn">from_raw_parts_mut</span>(ptr.<span class="fn">add</span>(mid), len - mid),
+            )
+        }
+    }
+    <span class="cm">// 调用者不需要知道内部使用了 unsafe</span>
+}
+
+<span class="kw">unsafe fn</span> <span class="fn">dangerous_function</span>() {
+    <span class="fn">println!</span>(<span class="st">"这是 unsafe 函数"</span>);
+}
+
+<span class="cm">// extern：调用外部 C 函数</span>
+<span class="kw">extern</span> <span class="st">"C"</span> {
+    <span class="kw">fn</span> <span class="fn">abs</span>(input: <span class="tp">i32</span>) -> <span class="tp">i32</span>;
+}
+
+<span class="cm">// 调用 C 函数需要 unsafe</span>
+<span class="cm">// unsafe { println!("{}", abs(-5)); }</span></code></pre>
+</div>
+
+<div class="danger">
+    <strong>unsafe 不是"关闭所有检查"：</strong>unsafe 块只允许上面列出的 5 种额外操作。借用检查器、类型检查器等<strong>仍然生效</strong>。unsafe 不会绕过 Rust 的类型系统。
+</div>
+
+<!-- ==================== 24. Macros ==================== -->
+<h2 id="sec24">24. Macros</h2>
+
+<p>宏（Macro）是一种元编程工具，允许你在编译时生成代码。Rust 有两种宏：<strong>声明宏</strong>（macro_rules!）和<strong>过程宏</strong>（procedural macro）。声明宏是最常用的。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="cm">// === 声明宏（macro_rules!） ===</span>
+<span class="cm">// 使用模式匹配来匹配代码结构</span>
+
+<span class="cm">// 基本宏</span>
+<span class="kw">macro_rules!</span> <span class="fn">say_hello</span> {
+    () => {
+        <span class="fn">println!</span>(<span class="st">"Hello!"</span>);
+    };
+}
+
+<span class="cm">// 带参数的宏</span>
+<span class="kw">macro_rules!</span> <span class="fn">greet</span> {
+    ($name:expr) => {
+        <span class="fn">println!</span>(<span class="st">"Hello, {}!"</span>, $name);
+    };
+    ($name:expr, $times:expr) => {
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="nm">0</span>..$times {
+            <span class="fn">println!</span>(<span class="st">"Hello, {}!"</span>, $name);
+        }
+    };
+}
+
+<span class="cm">// 可变参数宏</span>
+<span class="kw">macro_rules!</span> <span class="fn">vec_of</span> {
+    ( $( $x:expr ),* ) => {
+        {
+            <span class="kw">let mut</span> temp_vec = <span class="tp">Vec</span>::<span class="fn">new</span>();
+            $(
+                temp_vec.<span class="fn">push</span>($x);
+            )*
+            temp_vec
+        }
+    };
+}
+
+<span class="cm">// 递归宏</span>
+<span class="kw">macro_rules!</span> <span class="fn">calculate</span> {
+    // 基本情况
+    ($e:expr) => {
+        <span class="fn">println!</span>(<span class="st">"{} = {}"</span>, stringify!($e), $e);
+    };
+    // 递归情况
+    ($e:expr, $( $rest:expr ),+) => {
+        <span class="fn">println!</span>(<span class="st">"{} = {}"</span>, stringify!($e), $e);
+        <span class="fn">calculate!</span>($( $rest ),+);
+    };
+}
+
+<span class="cm">// derive 宏（过程宏）</span>
+<span class="cm">// #[derive(Debug, Clone, PartialEq)]</span>
+<span class="cm">// 自动为结构体实现指定的 trait</span>
+
+<span class="cm">// 属性宏</span>
+<span class="cm">// #[route(GET, "/")]</span>
+<span class="cm">// 为函数添加自定义属性</span>
+
+<span class="cm">// 函数式过程宏</span>
+<span class="cm">// let sql = sql!(SELECT * FROM users WHERE id = 1);</span>
+<span class="cm">// 像函数调用一样，但在编译时生成代码</span>
+
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 使用宏</span>
+    <span class="fn">say_hello!</span>();          <span class="cm">// Hello!</span>
+    <span class="fn">greet!</span>(<span class="st">"Rust"</span>);       <span class="cm">// Hello, Rust!</span>
+    <span class="fn">greet!</span>(<span class="st">"Rust"</span>, <span class="nm">3</span>);    <span class="cm">// 打印3次</span>
+
+    <span class="kw">let</span> v = <span class="fn">vec_of!</span>[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>];
+    <span class="fn">println!</span>(<span class="st">"{:?}"</span>, v);
+
+    <span class="fn">calculate!</span>(<span class="nm">1</span> + <span class="nm">2</span>, <span class="nm">3</span> * <span class="nm">4</span>, <span class="nm">5</span> - <span class="nm">1</span>);
+    <span class="cm">// 1 + 2 = 3</span>
+    <span class="cm">// 3 * 4 = 12</span>
+    <span class="cm">// 5 - 1 = 4</span>
+
+    <span class="cm">// 常用内置宏</span>
+    <span class="fn">println!</span>(<span class="st">"格式化输出"</span>);
+    <span class="fn">eprintln!</span>(<span class="st">"错误输出到 stderr"</span>);
+    <span class="fn">dbg!</span>(&amp;v);              <span class="cm">// 调试输出（文件名、行号、表达式、值）</span>
+    <span class="fn">todo!</span>();               <span class="cm">// 标记未完成代码</span>
+    <span class="fn">unimplemented!</span>();     <span class="cm">// 标记未实现</span>
+    <span class="fn">unreachable!</span>();       <span class="cm">// 标记不可达代码</span>
+    <span class="fn">panic!</span>(<span class="st">"显式 panic"</span>);
+
+    <span class="cm">// vec! 宏</span>
+    <span class="kw">let</span> v = <span class="kw">vec!</span>[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];
+    <span class="kw">let</span> v = <span class="kw">vec!</span>[<span class="nm">0</span>; <span class="nm">5</span>];  <span class="cm">// [0, 0, 0, 0, 0]</span>
+
+    <span class="cm">// format! 宏</span>
+    <span class="kw">let</span> s = <span class="fn">format!</span>(<span class="st">"name={}, age={}"</span>, <span class="st">"Alice"</span>, <span class="nm">30</span>);
+}</code></pre>
+</div>
+
+<!-- ==================== 25. 内存模型与最佳实践 ==================== -->
+<h2 id="sec25">25. 内存模型与最佳实践</h2>
+
+<p>理解 Rust 的内存模型和零成本抽象的实现原理，有助于写出更高效的代码。本节总结 Rust 的内存布局、性能优化技巧和最佳实践。</p>
+
+<h3>25.1 零成本抽象</h3>
+
+<div class="principle">
+    <div class="principle-title">零成本抽象（Zero-Cost Abstractions）</div>
+    <p><strong>什么是零成本抽象：</strong>你不用的特性，你不必为它付费。你使用的特性，你手动编写也不可能比它更高效。</p>
+    <p><strong>实现机制：</strong>泛型的单态化（monomorphization）——编译器为每种具体类型生成专门的代码。迭代器的链式调用被内联和优化，等价于手写循环。</p>
+    <p><strong>示例：</strong><code>vec.iter().map(|x| x * 2).sum()</code> 编译后的性能与手写 <code>for</code> 循环完全相同。编译器会将迭代器适配器内联、融合、消除边界检查。</p>
+    <p><strong>验证方式：</strong>使用 <code>cargo rustc -- --emit=asm</code> 查看生成的汇编代码，确认没有额外开销。</p>
+</div>
+
+<h3>25.2 内存布局</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">use</span> std::mem;
+
+<span class="fn">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 查看类型的大小（字节）</span>
+    <span class="fn">println!</span>(<span class="st">"i32: {} bytes"</span>, mem::<span class="fn">size_of</span>::&lt;<span class="tp">i32</span>&gt;());       <span class="cm">// 4</span>
+    <span class="fn">println!</span>(<span class="st">"f64: {} bytes"</span>, mem::<span class="fn">size_of</span>::&lt;<span class="tp">f64</span>&gt;());       <span class="cm">// 8</span>
+    <span class="fn">println!</span>(<span class="st">"bool: {} bytes"</span>, mem::<span class="fn">size_of</span>::&lt;<span class="tp">bool</span>&gt;());     <span class="cm">// 1</span>
+    <span class="fn">println!</span>(<span class="st">"char: {} bytes"</span>, mem::<span class="fn">size_of</span>::&lt;<span class="tp">char</span>&gt;());     <span class="cm">// 4</span>
+    <span class="fn">println!</span>(<span class="st">"&str: {} bytes"</span>, mem::<span class="fn">size_of</span>::&lt;&amp;<span class="tp">str</span>&gt;());     <span class="cm">// 16（指针+长度）</span>
+    <span class="fn">println!</span>(<span class="st">"String: {} bytes"</span>, mem::<span class="fn">size_of</span>::&lt;<span class="tp">String</span>&gt;()); <span class="cm">// 24</span>
+    <span class="fn">println!</span>(<span class="st">"Vec&lt;i32&gt;: {} bytes"</span>, mem::<span class::fn">size_of</span>::&lt;<span class="tp">Vec</span>&lt;<span class="tp">i32</span>&gt;&gt;()); <span class="cm">// 24</span>
+    <span class="fn">println!</span>(<span class="st">"Box&lt;i32&gt;: {} bytes"</span>, mem::<span class="fn">size_of</span>::&lt;<span class="tp">Box</span>&lt;<span class="tp">i32</span>&gt;&gt;()); <span class="cm">// 8</span>
+
+    <span class="cm">// 对齐</span>
+    <span class="fn">println!</span>(<span class="st">"i32 对齐: {}"</span>, mem::<span class="fn">align_of</span>::&lt;<span class="tp">i32</span>&gt;());  <span class="cm">// 4</span>
+
+    <span class="cm">// 枚举的大小（最大变体 + 判别值）</span>
+    <span class="kw">enum</span> <span class="tp">Shape</span> {
+        <span class="tp">Circle</span>(<span class="tp">f64</span>),                          <span class="cm">// 8 bytes</span>
+        <span class="tp">Rectangle</span> { w: <span class="tp">f64</span>, h: <span class="tp">f64</span> },      <span class="cm">// 16 bytes</span>
+        <span class="tp">Point</span>,                                <span class="cm">// 0 bytes</span>
+    }
+    <span class="fn">println!</span>(<span class="st">"Shape: {} bytes"</span>, mem::<span class="fn">size_of</span>::&lt;<span class="tp">Shape</span>&gt;());  <span class="cm">// 24（对齐到最大）</span>
+
+    <span class="cm">// Option&lt;&amp;T&gt; 优化（null 指针优化）</span>
+    <span class="fn">println!</span>(<span class="st">"&amp;T: {} bytes"</span>, mem::<span class="fn">size_of</span>::&lt;&amp;<span class="tp">i32</span>&gt;());       <span class="cm">// 8</span>
+    <span class="fn">println!</span>(<span class="st">"Option&lt;&amp;T&gt;: {} bytes"</span>, mem::<span class="fn">size_of</span>::&lt;<span class="tp">Option</span>&lt;&amp;<span class="tp">i32</span>&gt;&gt;()); <span class="cm">// 8（一样大！）</span>
+}</code></pre>
+</div>
+
+<h3>25.3 性能优化技巧</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// 1. 使用迭代器而不是手动循环</span>
+    <span class="kw">let</span> numbers: <span class="tp">Vec</span>&lt;<span class="tp">i32</span>&gt; = (<span class="nm">0</span>..<span class="nm">1000</span>).<span class="fn">collect</span>();
+    <span class="kw">let</span> sum: <span class="tp">i32</span> = numbers.<span class="fn">iter</span>().<span class="fn">sum</span>();  <span class="cm">// 零成本，与手写循环一样快</span>
+
+    <span class="cm">// 2. 使用 &amp;str 而不是 String（如果不需要拥有）</span>
+    <span class="kw">fn</span> <span class="fn">process</span>(name: &amp;<span class="tp">str</span>) {  <span class="cm">// 好：不获取所有权</span>
+        <span class="fn">println!</span>(<span class="st">"{}"</span>, name);
+    }
+    <span class="cm">// fn process(name: String) { ... }  // 差：获取所有权</span>
+
+    <span class="cm">// 3. 使用 Cow&lt;str&gt; 避免不必要的分配</span>
+    <span class="kw">use</span> std::borrow::<span class="tp">Cow</span>;
+
+    <span class="kw">fn</span> <span class="fn">capitalize</span>(s: &amp;<span class="tp">str</span>) -> <span class="tp">Cow</span>&lt;<span class="tp">str</span>&gt; {
+        <span class="kw">if</span> s.<span class="fn">chars</span>().<span class="fn">next</span>().<span class="fn">map_or</span>(<span class="kw">false</span>, |c| c.<span class="fn">is_uppercase</span>()) {
+            <span class="tp">Cow</span>::<span class="fn">Borrowed</span>(s)  <span class="cm">// 不需要修改，直接借用</span>
+        } <span class="kw">else</span> {
+            <span class="kw">let mut</span> s = s.<span class="fn">to_string</span>();
+            <span class="kw">if let</span> <span class="tp">Some</span>(first) = s.<span class="fn">chars</span>().<span class="fn">next</span>() {
+                <span class="kw">let</span> upper = first.<span class="fn">to_uppercase</span>().<span class="fn">to_string</span>();
+                s.<span class="fn">replace_range</span>(..<span class="nm">1</span>, &amp;upper);
+            }
+            <span class="tp">Cow</span>::<span class="fn">Owned</span>(s)  <span class="cm">// 需要修改，分配新字符串</span>
+        }
+    }
+
+    <span class="cm">// 4. 使用 with_capacity 预分配</span>
+    <span class="kw">let mut</span> v = <span class="tp">Vec</span>::<span class="fn">with_capacity</span>(<span class="nm">1000</span>);
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="nm">0</span>..<span class="nm">1000</span> {
+        v.<span class="fn">push</span>(i);
+    }
+
+    <span class="cm">// 5. 使用 #[inline] 提示编译器</span>
+    <span class="cm">// （通常编译器自动决定，只在确认有帮助时使用）</span>
+
+    <span class="cm">// 6. 避免不必要的克隆</span>
+    <span class="kw">let</span> data = <span class="tp">vec!</span>[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];
+    <span class="cm">// 不好：let cloned = data.clone();</span>
+    <span class="cm">// 好：如果只需要读取，使用 &amp;data</span>
+    <span class="fn">process_slice</span>(&amp;data);
+
+    <span class="cm">// 7. 使用适合的集合类型</span>
+    <span class="cm">// Vec：连续存储，快速索引</span>
+    <span class="cm">// VecDeque：两端快速操作</span>
+    <span class="cm">// HashMap：快速查找</span>
+    <span class="cm">// BTreeMap：有序存储</span>
+    <span class="cm">// HashSet：快速成员检查</span>
+
+    <span class="cm">// 8. 使用 Rayon 进行并行计算</span>
+    <span class="cm">// use rayon::prelude::*;</span>
+    <span class="cm">// let sum: i32 = (0..1000000).into_par_iter().sum();</span>
+}
+
+<span class="kw">fn</span> <span class="fn">process_slice</span>(data: &amp;[<span class="tp">i32</span>]) {
+    <span class="fn">println!</span>(<span class="st">"数据长度: {}"</span>, data.<span class="fn">len</span>());
+}</code></pre>
+</div>
+
+<h3>25.4 最佳实践总结</h3>
+
+<div class="principle">
+    <div class="principle-title">Rust 最佳实践</div>
+    <p><strong>优先使用不可变性：</strong>默认 <code>let</code>，只在需要修改时使用 <code>let mut</code>。减少可变状态可以减少 bug。</p>
+    <p><strong>善用类型系统：</strong>使用 <code>enum</code> 表示有限状态，使用 <code>Option</code>/<code>Result</code> 处理空值和错误，使用 <code>newtype</code> 模式增加类型安全。</p>
+    <p><strong>封装 unsafe：</strong>将 unsafe 代码封装在安全的抽象中，暴露安全的 API。确保 unsafe 块尽可能小。</p>
+    <p><strong>使用 clippy：</strong><code>cargo clippy</code> 提供大量有用的 lint 和改进建议。</p>
+    <p><strong>写文档：</strong>使用 <code>///</code> 文档注释和 <code>cargo doc</code> 生成高质量文档。</p>
+    <p><strong>性能优先时使用迭代器：</strong>迭代器是零成本抽象，通常比手动循环更快且更安全。</p>
+    <p><strong>避免过度泛化：</strong>只在确实需要时使用泛型和 trait bound。过早抽象增加编译时间和代码复杂度。</p>
+    <p><strong>错误处理：</strong>使用 <code>?</code> 操作符传播错误，避免 <code>unwrap()</code>。定义自定义错误类型用于库代码。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">rust</span>
+    </div>
+    <pre><code><span class="cm">// 综合示例：一个简单的 Web 服务器配置</span>
+<span class="kw">use</span> std::collections::<span class="tp">HashMap</span>;
+<span class="kw">use</span> std::fmt;
+
+<span class="cm">// 使用 newtype 模式增加类型安全</span>
+<span class="kw">struct</span> <span class="tp">Port</span>(<span class="tp">u16</span>);
+
+<span class="kw">impl</span> <span class="tp">Port</span> {
+    <span class="kw">fn</span> <span class="fn">new</span>(port: <span class="tp">u16</span>) -> <span class="tp">Result</span>&lt;<span class="tp">Port</span>, <span class="tp">String</span>&gt; {
+        <span class="kw">if</span> port > <span class="nm">0</span> && port < <span class="nm">65535</span> {
+            <span class="tp">Ok</span>(<span class="tp">Port</span>(port))
+        } <span class="kw">else</span> {
+            <span class="tp">Err</span>(<span class="fn">format!</span>(<span class="st">"无效端口: {}"</span>, port))
+        }
+    }
+}
+
+<span class="kw">impl</span> fmt::<span class="tp">Display</span> <span class="kw">for</span> <span class="tp">Port</span> {
+    <span class="kw">fn</span> <span class="fn">fmt</span>(&amp;<span class="kw">self</span>, f: &amp;<span class="kw">mut</span> fmt::<span class="tp">Formatter</span>&lt;<span class="kw">'_</span>&gt;) -> fmt::<span class="tp">Result</span> {
+        <span class="fn">write!</span>(f, <span class="st">"{}"</span>, <span class="kw">self</span>.<span class="nm">0</span>)
+    }
+}
+
+<span class="cm">// 使用 enum 表示有限状态</span>
+<span class="kw">enum</span> <span class="tp">ServerState</span> {
+    <span class="tp">Stopped</span>,
+    <span class="tp">Starting</span>,
+    <span class="tp">Running</span>,
+    <span class="tp">Stopping</span>,
+}
+
+<span class="cm">// 使用 Builder 模式</span>
+<span class="kw">struct</span> <span class="tp">ServerConfig</span> {
+    host: <span class="tp">String</span>,
+    port: <span class="tp">Port</span>,
+    max_connections: <span class="tp">u32</span>,
+    env: <span class="tp">HashMap</span>&lt;<span class="tp">String</span>, <span class="tp">String</span>&gt;,
+}
+
+<span class="kw">struct</span> <span class="tp">ServerConfigBuilder</span> {
+    host: <span class="tp">String</span>,
+    port: <span class="tp">u16</span>,
+    max_connections: <span class="tp">u32</span>,
+    env: <span class="tp">HashMap</span>&lt;<span class="tp">String</span>, <span class="tp">String</span>&gt;,
+}
+
+<span class="kw">impl</span> <span class="tp">ServerConfigBuilder</span> {
+    <span class="kw">fn</span> <span class="fn">new</span>() -> <span class="tp">Self</span> {
+        <span class="tp">ServerConfigBuilder</span> {
+            host: <span class="tp">String</span>::<span class="fn">from</span>(<span class="st">"127.0.0.1"</span>),
+            port: <span class="nm">8080</span>,
+            max_connections: <span class="nm">100</span>,
+            env: <span class="tp">HashMap</span>::<span class="fn">new</span>(),
+        }
+    }
+
+    <span class="kw">fn</span> <span class="fn">host</span>(<span class="kw">mut self</span>, host: &amp;<span class="tp">str</span>) -> <span class="tp">Self</span> {
+        <span class="kw">self</span>.host = host.<span class="fn">to_string</span>();
+        <span class="kw">self</span>
+    }
+
+    <span class="kw">fn</span> <span class="fn">port</span>(<span class="kw">mut self</span>, port: <span class="tp">u16</span>) -> <span class="tp">Self</span> {
+        <span class="kw">self</span>.port = port;
+        <span class="kw">self</span>
+    }
+
+    <span class="kw">fn</span> <span class="fn">max_connections</span>(<span class="kw">mut self</span>, max: <span class="tp">u32</span>) -> <span class="tp">Self</span> {
+        <span class="kw">self</span>.max_connections = max;
+        <span class="kw">self</span>
+    }
+
+    <span class="kw">fn</span> <span class="fn">env</span>(<span class="kw">mut self</span>, key: &amp;<span class="tp">str</span>, value: &amp;<span class="tp">str</span>) -> <span class="tp">Self</span> {
+        <span class="kw">self</span>.env.<span class="fn">insert</span>(key.<span class="fn">to_string</span>(), value.<span class="fn">to_string</span>());
+        <span class="kw">self</span>
+    }
+
+    <span class="kw">fn</span> <span class="fn">build</span>(<span class="kw">self</span>) -> <span class="tp">Result</span>&lt;<span class="tp">ServerConfig</span>, <span class="tp">String</span>&gt; {
+        <span class="tp">Ok</span>(<span class="tp">ServerConfig</span> {
+            host: <span class="kw">self</span>.host,
+            port: <span class="tp">Port</span>::<span class="fn">new</span>(<span class="kw">self</span>.port)?,
+            max_connections: <span class="kw">self</span>.max_connections,
+            env: <span class="kw">self</span>.env,
+        })
+    }
+}
+
+<span class="kw">impl</span> fmt::<span class="tp">Display</span> <span class="kw">for</span> <span class="tp">ServerConfig</span> {
+    <span class="kw">fn</span> <span class="fn">fmt</span>(&amp;<span class="kw">self</span>, f: &amp;<span class="kw">mut</span> fmt::<span class="tp">Formatter</span>&lt;<span class="kw">'_</span>&gt;) -> fmt::<span class="tp">Result</span> {
+        <span class="fn">write!</span>(f, <span class="st">"Server({}:{}, max_conn={}, env_count={})"</span>,
+            <span class="kw">self</span>.host, <span class="kw">self</span>.port, <span class="kw">self</span>.max_connections, <span class="kw">self</span>.env.<span class="fn">len</span>())
+    }
+}
+
+<span class="kw">fn</span> <span class="fn">main</span>() -> <span class="tp">Result</span>&lt;(), <span class="tp">String</span>&gt; {
+    <span class="cm">// 使用 Builder 模式构建配置</span>
+    <span class="kw">let</span> config = <span class="tp">ServerConfigBuilder</span>::<span class="fn">new</span>()
+        .<span class="fn">host</span>(<span class="st">"0.0.0.0"</span>)
+        .<span class="fn">port</span>(<span class="nm">3000</span>)
+        .<span class="fn">max_connections</span>(<span class="nm">200</span>)
+        .<span class="fn">env</span>(<span class="st">"RUST_LOG"</span>, <span class="st">"debug"</span>)
+        .<span class="fn">build</span>()?;
+
+    <span class="fn">println!</span>(<span class="st">"配置: {}"</span>, config);
+
+    <span class="cm">// 使用迭代器处理数据</span>
+    <span class="kw">let</span> ports: <span class="tp">Vec</span>&lt;<span class="tp">u16</span>&gt; = <span class="kw">vec!</span>[<span class="nm">80</span>, <span class="nm">443</span>, <span class="nm">8080</span>, <span class="nm">3000</span>];
+    <span class="kw">let</span> valid_ports: <span class="tp">Vec</span>&lt;<span class="tp">u16</span>&gt; = ports
+        .<span class="fn">into_iter</span>()
+        .<span class="fn">filter</span>(|&amp;p| p > <span class="nm">0</span> && p < <span class="nm">65535</span>)
+        .<span class="fn">collect</span>();
+
+    <span class="fn">println!</span>(<span class="st">"有效端口: {:?}"</span>, valid_ports);
+
+    <span class="cm">// 使用闭包和高阶函数</span>
+    <span class="kw">let</span> descriptions: <span class="tp">Vec</span>&lt;<span class="tp">String</span>&gt; = valid_ports
+        .<span class="fn">iter</span>()
+        .<span class="fn">map</span>(|&amp;p| <span class="fn">format!</span>(<span class="st">"端口 {} 可用"</span>, p))
+        .<span class="fn">collect</span>();
+
+    <span class="kw">for</span> desc <span class="kw">in</span> &amp;descriptions {
+        <span class="fn">println!</span>(<span class="st">"  {}"</span>, desc);
+    }
+
+    <span class="tp">Ok</span>(())
+}</code></pre>
+</div>
+
+<div class="tip">
+    <strong>学习路径建议：</strong>掌握所有权和借用 → 理解生命周期 → 学习 trait 和泛型 → 使用标准库 → 实践项目（CLI 工具、Web 服务、系统编程）→ 探索异步编程（async/await、tokio）→ 贡献开源项目。
+</div>
+
+<p style="margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 13px; text-align: center;">
+    Rust 编程教程 · ZoeBasicCode · 持续更新中
+</p>
+
+</main>
+
+<!-- Sidebar active state script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.sidebar-link');
+    const sections = [];
+
+    links.forEach(link => {
+        const id = link.getAttribute('href').slice(1);
+        const section = document.getElementById(id);
+        if (section) sections.push({ link, section });
+    });
+
+    function updateActive() {
+        let current = sections[0];
+        for (const s of sections) {
+            if (s.section.getBoundingClientRect().top <= 120) current = s;
+        }
+        links.forEach(l => l.classList.remove('active'));
+        if (current) current.link.classList.add('active');
+    }
+
+    window.addEventListener('scroll', updateActive);
+    updateActive();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZoeBasicCode - 编程语言教程</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        body { overflow: auto; }
+        .hero {
+            text-align: center;
+            padding: 80px 0 60px;
+        }
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .hero p {
+            font-size: 20px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        .lang-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 0 40px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .lang-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+        .lang-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.15);
+        }
+        .lang-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+        .lang-card:hover::before {
+            opacity: 1;
+        }
+        .lang-icon {
+            font-size: 36px;
+            margin-bottom: 14px;
+            display: block;
+        }
+        .lang-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .lang-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .lang-tag {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>ZoeBasicCode</h1>
+    <p>系统化编程语言教程，从零基础到进阶，深入原理讲解，配有丰富代码示例</p>
+</div>
+
+<div class="lang-grid">
+    <a class="lang-card" href="python/index.html">
+        <span class="lang-icon">🐍</span>
+        <h3>Python 教程</h3>
+        <p>简洁优雅的脚本语言，广泛应用于数据分析、AI、Web 开发和自动化</p>
+        <span class="lang-tag">热门</span>
+    </a>
+    <a class="lang-card" href="javascript/index.html">
+        <span class="lang-icon">⚡</span>
+        <h3>JavaScript 教程</h3>
+        <p>Web 前端的核心语言，也广泛用于 Node.js 服务端开发</p>
+        <span class="lang-tag">必备</span>
+    </a>
+    <a class="lang-card" href="typescript/index.html">
+        <span class="lang-icon">🔷</span>
+        <h3>TypeScript 教程</h3>
+        <p>JavaScript 的超集，添加静态类型系统，提升大型项目可维护性</p>
+        <span class="lang-tag">进阶</span>
+    </a>
+    <a class="lang-card" href="java/index.html">
+        <span class="lang-icon">☕</span>
+        <h3>Java 教程</h3>
+        <p>企业级应用开发的主力语言，跨平台、面向对象、生态成熟</p>
+        <span class="lang-tag">经典</span>
+    </a>
+    <a class="lang-card" href="c/index.html">
+        <span class="lang-icon">⚙️</span>
+        <h3>C 语言教程</h3>
+        <p>系统编程的基石，理解内存管理、指针和底层运行机制</p>
+        <span class="lang-tag">基础</span>
+    </a>
+    <a class="lang-card" href="cpp/index.html">
+        <span class="lang-icon">🔩</span>
+        <h3>C++ 教程</h3>
+        <p>C 语言的扩展，支持面向对象和泛型编程，用于系统/游戏/高性能开发</p>
+        <span class="lang-tag">进阶</span>
+    </a>
+    <a class="lang-card" href="csharp/index.html">
+        <span class="lang-icon">🟣</span>
+        <h3>C# 教程</h3>
+        <p>微软生态的核心语言，用于 .NET 开发、Unity 游戏开发和企业应用</p>
+        <span class="lang-tag">微软</span>
+    </a>
+    <a class="lang-card" href="go/index.html">
+        <span class="lang-icon">🐹</span>
+        <h3>Go 教程</h3>
+        <p>Google 出品的现代语言，简洁高效，天生支持并发，适合云原生开发</p>
+        <span class="lang-tag">云原生</span>
+    </a>
+    <a class="lang-card" href="rust/index.html">
+        <span class="lang-icon">🦀</span>
+        <h3>Rust 教程</h3>
+        <p>安全与性能兼得的系统语言，所有权机制杜绝内存安全问题</p>
+        <span class="lang-tag">新兴</span>
+    </a>
+    <a class="lang-card" href="kotlin/index.html">
+        <span class="lang-icon">🟪</span>
+        <h3>Kotlin 教程</h3>
+        <p>Android 官方开发语言，兼容 Java，语法更现代简洁</p>
+        <span class="lang-tag">Android</span>
+    </a>
+    <a class="lang-card" href="shell/index.html">
+        <span class="lang-icon">🖥️</span>
+        <h3>Shell 教程</h3>
+        <p>Linux/Unix 系统脚本语言，运维和自动化的必备技能</p>
+        <span class="lang-tag">运维</span>
+    </a>
+    <a class="lang-card" href="sql/index.html">
+        <span class="lang-icon">🗃️</span>
+        <h3>SQL 教程</h3>
+        <p>关系型数据库查询语言，数据分析和后端开发的基础</p>
+        <span class="lang-tag">数据库</span>
+    </a>
+    <a class="lang-card" href="lua/index.html">
+        <span class="lang-icon">🌙</span>
+        <h3>Lua 教程</h3>
+        <p>轻量级嵌入式脚本语言，广泛用于游戏开发和配置</p>
+        <span class="lang-tag">嵌入式</span>
+    </a>
+    <a class="lang-card" href="r/index.html">
+        <span class="lang-icon">📊</span>
+        <h3>R 教程</h3>
+        <p>统计计算和数据可视化专用语言，学术和数据分析领域的利器</p>
+        <span class="lang-tag">数据</span>
+    </a>
+    <a class="lang-card" href="css/index.html">
+        <span class="lang-icon">🎨</span>
+        <h3>CSS 教程</h3>
+        <p>网页样式语言，控制页面布局、颜色、动画，打造精美界面</p>
+        <span class="lang-tag">前端</span>
+    </a>
+</div>
+
+</body>
+</html>

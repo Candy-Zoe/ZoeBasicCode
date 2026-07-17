@@ -1,0 +1,3180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java 编程教程 - 从入门到精通</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="../assets/editor.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <a href="../index.html" class="header-logo">📚 Zoe<span>Basic</span>Code</a>
+    <nav class="header-nav">
+        <span class="lang-badge">☕ Java</span>
+    </nav>
+</header>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-section">
+        <div class="sidebar-title">入门</div>
+        <a href="#sec1" class="sidebar-link"><span class="num">01</span>简介</a>
+        <a href="#sec2" class="sidebar-link"><span class="num">02</span>环境搭建</a>
+        <a href="#sec3" class="sidebar-link"><span class="num">03</span>基本语法</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">基础</div>
+        <a href="#sec4" class="sidebar-link"><span class="num">04</span>变量与数据类型</a>
+        <a href="#sec5" class="sidebar-link"><span class="num">05</span>运算符</a>
+        <a href="#sec6" class="sidebar-link"><span class="num">06</span>字符串</a>
+        <a href="#sec7" class="sidebar-link"><span class="num">07</span>数组</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">流程</div>
+        <a href="#sec8" class="sidebar-link"><span class="num">08</span>条件判断</a>
+        <a href="#sec9" class="sidebar-link"><span class="num">09</span>循环语句</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">面向对象</div>
+        <a href="#sec10" class="sidebar-link"><span class="num">10</span>类与对象</a>
+        <a href="#sec11" class="sidebar-link"><span class="num">11</span>继承</a>
+        <a href="#sec12" class="sidebar-link"><span class="num">12</span>多态</a>
+        <a href="#sec13" class="sidebar-link"><span class="num">13</span>抽象类与接口</a>
+        <a href="#sec14" class="sidebar-link"><span class="num">14</span>内部类</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">API</div>
+        <a href="#sec15" class="sidebar-link"><span class="num">15</span>包装类</a>
+        <a href="#sec16" class="sidebar-link"><span class="num">16</span>集合框架</a>
+        <a href="#sec17" class="sidebar-link"><span class="num">17</span>泛型</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">进阶</div>
+        <a href="#sec18" class="sidebar-link"><span class="num">18</span>异常处理</a>
+        <a href="#sec19" class="sidebar-link"><span class="num">19</span>IO流</a>
+        <a href="#sec20" class="sidebar-link"><span class="num">20</span>多线程</a>
+        <a href="#sec21" class="sidebar-link"><span class="num">21</span>Lambda与Stream</a>
+        <a href="#sec22" class="sidebar-link"><span class="num">22</span>反射</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">实战</div>
+        <a href="#sec23" class="sidebar-link"><span class="num">23</span>JVM内存模型</a>
+        <a href="#sec24" class="sidebar-link"><span class="num">24</span>最佳实践</a>
+        <a href="#sec25" class="sidebar-link"><span class="num">25</span>枚举</a>
+        <a href="#sec26" class="sidebar-link"><span class="num">26</span>Record</a>
+        <a href="#sec27" class="sidebar-link"><span class="num">27</span>模式匹配</a>
+    </div>
+</aside>
+
+<!-- Main Content -->
+<main class="main">
+
+<h1>Java 编程教程</h1>
+<p class="subtitle">从零基础到高级特性，系统掌握 Java 编程语言。涵盖 JVM 原理、面向对象、集合框架、多线程、Lambda 表达式等核心知识。</p>
+
+<!-- ==================== 1. 简介 ==================== -->
+<h2 id="sec1">1. Java 简介</h2>
+
+<p>Java 是由 Sun Microsystems（现为 Oracle）于 1995 年推出的面向对象编程语言。其核心理念是<strong>"一次编写，到处运行"（Write Once, Run Anywhere）</strong>，通过 JVM 实现跨平台能力。</p>
+
+<div class="principle">
+    <div class="principle-title">Java 核心特性</div>
+    <p><strong>跨平台性：</strong>Java 源代码编译为字节码（.class 文件），由各平台的 JVM 解释执行。同一份字节码可在 Windows、Linux、macOS 上运行。</p>
+    <p><strong>面向对象：</strong>Java 支持封装、继承、多态三大特性，一切皆对象（基本类型除外）。</p>
+    <p><strong>自动内存管理：</strong>JVM 内置垃圾回收器（GC），自动回收不再使用的对象内存，开发者无需手动管理内存。</p>
+    <p><strong>强类型语言：</strong>所有变量必须先声明类型后使用，编译期即可发现大量类型错误。</p>
+    <p><strong>多线程支持：</strong>内置 Thread 类和 Runnable 接口，支持并发编程。</p>
+    <p><strong>安全性：</strong>字节码验证、安全管理器、沙箱机制，防止恶意代码执行。</p>
+</div>
+
+<div class="principle">
+    <div class="principle-title">Java 技术体系</div>
+    <p><strong>Java SE（标准版）：</strong>核心 API，包括集合、IO、多线程、网络编程等基础能力。</p>
+    <p><strong>Java EE（企业版，现 Jakarta EE）：</strong>企业级开发框架，包括 Servlet、JSP、EJB、JPA 等。</p>
+    <p><strong>Java ME（微型版）：</strong>嵌入式和移动设备开发（已逐步被 Android 取代）。</p>
+    <p><strong>主流框架：</strong>Spring Boot、Spring Cloud（微服务）、MyBatis（ORM）、Maven/Gradle（构建）。</p>
+</div>
+
+<table>
+    <thead>
+        <tr><th>版本</th><th>发布时间</th><th>重要特性</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>Java 8</td><td>2014</td><td>Lambda、Stream API、Optional</td></tr>
+        <tr><td>Java 11</td><td>2018</td><td>长期支持版、HTTP Client、var 局部变量</td></tr>
+        <tr><td>Java 17</td><td>2021</td><td>密封类、模式匹配 switch（预览）</td></tr>
+        <tr><td>Java 21</td><td>2023</td><td>虚拟线程、Record 模式匹配、switch 模式匹配</td></tr>
+    </tbody>
+</table>
+
+<!-- ==================== 2. 环境搭建 ==================== -->
+<h2 id="sec2">2. 环境搭建</h2>
+
+<h3>2.1 安装 JDK</h3>
+<p>JDK（Java Development Kit）是 Java 开发工具包，包含 JRE（运行时环境）和开发工具（javac、java、javadoc 等）。</p>
+
+<div class="principle">
+    <div class="principle-title">JDK 安装步骤</div>
+    <p><strong>1. 下载 JDK：</strong>从 Oracle 官网或 Adoptium 下载对应操作系统的 JDK 安装包（推荐 JDK 17 或 21 LTS 版本）。</p>
+    <p><strong>2. 配置环境变量：</strong>设置 <code>JAVA_HOME</code> 指向 JDK 安装目录，将 <code>%JAVA_HOME%\bin</code> 添加到 <code>PATH</code>。</p>
+    <p><strong>3. 验证安装：</strong>打开终端执行 <code>java -version</code> 和 <code>javac -version</code>，确认版本号正确输出。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">bash</span>
+    </div>
+    <pre><code><span class="cm"># Windows 配置环境变量（PowerShell）</span>
+$env:JAVA_HOME = <span class="st">"C:\Program Files\Java\jdk-21"</span>
+$env:PATH += <span class="st">";$env:JAVA_HOME\bin"</span>
+
+<span class="cm"># 验证安装</span>
+java -version
+javac -version
+
+<span class="cm"># 输出示例：</span>
+<span class="cm"># openjdk version "21.0.2" 2024-01-16</span>
+<span class="cm"># OpenJDK Runtime Environment (build 21.0.2+13-58)</span>
+<span class="cm"># OpenJDK 64-Bit Server VM (build 21.0.2+13-58, mixed mode, sharing)</span></code></pre>
+</div>
+
+<h3>2.2 第一个程序：Hello World</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="cm">// HelloWorld.java</span>
+<span class="kw">public class</span> <span class="tp">HelloWorld</span> {
+    <span class="cm">// main 方法是程序入口，JVM 启动时调用</span>
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        System.out.<span class="fn">println</span>(<span class="st">"Hello, World!"</span>);
+    }
+}</code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">bash</span>
+    </div>
+    <pre><code><span class="cm"># 编译</span>
+javac HelloWorld.java
+
+<span class="cm"># 运行（不需要 .class 后缀）</span>
+java HelloWorld
+
+<span class="cm"># 输出：Hello, World!</span></code></pre>
+</div>
+
+<div class="tip">Java 文件名必须与 public 类名完全一致，且区分大小写。一个 .java 文件中只能有一个 public 类。</div>
+
+<h3>2.3 项目结构与构建工具</h3>
+
+<div class="principle">
+    <div class="principle-title">Maven vs Gradle</div>
+    <p><strong>Maven：</strong>基于 XML（pom.xml）的构建工具，约定优于配置，依赖管理成熟，生态完善。适合企业级项目。</p>
+    <p><strong>Gradle：</strong>基于 Groovy/Kotlin DSL 的构建工具，构建速度快（增量编译、缓存），配置灵活。Android 官方推荐。</p>
+    <p><strong>选择建议：</strong>初学或传统项目用 Maven，追求构建速度或 Android 开发用 Gradle。</p>
+</div>
+
+<!-- ==================== 3. 基本语法 ==================== -->
+<h2 id="sec3">3. 基本语法</h2>
+
+<h3>3.1 注释</h3>
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="cm">// 单行注释</span>
+
+<span class="cm">/*
+ * 多行注释
+ * 可以跨越多行
+ */</span>
+
+<span class="cm">/**
+ * 文档注释（Javadoc）
+ * 用于生成 API 文档
+ * @author 张三
+ * @version 1.0
+ * @param args 命令行参数
+ * @return 无返回值
+ */</span></code></pre>
+</div>
+
+<h3>3.2 标识符与关键字</h3>
+
+<div class="principle">
+    <div class="principle-title">标识符命名规则</div>
+    <p><strong>合法标识符：</strong>以字母、下划线(_)或美元符($)开头，后续可包含字母、数字、下划线、美元符。不能使用关键字。</p>
+    <p><strong>命名规范：</strong>类名用 UpperCamelCase（如 <code>StudentInfo</code>），方法名/变量名用 lowerCamelCase（如 <code>getUserName</code>），常量用 UPPER_SNAKE_CASE（如 <code>MAX_SIZE</code>），包名全小写（如 <code>com.example.demo</code>）。</p>
+</div>
+
+<table>
+    <thead>
+        <tr><th>类别</th><th>关键字</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>数据类型</td><td><code>int, long, float, double, char, boolean, byte, short</code></td></tr>
+        <tr><td>流程控制</td><td><code>if, else, switch, case, default, for, while, do, break, continue, return</code></td></tr>
+        <tr><td>面向对象</td><td><code>class, interface, extends, implements, new, this, super, instanceof</code></td></tr>
+        <tr><td>访问控制</td><td><code>public, protected, private</code></td></tr>
+        <tr><td>其他修饰符</td><td><code>static, final, abstract, volatile, transient, synchronized</code></td></tr>
+        <tr><td>异常处理</td><td><code>try, catch, finally, throw, throws</code></td></tr>
+        <tr><td>包相关</td><td><code>package, import</code></td></tr>
+    </tbody>
+</table>
+
+<div class="warning">Java 中 <code>const</code> 和 <code>goto</code> 是保留字但未使用。命名标识符时也应避免使用 <code>true, false, null</code>（它们是字面量，不是关键字）。</div>
+
+<h3>3.3 包与导入</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="cm">// 声明包（必须是第一条非注释语句）</span>
+<span class="kw">package</span> com.example.demo;
+
+<span class="cm">// 导入单个类</span>
+<span class="kw">import</span> java.util.ArrayList;
+
+<span class="cm">// 导入包下所有类（不推荐，可能引起命名冲突）</span>
+<span class="kw">import</span> java.util.*;
+
+<span class="cm">// 静态导入（直接使用类的静态成员，无需类名前缀）</span>
+<span class="kw">import static</span> java.lang.Math.PI;
+<span class="kw">import static</span> java.lang.System.out;
+
+<span class="kw">public class</span> <span class="tp">PackageDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 静态导入后可直接使用 PI</span>
+        <span class="kw">double</span> area = PI * <span class="nm">10</span> * <span class="nm">10</span>;
+        out.<span class="fn">println</span>(<span class="st">"面积: "</span> + area);
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 4. 变量与数据类型 ==================== -->
+<h2 id="sec4">4. 变量与数据类型</h2>
+
+<h3>4.1 基本数据类型</h3>
+
+<div class="principle">
+    <div class="principle-title">Java 八种基本数据类型</div>
+    <p>Java 有 8 种基本数据类型（primitive types），它们存储在<strong>栈内存</strong>中，直接存储值而非引用。</p>
+    <p><strong>整数类型：</strong><code>byte</code>（1 字节，-128~127）、<code>short</code>（2 字节）、<code>int</code>（4 字节，最常用）、<code>long</code>（8 字节，后缀 L）。</p>
+    <p><strong>浮点类型：</strong><code>float</code>（4 字节，后缀 F）、<code>double</code>（8 字节，默认浮点类型，精度约 15-16 位）。</p>
+    <p><strong>字符类型：</strong><code>char</code>（2 字节，Unicode 字符，如 'A'、'中'、'\u0041'）。</p>
+    <p><strong>布尔类型：</strong><code>boolean</code>（true/false，占 1 字节）。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">DataTypeDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 整数类型</span>
+        <span class="kw">byte</span> b = <span class="nm">127</span>;
+        <span class="kw">short</span> s = <span class="nm">32767</span>;
+        <span class="kw">int</span> i = <span class="nm">2147483647</span>;
+        <span class="kw">long</span> l = <span class="nm">9223372036854775807L</span>;  <span class="cm">// L 后缀表示 long</span>
+
+        <span class="cm">// 浮点类型</span>
+        <span class="kw">float</span> f = <span class="nm">3.14F</span>;    <span class="cm">// F 后缀表示 float</span>
+        <span class="kw">double</span> d = <span class="nm">3.141592653589793</span>;
+
+        <span class="cm">// 字符类型</span>
+        <span class="kw">char</span> c1 = <span class="st">'A'</span>;
+        <span class="kw">char</span> c2 = <span class="st">'中'</span>;
+        <span class="kw">char</span> c3 = <span class="nm">65</span>;  <span class="cm">// ASCII 码，等同于 'A'</span>
+        <span class="kw">char</span> c4 = <span class="st">'\u0041'</span>;  <span class="cm">// Unicode 编码</span>
+
+        <span class="cm">// 布尔类型</span>
+        <span class="kw">boolean</span> flag = <span class="kw">true</span>;
+
+        <span class="cm">// 数字字面量增强（Java 7+）</span>
+        <span class="kw">int</span> million = <span class="nm">1_000_000</span>;       <span class="cm">// 下划线分隔，提高可读性</span>
+        <span class="kw">int</span> binary = <span class="nm">0b1010_0101</span>;      <span class="cm">// 二进制</span>
+        <span class="kw">int</span> hex = <span class="nm">0xFF_FF</span>;             <span class="cm">// 十六进制</span>
+        <span class="kw">int</span> octal = <span class="nm">077_77</span>;            <span class="cm">// 八进制</span>
+
+        System.out.<span class="fn">println</span>(<span class="st">"byte: "</span> + b);
+        System.out.<span class="fn">println</span>(<span class="st">"int: "</span> + i);
+        System.out.<span class="fn">println</span>(<span class="st">"long: "</span> + l);
+        System.out.<span class="fn">println</span>(<span class="st">"float: "</span> + f);
+        System.out.<span class="fn">println</span>(<span class="st">"double: "</span> + d);
+        System.out.<span class="fn">println</span>(<span class="st">"char: "</span> + c1 + <span class="st">" = "</span> + c3);
+        System.out.<span class="fn">println</span>(<span class="st">"boolean: "</span> + flag);
+    }
+}</code></pre>
+</div>
+
+<h3>4.2 类型转换</h3>
+
+<div class="principle">
+    <div class="principle-title">自动类型转换与强制转换</div>
+    <p><strong>自动类型转换（隐式转换）：</strong>小范围类型可自动转换为大范围类型，不会丢失数据。转换顺序：<code>byte → short → int → long → float → double</code>，<code>char → int</code>。</p>
+    <p><strong>强制类型转换（显式转换）：</strong>大范围转小范围可能导致精度丢失或溢出，需要使用强制转换符 <code>(类型)</code>。</p>
+    <p><strong>注意：</strong>boolean 不参与类型转换。long 转 float、int 转 float 可能丢失精度（float 仅 32 位）。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">CastDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 自动类型转换（小 → 大）</span>
+        <span class="kw">byte</span> b = <span class="nm">10</span>;
+        <span class="kw">int</span> i = b;         <span class="cm">// byte → int，自动转换</span>
+        <span class="kw">long</span> l = i;        <span class="cm">// int → long，自动转换</span>
+        <span class="kw">double</span> d = l;      <span class="cm">// long → double，自动转换</span>
+
+        <span class="cm">// 强制类型转换（大 → 小）</span>
+        <span class="kw">double</span> pi = <span class="nm">3.99</span>;
+        <span class="kw">int</span> truncated = (<span class="kw">int</span>) pi;   <span class="cm">// 结果为 3，截断小数部分</span>
+
+        <span class="kw">int</span> bigNum = <span class="nm">130</span>;
+        <span class="kw">byte</span> overflow = (<span class="kw">byte</span>) bigNum;  <span class="cm">// 结果为 -126，溢出！</span>
+
+        <span class="cm">// 表达式中的自动提升</span>
+        <span class="kw">byte</span> b1 = <span class="nm">10</span>;
+        <span class="kw">byte</span> b2 = <span class="nm">20</span>;
+        <span class="cm">// byte result = b1 + b2;  // 编译错误！运算时自动提升为 int</span>
+        <span class="kw">int</span> result = b1 + b2;      <span class="cm">// 正确</span>
+        <span class="kw">byte</span> result2 = (<span class="kw">byte</span>)(b1 + b2);  <span class="cm">// 强制转换回 byte</span>
+
+        System.out.<span class="fn">println</span>(<span class="st">"truncated: "</span> + truncated);
+        System.out.<span class="fn">println</span>(<span class="st">"overflow: "</span> + overflow);
+        System.out.<span class="fn">println</span>(<span class="st">"result: "</span> + result);
+    }
+}</code></pre>
+</div>
+
+<div class="danger">Java 中 byte、short、char 进行运算时会自动提升为 int 类型。两个 byte 相加的结果是 int，不能直接赋值给 byte 变量。</div>
+
+<h3>4.3 变量作用域与常量</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">VariableScopeDemo</span> {
+    <span class="cm">// 成员变量（实例变量）：属于对象，有默认值</span>
+    <span class="kw">static</span> <span class="kw">int</span> classVar = <span class="nm">0</span>;       <span class="cm">// 类变量（静态变量）</span>
+    <span class="kw">int</span> instanceVar;                <span class="cm">// 默认值 0</span>
+
+    <span class="cm">// 常量：必须在声明时赋值，后续不可修改</span>
+    <span class="kw">static final</span> <span class="tp">String</span> APP_NAME = <span class="st">"MyApp"</span>;
+    <span class="kw">static final</span> <span class="kw">double</span> PI = <span class="nm">3.141592653589793</span>;
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 局部变量：必须初始化后才能使用</span>
+        <span class="kw">int</span> localVar = <span class="nm">42</span>;
+        <span class="tp">String</span> name = <span class="st">"Java"</span>;
+
+        <span class="cm">// 代码块作用域</span>
+        <span class="kw">if</span> (localVar > <span class="nm">0</span>) {
+            <span class="kw">int</span> blockVar = <span class="nm">100</span>;  <span class="cm">// 仅在 if 块内有效</span>
+            System.out.<span class="fn">println</span>(blockVar);
+        }
+        <span class="cm">// System.out.println(blockVar);  // 编译错误！</span>
+
+        System.out.<span class="fn">println</span>(APP_NAME);
+        System.out.<span class="fn">println</span>(PI);
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 5. 运算符 ==================== -->
+<h2 id="sec5">5. 运算符</h2>
+
+<h3>5.1 算术与赋值运算符</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">OperatorDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 算术运算符</span>
+        <span class="kw">int</span> a = <span class="nm">10</span>, b = <span class="nm">3</span>;
+        System.out.<span class="fn">println</span>(a + b);   <span class="cm">// 13  加法</span>
+        System.out.<span class="fn">println</span>(a - b);   <span class="cm">// 7   减法</span>
+        System.out.<span class="fn">println</span>(a * b);   <span class="cm">// 30  乘法</span>
+        System.out.<span class="fn">println</span>(a / b);   <span class="cm">// 3   整数除法（截断）</span>
+        System.out.<span class="fn">println</span>(a % b);   <span class="cm">// 1   取模（余数）</span>
+        System.out.<span class="fn">println</span>((<span class="kw">double</span>)a / b);  <span class="cm">// 3.333... 浮点除法</span>
+
+        <span class="cm">// 自增自减</span>
+        <span class="kw">int</span> x = <span class="nm">5</span>;
+        System.out.<span class="fn">println</span>(x++);   <span class="cm">// 5（先使用，后自增）</span>
+        System.out.<span class="fn">println</span>(x);     <span class="cm">// 6</span>
+        System.out.<span class="fn">println</span>(++x);   <span class="cm">// 7（先自增，后使用）</span>
+
+        <span class="cm">// 赋值运算符</span>
+        <span class="kw">int</span> y = <span class="nm">10</span>;
+        y += <span class="nm">5</span>;   <span class="cm">// y = y + 5 = 15</span>
+        y -= <span class="nm">3</span>;   <span class="cm">// y = y - 3 = 12</span>
+        y *= <span class="nm">2</span>;   <span class="cm">// y = y * 2 = 24</span>
+        y /= <span class="nm">4</span>;   <span class="cm">// y = y / 4 = 6</span>
+        y %= <span class="nm">4</span>;   <span class="cm">// y = y % 4 = 2</span>
+    }
+}</code></pre>
+</div>
+
+<h3>5.2 比较与逻辑运算符</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">ComparisonLogicDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="kw">int</span> a = <span class="nm">10</span>, b = <span class="nm">20</span>;
+
+        <span class="cm">// 比较运算符（结果为 boolean）</span>
+        System.out.<span class="fn">println</span>(a == b);   <span class="cm">// false  等于</span>
+        System.out.<span class="fn">println</span>(a != b);   <span class="cm">// true   不等于</span>
+        System.out.<span class="fn">println</span>(a > b);    <span class="cm">// false  大于</span>
+        System.out.<span class="fn">println</span>(a < b);    <span class="cm">// true   小于</span>
+        System.out.<span class="fn">println</span>(a >= b);   <span class="cm">// false  大于等于</span>
+        System.out.<span class="fn">println</span>(a <= b);   <span class="cm">// true   小于等于</span>
+
+        <span class="cm">// 逻辑运算符</span>
+        <span class="kw">boolean</span> t = <span class="kw">true</span>, f = <span class="kw">false</span>;
+        System.out.<span class="fn">println</span>(t && f);   <span class="cm">// false  短路与（都true才true）</span>
+        System.out.<span class="fn">println</span>(t || f);   <span class="cm">// true   短路或（一个true就true）</span>
+        System.out.<span class="fn">println</span>(!t);       <span class="cm">// false  非（取反）</span>
+
+        <span class="cm">// 位运算符</span>
+        <span class="kw">int</span> x = <span class="nm">0b1010</span>;   <span class="cm">// 10</span>
+        <span class="kw">int</span> y = <span class="nm">0b1100</span>;   <span class="cm">// 12</span>
+        System.out.<span class="fn">println</span>(Integer.<span class="fn">toBinaryString</span>(x & y));   <span class="cm">// 1000 (8)  按位与</span>
+        System.out.<span class="fn">println</span>(Integer.<span class="fn">toBinaryString</span>(x | y));   <span class="cm">// 1110 (14) 按位或</span>
+        System.out.<span class="fn">println</span>(Integer.<span class="fn">toBinaryString</span>(x ^ y));   <span class="cm">// 0110 (6)  按位异或</span>
+        System.out.<span class="fn">println</span>(Integer.<span class="fn">toBinaryString</span>(~x));      <span class="cm">// 取反</span>
+        System.out.<span class="fn">println</span>(x << <span class="nm">2</span>);   <span class="cm">// 40   左移2位（×4）</span>
+        System.out.<span class="fn">println</span>(x >> <span class="nm">2</span>);   <span class="cm">// 2    右移2位（÷4）</span>
+    }
+}</code></pre>
+</div>
+
+<h3>5.3 三元运算符与 instanceof</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">TernaryDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 三元运算符：条件 ? 值1 : 值2</span>
+        <span class="kw">int</span> age = <span class="nm">20</span>;
+        <span class="tp">String</span> status = (age >= <span class="nm">18</span>) ? <span class="st">"成年"</span> : <span class="st">"未成年"</span>;
+        System.out.<span class="fn">println</span>(status);  <span class="cm">// 成年</span>
+
+        <span class="cm">// 嵌套三元（不推荐嵌套过深）</span>
+        <span class="kw">int</span> score = <span class="nm">85</span>;
+        <span class="tp">String</span> grade = score >= <span class="nm">90</span> ? <span class="st">"优秀"</span>
+                     : score >= <span class="nm">80</span> ? <span class="st">"良好"</span>
+                     : score >= <span class="nm">60</span> ? <span class="st">"及格"</span>
+                     : <span class="st">"不及格"</span>;
+        System.out.<span class="fn">println</span>(grade);  <span class="cm">// 良好</span>
+
+        <span class="cm">// instanceof 运算符</span>
+        <span class="tp">String</span> text = <span class="st">"Hello"</span>;
+        System.out.<span class="fn">println</span>(text <span class="kw">instanceof</span> <span class="tp">String</span>);     <span class="cm">// true</span>
+        System.out.<span class="fn">println</span>(text <span class="kw">instanceof</span> <span class="tp">Object</span>);    <span class="cm">// true</span>
+        System.out.<span class="fn">println</span>(text <span class="kw">instanceof</span> <span class="tp">Integer</span>);   <span class="cm">// false</span>
+    }
+}</code></pre>
+</div>
+
+<div class="tip">短路与(&&)和短路或(||)在第一个条件已确定结果时不会再计算第二个条件。善用短路特性可以避免不必要的计算和空指针异常。</div>
+
+<!-- ==================== 6. 字符串 ==================== -->
+<h2 id="sec6">6. 字符串</h2>
+
+<h3>6.1 String 类</h3>
+
+<div class="principle">
+    <div class="principle-title">String 的不可变性</div>
+    <p><strong>不可变对象：</strong>String 类被 final 修饰，内部字符数组也是 final 的，一旦创建内容不可修改。任何"修改"操作都会创建新的 String 对象。</p>
+    <p><strong>字符串常量池：</strong>JVM 在堆中维护字符串常量池，字面量创建的字符串会被缓存复用。使用 <code>new String()</code> 会绕过常量池创建新对象。</p>
+    <p><strong>性能影响：</strong>频繁拼接字符串会产生大量临时对象，应使用 StringBuilder/StringBuffer。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">StringDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 创建方式</span>
+        <span class="tp">String</span> s1 = <span class="st">"Hello"</span>;           <span class="cm">// 常量池</span>
+        <span class="tp">String</span> s2 = <span class="kw">new</span> <span class="tp">String</span>(<span class="st">"Hello"</span>);  <span class="cm">// 堆内存</span>
+        System.out.<span class="fn">println</span>(s1 == s2);       <span class="cm">// false（引用不同）</span>
+        System.out.<span class="fn">println</span>(s1.<span class="fn">equals</span>(s2));   <span class="cm">// true（内容相同）</span>
+
+        <span class="cm">// 常用方法</span>
+        <span class="tp">String</span> str = <span class="st">"Hello, World!"</span>;
+        System.out.<span class="fn">println</span>(str.<span class="fn">length</span>());              <span class="cm">// 13</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">charAt</span>(<span class="nm">0</span>));              <span class="cm">// 'H'</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">substring</span>(<span class="nm">7</span>));           <span class="cm">// "World!"</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">substring</span>(<span class="nm">0</span>, <span class="nm">5</span>));        <span class="cm">// "Hello"</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">indexOf</span>(<span class="st">"World"</span>));     <span class="cm">// 7</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">contains</span>(<span class="st">"World"</span>));   <span class="cm">// true</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">startsWith</span>(<span class="st">"Hello"</span>)); <span class="cm">// true</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">endsWith</span>(<span class="st">"!"</span>));       <span class="cm">// true</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">toUpperCase</span>());        <span class="cm">// "HELLO, WORLD!"</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">toLowerCase</span>());        <span class="cm">// "hello, world!"</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">trim</span>());               <span class="cm">// 去除首尾空格</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">replace</span>(<span class="st">"World"</span>, <span class="st">"Java"</span>)); <span class="cm">// "Hello, Java!"</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">isEmpty</span>());             <span class="cm">// false</span>
+        System.out.<span class="fn">println</span>(str.<span class="fn">toCharArray</span>);          <span class="cm">// char[] 数组</span>
+
+        <span class="cm">// 格式化</span>
+        <span class="tp">String</span> name = <span class="st">"张三"</span>;
+        <span class="kw">int</span> age = <span class="nm">25</span>;
+        <span class="tp">String</span> formatted = <span class="tp">String</span>.<span class="fn">format</span>(<span class="st">"姓名: %s, 年龄: %d"</span>, name, age);
+        System.out.<span class="fn">println</span>(formatted);
+
+        <span class="cm">// 分割与连接</span>
+        <span class="tp">String</span> csv = <span class="st">"a,b,c,d"</span>;
+        <span class="tp">String</span>[] parts = csv.<span class="fn">split</span>(<span class="st">","</span>);
+        System.out.<span class="fn">println</span>(java.util.Arrays.<span class="fn">toString</span>(parts));  <span class="cm">// [a, b, c, d]</span>
+        <span class="tp">String</span> joined = <span class="tp">String</span>.<span class="fn">join</span>(<span class="st">" - "</span>, parts);
+        System.out.<span class="fn">println</span>(joined);  <span class="cm">// "a - b - c - d"</span>
+    }
+}</code></pre>
+</div>
+
+<h3>6.2 StringBuilder 与 StringBuffer</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">StringBuilderDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// StringBuilder（非线程安全，性能更高）</span>
+        <span class="tp">StringBuilder</span> sb = <span class="kw">new</span> <span class="tp">StringBuilder</span>();
+        sb.<span class="fn">append</span>(<span class="st">"Hello"</span>);
+        sb.<span class="fn">append</span>(<span class="st">", "</span>);
+        sb.<span class="fn">append</span>(<span class="st">"World!"</span>);
+        System.out.<span class="fn">println</span>(sb.<span class="fn">toString</span>());  <span class="cm">// "Hello, World!"</span>
+
+        <span class="cm">// 链式调用</span>
+        <span class="tp">String</span> result = <span class="kw">new</span> <span class="tp">StringBuilder</span>()
+            .<span class="fn">append</span>(<span class="st">"Java"</span>)
+            .<span class="fn">append</span>(<span class="st">" is "</span>)
+            .<span class="fn">append</span>(<span class="st">"awesome"</span>)
+            .<span class="fn">reverse</span>()
+            .<span class="fn">toString</span>();
+        System.out.<span class="fn">println</span>(result);  <span class="cm">// "emuosewa si avaJ"</span>
+
+        <span class="cm">// 其他操作</span>
+        sb.<span class="fn">insert</span>(<span class="nm">5</span>, <span class="st">" Beautiful"</span>);   <span class="cm">// 插入</span>
+        sb.<span class="fn">delete</span>(<span class="nm">5</span>, <span class="nm">16</span>);              <span class="cm">// 删除 [5, 16)</span>
+        sb.<span class="fn">replace</span>(<span class="nm">0</span>, <span class="nm">5</span>, <span class="st">"Hi"</span>);       <span class="cm">// 替换 [0, 5)</span>
+        System.out.<span class="fn">println</span>(sb.<span class="fn">charAt</span>(<span class="nm">0</span>));  <span class="cm">// 'H'</span>
+
+        <span class="cm">// StringBuilder vs StringBuffer</span>
+        <span class="cm">// StringBuffer：线程安全（方法有 synchronized），性能稍低</span>
+        <span class="cm">// 单线程环境用 StringBuilder，多线程环境用 StringBuffer</span>
+    }
+}</code></pre>
+</div>
+
+<div class="warning">在循环中拼接字符串时，务必使用 StringBuilder 而非 + 运算符。Java 编译器对 + 的优化仅限于简单的字符串拼接，循环中每次都会创建新的 StringBuilder 对象。</div>
+
+<!-- ==================== 7. 数组 ==================== -->
+<h2 id="sec7">7. 数组</h2>
+
+<h3>7.1 一维数组</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">import</span> java.util.Arrays;
+
+<span class="kw">public class</span> <span class="tp">ArrayDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 声明与初始化</span>
+        <span class="kw">int</span>[] arr1 = <span class="kw">new</span> <span class="kw">int</span>[<span class="nm">5</span>];           <span class="cm">// 默认值 0</span>
+        <span class="kw">int</span>[] arr2 = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>};      <span class="cm">// 字面量初始化</span>
+        <span class="kw">int</span>[] arr3 = <span class="kw">new</span> <span class="kw">int</span>[]{<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>}; <span class="cm">// 匿名数组</span>
+
+        <span class="cm">// 访问与修改</span>
+        arr1[<span class="nm">0</span>] = <span class="nm">100</span>;
+        System.out.<span class="fn">println</span>(arr2[<span class="nm">2</span>]);      <span class="cm">// 3</span>
+        System.out.<span class="fn">println</span>(arr2.length);   <span class="cm">// 5</span>
+
+        <span class="cm">// 遍历数组</span>
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i < arr2.length; i++) {
+            System.out.<span class="fn">print</span>(arr2[i] + <span class="st">" "</span>);
+        }
+        System.out.<span class="fn">println</span>();
+
+        <span class="cm">// 增强 for 循环（for-each）</span>
+        <span class="kw">for</span> (<span class="kw">int</span> num : arr2) {
+            System.out.<span class="fn">print</span>(num + <span class="st">" "</span>);
+        }
+        System.out.<span class="fn">println</span>();
+
+        <span class="cm">// Arrays 工具类</span>
+        System.out.<span class="fn">println</span>(Arrays.<span class="fn">toString</span>(arr2));   <span class="cm">// [1, 2, 3, 4, 5]</span>
+        Arrays.<span class="fn">sort</span>(arr2);                          <span class="cm">// 排序</span>
+        System.out.<span class="fn">println</span>(Arrays.<span class="fn">toString</span>(arr2));
+        <span class="kw">int</span> idx = Arrays.<span class="fn">binarySearch</span>(arr2, <span class="nm">3</span>);     <span class="cm">// 二分查找</span>
+        System.out.<span class="fn">println</span>(<span class="st">"3 的索引: "</span> + idx);
+
+        <span class="cm">// 数组复制</span>
+        <span class="kw">int</span>[] copied = Arrays.<span class="fn">copyOf</span>(arr2, <span class="nm">10</span>);
+        <span class="kw">int</span>[] rangeCopied = Arrays.<span class="fn">copyOfRange</span>(arr2, <span class="nm">1</span>, <span class="nm">4</span>);
+        System.out.<span class="fn">println</span>(Arrays.<span class="fn">toString</span>(rangeCopied));  <span class="cm">// [2, 3, 4]</span>
+
+        <span class="cm">// 填充</span>
+        <span class="kw">int</span>[] filled = <span class="kw">new</span> <span class="kw">int</span>[<span class="nm">5</span>];
+        Arrays.<span class="fn">fill</span>(filled, <span class="nm">42</span>);
+        System.out.<span class="fn">println</span>(Arrays.<span class="fn">toString</span>(filled));  <span class="cm">// [42, 42, 42, 42, 42]</span>
+    }
+}</code></pre>
+</div>
+
+<h3>7.2 二维数组</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">TwoDArrayDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 声明二维数组</span>
+        <span class="kw">int</span>[][] matrix = <span class="kw">new</span> <span class="kw">int</span>[<span class="nm">3</span>][<span class="nm">4</span>];  <span class="cm">// 3行4列</span>
+        <span class="kw">int</span>[][] jagged = {
+            {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>},
+            {<span class="nm">4</span>, <span class="nm">5</span>},
+            {<span class="nm">6</span>, <span class="nm">7</span>, <span class="nm">8</span>, <span class="nm">9</span>}
+        };  <span class="cm">// 不规则数组（每行长度不同）</span>
+
+        <span class="cm">// 赋值与访问</span>
+        matrix[<span class="nm">0</span>][<span class="nm">0</span>] = <span class="nm">1</span>;
+        matrix[<span class="nm">1</span>][<span class="nm">2</span>] = <span class="nm">5</span>;
+        System.out.<span class="fn">println</span>(matrix[<span class="nm">1</span>][<span class="nm">2</span>]);  <span class="cm">// 5</span>
+
+        <span class="cm">// 遍历二维数组</span>
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i < jagged.length; i++) {
+            <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">0</span>; j < jagged[i].length; j++) {
+                System.out.<span class="fn">printf</span>(<span class="st">"%3d"</span>, jagged[i][j]);
+            }
+            System.out.<span class="fn">println</span>();
+        }
+        <span class="cm">// 输出：</span>
+        <span class="cm">//   1  2  3</span>
+        <span class="cm">//   4  5</span>
+        <span class="cm">//   6  7  8  9</span>
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 8. 条件判断 ==================== -->
+<h2 id="sec8">8. 条件判断</h2>
+
+<h3>8.1 if-else 语句</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">IfElseDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="kw">int</span> score = <span class="nm">85</span>;
+
+        <span class="cm">// 单 if</span>
+        <span class="kw">if</span> (score >= <span class="nm">60</span>) {
+            System.out.<span class="fn">println</span>(<span class="st">"及格"</span>);
+        }
+
+        <span class="cm">// if-else</span>
+        <span class="kw">if</span> (score >= <span class="nm">90</span>) {
+            System.out.<span class="fn">println</span>(<span class="st">"优秀"</span>);
+        } <span class="kw">else</span> {
+            System.out.<span class="fn">println</span>(<span class="st">"非优秀"</span>);
+        }
+
+        <span class="cm">// if-else if-else</span>
+        <span class="kw">if</span> (score >= <span class="nm">90</span>) {
+            System.out.<span class="fn">println</span>(<span class="st">"优秀"</span>);
+        } <span class="kw">else if</span> (score >= <span class="nm">80</span>) {
+            System.out.<span class="fn">println</span>(<span class="st">"良好"</span>);
+        } <span class="kw">else if</span> (score >= <span class="nm">70</span>) {
+            System.out.<span class="fn">println</span>(<span class="st">"中等"</span>);
+        } <span class="kw">else if</span> (score >= <span class="nm">60</span>) {
+            System.out.<span class="fn">println</span>(<span class="st">"及格"</span>);
+        } <span class="kw">else</span> {
+            System.out.<span class="fn">println</span>(<span class="st">"不及格"</span>);
+        }
+    }
+}</code></pre>
+</div>
+
+<h3>8.2 switch 语句</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">SwitchDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 传统 switch（Java 14 之前）</span>
+        <span class="kw">int</span> day = <span class="nm">3</span>;
+        <span class="kw">switch</span> (day) {
+            <span class="kw">case</span> <span class="nm">1</span>:
+                System.out.<span class="fn">println</span>(<span class="st">"星期一"</span>);
+                <span class="kw">break</span>;
+            <span class="kw">case</span> <span class="nm">2</span>:
+                System.out.<span class="fn">println</span>(<span class="st">"星期二"</span>);
+                <span class="kw">break</span>;
+            <span class="kw">case</span> <span class="nm">3</span>:
+                System.out.<span class="fn">println</span>(<span class="st">"星期三"</span>);
+                <span class="kw">break</span>;
+            <span class="kw">case</span> <span class="nm">6</span>:
+            <span class="kw">case</span> <span class="nm">7</span>:
+                System.out.<span class="fn">println</span>(<span class="st">"周末"</span>);
+                <span class="kw">break</span>;
+            <span class="kw">default</span>:
+                System.out.<span class="fn">println</span>(<span class="st">"工作日"</span>);
+                <span class="kw">break</span>;
+        }
+
+        <span class="cm">// switch 表达式（Java 14+，推荐）</span>
+        <span class="tp">String</span> dayName = <span class="kw">switch</span> (day) {
+            <span class="kw">case</span> <span class="nm">1</span> -> <span class="st">"星期一"</span>;
+            <span class="kw">case</span> <span class="nm">2</span> -> <span class="st">"星期二"</span>;
+            <span class="kw">case</span> <span class="nm">3</span> -> <span class="st">"星期三"</span>;
+            <span class="kw">case</span> <span class="nm">4</span> -> <span class="st">"星期四"</span>;
+            <span class="kw">case</span> <span class="nm">5</span> -> <span class="st">"星期五"</span>;
+            <span class="kw">case</span> <span class="nm">6</span>, <span class="nm">7</span> -> <span class="st">"周末"</span>;  <span class="cm">// 多值匹配</span>
+            <span class="kw">default</span> -> <span class="st">"未知"</span>;
+        };
+        System.out.<span class="fn">println</span>(dayName);
+
+        <span class="cm">// switch 支持 String（Java 7+）</span>
+        <span class="tp">String</span> fruit = <span class="st">"apple"</span>;
+        <span class="kw">switch</span> (fruit) {
+            <span class="kw">case</span> <span class="st">"apple"</span> -> System.out.<span class="fn">println</span>(<span class="st">"苹果"</span>);
+            <span class="kw">case</span> <span class="st">"banana"</span> -> System.out.<span class="fn">println</span>(<span class="st">"香蕉"</span>);
+            <span class="kw">default</span> -> System.out.<span class="fn">println</span>(<span class="st">"未知水果"</span>);
+        }
+    }
+}</code></pre>
+</div>
+
+<div class="warning">传统 switch 中忘记写 break 会导致"穿透"（fall-through），继续执行下一个 case 的代码。Java 14+ 的箭头语法（->）不会穿透，更安全。</div>
+
+<!-- ==================== 9. 循环语句 ==================== -->
+<h2 id="sec9">9. 循环语句</h2>
+
+<h3>9.1 for 循环</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">ForLoopDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 基本 for 循环</span>
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">1</span>; i <= <span class="nm">10</span>; i++) {
+            System.out.<span class="fn">printf</span>(<span class="st">"%d "</span>, i);
+        }
+        System.out.<span class="fn">println</span>();
+
+        <span class="cm">// 嵌套循环：九九乘法表</span>
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">1</span>; i <= <span class="nm">9</span>; i++) {
+            <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">1</span>; j <= i; j++) {
+                System.out.<span class="fn">printf</span>(<span class="st">"%d×%d=%-4d"</span>, j, i, i * j);
+            }
+            System.out.<span class="fn">println</span>();
+        }
+
+        <span class="cm">// 增强 for 循环（for-each）</span>
+        <span class="kw">int</span>[] nums = {<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>, <span class="nm">50</span>};
+        <span class="kw">for</span> (<span class="kw">int</span> num : nums) {
+            System.out.<span class="fn">print</span>(num + <span class="st">" "</span>);
+        }
+        System.out.<span class="fn">println</span>();
+    }
+}</code></pre>
+</div>
+
+<h3>9.2 while 与 do-while</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">WhileLoopDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// while 循环：先判断后执行</span>
+        <span class="kw">int</span> count = <span class="nm">0</span>;
+        <span class="kw">while</span> (count < <span class="nm">5</span>) {
+            System.out.<span class="fn">print</span>(count + <span class="st">" "</span>);
+            count++;
+        }
+        System.out.<span class="fn">println</span>();
+
+        <span class="cm">// do-while 循环：先执行后判断，至少执行一次</span>
+        <span class="kw">int</span> num = <span class="nm">10</span>;
+        <span class="kw">do</span> {
+            System.out.<span class="fn">println</span>(<span class="st">"num = "</span> + num);
+            num--;
+        } <span class="kw">while</span> (num > <span class="nm">10</span>);  <span class="cm">// 即使条件为 false，也执行了一次</span>
+
+        <span class="cm">// break 与 continue</span>
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i < <span class="nm">10</span>; i++) {
+            <span class="kw">if</span> (i == <span class="nm">3</span>) <span class="kw">continue</span>;  <span class="cm">// 跳过 i=3</span>
+            <span class="kw">if</span> (i == <span class="nm">7</span>) <span class="kw">break</span>;     <span class="cm">// 遇到 i=7 终止循环</span>
+            System.out.<span class="fn">print</span>(i + <span class="st">" "</span>);
+        }
+        <span class="cm">// 输出：0 1 2 4 5 6</span>
+        System.out.<span class="fn">println</span>();
+
+        <span class="cm">// 带标签的 break（跳出外层循环）</span>
+        <span class="kw">outer</span>:
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i < <span class="nm">3</span>; i++) {
+            <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">0</span>; j < <span class="nm">3</span>; j++) {
+                <span class="kw">if</span> (i == <span class="nm">1</span> && j == <span class="nm">1</span>) {
+                    <span class="kw">break</span> <span class="kw">outer</span>;  <span class="cm">// 跳出外层循环</span>
+                }
+                System.out.<span class="fn">printf</span>(<span class="st">"(%d,%d) "</span>, i, j);
+            }
+        }
+        <span class="cm">// 输出：(0,0) (0,1) (0,2) (1,0)</span>
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 10. 类与对象 ==================== -->
+<h2 id="sec10">10. 类与对象</h2>
+
+<h3>10.1 类的定义</h3>
+
+<div class="principle">
+    <div class="principle-title">面向对象编程基础</div>
+    <p><strong>类（Class）：</strong>对象的模板，定义了对象的属性（字段）和行为（方法）。类是逻辑上的抽象。</p>
+    <p><strong>对象（Object）：</strong>类的实例，通过 <code>new</code> 关键字在堆内存中创建。每个对象有自己的属性副本。</p>
+    <p><strong>封装：</strong>将数据和操作数据的方法绑定在一起，通过访问修饰符（private/default/protected/public）控制外部访问。用 getter/setter 暴露需要的接口。</p>
+    <p><strong>构造方法：</strong>与类名相同，无返回值，在 <code>new</code> 对象时自动调用，用于初始化对象状态。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">Student</span> {
+    <span class="cm">// 私有字段（封装）</span>
+    <span class="kw">private</span> <span class="tp">String</span> name;
+    <span class="kw">private</span> <span class="kw">int</span> age;
+    <span class="kw">private double</span> score;
+
+    <span class="cm">// 无参构造方法</span>
+    <span class="kw">public</span> <span class="fn">Student</span>() {
+        <span class="kw">this</span>(<span class="st">"未知"</span>, <span class="nm">0</span>, <span class="nm">0.0</span>);  <span class="cm">// 调用另一个构造方法</span>
+    }
+
+    <span class="cm">// 全参构造方法</span>
+    <span class="kw">public</span> <span class="fn">Student</span>(<span class="tp">String</span> name, <span class="kw">int</span> age, <span class="kw">double</span> score) {
+        <span class="kw">this</span>.name = name;
+        <span class="kw">this</span>.age = age;
+        <span class="kw">this</span>.score = score;
+    }
+
+    <span class="cm">// Getter 和 Setter</span>
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">getName</span>() { <span class="kw">return</span> name; }
+    <span class="kw">public void</span> <span class="fn">setName</span>(<span class="tp">String</span> name) { <span class="kw">this</span>.name = name; }
+
+    <span class="kw">public</span> <span class="kw">int</span> <span class="fn">getAge</span>() { <span class="kw">return</span> age; }
+    <span class="kw">public void</span> <span class="fn">setAge</span>(<span class="kw">int</span> age) {
+        <span class="kw">if</span> (age >= <span class="nm">0</span> && age <= <span class="nm">150</span>) {
+            <span class="kw">this</span>.age = age;
+        }
+    }
+
+    <span class="kw">public double</span> <span class="fn">getScore</span>() { <span class="kw">return</span> score; }
+    <span class="kw">public void</span> <span class="fn">setScore</span>(<span class="kw">double</span> score) { <span class="kw">this</span>.score = score; }
+
+    <span class="cm">// 实例方法</span>
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">getGrade</span>() {
+        <span class="kw">if</span> (score >= <span class="nm">90</span>) <span class="kw">return</span> <span class="st">"A"</span>;
+        <span class="kw">if</span> (score >= <span class="nm">80</span>) <span class="kw">return</span> <span class="st">"B"</span>;
+        <span class="kw">if</span> (score >= <span class="nm">70</span>) <span class="kw">return</span> <span class="st">"C"</span>;
+        <span class="kw">if</span> (score >= <span class="nm">60</span>) <span class="kw">return</span> <span class="st">"D"</span>;
+        <span class="kw">return</span> <span class="st">"F"</span>;
+    }
+
+    <span class="cm">// 重写 toString</span>
+    @Override
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">toString</span>() {
+        <span class="kw">return</span> <span class="tp">String</span>.<span class="fn">format</span>(<span class="st">"Student{name='%s', age=%d, score=%.1f}"</span>,
+                name, age, score);
+    }
+
+    <span class="cm">// 重写 equals 和 hashCode</span>
+    @Override
+    <span class="kw">public boolean</span> <span class="fn">equals</span>(<span class="tp">Object</span> obj) {
+        <span class="kw">if</span> (<span class="kw">this</span> == obj) <span class="kw">return true</span>;
+        <span class="kw">if</span> (obj == <span class="kw">null</span> || <span class="fn">getClass</span>() != obj.<span class="fn">getClass</span>()) <span class="kw">return false</span>;
+        <span class="tp">Student</span> other = (<span class="tp">Student</span>) obj;
+        <span class="kw">return</span> age == other.age
+            && Double.<span class="fn">compare</span>(other.score, score) == <span class="nm">0</span>
+            && java.util.Objects.<span class="fn">equals</span>(name, other.name);
+    }
+
+    @Override
+    <span class="kw">public int</span> <span class="fn">hashCode</span>() {
+        <span class="kw">return</span> java.util.Objects.<span class="fn">hash</span>(name, age, score);
+    }
+}</code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">StudentTest</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 创建对象</span>
+        <span class="tp">Student</span> s1 = <span class="kw">new</span> <span class="tp">Student</span>(<span class="st">"张三"</span>, <span class="nm">20</span>, <span class="nm">95.5</span>);
+        <span class="tp">Student</span> s2 = <span class="kw">new</span> <span class="tp">Student</span>(<span class="st">"李四"</span>, <span class="nm">22</span>, <span class="nm">82.0</span>);
+        <span class="tp">Student</span> s3 = <span class="kw">new</span> <span class="tp">Student</span>();  <span class="cm">// 使用无参构造</span>
+
+        System.out.<span class="fn">println</span>(s1);          <span class="cm">// 调用 toString</span>
+        System.out.<span class="fn">println</span>(s1.<span class="fn">getGrade</span>()); <span class="cm">// A</span>
+
+        <span class="cm">// 静态方法</span>
+        <span class="tp">Student</span> same = <span class="kw">new</span> <span class="tp">Student</span>(<span class="st">"张三"</span>, <span class="nm">20</span>, <span class="nm">95.5</span>);
+        System.out.<span class="fn">println</span>(s1.<span class="fn">equals</span>(same));  <span class="cm">// true</span>
+    }
+}</code></pre>
+</div>
+
+<h3>10.2 static 关键字</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">StaticDemo</span> {
+    <span class="cm">// 静态变量：属于类，所有实例共享</span>
+    <span class="kw">private static</span> <span class="kw">int</span> totalCount = <span class="nm">0</span>;
+    <span class="kw">private</span> <span class="tp">String</span> name;
+
+    <span class="kw">public</span> <span class="fn">StaticDemo</span>(<span class="tp">String</span> name) {
+        <span class="kw">this</span>.name = name;
+        totalCount++;  <span class="cm">// 每创建一个对象，计数器+1</span>
+    }
+
+    <span class="cm">// 静态方法：不依赖对象，通过类名调用</span>
+    <span class="kw">public static</span> <span class="kw">int</span> <span class="fn">getTotalCount</span>() {
+        <span class="kw">return</span> totalCount;
+    }
+
+    <span class="cm">// 静态代码块：类加载时执行一次</span>
+    <span class="kw">static</span> {
+        System.out.<span class="fn">println</span>(<span class="st">"StaticDemo 类被加载"</span>);
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="kw">new</span> <span class="tp">StaticDemo</span>(<span class="st">"A"</span>);
+        <span class="kw">new</span> <span class="tp">StaticDemo</span>(<span class="st">"B"</span>);
+        <span class="kw">new</span> <span class="tp">StaticDemo</span>(<span class="st">"C"</span>);
+
+        <span class="cm">// 通过类名访问静态成员</span>
+        System.out.<span class="fn">println</span>(<span class="st">"总数: "</span> + StaticDemo.<span class="fn">getTotalCount</span>());  <span class="cm">// 3</span>
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 11. 继承 ==================== -->
+<h2 id="sec11">11. 继承</h2>
+
+<div class="principle">
+    <div class="principle-title">继承机制详解</div>
+    <p><strong>继承（Inheritance）：</strong>子类（派生类）继承父类（基类）的字段和方法，实现代码复用。Java 使用 <code>extends</code> 关键字，<strong>只支持单继承</strong>（一个类只能有一个直接父类）。</p>
+    <p><strong>super 关键字：</strong>指向父类引用。<code>super()</code> 调用父类构造方法（必须在子类构造方法第一行），<code>super.方法名</code> 调用父类被覆盖的方法。</p>
+    <p><strong>方法重写（Override）：</strong>子类重新定义父类中已有的方法。要求方法签名相同、返回类型相同或协变、访问权限不能更严格。</p>
+    <p><strong>Object 类：</strong>所有类的根类，提供 <code>toString()</code>、<code>equals()</code>、<code>hashCode()</code>、<code>clone()</code> 等方法。自定义类应重写 <code>toString()</code> 和 <code>equals()</code>。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="cm">// 父类</span>
+<span class="kw">public class</span> <span class="tp">Animal</span> {
+    <span class="kw">protected</span> <span class="tp">String</span> name;
+    <span class="kw">protected int</span> age;
+
+    <span class="kw">public</span> <span class="fn">Animal</span>(<span class="tp">String</span> name, <span class="kw">int</span> age) {
+        <span class="kw">this</span>.name = name;
+        <span class="kw">this</span>.age = age;
+    }
+
+    <span class="kw">public void</span> <span class="fn">eat</span>() {
+        System.out.<span class="fn">println</span>(name + <span class="st">" 正在吃东西"</span>);
+    }
+
+    <span class="kw">public void</span> <span class="fn">sleep</span>() {
+        System.out.<span class="fn">println</span>(name + <span class="st">" 正在睡觉"</span>);
+    }
+
+    @Override
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">toString</span>() {
+        <span class="kw">return</span> <span class="tp">String</span>.<span class="fn">format</span>(<span class="st">"%s{ name='%s', age=%d }"</span>,
+                <span class="fn">getClass</span>().getSimpleName(), name, age);
+    }
+}
+
+<span class="cm">// 子类</span>
+<span class="kw">public class</span> <span class="tp">Dog</span> <span class="kw">extends</span> <span class="tp">Animal</span> {
+    <span class="kw">private</span> <span class="tp">String</span> breed;
+
+    <span class="kw">public</span> <span class="fn">Dog</span>(<span class="tp">String</span> name, <span class="kw">int</span> age, <span class="tp">String</span> breed) {
+        <span class="kw">super</span>(name, age);  <span class="cm">// 调用父类构造方法</span>
+        <span class="kw">this</span>.breed = breed;
+    }
+
+    <span class="kw">public void</span> <span class="fn">bark</span>() {
+        System.out.<span class="fn">println</span>(name + <span class="st">" 汪汪叫！"</span>);
+    }
+
+    @Override
+    <span class="kw">public void</span> <span class="fn">eat</span>() {
+        <span class="kw">super</span>.<span class="fn">eat</span>();  <span class="cm">// 调用父类方法</span>
+        System.out.<span class="fn">println</span>(name + <span class="st">" 还在啃骨头"</span>);
+    }
+
+    @Override
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">toString</span>() {
+        <span class="kw">return</span> <span class="tp">String</span>.<span class="fn">format</span>(<span class="st">"Dog{ name='%s', age=%d, breed='%s' }"</span>,
+                name, age, breed);
+    }
+}
+
+<span class="cm">// 使用</span>
+<span class="kw">public class</span> <span class="tp">InheritanceTest</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="tp">Dog</span> dog = <span class="kw">new</span> <span class="tp">Dog</span>(<span class="st">"旺财"</span>, <span class="nm">3</span>, <span class="st">"金毛"</span>);
+        dog.<span class="fn">eat</span>();     <span class="cm">// 调用重写后的方法</span>
+        dog.<span class="fn">sleep</span>();   <span class="cm">// 继承父类的方法</span>
+        dog.<span class="fn">bark</span>();    <span class="cm">// 子类自己的方法</span>
+        System.out.<span class="fn">println</span>(dog);
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 12. 多态 ==================== -->
+<h2 id="sec12">12. 多态</h2>
+
+<div class="principle">
+    <div class="principle-title">多态的原理</div>
+    <p><strong>多态（Polymorphism）：</strong>同一引用类型，使用不同的实例而执行不同的操作。核心条件：继承关系 + 方法重写 + 父类引用指向子类对象。</p>
+    <p><strong>向上转型：</strong><code>Animal a = new Dog("旺财", 3, "金毛");</code> 父类引用指向子类对象，编译时看父类，运行时看子类（动态绑定）。</p>
+    <p><strong>向下转型：</strong><code>Dog d = (Dog) a;</code> 需要强转，且必须确保原对象确实是该类型。使用 <code>instanceof</code> 检查后再转型。</p>
+    <p><strong>编译看左边，运行看右边：</strong>编译器检查父类是否有该方法，运行时调用子类重写的方法。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="cm">// 父类 Animal（同上）</span>
+
+<span class="kw">public class</span> <span class="tp">Cat</span> <span class="kw">extends</span> <span class="tp">Animal</span> {
+    <span class="kw">private boolean</span> isIndoor;
+
+    <span class="kw">public</span> <span class="fn">Cat</span>(<span class="tp">String</span> name, <span class="kw">int</span> age, <span class="kw">boolean</span> isIndoor) {
+        <span class="kw">super</span>(name, age);
+        <span class="kw">this</span>.isIndoor = isIndoor;
+    }
+
+    <span class="kw">public void</span> <span class="fn">meow</span>() {
+        System.out.<span class="fn">println</span>(name + <span class="st">" 喵喵叫！"</span>);
+    }
+
+    @Override
+    <span class="kw">public void</span> <span class="fn">eat</span>() {
+        System.out.<span class="fn">println</span>(name + <span class="st">" 在吃鱼"</span>);
+    }
+}
+
+<span class="cm">// 多态演示</span>
+<span class="kw">public class</span> <span class="tp">PolymorphismDemo</span> {
+    <span class="cm">// 使用父类类型作为参数（多态的核心体现）</span>
+    <span class="kw">public static void</span> <span class="fn">describeAnimal</span>(<span class="tp">Animal</span> animal) {
+        System.out.<span class="fn">println</span>(animal);         <span class="cm">// 动态绑定到子类 toString</span>
+        animal.<span class="fn">eat</span>();                        <span class="cm">// 动态绑定到子类 eat</span>
+        animal.<span class="fn">sleep</span>();                      <span class="cm">// 调用父类 sleep</span>
+
+        <span class="cm">// 向下转型（需先检查类型）</span>
+        <span class="kw">if</span> (animal <span class="kw">instanceof</span> <span class="tp">Dog</span> dog) {  <span class="cm">// Java 16+ 模式匹配</span>
+            dog.<span class="fn">bark</span>();
+        } <span class="kw">else if</span> (animal <span class="kw">instanceof</span> <span class="tp">Cat</span> cat) {
+            cat.<span class="fn">meow</span>();
+        }
+        System.out.<span class="fn">println</span>();
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 多态：父类引用指向不同子类对象</span>
+        <span class="tp">Animal</span> dog = <span class="kw">new</span> <span class="tp">Dog</span>(<span class="st">"旺财"</span>, <span class="nm">3</span>, <span class="st">"金毛"</span>);
+        <span class="tp">Animal</span> cat = <span class="kw">new</span> <span class="tp">Cat</span>(<span class="st">"咪咪"</span>, <span class="nm">2</span>, <span class="kw">true</span>);
+
+        <span class="fn">describeAnimal</span>(dog);  <span class="cm">// 调用 Dog 的 eat 和 bark</span>
+        <span class="fn">describeAnimal</span>(cat);  <span class="cm">// 调用 Cat 的 eat 和 meow</span>
+
+        <span class="cm">// 多态数组</span>
+        <span class="tp">Animal</span>[] animals = {
+            <span class="kw">new</span> <span class="tp">Dog</span>(<span class="st">"大黄"</span>, <span class="nm">5</span>, <span class="st">"中华田园犬"</span>),
+            <span class="kw">new</span> <span class="tp">Cat</span>(<span class="st">"小花"</span>, <span class="nm">3</span>, <span class="kw">false</span>),
+            <span class="kw">new</span> <span class="tp">Dog</span>(<span class="st">"哈利"</span>, <span class="nm">2</span>, <span class="st">"哈士奇"</span>)
+        };
+
+        <span class="kw">for</span> (<span class="tp">Animal</span> a : animals) {
+            a.<span class="fn">eat</span>();  <span class="cm">// 每个动物的 eat 行为不同</span>
+        }
+    }
+}</code></pre>
+</div>
+
+<div class="warning">向下转型前务必使用 <code>instanceof</code> 检查，否则会抛出 <code>ClassCastException</code>。Java 16+ 支持 <code>instanceof</code> 模式匹配，自动完成类型转换。</div>
+
+<!-- ==================== 13. 抽象类与接口 ==================== -->
+<h2 id="sec13">13. 抽象类与接口</h2>
+
+<h3>13.1 抽象类</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="cm">// 抽象类：不能实例化，包含抽象方法（没有方法体）</span>
+<span class="kw">public abstract class</span> <span class="tp">Shape</span> {
+    <span class="kw">private</span> <span class="tp">String</span> color;
+
+    <span class="kw">public</span> <span class="fn">Shape</span>(<span class="tp">String</span> color) {
+        <span class="kw">this</span>.color = color;
+    }
+
+    <span class="cm">// 抽象方法：子类必须实现</span>
+    <span class="kw">public abstract double</span> <span class="fn">getArea</span>();
+    <span class="kw">public abstract double</span> <span class="fn">getPerimeter</span>();
+
+    <span class="cm">// 普通方法：子类可直接使用或重写</span>
+    <span class="kw">public void</span> <span class="fn">display</span>() {
+        System.out.<span class="fn">printf</span>(<span class="st">"%s 的面积: %.2f, 周长: %.2f%n"</span>,
+                <span class="fn">getClass</span>().getSimpleName(), <span class="fn">getArea</span>(), <span class="fn">getPerimeter</span>());
+    }
+
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">getColor</span>() { <span class="kw">return</span> color; }
+}
+
+<span class="kw">public class</span> <span class="tp">Circle</span> <span class="kw">extends</span> <span class="tp">Shape</span> {
+    <span class="kw">private double</span> radius;
+
+    <span class="kw">public</span> <span class="fn">Circle</span>(<span class="tp">String</span> color, <span class="kw">double</span> radius) {
+        <span class="kw">super</span>(color);
+        <span class="kw">this</span>.radius = radius;
+    }
+
+    @Override
+    <span class="kw">public double</span> <span class="fn">getArea</span>() { <span class="kw">return</span> Math.PI * radius * radius; }
+
+    @Override
+    <span class="kw">public double</span> <span class="fn">getPerimeter</span>() { <span class="kw">return</span> <span class="nm">2</span> * Math.PI * radius; }
+}
+
+<span class="kw">public class</span> <span class="tp">Rectangle</span> <span class="kw">extends</span> <span class="tp">Shape</span> {
+    <span class="kw">private double</span> width, height;
+
+    <span class="kw">public</span> <span class="fn">Rectangle</span>(<span class="tp">String</span> color, <span class="kw">double</span> w, <span class="kw">double</span> h) {
+        <span class="kw">super</span>(color);
+        <span class="kw">this</span>.width = w;
+        <span class="kw">this</span>.height = h;
+    }
+
+    @Override
+    <span class="kw">public double</span> <span class="fn">getArea</span>() { <span class="kw">return</span> width * height; }
+
+    @Override
+    <span class="kw">public double</span> <span class="fn">getPerimeter</span>() { <span class="kw">return</span> <span class="nm">2</span> * (width + height); }
+}</code></pre>
+</div>
+
+<h3>13.2 接口</h3>
+
+<div class="principle">
+    <div class="principle-title">接口 vs 抽象类</div>
+    <p><strong>接口（Interface）：</strong>纯粹的行为契约，定义方法签名（Java 8 前不能有实现）。类用 <code>implements</code> 实现接口，支持<strong>多实现</strong>。</p>
+    <p><strong>抽象类：</strong>可以有字段、构造方法、具体方法和抽象方法。类用 <code>extends</code> 继承，只能单继承。</p>
+    <p><strong>选择原则：</strong>"是一个"关系用继承（<code>Dog is Animal</code>），"能做某事"用接口（<code>Dog is Serializable</code>）。</p>
+    <p><strong>Java 8+ 接口新特性：</strong>默认方法（<code>default</code>）提供默认实现，静态方法可直接通过接口调用。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="cm">// 接口定义</span>
+<span class="kw">public interface</span> <span class="tp">Flyable</span> {
+    <span class="kw">void</span> <span class="fn">fly</span>();  <span class="cm">// 抽象方法（默认 public abstract）</span>
+
+    <span class="cm">// 默认方法（Java 8+）</span>
+    <span class="kw">default</span> <span class="kw">void</span> <span class="fn">land</span>() {
+        System.out.<span class="fn">println</span>(<span class="st">"降落中..."</span>);
+    }
+
+    <span class="cm">// 静态方法（Java 8+）</span>
+    <span class="kw">static</span> <span class="kw">boolean</span> <span class="fn">canFly</span>(<span class="tp">Flyable</span> f) {
+        <span class="kw">return</span> f != <span class="kw">null</span>;
+    }
+}
+
+<span class="kw">public interface</span> <span class="tp">Swimmable</span> {
+    <span class="kw">void</span> <span class="fn">swim</span>();
+}
+
+<span class="cm">// 多实现</span>
+<span class="kw">public class</span> <span class="tp">Duck</span> <span class="kw">extends</span> <span class="tp">Animal</span> <span class="kw">implements</span> <span class="tp">Flyable</span>, <span class="tp">Swimmable</span> {
+
+    <span class="kw">public</span> <span class="fn">Duck</span>(<span class="tp">String</span> name, <span class="kw">int</span> age) {
+        <span class="kw">super</span>(name, age);
+    }
+
+    @Override
+    <span class="kw">public void</span> <span class="fn">fly</span>() {
+        System.out.<span class="fn">println</span>(name + <span class="st">" 扇动翅膀飞行"</span>);
+    }
+
+    @Override
+    <span class="kw">public void</span> <span class="fn">swim</span>() {
+        System.out.<span class="fn">println</span>(name + <span class="st">" 在水面游动"</span>);
+    }
+
+    <span class="cm">// 接口方法冲突解决（当两个接口的默认方法相同时）</span>
+    @Override
+    <span class="kw">public void</span> <span class="fn">land</span>() {
+        <span class="tp">Flyable</span>.<span class="kw">super</span>.<span class="fn">land</span>();  <span class="cm">// 显式指定调用哪个接口的默认方法</span>
+        System.out.<span class="fn">println</span>(name + <span class="st">" 安全着陆"</span>);
+    }
+}
+
+<span class="cm">// 使用</span>
+<span class="kw">public class</span> <span class="tp">InterfaceDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="tp">Duck</span> duck = <span class="kw">new</span> <span class="tp">Duck</span>(<span class="st">"唐老鸭"</span>, <span class="nm">5</span>);
+        duck.<span class="fn">eat</span>();    <span class="cm">// 继承 Animal</span>
+        duck.<span class="fn">fly</span>();    <span class="cm">// 实现 Flyable</span>
+        duck.<span class="fn">swim</span>();   <span class="cm">// 实现 Swimmable</span>
+        duck.<span class="fn">land</span>();   <span class="cm">// 调用默认方法</span>
+
+        <span class="cm">// 接口作为类型</span>
+        <span class="tp">Flyable</span> f = duck;  <span class="cm">// 鸭子"是一个" Flyable</span>
+        f.<span class="fn">fly</span>();
+
+        <span class="cm">// 函数式接口（只有一个抽象方法的接口）</span>
+        <span class="tp">Flyable</span> lambda = () -> System.out.<span class="fn">println</span>(<span class="st">"Lambda 飞行"</span>);
+        lambda.<span class="fn">fly</span>();
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 14. 内部类 ==================== -->
+<h2 id="sec14">14. 内部类</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">OuterClass</span> {
+    <span class="kw">private</span> <span class="kw">int</span> outerField = <span class="nm">10</span>;
+
+    <span class="cm">// 1. 成员内部类：可以访问外部类所有成员</span>
+    <span class="kw">public class</span> <span class="tp">InnerClass</span> {
+        <span class="kw">public void</span> <span class="fn">show</span>() {
+            System.out.<span class="fn">println</span>(<span class="st">"外部字段: "</span> + outerField);
+            System.out.<span class="fn">println</span>(<span class="st">"外部类引用: "</span> + OuterClass.<span class="kw">this</span>);
+        }
+    }
+
+    <span class="cm">// 2. 静态内部类：只能访问外部类的静态成员</span>
+    <span class="kw">public static class</span> <span class="tp">StaticInnerClass</span> {
+        <span class="kw">public void</span> <span class="fn">show</span>() {
+            System.out.<span class="fn">println</span>(<span class="st">"我是静态内部类"</span>);
+            <span class="cm">// System.out.println(outerField);  // 编译错误！</span>
+        }
+    }
+
+    <span class="cm">// 3. 局部内部类：定义在方法中</span>
+    <span class="kw">public void</span> <span class="fn">method</span>() {
+        <span class="kw">final</span> <span class="kw">int</span> localVar = <span class="nm">20</span>;
+        <span class="kw">class</span> <span class="tp">LocalInnerClass</span> {
+            <span class="kw">void</span> <span class="fn">show</span>() {
+                System.out.<span class="fn">println</span>(<span class="st">"外部字段: "</span> + outerField);
+                System.out.<span class="fn">println</span>(<span class="st">"局部变量: "</span> + localVar);
+            }
+        }
+        <span class="kw">new</span> <span class="tp">LocalInnerClass</span>().<span class="fn">show</span>();
+    }
+
+    <span class="cm">// 4. 匿名内部类：没有类名，通常用于接口/抽象类的快速实现</span>
+    <span class="kw">public</span> <span class="tp">Flyable</span> <span class="fn">getFlyer</span>() {
+        <span class="kw">return new</span> <span class="tp">Flyable</span>() {
+            @Override
+            <span class="kw">public void</span> <span class="fn">fly</span>() {
+                System.out.<span class="fn">println</span>(<span class="st">"匿名内部类在飞行"</span>);
+            }
+        };
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="tp">OuterClass</span> outer = <span class="kw">new</span> <span class="tp">OuterClass</span>();
+
+        <span class="cm">// 创建成员内部类</span>
+        <span class="tp">OuterClass</span>.<span class="tp">InnerClass</span> inner = outer.<span class="kw">new</span> <span class="tp">InnerClass</span>();
+        inner.<span class="fn">show</span>();
+
+        <span class="cm">// 创建静态内部类</span>
+        <span class="tp">OuterClass</span>.<span class="tp">StaticInnerClass</span> staticInner =
+            <span class="kw">new</span> <span class="tp">OuterClass</span>.<span class="tp">StaticInnerClass</span>();
+        staticInner.<span class="fn">show</span>();
+
+        <span class="cm">// 局部内部类</span>
+        outer.<span class="fn">method</span>();
+
+        <span class="cm">// 匿名内部类</span>
+        outer.<span class="fn">getFlyer</span>().<span class="fn">fly</span>();
+    }
+}</code></pre>
+</div>
+
+<div class="tip">匿名内部类可以简化为 Lambda 表达式（当接口是函数式接口时）。例如：<code>() -> System.out.println("Lambda 飞行")</code> 等价于匿名内部类写法。</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// 局部内部类：定义在方法中，可以访问方法的 final 或 effectively final 变量</span>
+<span class="kw">public class</span> <span class="tp">LocalClassDemo</span> {
+    <span class="kw">public</span> <span class="tp">Runnable</span> <span class="fn">getTask</span>(<span class="tp">String</span> taskName) {
+        <span class="kw">final</span> <span class="kw">int</span> priority = <span class="nm">10</span>;  <span class="cm">// effectively final</span>
+
+        <span class="kw">class</span> <span class="tp">Task</span> <span class="kw">implements</span> <span class="tp">Runnable</span> {
+            <span class="kw">private</span> <span class="tp">String</span> name;
+
+            <span class="kw">public</span> <span class="fn">Task</span>(<span class="tp">String</span> name) {
+                <span class="kw">this</span>.name = name;
+            }
+
+            @Override
+            <span class="kw">public void</span> <span class="fn">run</span>() {
+                System.out.<span class="fn">printf</span>(<span class="st">"Task: %s, Priority: %d, Thread: %s%n"</span>,
+                    name, priority, <span class="tp">Thread</span>.<span class="fn">currentThread</span>().<span class="fn">getName</span>());
+            }
+        }
+
+        <span class="kw">return new</span> <span class="tp">Task</span>(taskName);
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="tp">LocalClassDemo</span> demo = <span class="kw">new</span> <span class="tp">LocalClassDemo</span>();
+        demo.<span class="fn">getTask</span>(<span class="st">"Important"</span>).<span class="fn">run</span>();
+    }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// 匿名内部类的常见使用场景</span>
+<span class="kw">import</span> java.util.*;
+
+<span class="kw">public class</span> <span class="tp">AnonymousClassDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 1. 实现接口的匿名内部类</span>
+        <span class="tp">Comparator</span>&lt;<span class="tp">String</span>&gt;长度排序 = <span class="kw">new</span> <span class="tp">Comparator</span>&lt;&gt;() {
+            @Override
+            <span class="kw">public int</span> <span class="fn">compare</span>(<span class="tp">String</span> s1, <span class="tp">String</span> s2) {
+                <span class="kw">return</span> Integer.<span class="fn">compare</span>(s1.<span class="fn">length</span>(), s2.<span class="fn">length</span>());
+            }
+        };
+
+        <span class="tp">List</span>&lt;<span class="tp">String</span>&gt; names = <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;(<span class="tp">List</span>.<span class="fn">of</span>(<span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Charlie"</span>));
+        names.<span class="fn">sort</span>(长度排序);
+        System.out.<span class="fn">println</span>(names);  <span class="cm">// [Bob, Alice, Charlie]</span>
+
+        <span class="cm">// 2. 抽象类的匿名内部类</span>
+        <span class="kw">abstract class</span> <span class="tp">Greeting</span> {
+            <span class="kw">abstract</span> <span class="tp">String</span> <span class="fn">greet</span>();
+        }
+
+        <span class="tp">Greeting</span> formal = <span class="kw">new</span> <span class="tp">Greeting</span>() {
+            @Override
+            <span class="tp">String</span> <span class="fn">greet</span>() { <span class="kw">return</span> <span class="st">"Good morning, sir."</span>; }
+        };
+
+        <span class="tp">Greeting</span> casual = <span class="kw">new</span> <span class="tp">Greeting</span>() {
+            @Override
+            <span class="tp">String</span> <span class="fn">greet</span>() { <span class="kw">return</span> <span class="st">"Hey, what's up!"</span>; }
+        };
+
+        System.out.<span class="fn">println</span>(formal.<span class="fn">greet</span>());
+        System.out.<span class="fn">println</span>(casual.<span class="fn">greet</span>());
+
+        <span class="cm">// 3. 双括号初始化（Double-brace Initialization）</span>
+        <span class="tp">Set</span>&lt;<span class="tp">String</span>&gt; colors = <span class="kw">new</span> <span class="tp">HashSet</span>&lt;&gt;() {{
+            <span class="fn">add</span>(<span class="st">"red"</span>);
+            <span class="fn">add</span>(<span class="st">"green"</span>);
+            <span class="fn">add</span>(<span class="st">"blue"</span>);
+        }};
+        System.out.<span class="fn">println</span>(colors);
+    }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// 静态内部类 vs 成员内部类对比</span>
+<span class="kw">public class</span> <span class="tp">NestedClassComparison</span> {
+    <span class="kw">private</span> <span class="kw">static</span> <span class="tp">String</span> staticField = <span class="st">"静态字段"</span>;
+    <span class="kw">private</span> <span class="tp">String</span> instanceField = <span class="st">"实例字段"</span>;
+
+    <span class="cm">// 静态内部类：不持有外部类引用，更节省内存</span>
+    <span class="kw">public static class</span> <span class="tp">Builder</span>&lt;<span class="tp">T</span>&gt; {
+        <span class="kw">private</span> <span class="tp">T</span> data;
+        <span class="kw">private</span> <span class="kw">int</span> capacity;
+
+        <span class="kw">public</span> <span class="tp">Builder</span>&lt;<span class="tp">T</span>&gt; <span class="fn">data</span>(<span class="tp">T</span> data) {
+            <span class="kw">this</span>.data = data;
+            <span class="kw">return this</span>;
+        }
+
+        <span class="kw">public</span> <span class="tp">Builder</span>&lt;<span class="tp">T</span>&gt; <span class="fn">capacity</span>(<span class="kw">int</span> capacity) {
+            <span class="kw">this</span>.capacity = capacity;
+            <span class="kw">return this</span>;
+        }
+
+        <span class="kw">public</span> <span class="tp">Container</span>&lt;<span class="tp">T</span>&gt; <span class="fn">build</span>() {
+            System.out.<span class="fn">println</span>(<span class="st">"静态字段: "</span> + staticField);
+            <span class="cm">// System.out.println(instanceField);  // 编译错误！</span>
+            <span class="kw">return new</span> <span class="tp">Container</span>&lt;&gt;(data, capacity);
+        }
+    }
+
+    <span class="kw">public record</span> <span class="tp">Container</span>&lt;<span class="tp">T</span>&gt;(<span class="tp">T</span> data, <span class="kw">int</span> capacity) {}
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 使用静态内部类 Builder（链式调用）</span>
+        <span class="tp">Container</span>&lt;<span class="tp">String</span>&gt; container = <span class="kw">new</span> <span class="tp">Builder</span>&lt;<span class="tp">String</span>&gt;()
+            .<span class="fn">data</span>(<span class="st">"Hello"</span>)
+            .<span class="fn">capacity</span>(<span class="nm">100</span>)
+            .<span class="fn">build</span>();
+        System.out.<span class="fn">println</span>(container);
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 15. 包装类 ==================== -->
+<h2 id="sec15">15. 包装类</h2>
+
+<div class="principle">
+    <div class="principle-title">自动装箱与拆箱</div>
+    <p><strong>包装类：</strong>基本类型对应的引用类型（<code>int→Integer, double→Double, boolean→Boolean</code> 等）。提供类型转换、解析字符串、常量等工具方法。</p>
+    <p><strong>自动装箱（Autoboxing）：</strong>基本类型自动转换为包装类，如 <code>Integer i = 42;</code>，编译器自动调用 <code>Integer.valueOf(42)</code>。</p>
+    <p><strong>自动拆箱（Unboxing）：</strong>包装类自动转换为基本类型，如 <code>int n = i;</code>，编译器自动调用 <code>i.intValue()</code>。</p>
+    <p><strong>缓存机制：</strong><code>Integer.valueOf()</code> 对 -128~127 范围内的值使用缓存，所以 <code>Integer a = 127; Integer b = 127; a == b</code> 为 true，超出范围则为 false。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">WrapperDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 自动装箱</span>
+        <span class="tp">Integer</span> a = <span class="nm">100</span>;       <span class="cm">// Integer.valueOf(100)</span>
+        <span class="tp">Double</span> b = <span class="nm">3.14</span>;      <span class="cm">// Double.valueOf(3.14)</span>
+        <span class="tp">Boolean</span> c = <span class="kw">true</span>;    <span class="cm">// Boolean.valueOf(true)</span>
+
+        <span class="cm">// 自动拆箱</span>
+        <span class="kw">int</span> n = a;             <span class="cm">// a.intValue()</span>
+        <span class="kw">double</span> d = b;          <span class="cm">// b.doubleValue()</span>
+
+        <span class="cm">// 缓存陷阱</span>
+        <span class="tp">Integer</span> x = <span class="nm">127</span>, y = <span class="nm">127</span>;
+        System.out.<span class="fn">println</span>(x == y);   <span class="cm">// true（缓存范围）</span>
+
+        <span class="tp">Integer</span> m = <span class="nm">200</span>, n2 = <span class="nm">200</span>;
+        System.out.<span class="fn">println</span>(m == n2);  <span class="cm">// false（超出缓存范围）</span>
+        System.out.<span class="fn">println</span>(m.<span class="fn">equals</span>(n2));  <span class="cm">// true（用 equals 比较内容）</span>
+
+        <span class="cm">// 常用方法</span>
+        System.out.<span class="fn">println</span>(Integer.<span class="fn">MAX_VALUE</span>);     <span class="cm">// 2147483647</span>
+        System.out.<span class="fn">println</span>(Integer.<span class="fn">MIN_VALUE</span>);     <span class="cm">// -2147483648</span>
+        System.out.<span class="fn">println</span>(Integer.<span class="fn">parseInt</span>(<span class="st">"123"</span>)); <span class="cm">// 123</span>
+        System.out.<span class="fn">println</span>(Integer.<span class="fn">toBinaryString</span>(<span class="nm">10</span>));  <span class="cm">// "1010"</span>
+        System.out.<span class="fn">println</span>(Integer.<span class="fn">toHexString</span>(<span class="nm">255</span>));  <span class="cm">// "ff"</span>
+        System.out.<span class="fn">println</span>(Integer.<span class="fn">compare</span>(<span class="nm">10</span>, <span class="nm">20</span>));  <span class="cm">// -1</span>
+
+        <span class="cm">// Optional（防止空指针）</span>
+        <span class="tp">Optional</span>&lt;<span class="tp">Integer</span>&gt; opt = <span class="tp">Optional</span>.<span class="fn">ofNullable</span>(<span class="kw">null</span>);
+        <span class="kw">int</span> value = opt.<span class="fn">orElse</span>(<span class="nm">0</span>);  <span class="cm">// null 时使用默认值</span>
+        System.out.<span class="fn">println</span>(value);  <span class="cm">// 0</span>
+    }
+}</code></pre>
+</div>
+
+<div class="danger">包装类比较时务必使用 <code>equals()</code> 而非 <code>==</code>。<code>==</code> 比较的是引用地址，超出缓存范围时即使值相同也会返回 false。</div>
+
+<!-- ==================== 16. 集合框架 ==================== -->
+<h2 id="sec16">16. 集合框架</h2>
+
+<div class="principle">
+    <div class="principle-title">Java 集合框架概览</div>
+    <p><strong>Collection 体系：</strong>List（有序可重复）、Set（无序不重复）、Queue（队列）。常用的实现类：ArrayList、LinkedList、HashSet、TreeSet、PriorityQueue。</p>
+    <p><strong>Map 体系：</strong>键值对映射。常用实现：HashMap（哈希表，O(1) 查找）、TreeMap（红黑树，有序）、LinkedHashMap（保持插入顺序）、ConcurrentHashMap（线程安全）。</p>
+    <p><strong>选择原则：</strong>需要快速随机访问用 ArrayList，频繁增删用 LinkedList，去重用 HashSet，排序用 TreeSet，键值对用 HashMap。</p>
+</div>
+
+<h3>16.1 List</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">import</span> java.util.*;
+
+<span class="kw">public class</span> <span class="tp">ListDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// ArrayList：基于动态数组，随机访问快 O(1)</span>
+        <span class="tp">List</span>&lt;<span class="tp">String</span>&gt; list = <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+        list.<span class="fn">add</span>(<span class="st">"Java"</span>);
+        list.<span class="fn">add</span>(<span class="st">"Python"</span>);
+        list.<span class="fn">add</span>(<span class="st">"Go"</span>);
+        list.<span class="fn">add</span>(<span class="nm">1</span>, <span class="st">"Rust"</span>);  <span class="cm">// 指定位置插入</span>
+
+        System.out.<span class="fn">println</span>(list.<span class="fn">get</span>(<span class="nm">0</span>));        <span class="cm">// "Java"</span>
+        System.out.<span class="fn">println</span>(list.<span class="fn">size</span>());         <span class="cm">// 4</span>
+        System.out.<span class="fn">println</span>(list.<span class="fn">contains</span>(<span class="st">"Go"</span>)); <span class="cm">// true</span>
+        list.<span class="fn">remove</span>(<span class="st">"Python"</span>);
+
+        <span class="cm">// 遍历方式</span>
+        <span class="cm">// 1. 普通 for</span>
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i < list.<span class="fn">size</span>(); i++) {
+            System.out.<span class="fn">print</span>(list.<span class="fn">get</span>(i) + <span class="st">" "</span>);
+        }
+
+        <span class="cm">// 2. for-each</span>
+        <span class="kw">for</span> (<span class="tp">String</span> s : list) {
+            System.out.<span class="fn">print</span>(s + <span class="st">" "</span>);
+        }
+
+        <span class="cm">// 3. 迭代器</span>
+        <span class="tp">Iterator</span>&lt;<span class="tp">String</span>&gt; it = list.<span class="fn">iterator</span>();
+        <span class="kw">while</span> (it.<span class="fn">hasNext</span>()) {
+            System.out.<span class="fn">print</span>(it.<span class="fn">next</span>() + <span class="st">" "</span>);
+        }
+
+        <span class="cm">// 4. Lambda</span>
+        list.<span class="fn">forEach</span>(s -> System.out.<span class="fn">print</span>(s + <span class="st">" "</span>));
+
+        <span class="cm">// 排序</span>
+        list.<span class="fn">sort</span>(<span class="tp">Comparator</span>.<span class="fn">naturalOrder</span>());
+        list.<span class="fn">sort</span>(<span class="tp">Comparator</span>.<span class="fn">reverseOrder</span>());
+
+        <span class="cm">// 转数组</span>
+        <span class="tp">String</span>[] array = list.<span class="fn">toArray</span>(<span class="kw">new</span> <span class="tp">String</span>[<span class="nm">0</span>]);
+
+        <span class="cm">// 不可变 List（Java 9+）</span>
+        <span class="tp">List</span>&lt;<span class="tp">String</span>&gt; immutable = <span class="tp">List</span>.<span class="fn">of</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>);
+        System.out.<span class="fn">println</span>(immutable);
+    }
+}</code></pre>
+</div>
+
+<h3>16.2 Set 与 Map</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">public class</span> <span class="tp">SetMapDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// HashSet：去重，无序</span>
+        <span class="tp">Set</span>&lt;<span class="tp">String</span>&gt; set = <span class="kw">new</span> <span class="tp">HashSet</span>&lt;&gt;();
+        set.<span class="fn">add</span>(<span class="st">"Java"</span>);
+        set.<span class="fn">add</span>(<span class="st">"Python"</span>);
+        set.<span class="fn">add</span>(<span class="st">"Java"</span>);  <span class="cm">// 重复，不会添加</span>
+        System.out.<span class="fn">println</span>(set);  <span class="cm">// [Java, Python]（顺序不固定）</span>
+
+        <span class="cm">// TreeSet：排序（自然排序或自定义 Comparator）</span>
+        <span class="tp">TreeSet</span>&lt;<span class="tp">Integer</span>&gt; treeSet = <span class="kw">new</span> <span class="tp">TreeSet</span>&lt;&gt;();
+        treeSet.<span class="fn">add</span>(<span class="nm">30</span>);
+        treeSet.<span class="fn">add</span>(<span class="nm">10</span>);
+        treeSet.<span class="fn">add</span>(<span class="nm">20</span>);
+        System.out.<span class="fn">println</span>(treeSet);  <span class="cm">// [10, 20, 30]（自动排序）</span>
+        System.out.<span class="fn">println</span>(treeSet.<span class="fn">first</span>());  <span class="cm">// 10</span>
+        System.out.<span class="fn">println</span>(treeSet.<span class="fn">last</span>());   <span class="cm">// 30</span>
+
+        <span class="cm">// HashMap：键值对</span>
+        <span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">Integer</span>&gt; scores = <span class="kw">new</span> <span class="tp">HashMap</span>&lt;&gt;();
+        scores.<span class="fn">put</span>(<span class="st">"张三"</span>, <span class="nm">95</span>);
+        scores.<span class="fn">put</span>(<span class="st">"李四"</span>, <span class="nm">88</span>);
+        scores.<span class="fn">put</span>(<span class="st">"王五"</span>, <span class="nm">92</span>);
+
+        System.out.<span class="fn">println</span>(scores.<span class="fn">get</span>(<span class="st">"张三"</span>));      <span class="cm">// 95</span>
+        System.out.<span class="fn">println</span>(scores.<span class="fn">containsKey</span>(<span class="st">"李四"</span>)); <span class="cm">// true</span>
+        scores.<span class="fn">putIfAbsent</span>(<span class="st">"赵六"</span>, <span class="nm">78</span>);  <span class="cm">// 不存在时才放入</span>
+        scores.<span class="fn">merge</span>(<span class="st">"张三"</span>, <span class="nm">5</span>, Integer::sum);  <span class="cm">// 张三: 95+5=100</span>
+
+        <span class="cm">// 遍历 Map</span>
+        <span class="kw">for</span> (<span class="tp">Map</span>.<span class="tp">Entry</span>&lt;<span class="tp">String</span>, <span class="tp">Integer</span>&gt; entry : scores.<span class="fn">entrySet</span>()) {
+            System.out.<span class="fn">printf</span>(<span class="st">"%s: %d%n"</span>, entry.<span class="fn">getKey</span>(), entry.<span class="fn">getValue</span>());
+        }
+
+        <span class="cm">// Java 8+ forEach</span>
+        scores.<span class="fn">forEach</span>((name, score) ->
+            System.out.<span class="fn">printf</span>(<span class="st">"%s -> %d%n"</span>, name, score));
+
+        <span class="cm">// 获取或默认值</span>
+        <span class="kw">int</span> score = scores.<span class="fn">getOrDefault</span>(<span class="st">"不存在"</span>, <span class="nm">0</span>);
+
+        <span class="cm">// 计算频率（经典用法）</span>
+        <span class="tp">String</span> text = <span class="st">"hello world hello java"</span>;
+        <span class="tp">Map</span>&lt;<span class="tp">Character</span>, <span class="tp">Integer</span>&gt; freq = <span class="kw">new</span> <span class="tp">HashMap</span>&lt;&gt;();
+        <span class="kw">for</span> (<span class="kw">char</span> c : text.<span class="fn">toCharArray</span>()) {
+            freq.<span class="fn">merge</span>(c, <span class="nm">1</span>, Integer::sum);
+        }
+        System.out.<span class="fn">println</span>(freq);
+    }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// Stream API 高级操作：分组、分区、归约</span>
+<span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">List</span>&lt;<span class="tp">Student</span>&gt;&gt; byGrade = students.<span class="fn">stream</span>()
+    .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">groupingBy</span>(<span class="tp">Student</span>::<span class="fn">getGrade</span>));
+
+<span class="cm">// 多级分组</span>
+<span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">Map</span>&lt;<span class="tp">Integer</span>, <span class="tp">List</span>&lt;<span class="tp">Student</span>&gt;&gt;&gt; multiGroup = students.<span class="fn">stream</span>()
+    .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">groupingBy</span>(
+        <span class="tp">Student</span>::<span class="fn">getGrade</span>,
+        <span class="tp">Collectors</span>.<span class="fn">groupingBy</span>(<span class="tp">Student</span>::<span class="fn">getAge</span>)
+    ));
+
+<span class="cm">// 分区（true/false 两组）</span>
+<span class="tp">Map</span>&lt;<span class="tp">Boolean</span>, <span class="tp">List</span>&lt;<span class="tp">Student</span>&gt;&gt; passed = students.<span class="fn">stream</span>()
+    .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">partitioningBy</span>(s -> s.<span class="fn">getScore</span>() >= <span class="nm">60</span>));
+
+<span class="cm">// 统计每组人数</span>
+<span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">Long</span>&gt; countByGrade = students.<span class="fn">stream</span>()
+    .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">groupingBy</span>(
+        <span class="tp">Student</span>::<span class="fn">getGrade</span>,
+        <span class="tp">Collectors</span>.<span class="fn">counting</span>()
+    ));</code></pre>
+</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// Collectors 常用模式：toMap, reducing, summarizing</span>
+<span class="cm">// toMap：将列表转换为 Map</span>
+<span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">Integer</span>&gt; nameToScore = students.<span class="fn">stream</span>()
+    .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">toMap</span>(
+        <span class="tp">Student</span>::<span class="fn">getName</span>,
+        <span class="tp">Student</span>::<span class="fn">getScore</span>
+    ));
+
+<span class="cm">// 处理重复键</span>
+<span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">Integer</span>&gt; safeMap = students.<span class="fn">stream</span>()
+    .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">toMap</span>(
+        <span class="tp">Student</span>::<span class="fn">getGrade</span>,
+        <span class="tp">Student</span>::<span class="fn">getScore</span>,
+        Integer::max  <span class="cm">// 重复键时取较高分</span>
+    ));
+
+<span class="cm">// reducing：自定义归约操作</span>
+<span class="tp">Optional</span>&lt;<span class="tp">Student</span>&gt; topStudent = students.<span class="fn">stream</span>()
+    .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">reducing</span>(
+        (s1, s2) -> s1.<span class="fn">getScore</span>() > s2.<span class="fn">getScore</span>() ? s1 : s2
+    ));
+
+<span class="cm">// summarizingInt：获取统计摘要</span>
+<span class="tp">IntSummaryStatistics</span> stats = students.<span class="fn">stream</span>()
+    .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">summarizingInt</span>(<span class="tp">Student</span>::<span class="fn">getScore</span>));
+System.out.<span class="fn">printf</span>(<span class="st">"平均: %.1f, 最高: %d, 最低: %d%n"</span>,
+    stats.<span class="fn">getAverage</span>(), stats.<span class="fn">getMax</span>(), stats.<span class="fn">getMin</span>());</code></pre>
+</div>
+
+<!-- ==================== 17. 泛型 ==================== -->
+<h2 id="sec17">17. 泛型</h2>
+
+<div class="principle">
+    <div class="principle-title">泛型的本质</div>
+    <p><strong>泛型（Generics）：</strong>参数化类型，允许在定义类、接口、方法时使用类型参数。编译后进行<strong>类型擦除</strong>，泛型信息只在编译期存在，运行时被替换为 Object 或上界类型。</p>
+    <p><strong>类型擦除：</strong><code>List&lt;String&gt;</code> 和 <code>List&lt;Integer&gt;</code> 在运行时都是 <code>List</code>，所以不能 <code>new T()</code> 或 <code>instanceof T</code>。</p>
+    <p><strong>通配符：</strong><code>?</code>（未知类型）、<code>? extends T</code>（上界通配符，读取）、<code>? super T</code>（下界通配符，写入）。遵循 PECS 原则：Producer Extends, Consumer Super。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="cm">// 泛型类</span>
+<span class="kw">public class</span> <span class="tp">Box</span>&lt;<span class="tp">T</span>&gt; {
+    <span class="kw">private</span> <span class="tp">T</span> content;
+
+    <span class="kw">public</span> <span class="fn">Box</span>(<span class="tp">T</span> content) { <span class="kw">this</span>.content = content; }
+    <span class="kw">public</span> <span class="tp">T</span> <span class="fn">getContent</span>() { <span class="kw">return</span> content; }
+    <span class="kw">public void</span> <span class="fn">setContent</span>(<span class="tp">T</span> content) { <span class="kw">this</span>.content = content; }
+
+    @Override
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">toString</span>() {
+        <span class="kw">return</span> <span class="st">"Box{"</span> + content + <span class="st">"}"</span>;
+    }
+}
+
+<span class="cm">// 泛型方法</span>
+<span class="kw">public class</span> <span class="tp">GenericMethod</span> {
+    <span class="kw">public static</span> &lt;<span class="tp">T</span>&gt; <span class="tp">T</span> <span class="fn">getFirst</span>(<span class="tp">List</span>&lt;<span class="tp">T</span>&gt; list) {
+        <span class="kw">return</span> list.<span class="fn">isEmpty</span>() ? <span class="kw">null</span> : list.<span class="fn">get</span>(<span class="nm">0</span>);
+    }
+
+    <span class="cm">// 有界泛型：T 必须是 Comparable 的子类</span>
+    <span class="kw">public static</span> &lt;<span class="tp">T</span> <span class="kw">extends</span> <span class="tp">Comparable</span>&lt;<span class="tp">T</span>&gt;&gt; <span class="tp">T</span> <span class="fn">max</span>(<span class="tp">T</span> a, <span class="tp">T</span> b) {
+        <span class="kw">return</span> a.<span class="fn">compareTo</span>(b) >= <span class="nm">0</span> ? a : b;
+    }
+
+    <span class="cm">// 多重边界</span>
+    <span class="kw">public static</span> &lt;<span class="tp">T</span> <span class="kw">extends</span> <span class="tp">Comparable</span>&lt;<span class="tp">T</span>&gt; &amp; <span class="tp">Serializable</span>&gt;
+    <span class="kw">void</span> <span class="fn">process</span>(<span class="tp">T</span> item) {
+        System.out.<span class="fn">println</span>(item);
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 使用泛型类</span>
+        <span class="tp">Box</span>&lt;<span class="tp">String</span>&gt; strBox = <span class="kw">new</span> <span class="tp">Box</span>&lt;&gt;(<span class="st">"Hello"</span>);
+        <span class="tp">Box</span>&lt;<span class="tp">Integer</span>&gt; intBox = <span class="kw">new</span> <span class="tp">Box</span>&lt;&gt;(<span class="nm">42</span>);
+        System.out.<span class="fn">println</span>(strBox);
+        System.out.<span class="fn">println</span>(intBox);
+
+        <span class="cm">// 使用泛型方法</span>
+        <span class="tp">List</span>&lt;<span class="tp">String</span>&gt; names = <span class="tp">List</span>.<span class="fn">of</span>(<span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Charlie"</span>);
+        System.out.<span class="fn">println</span>(<span class="fn">getFirst</span>(names));  <span class="cm">// "Alice"</span>
+
+        System.out.<span class="fn">println</span>(<span class="fn">max</span>(<span class="nm">10</span>, <span class="nm">20</span>));          <span class="cm">// 20</span>
+        System.out.<span class="fn">println</span>(<span class="fn">max</span>(<span class="st">"apple"</span>, <span class="st">"banana"</span>)); <span class="cm">// "banana"</span>
+
+        <span class="cm">// 通配符</span>
+        <span class="tp">Box</span>&lt;? <span class="kw">extends</span> <span class="tp">Number</span>&gt; numBox = <span class="kw">new</span> <span class="tp">Box</span>&lt;&gt;(<span class="nm">3.14</span>);
+        <span class="tp">Number</span> val = numBox.<span class="fn">getContent</span>();  <span class="cm">// 可以读取</span>
+        <span class="cm">// numBox.setContent(42);  // 编译错误！不能写入</span>
+    }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// 有界泛型：上界通配符 extends - 只读访问</span>
+<span class="kw">public static</span> &lt;<span class="tp">T</span> <span class="kw">extends</span> <span class="tp">Number</span>&gt; <span class="kw">double</span> <span class="fn">sum</span>(<span class="tp">List</span>&lt;<span class="tp">T</span>&gt; list) {
+    <span class="kw">double</span> total = <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="tp">T</span> item : list) {
+        total += item.<span class="fn">doubleValue</span>();
+    }
+    <span class="kw">return</span> total;
+}
+
+<span class="cm">// 使用示例</span>
+<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; ints = <span class="tp">List</span>.<span class="fn">of</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>);
+<span class="tp">List</span>&lt;<span class="tp">Double</span>&gt; doubles = <span class="tp">List</span>.<span class="fn">of</span>(<span class="nm">1.5</span>, <span class="nm">2.5</span>, <span class="nm">3.5</span>);
+System.out.<span class="fn">println</span>(<span class="fn">sum</span>(ints));    <span class="cm">// 6.0</span>
+System.out.<span class="fn">println</span>(<span class="fn">sum</span>(doubles)); <span class="cm">// 7.5</span></code></pre>
+</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// 通配符捕获：通过方法参数传递通配符类型</span>
+<span class="kw">public static</span> &lt;<span class="tp">T</span>&gt; <span class="kw">void</span> <span class="fn">swap</span>(<span class="tp">List</span>&lt;<span class="tp">T</span>&gt; list, <span class="kw">int</span> i, <span class="kw">int</span> j) {
+    <span class="tp">T</span> temp = list.<span class="fn">get</span>(i);
+    list.<span class="fn">set</span>(i, list.<span class="fn">get</span>(j));
+    list.<span class="fn">set</span>(j, temp);
+}
+
+<span class="cm">// 使用通配符捕获辅助方法</span>
+<span class="kw">public static</span> <span class="kw">void</span> <span class="fn">swapHelper</span>(<span class="tp">List</span>&lt;?&gt; list, <span class="kw">int</span> i, <span class="kw">int</span> j) {
+    <span class="fn">swap</span>(list, i, j);  <span class="cm">// 编译器推断 T 为 ?</span>
+}
+
+<span class="cm">// 下界通配符 super - 写入操作</span>
+<span class="kw">public static</span> &lt;<span class="tp">T</span>&gt; <span class="kw">void</span> <span class="fn">copy</span>(<span class="tp">List</span>&lt;? <span class="kw">super</span> <span class="tp">T</span>&gt; dest, <span class="tp">List</span>&lt;<span class="tp">T</span>&gt; src) {
+    <span class="kw">for</span> (<span class="tp">T</span> item : src) {
+        dest.<span class="fn">add</span>(item);
+    }
+}
+
+<span class="cm">// PECS 原则示例</span>
+<span class="tp">List</span>&lt;<span class="tp">Number</span>&gt; numbers = <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; integers = <span class="tp">List</span>.<span class="fn">of</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>);
+<span class="fn">copy</span>(numbers, integers);  <span class="cm">// Producer Extends, Consumer Super</span></code></pre>
+</div>
+
+<div class="warning">泛型不支持基本类型。<code>List&lt;int&gt;</code> 会编译错误，必须使用 <code>List&lt;Integer&gt;</code>。自动装箱会带来额外开销，但这是泛型的限制。</div>
+
+<!-- ==================== 18. 异常处理 ==================== -->
+<h2 id="sec18">18. 异常处理</h2>
+
+<div class="principle">
+    <div class="principle-title">Java 异常体系</div>
+    <p><strong>Throwable：</strong>所有异常的根类。分为 Error（系统级错误，不可恢复，如 OutOfMemoryError）和 Exception（程序可处理）。</p>
+    <p><strong>检查异常（Checked Exception）：</strong>编译期强制处理，如 <code>IOException</code>、<code>SQLException</code>。必须 try-catch 或 throws 声明。</p>
+    <p><strong>非检查异常（Unchecked/Runtime Exception）：</strong>运行时异常，如 <code>NullPointerException</code>、<code>ArrayIndexOutOfBoundsException</code>。不强制处理。</p>
+    <p><strong>try-with-resources（Java 7+）：</strong>自动关闭实现了 <code>AutoCloseable</code> 的资源，无需手动 finally 关闭。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">import</span> java.io.*;
+<span class="kw">import</span> java.util.*;
+
+<span class="kw">public class</span> <span class="tp">ExceptionDemo</span> {
+
+    <span class="cm">// 声明可能抛出的异常</span>
+    <span class="kw">public static</span> <span class="tp">String</span> <span class="fn">readFile</span>(<span class="tp">String</span> path) <span class="kw">throws</span> <span class="tp">IOException</span> {
+        <span class="kw">try</span> (<span class="tp">BufferedReader</span> br = <span class="kw">new</span> <span class="tp">BufferedReader</span>(
+                <span class="kw">new</span> <span class="tp">FileReader</span>(path))) {
+            <span class="kw">return</span> br.<span class="fn">readLine</span>();
+        } <span class="cm">// br 自动关闭，无需 finally</span>
+    }
+
+    <span class="cm">// 多重 catch</span>
+    <span class="kw">public static void</span> <span class="fn">processData</span>(<span class="tp">String</span> input) {
+        <span class="kw">try</span> {
+            <span class="kw">int</span> num = Integer.<span class="fn">parseInt</span>(input);
+            <span class="kw">int</span>[] arr = <span class="kw">new</span> <span class="kw">int</span>[<span class="nm">3</span>];
+            arr[<span class="nm">5</span>] = num;  <span class="cm">// 会抛出异常</span>
+        } <span class="kw">catch</span> (<span class="tp">NumberFormatException</span> e) {
+            System.out.<span class="fn">println</span>(<span class="st">"数字格式错误: "</span> + e.<span class="fn">getMessage</span>());
+        } <span class="kw">catch</span> (<span class="tp">ArrayIndexOutOfBoundsException</span> e) {
+            System.out.<span class="fn">println</span>(<span class="st">"数组越界: "</span> + e.<span class="fn">getMessage</span>());
+        } <span class="kw">catch</span> (<span class="tp">Exception</span> e) {  <span class="cm">// 捕获所有其他异常</span>
+            System.out.<span class="fn">println</span>(<span class="st">"未知错误: "</span> + e.<span class="fn">getMessage</span>());
+        } <span class="kw">finally</span> {
+            System.out.<span class="fn">println</span>(<span class="st">"无论如何都会执行"</span>);
+        }
+    }
+
+    <span class="cm">// 自定义异常</span>
+    <span class="kw">public static class</span> <span class="tp">BusinessException</span> <span class="kw">extends</span> <span class="tp">RuntimeException</span> {
+        <span class="kw">private</span> <span class="kw">int</span> code;
+
+        <span class="kw">public</span> <span class="fn">BusinessException</span>(<span class="kw">int</span> code, <span class="tp">String</span> message) {
+            <span class="kw">super</span>(message);
+            <span class="kw">this</span>.code = code;
+        }
+
+        <span class="kw">public int</span> <span class="fn">getCode</span>() { <span class="kw">return</span> code; }
+    }
+
+    <span class="cm">// 抛出自定义异常</span>
+    <span class="kw">public static void</span> <span class="fn">validate</span>(<span class="kw">int</span> age) {
+        <span class="kw">if</span> (age < <span class="nm">0</span> || age > <span class="nm">150</span>) {
+            <span class="kw">throw new</span> <span class="tp">BusinessException</span>(<span class="nm">400</span>,
+                <span class="st">"年龄无效: "</span> + age);
+        }
+        System.out.<span class="fn">println</span>(<span class="st">"年龄有效: "</span> + age);
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        processData(<span class="st">"abc"</span>);
+        processData(<span class="st">"42"</span>);
+
+        <span class="kw">try</span> {
+            validate(<span class="nm">-5</span>);
+        } <span class="kw">catch</span> (<span class="tp">BusinessException</span> e) {
+            System.out.<span class="fn">printf</span>(<span class="st">"错误码: %d, 消息: %s%n"</span>,
+                e.<span class="fn">getCode</span>(), e.<span class="fn">getMessage</span>());
+        }
+
+        <span class="cm">// Java 14+ 多重捕获（增强 try）</span>
+        <span class="kw">try</span> {
+            <span class="kw">var</span> data = <span class="tp">Map</span>.<span class="fn">of</span>(<span class="st">"key"</span>, <span class="st">"value"</span>);
+        } <span class="kw">catch</span> (<span class="tp">NullPointerException</span> | <span class="tp">IllegalArgumentException</span> e) {
+            System.out.<span class="fn">println</span>(<span class="st">"捕获异常: "</span> + e.<span class="fn">getClass</span>().getSimpleName());
+        }
+    }
+}</code></pre>
+</div>
+
+<div class="tip">不要捕获 Exception 或 Throwable，应该捕获具体的异常类型。异常处理的粒度要合适，过粗会隐藏问题，过细会增加代码复杂度。</div>
+
+<!-- ==================== 19. IO流 ==================== -->
+<h2 id="sec19">19. IO 流</h2>
+
+<div class="principle">
+    <div class="principle-title">Java IO 流分类</div>
+    <p><strong>按方向：</strong>输入流（InputStream/Reader，读取数据）、输出流（OutputStream/Writer，写入数据）。</p>
+    <p><strong>按数据类型：</strong>字节流（处理二进制数据，如图片）、字符流（处理文本数据，自动编码转换）。</p>
+    <p><strong>按功能：</strong>节点流（直接连接数据源）、处理流/包装流（对已有流进行增强，如缓冲流、转换流）。</p>
+    <p><strong>常用组合：</strong>BufferedReader + FileReader（文本读取）、BufferedWriter + FileWriter（文本写入）、BufferedInputStream/OutputStream（字节缓冲）。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">import</span> java.io.*;
+<span class="kw">import</span> java.nio.file.*;
+
+<span class="kw">public class</span> <span class="tp">IODemo</span> {
+
+    <span class="cm">// 文件读取（try-with-resources）</span>
+    <span class="kw">public static</span> <span class="tp">String</span> <span class="fn">readTextFile</span>(<span class="tp">String</span> path) <span class="kw">throws</span> <span class="tp">IOException</span> {
+        <span class="tp">StringBuilder</span> sb = <span class="kw">new</span> <span class="tp">StringBuilder</span>();
+        <span class="kw">try</span> (<span class="tp">BufferedReader</span> br = <span class="kw">new</span> <span class="tp">BufferedReader</span>(
+                <span class="kw">new</span> <span class="tp">FileReader</span>(path))) {
+            <span class="tp">String</span> line;
+            <span class="kw">while</span> ((line = br.<span class="fn">readLine</span>()) != <span class="kw">null</span>) {
+                sb.<span class="fn">append</span>(line).<span class="fn">append</span>(<span class="st">"\n"</span>);
+            }
+        }
+        <span class="kw">return</span> sb.<span class="fn">toString</span>();
+    }
+
+    <span class="cm">// 文件写入</span>
+    <span class="kw">public static void</span> <span class="fn">writeTextFile</span>(<span class="tp">String</span> path, <span class="tp">String</span> content)
+            <span class="kw">throws</span> <span class="tp">IOException</span> {
+        <span class="kw">try</span> (<span class="tp">BufferedWriter</span> bw = <span class="kw">new</span> <span class="tp">BufferedWriter</span>(
+                <span class="kw">new</span> <span class="tp">FileWriter</span>(path))) {
+            bw.<span class="fn">write</span>(content);
+        }
+    }
+
+    <span class="cm">// 文件复制</span>
+    <span class="kw">public static void</span> <span class="fn">copyFile</span>(<span class="tp">String</span> src, <span class="tp">String</span> dest)
+            <span class="kw">throws</span> <span class="tp">IOException</span> {
+        <span class="kw">try</span> (<span class="tp">InputStream</span> is = <span class="kw">new</span> <span class="tp">FileInputStream</span>(src);
+             <span class="tp">OutputStream</span> os = <span class="kw">new</span> <span class="tp">FileOutputStream</span>(dest)) {
+            <span class="kw">byte</span>[] buffer = <span class="kw">new</span> <span class="kw">byte</span>[<span class="nm">8192</span>];
+            <span class="kw">int</span> len;
+            <span class="kw">while</span> ((len = is.<span class="fn">read</span>(buffer)) != -<span class="nm">1</span>) {
+                os.<span class="fn">write</span>(buffer, <span class="nm">0</span>, len);
+            }
+        }
+    }
+
+    <span class="cm">// NIO Files 工具类（Java 7+，推荐）</span>
+    <span class="kw">public static void</span> <span class="fn">nioExamples</span>() <span class="kw">throws</span> <span class="tp">IOException</span> {
+        <span class="cm">// 读取所有行</span>
+        <span class="tp">Path</span> path = <span class="tp">Path</span>.<span class="fn">of</span>(<span class="st">"data.txt"</span>);
+        <span class="tp">String</span> content = <span class="tp">Files</span>.<span class="fn">readString</span>(path);
+        <span class="tp">String</span>[] lines = <span class="tp">Files</span>.<span class="fn">readString</span>(path).<span class="fn">split</span>(<span class="st">"\n"</span>);
+
+        <span class="cm">// 写入字符串</span>
+        <span class="tp">Files</span>.<span class="fn">writeString</span>(path, <span class="st">"Hello NIO"</span>);
+
+        <span class="cm">// 列出目录下所有文件</span>
+        <span class="kw">try</span> (<span class="kw">var</span> stream = <span class="tp">Files</span>.<span class="fn">list</span>(<span class="tp">Path</span>.<span class="fn">of</span>(<span class="st">"."</span>))) {
+            stream.<span class="fn">forEach</span>(System.out::<span class="fn">println</span>);
+        }
+
+        <span class="cm">// 查找文件</span>
+        <span class="kw">try</span> (<span class="kw">var</span> stream = <span class="tp">Files</span>.<span class="fn">find</span>(<span class="tp">Path</span>.<span class="fn">of</span>(<span class="st">"."</span>), <span class="nm">10</span>,
+                (p, attr) -> p.<span class="fn">toString</span>().<span class="fn">endsWith</span>(<span class="st">".java"</span>))) {
+            stream.<span class="fn">forEach</span>(System.out::<span class="fn">println</span>);
+        }
+
+        <span class="cm">// 文件复制（NIO）</span>
+        <span class="tp">Files</span>.<span class="fn">copy</span>(<span class="tp">Path</span>.<span class="fn">of</span>(<span class="st">"src.txt"</span>), <span class="tp">Path</span>.<span class="fn">of</span>(<span class="st">"dest.txt"</span>),
+            <span class="tp">StandardCopyOption</span>.REPLACE_EXISTING);
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) <span class="kw">throws</span> <span class="tp">IOException</span> {
+        <span class="fn">writeTextFile</span>(<span class="st">"test.txt"</span>, <span class="st">"Hello Java IO\n第二行内容"</span>);
+        <span class="tp">String</span> content = <span class="fn">readTextFile</span>(<span class="st">"test.txt"</span>);
+        System.out.<span class="fn">println</span>(content);
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 20. 多线程 ==================== -->
+<h2 id="sec20">20. 多线程</h2>
+
+<div class="principle">
+    <div class="principle-title">Java 多线程核心概念</div>
+    <p><strong>线程 vs 进程：</strong>进程是资源分配的基本单位，线程是 CPU 调度的基本单位。同一进程的多个线程共享堆内存，各自拥有独立的栈空间。</p>
+    <p><strong>创建线程的方式：</strong>继承 Thread 类、实现 Runnable 接口（推荐）、实现 Callable 接口（有返回值）、线程池 ExecutorService。</p>
+    <p><strong>线程同步：</strong>synchronized 关键字（对象锁/类锁）、ReentrantLock（显式锁）、volatile（保证可见性，不保证原子性）。</p>
+    <p><strong>线程状态：</strong>NEW → RUNNABLE → BLOCKED/WAITING/TIMED_WAITING → TERMINATED。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">import</span> java.util.concurrent.*;
+<span class="kw">import</span> java.util.concurrent.atomic.*;
+
+<span class="kw">public class</span> <span class="tp">ThreadDemo</span> {
+
+    <span class="cm">// 1. 实现 Runnable 接口（推荐）</span>
+    <span class="kw">static class</span> <span class="tp">MyTask</span> <span class="kw">implements</span> <span class="tp">Runnable</span> {
+        <span class="kw">private</span> <span class="tp">String</span> name;
+
+        <span class="kw">public</span> <span class="fn">MyTask</span>(<span class="tp">String</span> name) { <span class="kw">this</span>.name = name; }
+
+        @Override
+        <span class="kw">public void</span> <span class="fn">run</span>() {
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i < <span class="nm">5</span>; i++) {
+                System.out.<span class="fn">printf</span>(<span class="st">"%s: %d%n"</span>, name, i);
+                <span class="kw">try</span> {
+                    <span class="tp">Thread</span>.<span class="fn">sleep</span>(<span class="nm">100</span>);
+                } <span class="kw">catch</span> (<span class="tp">InterruptedException</span> e) {
+                    <span class="tp">Thread</span>.<span class="fn">currentThread</span>().<span class="fn">interrupt</span>();
+                }
+            }
+        }
+    }
+
+    <span class="cm">// 2. synchronized 同步</span>
+    <span class="kw">private static int</span> counter = <span class="nm">0</span>;
+    <span class="kw">private static</span> <span class="kw">final</span> <span class="tp">Object</span> lock = <span class="kw">new</span> <span class="tp">Object</span>();
+
+    <span class="kw">static void</span> <span class="fn">increment</span>() {
+        <span class="kw">synchronized</span> (lock) {
+            counter++;
+        }
+    }
+
+    <span class="cm">// 3. 线程池</span>
+    <span class="kw">public static void</span> <span class="fn">executorDemo</span>() <span class="kw">throws</span> <span class="tp">Exception</span> {
+        <span class="cm">// 固定大小线程池</span>
+        <span class="tp">ExecutorService</span> pool = <span class="tp">Executors</span>.<span class="fn">newFixedThreadPool</span>(<span class="nm">3</span>);
+
+        <span class="cm">// 提交任务</span>
+        <span class="tp">Future</span>&lt;<span class="tp">String</span>&gt; future = pool.<span class="fn">submit</span>(() -> {
+            <span class="tp">Thread</span>.<span class="fn">sleep</span>(<span class="nm">500</span>);
+            <span class="kw">return</span> <span class="st">"任务完成"</span>;
+        });
+
+        System.out.<span class="fn">println</span>(future.<span class="fn">get</span>());  <span class="cm">// 阻塞获取结果</span>
+
+        <span class="cm">// 提交多个任务</span>
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i < <span class="nm">5</span>; i++) {
+            <span class="kw">int</span> num = i;
+            pool.<span class="fn">execute</span>(() ->
+                System.out.<span class="fn">printf</span>(<span class="st">"线程 %s 执行任务 %d%n"</span>,
+                    <span class="tp">Thread</span>.<span class="fn">currentThread</span>().<span class="fn">getName</span>(), num));
+        }
+
+        pool.<span class="fn">shutdown</span>();
+        pool.<span class="fn">awaitTermination</span>(<span class="nm">5</span>, <span class="tp">TimeUnit</span>.SECONDS);
+    }
+
+    <span class="cm">// 4. CompletableFuture（Java 8+ 异步编程）</span>
+    <span class="kw">public static void</span> <span class="fn">completableFutureDemo</span>() <span class="kw">throws</span> <span class="tp">Exception</span> {
+        <span class="tp">CompletableFuture</span>&lt;<span class="tp">String</span>&gt; cf = <span class="tp">CompletableFuture</span>
+            .<span class="fn">supplyAsync</span>(() -> {
+                <span class="tp">Thread</span>.<span class="fn">sleep</span>(<span class="nm">500</span>);
+                <span class="kw">return</span> <span class="st">"Hello"</span>;
+            })
+            .<span class="fn">thenApply</span>(s -> s + <span class="st">" World"</span>)
+            .<span class="fn">thenApply</span>(String::toUpperCase);
+
+        System.out.<span class="fn">println</span>(cf.<span class="fn">join</span>());  <span class="cm">// "HELLO WORLD"</span>
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) <span class="kw">throws</span> <span class="tp">Exception</span> {
+        <span class="cm">// 启动线程</span>
+        <span class="tp">Thread</span> t1 = <span class="kw">new</span> <span class="tp">Thread</span>(<span class="kw">new</span> <span class="tp">MyTask</span>(<span class="st">"线程A"</span>));
+        <span class="tp">Thread</span> t2 = <span class="kw">new</span> <span class="tp">Thread</span>(<span class="kw">new</span> <span class="tp">MyTask</span>(<span class="st">"线程B"</span>));
+        t1.<span class="fn">start</span>();
+        t2.<span class="fn">start</span>();
+        t1.<span class="fn">join</span>();  <span class="cm">// 等待线程结束</span>
+        t2.<span class="fn">join</span>();
+
+        <span class="cm">// Lambda 简写</span>
+        <span class="kw">new</span> <span class="tp">Thread</span>(() -> {
+            System.out.<span class="fn">println</span>(<span class="st">"Lambda 线程"</span>);
+        }).<span class="fn">start</span>();
+
+        <span class="fn">executorDemo</span>();
+        <span class="fn">completableFutureDemo</span>();
+    }
+}</code></pre>
+</div>
+
+<div class="warning">不要直接调用 <code>run()</code> 方法启动线程，必须调用 <code>start()</code>。<code>start()</code> 会创建新线程并调用 <code>run()</code>，直接调用 <code>run()</code> 只是在当前线程执行普通方法。</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// CompletableFuture 高级用法：组合、异常处理、超时</span>
+<span class="kw">import</span> java.util.concurrent.*;
+
+<span class="kw">public class</span> <span class="tp">CompletableFutureDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) <span class="kw">throws</span> <span class="tp">Exception</span> {
+        <span class="cm">// 1. 链式异步操作</span>
+        <span class="tp">CompletableFuture</span>&lt;<span class="tp">String</span>&gt; future = <span class="tp">CompletableFuture</span>
+            .<span class="fn">supplyAsync</span>(() -> <span class="fn">fetchDataFromDB</span>())
+            .<span class="fn">thenApply</span>(data -> <span class="fn">transformData</span>(data))
+            .<span class="fn">thenApply</span>(result -> result.<span class="fn">toUpperCase</span>());
+
+        <span class="cm">// 2. 组合多个异步操作</span>
+        <span class="tp">CompletableFuture</span>&lt;<span class="tp">String</span>&gt; userFuture = <span class="tp">CompletableFuture</span>
+            .<span class="fn">supplyAsync</span>(() -> <span class="st">"Alice"</span>);
+        <span class="tp">CompletableFuture</span>&lt;<span class="tp">Integer</span>&gt; scoreFuture = <span class="tp">CompletableFuture</span>
+            .<span class="fn">supplyAsync</span>(() -> <span class="nm">95</span>);
+
+        <span class="tp">CompletableFuture</span>&lt;<span class="tp">String</span>&gt; combined = userFuture
+            .<span class="fn">thenCombine</span>(scoreFuture, (user, score) ->
+                user + <span class="st">": "</span> + score);
+
+        <span class="cm">// 3. 异常处理</span>
+        <span class="tp">CompletableFuture</span>&lt;<span class="tp">String</span>&gt; safeFuture = <span class="tp">CompletableFuture</span>
+            .<span class="fn">supplyAsync</span>(() -> {
+                <span class="kw">if</span> (<span class="kw">true</span>) <span class="kw">throw new</span> <span class="tp">RuntimeException</span>(<span class="st">"Oops!"</span>);
+                <span class="kw">return</span> <span class="st">"OK"</span>;
+            })
+            .<span class="fn">exceptionally</span>(ex -> <span class="st">"Fallback: "</span> + ex.<span class="fn">getMessage</span>())
+            .<span class="fn">thenApply</span>(s -> <span class="st">"Result: "</span> + s);
+
+        <span class="cm">// 4. 超时控制（Java 9+）</span>
+        <span class="tp">CompletableFuture</span>&lt;<span class="tp">String</span>&gt; timeoutFuture = <span class="tp">CompletableFuture</span>
+            .<span class="fn">supplyAsync</span>(() -> {
+                <span class="tp">Thread</span>.<span class="fn">sleep</span>(<span class="nm">5000</span>);
+                <span class="kw">return</span> <span class="st">"Slow result"</span>;
+            })
+            .<span class="fn">orTimeout</span>(<span class="nm">1</span>, <span class="tp">TimeUnit</span>.SECONDS)
+            .<span class="fn">exceptionally</span>(ex -> <span class="st">"Timed out"</span>);
+
+        System.out.<span class="fn">println</span>(future.<span class="fn">join</span>());
+        System.out.<span class="fn">println</span>(combined.<span class="fn">join</span>());
+        System.out.<span class="fn">println</span>(safeFuture.<span class="fn">join</span>());
+        System.out.<span class="fn">println</span>(timeoutFuture.<span class="fn">join</span>());
+    }
+
+    <span class="kw">static</span> <span class="tp">String</span> <span class="fn">fetchDataFromDB</span>() { <span class="kw">return</span> <span class="st">"raw data"</span>; }
+    <span class="kw">static</span> <span class="tp">String</span> <span class="fn">transformData</span>(<span class="tp">String</span> data) { <span class="kw">return</span> data + <span class="st">" processed"</span>; }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// 虚拟线程（Virtual Threads，Java 21+）</span>
+<span class="kw">import</span> java.util.concurrent.*;
+
+<span class="kw">public class</span> <span class="tp">VirtualThreadDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) <span class="kw">throws</span> <span class="tp">Exception</span> {
+        <span class="cm">// 1. 创建虚拟线程</span>
+        <span class="tp">Thread</span> vt = <span class="tp">Thread</span>.<span class="fn">ofVirtual</span>().<span class="fn">name</span>(<span class="st">"my-virtual-thread"</span>)
+            .<span class="fn">start</span>(() -> {
+                System.out.<span class="fn">println</span>(<span class="st">"Running in virtual thread"</span>);
+                System.out.<span class="fn">println</span>(<span class="tp">Thread</span>.<span class="fn">currentThread</span>().<span class="fn">isVirtual</span>());
+            });
+        vt.<span class="fn">join</span>();
+
+        <span class="cm">// 2. 虚拟线程执行器</span>
+        <span class="kw">try</span> (<span class="kw">var</span> executor = <span class="tp">Executors</span>.<span class="fn">newVirtualThreadPerTaskExecutor</span>()) {
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i < <span class="nm">100_000</span>; i++) {
+                <span class="kw">int</span> taskNum = i;
+                executor.<span class="fn">submit</span>(() -> {
+                    <span class="tp">Thread</span>.<span class="fn">sleep</span>(<span class="tp">Duration</span>.<span class="fn">ofMillis</span>(<span class="nm">100</span>));
+                    <span class="kw">if</span> (taskNum % <span class="nm">10000</span> == <span class="nm">0</span>) {
+                        System.out.<span class="fn">println</span>(<span class="st">"Task "</span> + taskNum + <span class="st">" done"</span>);
+                    }
+                });
+            }
+        }  <span class="cm">// 所有任务完成后自动关闭</span>
+
+        <span class="cm">// 3. 结构化并发（Structured Concurrency，预览特性）</span>
+        <span class="kw">try</span> (<span class="kw">var</span> scope = <span class="kw">new</span> <span class="tp">StructuredTaskScope</span>.<span class="tp">ShutdownOnFailure</span>()) {
+            <span class="tp">StructuredTaskScope</span>.<span class="tp">Subtask</span>&lt;<span class="tp">String</span>&gt; userTask =
+                scope.<span class="fn">fork</span>(() -> <span class="fn">fetchUser</span>());
+            <span class="tp">StructuredTaskScope</span>.<span class="tp">Subtask</span>&lt;<span class="tp">String</span>&gt; orderTask =
+                scope.<span class="fn">fork</span>(() -> <span class="fn">fetchOrder</span>());
+
+            scope.<span class="fn">join</span>();
+            System.out.<span class="fn">println</span>(userTask.<span class="fn">get</span>() + <span class="st">", "</span> + orderTask.<span class="fn">get</span>());
+        }
+    }
+
+    <span class="kw">static</span> <span class="tp">String</span> <span class="fn">fetchUser</span>() { <span class="kw">return</span> <span class="st">"User"</span>; }
+    <span class="kw">static</span> <span class="tp">String</span> <span class="fn">fetchOrder</span>() { <span class="kw">return</span> <span class="st">"Order"</span>; }
+}</code></pre>
+</div>
+
+<!-- ==================== 21. Lambda 与 Stream ==================== -->
+<h2 id="sec21">21. Lambda 与 Stream</h2>
+
+<h3>21.1 Lambda 表达式</h3>
+
+<div class="principle">
+    <div class="principle-title">Lambda 的本质</div>
+    <p><strong>Lambda 表达式：</strong>匿名函数的简写形式，只能用于<strong>函数式接口</strong>（只有一个抽象方法的接口）。编译器自动推断参数类型。</p>
+    <p><strong>函数式接口：</strong>使用 <code>@FunctionalInterface</code> 注解标识。Java 内置的核心函数式接口：<code>Predicate&lt;T&gt;</code>（判断）、<code>Function&lt;T,R&gt;</code>（转换）、<code>Consumer&lt;T&gt;</code>（消费）、<code>Supplier&lt;T&gt;</code>（供给）。</p>
+    <p><strong>方法引用：</strong>Lambda 的进一步简写，如 <code>System.out::println</code> 等价于 <code>x -> System.out.println(x)</code>。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">import</span> java.util.function.*;
+
+<span class="kw">public class</span> <span class="tp">LambdaDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// Lambda 语法：(参数) -> { 方法体 }</span>
+
+        <span class="cm">// 1. Predicate：T -> boolean（判断条件）</span>
+        <span class="tp">Predicate</span>&lt;<span class="tp">String</span>&gt; isLong = s -> s.<span class="fn">length</span>() > <span class="nm">5</span>;
+        System.out.<span class="fn">println</span>(isLong.<span class="fn">test</span>(<span class="st">"Hello"</span>));   <span class="cm">// false</span>
+        System.out.<span class="fn">println</span>(isLong.<span class="fn">test</span>(<span class="st">"HelloWorld"</span>)); <span class="cm">// true</span>
+
+        <span class="cm">// 组合条件</span>
+        <span class="tp">Predicate</span>&lt;<span class="tp">String</span>&gt; startsWithH = s -> s.<span class="fn">startsWith</span>(<span class="st">"H"</span>);
+        <span class="tp">Predicate</span>&lt;<span class="tp">String</span>&gt; combined = isLong.<span class="fn">and</span>(startsWithH);
+        System.out.<span class="fn">println</span>(combined.<span class="fn">test</span>(<span class="st">"HelloWorld"</span>)); <span class="cm">// true</span>
+
+        <span class="cm">// 2. Function：T -> R（转换）</span>
+        <span class="tp">Function</span>&lt;<span class="tp">String</span>, <span class="tp">Integer</span>&gt; toLength = String::length;
+        System.out.<span class="fn">println</span>(toLength.<span class="fn">apply</span>(<span class="st">"Java"</span>));  <span class="cm">// 4</span>
+
+        <span class="cm">// 组合函数</span>
+        <span class="tp">Function</span>&lt;<span class="tp">Integer</span>, <span class="tp">String</span>&gt; toStr = Object::<span class="fn">toString</span>;
+        <span class="tp">Function</span>&lt;<span class="tp">String</span>, <span class="tp">String</span>&gt> upper = String::toUpperCase;
+        <span class="tp">Function</span>&lt;<span class="tp">Integer</span>, <span class="tp">String</span>&gt> pipeline = toStr.<span class="fn">andThen</span>(upper);
+        System.out.<span class="fn">println</span>(pipeline.<span class="fn">apply</span>(<span class="nm">42</span>));  <span class="cm">// "42"</span>
+
+        <span class="cm">// 3. Consumer：T -> void（消费）</span>
+        <span class="tp">Consumer</span>&lt;<span class="tp">String</span>&gt; print = System.out::<span class="fn">println</span>;
+        print.<span class="fn">accept</span>(<span class="st">"Hello Lambda!"</span>);
+
+        <span class="cm">// 4. Supplier：() -> T（供给）</span>
+        <span class="tp">Supplier</span>&lt;<span class="tp">Double</span>&gt; random = Math::random;
+        System.out.<span class="fn">println</span>(random.<span class="fn">get</span>());
+
+        <span class="cm">// 5. 方法引用</span>
+        <span class="cm">// 静态方法引用：ClassName::staticMethod</span>
+        <span class="tp">Function</span>&lt;<span class="tp">String</span>, <span class="tp">Integer</span>&gt; parseInt = Integer::<span class="fn">parseInt</span>;
+
+        <span class="cm">// 实例方法引用：object::instanceMethod</span>
+        <span class="tp">String</span> str = <span class="st">"hello"</span>;
+        <span class="tp">Supplier</span>&lt;<span class="tp">String</span>&gt; upperSupplier = str::<span class="fn">toUpperCase</span>;
+
+        <span class="cm">// 任意对象实例方法引用：ClassName::instanceMethod</span>
+        <span class="tp">Function</span>&lt;<span class="tp">String</span>, <span class="tp">String</span>&gt; toUpper = <span class="tp">String</span>::toUpperCase;
+    }
+}</code></pre>
+</div>
+
+<h3>21.2 Stream API</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">import</span> java.util.*;
+<span class="kw">import</span> java.util.stream.*;
+
+<span class="kw">public class</span> <span class="tp">StreamDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="tp">List</span>&lt;<span class="tp">Student</span>&gt; students = <span class="tp">List</span>.<span class="fn">of</span>(
+            <span class="kw">new</span> <span class="tp">Student</span>(<span class="st">"张三"</span>, <span class="nm">20</span>, <span class="nm">95</span>),
+            <span class="kw">new</span> <span class="tp">Student</span>(<span class="st">"李四"</span>, <span class="nm">22</span>, <span class="nm">88</span>),
+            <span class="kw">new</span> <span class="tp">Student</span>(<span class="st">"王五"</span>, <span class="nm">21</span>, <span class="nm">92</span>),
+            <span class="kw">new</span> <span class="tp">Student</span>(<span class="st">"赵六"</span>, <span class="nm">23</span>, <span class="nm">78</span>),
+            <span class="kw">new</span> <span class="tp">Student</span>(<span class="st">"孙七"</span>, <span class="nm">20</span>, <span class="nm">85</span>)
+        );
+
+        <span class="cm">// 1. 过滤 + 排序 + 收集</span>
+        <span class="tp">List</span>&lt;<span class="tp">String</span>&gt; topStudents = students.<span class="fn">stream</span>()
+            .<span class="fn">filter</span>(s -> s.<span class="fn">getScore</span>() >= <span class="nm">90</span>)    <span class="cm">// 过滤</span>
+            .<span class="fn">sorted</span>(<span class="tp">Comparator</span>
+                .<span class="fn">comparing</span>(<span class="tp">Student</span>::<span class="fn">getScore</span>).<span class="fn">reversed</span>())  <span class="cm">// 排序</span>
+            .<span class="fn">map</span>(<span class="tp">Student</span>::<span class="fn">getName</span>)              <span class="cm">// 提取</span>
+            .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">toList</span>());      <span class="cm">// 收集</span>
+        System.out.<span class="fn">println</span>(topStudents);  <span class="cm">// [张三, 王五]</span>
+
+        <span class="cm">// 2. 聚合操作</span>
+        <span class="kw">double</span> avgScore = students.<span class="fn">stream</span>()
+            .<span class="fn">mapToDouble</span>(<span class="tp">Student</span>::<span class="fn">getScore</span>)
+            .<span class="fn">average</span>()
+            .<span class="fn">orElse</span>(<span class="nm">0</span>);
+        System.out.<span class="fn">printf</span>(<span class="st">"平均分: %.1f%n"</span>, avgScore);
+
+        <span class="kw">int</span> maxAge = students.<span class="fn">stream</span>()
+            .<span class="fn">mapToInt</span>(<span class="tp">Student</span>::<span class="fn">getAge</span>)
+            .<span class="fn">max</span>()
+            .<span class="fn">orElse</span>(<span class="nm">0</span>);
+
+        <span class="cm">// 3. 分组</span>
+        <span class="tp">Map</span>&lt;<span class="tp">Integer</span>, <span class="tp">List</span>&lt;<span class="tp">Student</span>&gt;&gt; byAge = students.<span class="fn">stream</span>()
+            .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">groupingBy</span>(<span class="tp">Student</span>::<span class="fn">getAge</span>));
+        byAge.<span class="fn">forEach</span>((age, list) ->
+            System.out.<span class="fn">printf</span>(<span class="st">"%d 岁: %d 人%n"</span>, age, list.<span class="fn">size</span>()));
+
+        <span class="cm">// 4. 字符串拼接</span>
+        <span class="tp">String</span> names = students.<span class="fn">stream</span>()
+            .<span class="fn">map</span>(<span class="tp">Student</span>::<span class="fn">getName</span>)
+            .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">joining</span>(<span class="st">", "</span>, <span class="st">"["</span>, <span class="st">"]"</span>));
+        System.out.<span class="fn">println</span>(names);  <span class="cm">// [张三, 李四, 王五, 赵六, 孙七]</span>
+
+        <span class="cm">// 5. reduce（归约）</span>
+        <span class="kw">int</span> totalScore = students.<span class="fn">stream</span>()
+            .<span class="fn">mapToInt</span>(<span class="tp">Student</span>::<span class="fn">getScore</span>)
+            .<span class="fn">reduce</span>(<span class="nm">0</span>, Integer::sum);
+        System.out.<span class="fn">println</span>(<span class="st">"总分: "</span> + totalScore);
+
+        <span class="cm">// 6. flatMap（扁平化）</span>
+        <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; nested = <span class="tp">List</span>.<span class="fn">of</span>(
+            <span class="tp">List</span>.<span class="fn">of</span>(<span class="nm">1</span>, <span class="nm">2</span>), <span class="tp">List</span>.<span class="fn">of</span>(<span class="nm">3</span>, <span class="nm">4</span>), <span class="tp">List</span>.<span class="fn">of</span>(<span class="nm">5</span>, <span class="nm">6</span>)
+        );
+        <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; flat = nested.<span class="fn">stream</span>()
+            .<span class="fn">flatMap</span>(List::<span class="fn">stream</span>)
+            .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">toList</span>());
+        System.out.<span class="fn">println</span>(flat);  <span class="cm">// [1, 2, 3, 4, 5, 6]</span>
+
+        <span class="cm">// 7. 统计</span>
+        <span class="tp">IntSummaryStatistics</span> stats = students.<span class="fn">stream</span>()
+            .<span class="fn">mapToInt</span>(<span class="tp">Student</span>::<span class="fn">getScore</span>)
+            .<span class="fn">summaryStatistics</span>();
+        System.out.<span class="fn">printf</span>(<span class="st">"count=%d, avg=%.1f, max=%d, min=%d%n"</span>,
+            stats.<span class="fn">getCount</span>(), stats.<span class="fn">getAverage</span>(),
+            stats.<span class="fn">getMax</span>(), stats.<span class="fn">getMin</span>());
+
+        <span class="cm">// 并行流（多线程处理，注意线程安全）</span>
+        <span class="kw">long</span> count = students.<span class="fn">parallelStream</span>()
+            .<span class="fn">filter</span>(s -> s.<span class="fn">getScore</span>() >= <span class="nm">90</span>)
+            .<span class="fn">count</span>();
+    }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// 方法引用的四种形式</span>
+<span class="kw">public class</span> <span class="tp">MethodReferenceDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 1. 静态方法引用：ClassName::staticMethod</span>
+        <span class="tp">Function</span>&lt;<span class="tp">String</span>, <span class="tp">Integer</span>&gt; parseFunc = <span class="tp">Integer</span>::<span class="fn">parseInt</span>;
+        System.out.<span class="fn">println</span>(parseFunc.<span class="fn">apply</span>(<span class="st">"42"</span>));
+
+        <span class="cm">// 2. 特定对象的实例方法引用：instance::method</span>
+        <span class="tp">String</span> str = <span class="st">"hello world"</span>;
+        <span class="tp">Supplier</span>&lt;<span class="tp">String</span>&gt; upperCase = str::<span class="fn">toUpperCase</span>;
+        System.out.<span class="fn">println</span>(upperCase.<span class="fn">get</span>());
+
+        <span class="cm">// 3. 任意对象的实例方法引用：ClassName::method</span>
+        <span class="tp">Function</span>&lt;<span class="tp">String</span>, <span class="tp">String</span>&gt; toUpper = <span class="tp">String</span>::<span class="fn">toUpperCase</span>;
+        System.out.<span class="fn">println</span>(toUpper.<span class="fn">apply</span>(<span class="st">"java"</span>));
+
+        <span class="cm">// 4. 构造方法引用：ClassName::new</span>
+        <span class="tp">Supplier</span>&lt;<span class="tp">StringBuilder</span>&gt; sbFactory = <span class="tp">StringBuilder</span>::<span class="kw">new</span>;
+        <span class="tp">StringBuilder</span> sb = sbFactory.<span class="fn">get</span>();
+        sb.<span class="fn">append</span>(<span class="st">"Built with method reference"</span>);
+        System.out.<span class="fn">println</span>(sb);
+
+        <span class="cm">// 带参数的构造方法引用</span>
+        <span class="tp">Function</span>&lt;<span class="tp">Integer</span>, <span class="kw">int</span>[]&gt; arrayFactory = <span class="kw">int</span>[]::<span class="kw">new</span>;
+        <span class="kw">int</span>[] arr = arrayFactory.<span class="fn">apply</span>(<span class="nm">10</span>);
+        System.out.<span class="fn">println</span>(arr.length);  <span class="cm">// 10</span>
+    }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// 函数式接口组合与自定义函数式接口</span>
+<span class="kw">import</span> java.util.function.*;
+
+<span class="cm">// 自定义函数式接口</span>
+<span class="kw">@FunctionalInterface</span>
+<span class="kw">interface</span> <span class="tp">Processor</span>&lt;<span class="tp">T</span>, <span class="tp">R</span>&gt; {
+    <span class="tp">R</span> <span class="fn">process</span>(<span class="tp">T</span> input);
+    <span class="cm">// 可以有默认方法</span>
+    <span class="kw">default</span> &lt;<span class="tp">V</span>&gt; <span class="tp">Processor</span>&lt;<span class="tp">T</span>, <span class="tp">V</span>&gt; <span class="fn">andThen</span>(<span class="tp">Processor</span>&lt;<span class="tp">R</span>, <span class="tp">V</span>&gt; after) {
+        <span class="kw">return</span> input -> after.<span class="fn">process</span>(<span class="kw">this</span>.<span class="fn">process</span>(input));
+    }
+}
+
+<span class="kw">public class</span> <span class="tp">FunctionalInterfaceDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// Predicate 组合</span>
+        <span class="tp">Predicate</span>&lt;<span class="tp">String</span>&gt; isNotEmpty = s -> !s.<span class="fn">isEmpty</span>();
+        <span class="tp">Predicate</span>&lt;<span class="tp">String</span>&gt; startsWithJ = s -> s.<span class="fn">startsWith</span>(<span class="st">"J"</span>);
+        <span class="tp">Predicate</span>&lt;<span class="tp">String</span>&gt; isJava = isNotEmpty.<span class="fn">and</span>(startsWithJ);
+        System.out.<span class="fn">println</span>(isJava.<span class="fn">test</span>(<span class="st">"Java"</span>));  <span class="cm">// true</span>
+
+        <span class="cm">// Function 组合</span>
+        <span class="tp">Function</span>&lt;<span class="tp">String</span>, <span class="tp">Integer</span>&gt; len = <span class="tp">String</span>::<span class="fn">length</span>;
+        <span class="tp">Function</span>&lt;<span class="tp">Integer</span>, <span class="tp">String</span>&gt; toStr = n -> <span class="st">"长度:"</span> + n;
+        <span class="tp">Function</span>&lt;<span class="tp">String</span>, <span class="tp">String</span>&gt; pipeline = len.<span class="fn">andThen</span>(toStr);
+        System.out.<span class="fn">println</span>(pipeline.<span class="fn">apply</span>(<span class="st">"Hello"</span>));  <span class="cm">// 长度:5</span>
+
+        <span class="cm">// BiFunction：接收两个参数</span>
+        <span class="tp">BiFunction</span>&lt;<span class="tp">String</span>, <span class="tp">String</span>, <span class="tp">String</span>&gt; concat = <span class="tp">String</span>::<span class="fn">concat</span>;
+        System.out.<span class="fn">println</span>(concat.<span class="fn">apply</span>(<span class="st">"Hello, "</span>, <span class="st">"World!"</span>));
+
+        <span class="cm">// UnaryOperator：一元操作（T -> T）</span>
+        <span class="tp">UnaryOperator</span>&lt;<span class="tp">String</span>&gt; shout = s -> s.<span class="fn">toUpperCase</span>() + <span class="st">"!"</span>;
+        System.out.<span class="fn">println</span>(shout.<span class="fn">apply</span>(<span class="st">"hello"</span>));  <span class="cm">// HELLO!</span>
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 22. 反射 ==================== -->
+<h2 id="sec22">22. 反射</h2>
+
+<div class="principle">
+    <div class="principle-title">反射机制详解</div>
+    <p><strong>反射（Reflection）：</strong>在运行时动态获取类的信息（字段、方法、构造器），并动态操作对象。是 Spring IoC、JUnit、ORM 框架的基础。</p>
+    <p><strong>获取 Class 对象：</strong><code>Class.forName("全限定类名")</code>、<code>对象.getClass()</code>、<code>类名.class</code>。每种方式获取的是同一个 Class 对象。</p>
+    <p><strong>主要能力：</strong>动态创建对象、访问/修改字段值、调用方法、检查注解、判断类型关系。</p>
+    <p><strong>性能影响：</strong>反射比直接调用慢，但 JVM 会进行优化（如 setAccessible 跳过安全检查）。框架中大量使用，应用代码谨慎使用。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">import</span> java.lang.reflect.*;
+
+<span class="kw">public class</span> <span class="tp">ReflectionDemo</span> {
+
+    <span class="cm">// 一个简单的类用于演示</span>
+    <span class="kw">public static class</span> <span class="tp">Person</span> {
+        <span class="kw">private</span> <span class="tp">String</span> name;
+        <span class="kw">private int</span> age;
+
+        <span class="kw">public</span> <span class="fn">Person</span>(<span class="tp">String</span> name, <span class="kw">int</span> age) {
+            <span class="kw">this</span>.name = name;
+            <span class="kw">this</span>.age = age;
+        }
+
+        <span class="kw">public</span> <span class="tp">String</span> <span class="fn">greet</span>() {
+            <span class="kw">return</span> <span class="st">"我是 "</span> + name + <span class="st">"，今年 "</span> + age + <span class="st">" 岁"</span>;
+        }
+
+        <span class="kw">private</span> <span class="tp">String</span> <span class="fn">secret</span>() {
+            <span class="kw">return</span> <span class="st">"这是私有方法"</span>;
+        }
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) <span class="kw">throws</span> <span class="tp">Exception</span> {
+        <span class="cm">// 1. 获取 Class 对象</span>
+        <span class="tp">Class</span>&lt;?&gt; clazz = <span class="tp">Person</span>.<span class="kw">class</span>;
+        System.out.<span class="fn">println</span>(<span class="st">"类名: "</span> + clazz.<span class="fn">getName</span>());
+        System.out.<span class="fn">println</span>(<span class="st">"简单类名: "</span> + clazz.<span class="fn">getSimpleName</span>());
+
+        <span class="cm">// 2. 创建实例</span>
+        <span class="tp">Constructor</span>&lt;?&gt; constructor = clazz.<span class="fn">getConstructor</span>(<span class="tp">String</span>.<span class="kw">class</span>, <span class="kw">int</span>.<span class="kw">class</span>);
+        <span class="tp">Person</span> person = (<span class="tp">Person</span>) constructor.<span class="fn">newInstance</span>(<span class="st">"张三"</span>, <span class="nm">25</span>);
+
+        <span class="cm">// 3. 访问字段</span>
+        <span class="tp">Field</span> nameField = clazz.<span class="fn">getDeclaredField</span>(<span class="st">"name"</span>);
+        nameField.<span class="fn">setAccessible</span>(<span class="kw">true</span>);  <span class="cm">// 突破 private 限制</span>
+        System.out.<span class="fn">println</span>(<span class="st">"name 字段值: "</span> + nameField.<span class="fn">get</span>(person));
+        nameField.<span class="fn">set</span>(person, <span class="st">"李四"</span>);  <span class="cm">// 修改字段值</span>
+        System.out.<span class="fn">println</span>(<span class="st">"修改后: "</span> + nameField.<span class="fn">get</span>(person));
+
+        <span class="cm">// 4. 调用方法</span>
+        <span class="tp">Method</span> greetMethod = clazz.<span class="fn">getMethod</span>(<span class="st">"greet"</span>);
+        <span class="tp">String</span> result = (<span class="tp">String</span>) greetMethod.<span class="fn">invoke</span>(person);
+        System.out.<span class="fn">println</span>(result);
+
+        <span class="cm">// 调用私有方法</span>
+        <span class="tp">Method</span> secretMethod = clazz.<span class="fn">getDeclaredMethod</span>(<span class="st">"secret"</span>);
+        secretMethod.<span class="fn">setAccessible</span>(<span class="kw">true</span>);
+        System.out.<span class="fn">println</span>(secretMethod.<span class="fn">invoke</span>(person));
+
+        <span class="cm">// 5. 获取所有字段</span>
+        System.out.<span class="fn">println</span>(<span class="st">"\n--- 所有字段 ---"</span>);
+        <span class="kw">for</span> (<span class="tp">Field</span> f : clazz.<span class="fn">getDeclaredFields</span>()) {
+            f.<span class="fn">setAccessible</span>(<span class="kw">true</span>);
+            System.out.<span class="fn">printf</span>(<span class="st">"%s %s = %s%n"</span>,
+                f.<span class="fn">getType</span>().<span class="fn">getSimpleName</span>(), f.<span class="fn">getName</span>(), f.<span class="fn">get</span>(person));
+        }
+
+        <span class="cm">// 6. 获取所有方法</span>
+        System.out.<span class="fn">println</span>(<span class="st">"\n--- 所有方法 ---"</span>);
+        <span class="kw">for</span> (<span class="tp">Method</span> m : clazz.<span class="fn">getDeclaredMethods</span>()) {
+            System.out.<span class="fn">printf</span>(<span class="st">"%s %s(%s)%n"</span>,
+                m.<span class="fn">getReturnType</span>().<span class="fn">getSimpleName</span>(), m.<span class="fn">getName</span>(),
+                java.util.Arrays.<span class="fn">toString</span>(m.<span class="fn">getParameterTypes</span>()));
+        }
+
+        <span class="cm">// 7. 动态代理</span>
+        <span class="tp">Person</span> proxy = (<span class="tp">Person</span>) <span class="tp">Proxy</span>.<span class="fn">newProxyInstance</span>(
+            clazz.<span class="fn">getClassLoader</span>(),
+            clazz.<span class="fn">getInterfaces</span>(),
+            (proxyObj, method, methodArgs) -> {
+                System.out.<span class="fn">println</span>(<span class="st">"调用前: "</span> + method.<span class="fn">getName</span>());
+                <span class="tp">Object</span> res = method.<span class="fn">invoke</span>(person, methodArgs);
+                System.out.<span class="fn">println</span>(<span class="st">"调用后: "</span> + method.<span class="fn">getName</span>());
+                <span class="kw">return</span> res;
+            }
+        );
+        proxy.<span class="fn">greet</span>();
+    }
+}</code></pre>
+</div>
+
+<div class="tip">反射主要用于框架开发（Spring、MyBatis 等）。日常业务代码中应避免使用反射，优先使用注解处理器或接口抽象。</div>
+
+<!-- ==================== 23. JVM 内存模型 ==================== -->
+<h2 id="sec23">23. JVM 内存模型</h2>
+
+<div class="principle">
+    <div class="principle-title">JVM 运行时数据区</div>
+    <p><strong>程序计数器（Program Counter）：</strong>当前线程执行的字节码行号指示器。线程私有，唯一不会发生 OOM 的区域。</p>
+    <p><strong>虚拟机栈（VM Stack）：</strong>每个方法调用创建一个栈帧，包含局部变量表、操作数栈、动态链接、方法出口。线程私有。</p>
+    <p><strong>本地方法栈（Native Method Stack）：</strong>为 Native 方法服务，类似虚拟机栈。</p>
+    <p><strong>堆（Heap）：</strong>所有对象实例分配的区域，GC 的主要工作区域。线程共享，分为新生代（Eden + S0 + S1）和老年代。</p>
+    <p><strong>方法区/元空间（Metaspace）：</strong>存储类信息、常量池、静态变量。Java 8 后使用本地内存的元空间替代永久代。</p>
+</div>
+
+<div class="principle">
+    <div class="principle-title">垃圾回收（GC）机制</div>
+    <p><strong>可达性分析：</strong>从 GC Roots（虚拟机栈引用、静态变量、常量池引用等）出发，不可达的对象将被回收。</p>
+    <p><strong>GC 算法：</strong>标记-清除（产生碎片）、标记-整理（移动对象）、复制算法（新生代使用，空间换时间）。</p>
+    <p><strong>分代收集：</strong>新生代用复制算法（Minor GC），老年代用标记-清除/整理（Major GC/Full GC）。</p>
+    <p><strong>垃圾收集器：</strong>Serial（单线程）、Parallel（吞吐量优先）、CMS（低延迟）、G1（JDK 9 默认，平衡吞吐和延迟）、ZGC（JDK 15+，亚毫秒停顿）。</p>
+</div>
+
+<div class="principle">
+    <div class="principle-title">类加载机制</div>
+    <p><strong>类加载过程：</strong>加载 → 验证 → 准备 → 解析 → 初始化。</p>
+    <p><strong>双亲委派模型：</strong>类加载器收到加载请求时，先委托父加载器处理。Bootstrap → Extension → Application → Custom。保证核心类不被篡改。</p>
+    <p><strong>打破双亲委派：</strong>线程上下文类加载器（TCCL）、OSGi、Tomcat 的 WebAppClassLoader。</p>
+    <p><strong>自定义类加载器：</strong>继承 <code>ClassLoader</code>，重写 <code>findClass()</code> 方法，可实现热部署、加密解密等。</p>
+</div>
+
+<div class="principle">
+    <div class="principle-title">自动装箱的内存陷阱</div>
+    <p><strong>Integer 缓存池：</strong><code>Integer.valueOf()</code> 对 -128~127 范围内的值使用缓存，该范围内的 Integer 对象是同一个实例。</p>
+    <p><strong>字符串常量池：</strong>字面量创建的字符串存储在常量池中，<code>String.intern()</code> 可手动将字符串放入常量池。</p>
+    <p><strong>内存溢出排查：</strong>使用 <code>-Xmx</code>、<code>-Xms</code> 设置堆大小，<code>jmap</code> 生成堆转储，<code>jvisualvm</code> 或 <code>MAT</code> 分析内存泄漏。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="cm">// JVM 内存模型示例</span>
+<span class="kw">public class</span> <span class="tp">JVMMemoryDemo</span> {
+    <span class="cm">// 静态变量 → 方法区/元空间</span>
+    <span class="kw">private static</span> <span class="tp">String</span> CONSTANT = <span class="st">"Hello"</span>;
+    <span class="kw">private static int</span> staticVar = <span class="nm">42</span>;
+
+    <span class="cm">// 常量池引用 → 方法区/元空间</span>
+    <span class="kw">private static final</span> <span class="tp">String</span> FINAL_CONST = <span class="st">"World"</span>;
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 局部变量 → 虚拟机栈</span>
+        <span class="kw">int</span> localVar = <span class="nm">100</span>;
+        <span class="tp">String</span> localVarStr = <span class="st">"栈上字符串引用"</span>;
+
+        <span class="cm">// 对象实例 → 堆</span>
+        <span class="tp">Object</span> obj = <span class="kw">new</span> <span class="tp">Object</span>();
+        <span class="kw">int</span>[] array = <span class="kw">new</span> <span class="kw">int</span>[<span class="nm">1000</span>];
+
+        <span class="cm">// 字符串常量池 vs 堆</span>
+        <span class="tp">String</span> s1 = <span class="st">"Hello"</span>;       <span class="cm">// 常量池</span>
+        <span class="tp">String</span> s2 = <span class="st">"Hello"</span>;       <span class="cm">// 常量池（复用）</span>
+        <span class="tp">String</span> s3 = <span class="kw">new</span> <span class="tp">String</span>(<span class="st">"Hello"</span>);  <span class="cm">// 堆（新对象）</span>
+        <span class="tp">String</span> s4 = s3.<span class="fn">intern</span>();   <span class="cm">// 返回常量池中的引用</span>
+
+        System.out.<span class="fn">println</span>(s1 == s2);   <span class="cm">// true（同一常量池对象）</span>
+        System.out.<span class="fn">println</span>(s1 == s3);   <span class="cm">// false（堆 vs 常量池）</span>
+        System.out.<span class="fn">println</span>(s1 == s4);   <span class="cm">// true（intern 返回常量池引用）</span>
+
+        <span class="cm">// 打印 JVM 内存信息</span>
+        <span class="tp">Runtime</span> runtime = <span class="tp">Runtime</span>.<span class="fn">getRuntime</span>();
+        System.out.<span class="fn">printf</span>(<span class="st">"最大内存: %d MB%n"</span>,
+            runtime.<span class="fn">maxMemory</span>() / <span class="nm">1024</span> / <span class="nm">1024</span>);
+        System.out.<span class="fn">printf</span>(<span class="st">"已分配内存: %d MB%n"</span>,
+            runtime.<span class="fn">totalMemory</span>() / <span class="nm">1024</span> / <span class="nm">1024</span>);
+        System.out.<span class="fn">printf</span>(<span class="st">"空闲内存: %d MB%n"</span>,
+            runtime.<span class="fn">freeMemory</span>() / <span class="nm">1024</span> / <span class="nm">1024</span>);
+
+        <span class="cm">// 触发 GC</span>
+        runtime.<span class="fn">gc</span>();
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 24. 最佳实践 ==================== -->
+<h2 id="sec24">24. 最佳实践</h2>
+
+<h3>24.1 代码规范</h3>
+
+<div class="principle">
+    <div class="principle-title">Java 编码最佳实践</div>
+    <p><strong>命名规范：</strong>类名用 UpperCamelCase（如 <code>UserService</code>），方法/变量用 lowerCamelCase（如 <code>getUserById</code>），常量用 UPPER_SNAKE_CASE（如 <code>MAX_RETRY_COUNT</code>）。</p>
+    <p><strong>方法设计：</strong>单一职责原则，一个方法只做一件事。方法体不超过 30 行。参数不超过 4 个，超过时使用对象封装。</p>
+    <p><strong>异常处理：</strong>不要捕获 Exception 或 Throwable。不要用异常做流程控制。记录异常日志时包含完整堆栈信息。</p>
+    <p><strong>字符串处理：</strong>用 equals() 比较内容，不要用 ==。用 StringBuilder 拼接循环中的字符串。用 String.join() 或 Collectors.joining() 合并集合。</p>
+</div>
+
+<h3>24.2 性能优化</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="kw">import</span> java.util.*;
+<span class="kw">import</span> java.util.concurrent.*;
+
+<span class="cm">/**
+ * Java 性能优化示例
+ */</span>
+<span class="kw">public class</span> <span class="tp">BestPracticesDemo</span> {
+
+    <span class="cm">// 1. 集合初始化指定容量，避免频繁扩容</span>
+    <span class="kw">private static</span> <span class="kw">final int</span> EXPECTED_SIZE = <span class="nm">1000</span>;
+    <span class="tp">List</span>&lt;<span class="tp">String</span>&gt; list = <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;(EXPECTED_SIZE);
+    <span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">Integer</span>&gt; map = <span class="kw">new</span> <span class="tp">HashMap</span>&lt;&gt;(
+        (<span class="kw">int</span>)(EXPECTED_SIZE / <span class="nm">0.75f</span>) + <span class="nm">1</span>);
+
+    <span class="cm">// 2. 使用局部变量（栈上分配，GC 压力小）</span>
+    <span class="kw">public void</span> <span class="fn">processData</span>() {
+        <span class="cm">// 优先使用局部变量</span>
+        <span class="tp">List</span>&lt;<span class="tp">String</span>&gt; localList = <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i < <span class="nm">100</span>; i++) {
+            localList.<span class="fn">add</span>(<span class="tp">String</span>.<span class="fn">valueOf</span>(i));
+        }
+    }
+
+    <span class="cm">// 3. 字符串拼接优化</span>
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">buildMessage</span>(<span class="tp">List</span>&lt;<span class="tp">String</span>&gt; items) {
+        <span class="cm">// 好：使用 StringBuilder</span>
+        <span class="tp">StringBuilder</span> sb = <span class="kw">new</span> <span class="tp">StringBuilder</span>();
+        <span class="kw">for</span> (<span class="tp">String</span> item : items) {
+            sb.<span class="fn">append</span>(item).<span class="fn">append</span>(<span class="st">", "</span>);
+        }
+        <span class="kw">return</span> sb.<span class="fn">toString</span>();
+
+        <span class="cm">// 更好：使用 Stream</span>
+        <span class="cm">// return items.stream().collect(Collectors.joining(", "));</span>
+    }
+
+    <span class="cm">// 4. 避免 NPE</span>
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">safeGetName</span>(<span class="tp">Person</span> person) {
+        <span class="cm">// 使用 Optional</span>
+        <span class="kw">return</span> <span class="tp">Optional</span>.<span class="fn">ofNullable</span>(person)
+            .<span class="fn">map</span>(<span class="tp">Person</span>::<span class="fn">getName</span>)
+            .<span class="fn">orElse</span>(<span class="st">"未知"</span>);
+    }
+
+    <span class="cm">// 5. 合理使用线程池</span>
+    <span class="kw">private static final</span> <span class="tp">ExecutorService</span> EXECUTOR =
+        <span class="kw">new</span> <span class="tp">ThreadPoolExecutor</span>(
+            <span class="nm">4</span>,                       <span class="cm">// 核心线程数</span>
+            <span class="nm">8</span>,                       <span class="cm">// 最大线程数</span>
+            <span class="nm">60L</span>, <span class="tp">TimeUnit</span>.SECONDS,   <span class="cm">// 空闲线程存活时间</span>
+            <span class="kw">new</span> <span class="tp">LinkedBlockingQueue</span>&lt;&gt;(<span class="nm">100</span>),  <span class="cm">// 任务队列</span>
+            <span class="tp">Executors</span>.<span class="fn">defaultThreadFactory</span>(),
+            <span class="kw">new</span> <span class="tp">ThreadPoolExecutor</span>.<span class="tp">CallerRunsPolicy</span>()  <span class="cm">// 拒绝策略</span>
+        );
+
+    <span class="cm">// 6. 不可变对象</span>
+    <span class="kw">public record</span> <span class="tp">Config</span>(<span class="tp">String</span> name, <span class="kw">int</span> timeout) {}  <span class="cm">// Java 16+ Record</span>
+
+    <span class="cm">// 7. try-with-resources 确保资源释放</span>
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">readFileSafe</span>(<span class="tp">String</span> path) {
+        <span class="kw">try</span> (<span class="kw">var</span> reader = <span class="kw">new</span> <span class="tp">java.io</span>.<span class="tp">BufferedReader</span>(
+                <span class="kw">new</span> <span class="tp">java.io.FileReader</span>(path))) {
+            <span class="kw">return</span> reader.<span class="fn">readLine</span>();
+        } <span class="kw">catch</span> (<span class="tp">java.io.IOException</span> e) {
+            <span class="kw">throw new</span> <span class="tp">RuntimeException</span>(<span class="st">"读取文件失败"</span>, e);
+        }
+    }
+
+    <span class="cm">// 8. 日志与调试</span>
+    <span class="kw">public void</span> <span class="fn">debugExample</span>(<span class="kw">int</span> value) {
+        <span class="cm">// 使用 slf4j 日志（推荐）</span>
+        <span class="cm">// logger.info("Processing value: {}", value);</span>
+
+        <span class="cm">// 使用断言（开发阶段）</span>
+        <span class="kw">assert</span> value > <span class="nm">0</span> : <span class="st">"Value must be positive: "</span> + value;
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="tp">BestPracticesDemo</span> demo = <span class="kw">new</span> <span class="tp">BestPracticesDemo</span>();
+        demo.<span class="fn">processData</span>();
+
+        <span class="cm">// 使用 Record</span>
+        <span class="tp">Config</span> config = <span class="kw">new</span> <span class="tp">Config</span>(<span class="st">"app"</span>, <span class="nm">30</span>);
+        System.out.<span class="fn">println</span>(config);  <span class="cm">// Config[name=app, timeout=30]</span>
+        System.out.<span class="fn">println</span>(config.<span class="fn">name</span>());  <span class="cm">// app</span>
+
+        <span class="cm">// 关闭线程池</span>
+        EXECUTOR.<span class="fn">shutdown</span>();
+    }
+}</code></pre>
+</div>
+
+<h3>24.3 常见设计模式</h3>
+
+<div class="principle">
+    <div class="principle-title">Java 常用设计模式</div>
+    <p><strong>单例模式：</strong>确保一个类只有一个实例。推荐使用枚举实现（线程安全、防反射、防序列化）。</p>
+    <p><strong>工厂模式：</strong>定义创建对象的接口，由子类决定实例化哪个类。Spring 的 BeanFactory 就是典型工厂。</p>
+    <p><strong>建造者模式：</strong>分步骤构建复杂对象。如 <code>StringBuilder</code>、<code>HttpClient.Builder</code>。</p>
+    <p><strong>观察者模式：</strong>一对多依赖关系，当一个对象状态改变时，所有依赖者都会收到通知。Java 的 <code>EventListener</code> 体系。</p>
+    <p><strong>策略模式：</strong>定义一族算法，封装每个算法，使它们可互换。如 <code>Comparator</code>、<code>Predicate</code>。</p>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">java</span>
+    </div>
+    <pre><code><span class="cm">// 单例模式 - 枚举实现（推荐）</span>
+<span class="kw">public enum</span> <span class="tp">Singleton</span> {
+    INSTANCE;
+
+    <span class="kw">private int</span> counter = <span class="nm">0</span>;
+
+    <span class="kw">public void</span> <span class="fn">doSomething</span>() {
+        counter++;
+        System.out.<span class="fn">println</span>(<span class="st">"执行次数: "</span> + counter);
+    }
+}
+
+<span class="cm">// 单例模式 - 双重检查锁</span>
+<span class="kw">public class</span> <span class="tp">ThreadSafeSingleton</span> {
+    <span class="kw">private static volatile</span> <span class="tp">ThreadSafeSingleton</span> instance;
+
+    <span class="kw">private</span> <span class="fn">ThreadSafeSingleton</span>() {}
+
+    <span class="kw">public static</span> <span class="tp">ThreadSafeSingleton</span> <span class="fn">getInstance</span>() {
+        <span class="kw">if</span> (instance == <span class="kw">null</span>) {
+            <span class="kw">synchronized</span> (<span class="tp">ThreadSafeSingleton</span>.<span class="kw">class</span>) {
+                <span class="kw">if</span> (instance == <span class="kw">null</span>) {
+                    instance = <span class="kw">new</span> <span class="tp">ThreadSafeSingleton</span>();
+                }
+            }
+        }
+        <span class="kw">return</span> instance;
+    }
+}
+
+<span class="cm">// 工厂模式</span>
+<span class="kw">public interface</span> <span class="tp">Shape</span> {
+    <span class="kw">void</span> <span class="fn">draw</span>();
+}
+
+<span class="kw">public class</span> <span class="tp">ShapeFactory</span> {
+    <span class="kw">public static</span> <span class="tp">Shape</span> <span class="fn">create</span>(<span class="tp">String</span> type) {
+        <span class="kw">return switch</span> (type.toLowerCase()) {
+            <span class="kw">case</span> <span class="st">"circle"</span> -> <span class="kw">new</span> <span class="tp">Circle</span>();
+            <span class="kw">case</span> <span class="st">"rectangle"</span> -> <span class="kw">new</span> <span class="tp">Rectangle</span>();
+            <span class="kw">case</span> <span class="st">"triangle"</span> -> <span class="kw">new</span> <span class="tp">Triangle</span>();
+            <span class="kw">default</span> -> <span class="kw">throw new</span> <span class="tp">IllegalArgumentException</span>(
+                <span class="st">"Unknown shape: "</span> + type);
+        };
+    }
+}
+
+<span class="cm">// 使用示例</span>
+<span class="kw">public class</span> <span class="tp">DesignPatternDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">// 单例</span>
+        Singleton.<span class="fn">getInstance</span>().<span class="fn">doSomething</span>();
+
+        <span class="cm">// 工厂</span>
+        <span class="tp">Shape</span> shape = <span class="tp">ShapeFactory</span>.<span class="fn">create</span>(<span class="st">"circle"</span>);
+        shape.<span class="fn">draw</span>();
+    }
+}</code></pre>
+</div>
+
+<div class="tip">设计原则：SOLID（单一职责、开闭原则、里氏替换、接口隔离、依赖反转）。遵循原则比死记模式更重要。优先使用组合而非继承。</div>
+
+<div class="warning">生产环境中不要使用 <code>System.out.println</code> 输出日志，应使用 SLF4J + Logback/Log4j2 等日志框架。日志框架支持级别控制、异步输出、文件轮转等功能。</div>
+
+<div class="danger">不要在循环中捕获异常后不做处理（空 catch 块）。这会隐藏潜在问题，增加调试难度。要么记录日志后继续，要么抛出合适的异常。</div>
+
+<!-- ==================== 25. 枚举（Enums） ==================== -->
+<h2 id="sec25">25. 枚举</h2>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// 带字段和方法的枚举</span>
+<span class="kw">public enum</span> <span class="tp">Planet</span> {
+    <span class="tp">MERCURY</span>(<span class="nm">3.303e+23</span>, <span class="nm">2.4397e6</span>),
+    <span class="tp">VENUS</span>(<span class="nm">4.869e+24</span>, <span class="nm">6.0518e6</span>),
+    <span class="tp">EARTH</span>(<span class="nm">5.976e+24</span>, <span class="nm">6.37814e6</span>);
+
+    <span class="kw">private final double</span> mass;    <span class="cm">// 质量（千克）</span>
+    <span class="kw">private final double</span> radius;  <span class="cm">// 半径（米）</span>
+
+    <span class="fn">Planet</span>(<span class="kw">double</span> mass, <span class="kw">double</span> radius) {
+        <span class="kw">this</span>.mass = mass;
+        <span class="kw">this</span>.radius = radius;
+    }
+
+    <span class="cm">// 表面重力（m/s^2）</span>
+    <span class="kw">public double</span> <span class="fn">surfaceGravity</span>() {
+        <span class="kw">final double</span> G = <span class="nm">6.67300E-11</span>;
+        <span class="kw">return</span> G * mass / (radius * radius);
+    }
+
+    <span class="cm">// 表面重量</span>
+    <span class="kw">public double</span> <span class="fn">surfaceWeight</span>(<span class="kw">double</span> otherMass) {
+        <span class="kw">return</span> otherMass * <span class="fn">surfaceGravity</span>();
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="kw">double</span> earthWeight = <span class="nm">75.0</span>;
+        <span class="kw">for</span> (<span class="tp">Planet</span> p : <span class="tp">Planet</span>.values()) {
+            System.out.<span class="fn">printf</span>(<span class="st">"%s 体重: %.2f kg%n"</span>,
+                p, p.<span class="fn">surfaceWeight</span>(earthWeight));
+        }
+    }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// 枚举实现策略模式</span>
+<span class="kw">public enum</span> <span class="tp">Operation</span> {
+    <span class="tp">ADD</span>(<span class="st">"+"</span>, (a, b) -> a + b),
+    <span class="tp">SUBTRACT</span>(<span class="st">"-"</span>, (a, b) -> a - b),
+    <span class="tp">MULTIPLY</span>(<span class="st">"*"</span>, (a, b) -> a * b),
+    <span class="tp">DIVIDE</span>(<span class="st">"/"</span>, (a, b) -> a / b);
+
+    <span class="kw">private final</span> <span class="tp">String</span> symbol;
+    <span class="kw">private final</span> <span class="tp">BinaryOperator</span>&lt;<span class="tp">Double</span>&gt; op;
+
+    <span class="fn">Operation</span>(<span class="tp">String</span> symbol, <span class="tp">BinaryOperator</span>&lt;<span class="tp">Double</span>&gt; op) {
+        <span class="kw">this</span>.symbol = symbol;
+        <span class="kw">this</span>.op = op;
+    }
+
+    <span class="kw">public double</span> <span class="fn">apply</span>(<span class="kw">double</span> a, <span class="kw">double</span> b) {
+        <span class="kw">return</span> op.<span class="fn">applyAsDouble</span>(a, b);
+    }
+
+    <span class="cm">// 通过名称查找枚举</span>
+    <span class="kw">public static</span> <span class="tp">Operation</span> <span class="fn">fromSymbol</span>(<span class="tp">String</span> symbol) {
+        <span class="kw">for</span> (<span class="tp">Operation</span> op : values()) {
+            <span class="kw">if</span> (op.symbol.<span class="fn">equals</span>(symbol)) <span class="kw">return</span> op;
+        }
+        <span class="kw">throw new</span> <span class="tp">IllegalArgumentException</span>(<span class="st">"Unknown: "</span> + symbol);
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="kw">double</span> a = <span class="nm">10</span>, b = <span class="nm">3</span>;
+        <span class="kw">for</span> (<span class="tp">Operation</span> op : <span class="tp">Operation</span>.values()) {
+            System.out.<span class="fn">printf</span>(<span class="st">"%.1f %s %.1f = %.1f%n"</span>,
+                a, op.symbol, b, op.<span class="fn">apply</span>(a, b));
+        }
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 26. Record（记录） ==================== -->
+<h2 id="sec26">26. Record</h2>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// Record 基础用法（Java 16+）</span>
+<span class="kw">public record</span> <span class="tp">Point</span>(<span class="kw">double</span> x, <span class="kw">double</span> y) {
+    <span class="cm">// 紧凑构造器：参数验证</span>
+    <span class="kw">public</span> <span class="fn">Point</span> {
+        <span class="kw">if</span> (x < <span class="nm">0</span> || y < <span class="nm">0</span>) {
+            <span class="kw">throw new</span> <span class="tp">IllegalArgumentException</span>(<span class="st">"坐标不能为负"</span>);
+        }
+    }
+
+    <span class="cm">// 可以添加自定义方法</span>
+    <span class="kw">public double</span> <span class="fn">distanceTo</span>(<span class="tp">Point</span> other) {
+        <span class="kw">return</span> Math.<span class="fn">sqrt</span>(Math.<span class="fn">pow</span>(<span class="kw">this</span>.x - other.x, <span class="nm">2</span>)
+            + Math.<span class="fn">pow</span>(<span class="kw">this</span>.y - other.y, <span class="nm">2</span>));
+    }
+
+    <span class="cm">// 静态工厂方法</span>
+    <span class="kw">public static</span> <span class="tp">Point</span> <span class="fn">origin</span>() {
+        <span class="kw">return new</span> <span class="tp">Point</span>(<span class="nm">0</span>, <span class="nm">0</span>);
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="tp">Point</span> p1 = <span class="kw">new</span> <span class="tp">Point</span>(<span class="nm">3</span>, <span class="nm">4</span>);
+        <span class="tp">Point</span> p2 = <span class="tp">Point</span>.<span class="fn">origin</span>();
+
+        System.out.<span class="fn">println</span>(p1);                    <span class="cm">// Point[x=3.0, y=4.0]</span>
+        System.out.<span class="fn">println</span>(p1.<span class="fn">x</span>());                <span class="cm">// 3.0（accessor 方法）</span>
+        System.out.<span class="fn">println</span>(p1.<span class="fn">distanceTo</span>(p2));     <span class="cm">// 5.0</span>
+        System.out.<span class="fn">println</span>(p1.<span class="fn">equals</span>(<span class="kw">new</span> <span class="tp">Point</span>(<span class="nm">3</span>, <span class="nm">4</span>)));  <span class="cm">// true</span>
+    }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// Record 模式匹配（Java 19+/21+）</span>
+<span class="kw">public sealed interface</span> <span class="tp">Shape</span> <span class="kw">permits</span> <span class="tp">Circle</span>, <span class="tp">Rectangle</span> {}
+<span class="kw">public record</span> <span class="tp">Circle</span>(<span class="kw">double</span> radius) <span class="kw">implements</span> <span class="tp">Shape</span> {}
+<span class="kw">public record</span> <span class="tp">Rectangle</span>(<span class="kw">double</span> width, <span class="kw">double</span> height) <span class="kw">implements</span> <span class="tp">Shape</span> {}
+
+<span class="kw">public class</span> <span class="tp">RecordPatternDemo</span> {
+    <span class="cm">// Record 模式在 switch 中解构</span>
+    <span class="kw">public static</span> <span class="kw">double</span> <span class="fn">area</span>(<span class="tp">Shape</span> shape) {
+        <span class="kw">return switch</span> (shape) {
+            <span class="kw">case</span> <span class="tp">Circle</span>(<span class="kw">var</span> r) -> Math.PI * r * r;
+            <span class="kw">case</span> <span class="tp">Rectangle</span>(<span class="kw">var</span> w, <span class="kw">var</span> h) -> w * h;
+        };
+    }
+
+    <span class="cm">// 嵌套 Record 模式</span>
+    <span class="kw">public record</span> <span class="tp">Named</span>(<span class="tp">String</span> name, <span class="tp">Shape</span> shape) {}
+
+    <span class="kw">public static</span> <span class="tp">String</span> <span class="fn">describe</span>(<span class="tp">Named</span> named) {
+        <span class="kw">return switch</span> (named) {
+            <span class="kw">case</span> <span class="tp">Named</span>(<span class="kw">var</span> name, <span class="tp">Circle</span>(<span class="kw">var</span> r)) ->
+                name + <span class="st">" is a circle with radius "</span> + r;
+            <span class="kw">case</span> <span class="tp">Named</span>(<span class="kw">var</span> name, <span class="tp">Rectangle</span>(<span class="kw">var</span> w, <span class="kw">var</span> h)) ->
+                name + <span class="st">" is a rectangle "</span> + w + <span class="st">"x"</span> + h;
+            <span class="kw">default</span> -> <span class="st">"Unknown shape"</span>;
+        };
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        System.out.<span class="fn">println</span>(<span class="fn">area</span>(<span class="kw">new</span> <span class="tp">Circle</span>(<span class="nm">5</span>)));           <span class="cm">// 78.54</span>
+        System.out.<span class="fn">println</span>(<span class="fn">area</span>(<span class="kw">new</span> <span class="tp">Rectangle</span>(<span class="nm">3</span>, <span class="nm">4</span>)));    <span class="cm">// 12.0</span>
+        System.out.<span class="fn">println</span>(<span class="fn">describe</span>(<span class="kw">new</span> <span class="tp">Named</span>(<span class="st">"MyCircle"</span>, <span class="kw">new</span> <span class="tp">Circle</span>(<span class="nm">10</span>))));
+    }
+}</code></pre>
+</div>
+
+<!-- ==================== 27. 模式匹配 ==================== -->
+<h2 id="sec27">27. 模式匹配</h2>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// Switch 表达式与模式匹配（Java 21+）</span>
+<span class="kw">public class</span> <span class="tp">PatternMatchingDemo</span> {
+
+    <span class="cm">// 基本类型模式匹配</span>
+    <span class="kw">public static</span> <span class="tp">String</span> <span class="fn">formatValue</span>(<span class="tp">Object</span> obj) {
+        <span class="kw">return switch</span> (obj) {
+            <span class="kw">case</span> <span class="kw">null</span> -> <span class="st">"null"</span>;
+            <span class="kw">case</span> <span class="kw">int</span> i -> <span class="st">"int: "</span> + i;
+            <span class="kw">case</span> <span class="kw">double</span> d -> <span class="st">"double: "</span> + d;
+            <span class="kw">case</span> <span class="tp">String</span> s -> <span class="st">"String: \""</span> + s + <span class="st">"\""</span>;
+            <span class="kw">case</span> <span class="kw">int</span>[] arr -> <span class="st">"Array of length "</span> + arr.length;
+            <span class="kw">default</span> -> obj.<span class="fn">getClass</span>().<span class="fn">getSimpleName</span>();
+        };
+    }
+
+    <span class="cm">// Guarded pattern（带守卫条件的模式）</span>
+    <span class="kw">public static</span> <span class="tp">String</span> <span class="fn">describe</span>(<span class="tp">Object</span> obj) {
+        <span class="kw">return switch</span> (obj) {
+            <span class="kw">case</span> <span class="tp">String</span> s <span class="kw">when</span> s.<span class="fn">length</span>() > <span class="nm">10</span> -> <span class="st">"长字符串: "</span> + s;
+            <span class="kw">case</span> <span class="tp">String</span> s -> <span class="st">"短字符串: "</span> + s;
+            <span class="kw">case</span> <span class="tp">Integer</span> i <span class="kw">when</span> i > <span class="nm">100</span> -> <span class="st">"大整数: "</span> + i;
+            <span class="kw">case</span> <span class="tp">Integer</span> i -> <span class="st">"小整数: "</span> + i;
+            <span class="kw">default</span> -> <span class="st">"其他"</span>;
+        };
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        System.out.<span class="fn">println</span>(<span class="fn">formatValue</span>(<span class="nm">42</span>));
+        System.out.<span class="fn">println</span>(<span class="fn">formatValue</span>(<span class="st">"Hello"</span>));
+        System.out.<span class="fn">println</span>(<span class="fn">describe</span>(<span class="st">"Hello World!"</span>));
+        System.out.<span class="fn">println</span>(<span class="fn">describe</span>(<span class="nm">200</span>));
+    }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="java">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Java</span>
+    </div>
+    <pre><code><span class="cm">// 密封类（Sealed Classes，Java 17+）</span>
+<span class="cm">// 限制哪些类可以继承或实现</span>
+<span class="kw">public sealed interface</span> <span class="tp">Payment</span>
+    <span class="kw">permits</span> <span class="tp">CreditCard</span>, <span class="tp">PayPal</span>, <span class="tp">BankTransfer</span> {
+    <span class="kw">double</span> <span class="fn">calculateFee</span>();
+}
+
+<span class="kw">public record</span> <span class="tp">CreditCard</span>(<span class="tp">String</span> number, <span class="kw">double</span> amount)
+    <span class="kw">implements</span> <span class="tp">Payment</span> {
+    @Override
+    <span class="kw">public double</span> <span class="fn">calculateFee</span>() { <span class="kw">return</span> amount * <span class="nm">0.02</span>; }
+}
+
+<span class="kw">public record</span> <span class="tp">PayPal</span>(<span class="tp">String</span> email, <span class="kw">double</span> amount)
+    <span class="kw">implements</span> <span class="tp">Payment</span> {
+    @Override
+    <span class="kw">public double</span> <span class="fn">calculateFee</span>() { <span class="kw">return</span> amount * <span class="nm">0.035</span>; }
+}
+
+<span class="kw">public record</span> <span class="tp">BankTransfer</span>(<span class="tp">String</span> account, <span class="kw">double</span> amount)
+    <span class="kw">implements</span> <span class="tp">Payment</span> {
+    @Override
+    <span class="kw">public double</span> <span class="fn">calculateFee</span>() { <span class="kw">return</span> amount * <span class="nm">0.01</span>; }
+}
+
+<span class="kw">public class</span> <span class="tp">SealedClassDemo</span> {
+    <span class="kw">public static</span> <span class="tp">String</span> <span class="fn">processPayment</span>(<span class="tp">Payment</span> payment) {
+        <span class="cm">// 编译器知道 Payment 只有三种子类型，无需 default</span>
+        <span class="kw">return switch</span> (payment) {
+            <span class="kw">case</span> <span class="tp">CreditCard</span> cc -> <span class="st">"信用卡支付，手续费: "</span> + cc.<span class="fn">calculateFee</span>();
+            <span class="kw">case</span> <span class="tp">PayPal</span> pp -> <span class="st">"PayPal 支付，手续费: "</span> + pp.<span class="fn">calculateFee</span>();
+            <span class="kw">case</span> <span class="tp">BankTransfer</span> bt -> <span class="st">"银行转账，手续费: "</span> + bt.<span class="fn">calculateFee</span>();
+        };
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="tp">String</span>[] args) {
+        <span class="tp">Payment</span> cc = <span class="kw">new</span> <span class="tp">CreditCard</span>(<span class="st">"4111-xxxx"</span>, <span class="nm">100</span>);
+        <span class="tp">Payment</span> pp = <span class="kw">new</span> <span class="tp">PayPal</span>(<span class="st">"user@email.com"</span>, <span class="nm">50</span>);
+
+        System.out.<span class="fn">println</span>(<span class="fn">processPayment</span>(cc));
+        System.out.<span class="fn">println</span>(<span class="fn">processPayment</span>(pp));
+    }
+}</code></pre>
+</div>
+
+<!-- Footer -->
+<div style="margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim); font-size: 13px;">
+    <p>ZoeBasicCode Java 教程 | 持续更新中</p>
+</div>
+
+</main>
+
+<!-- Sidebar active link highlight -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.sidebar-link');
+    const sections = [];
+    links.forEach(function(link) {
+        const id = link.getAttribute('href').replace('#', '');
+        const el = document.getElementById(id);
+        if (el) sections.push({ el: el, link: link });
+    });
+
+    function updateActive() {
+        let current = sections[0];
+        for (let i = 0; i < sections.length; i++) {
+            if (sections[i].el.getBoundingClientRect().top <= 100) {
+                current = sections[i];
+            }
+        }
+        links.forEach(function(l) { l.classList.remove('active'); });
+        if (current) current.link.classList.add('active');
+    }
+
+    window.addEventListener('scroll', updateActive);
+    updateActive();
+});
+</script>
+<script src="../assets/editor.js"></script>
+
+</body>
+</html>

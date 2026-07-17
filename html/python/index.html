@@ -1,0 +1,2041 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 教程 - ZoeBasicCode</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="../assets/editor.css">
+</head>
+<body>
+<header class="header">
+    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+    <a class="header-logo" href="../index.html">ZoeBasicCode <span>Python</span></a>
+</header>
+<nav class="sidebar">
+    <div class="sidebar-section">
+        <div class="sidebar-title">入门</div>
+        <a class="sidebar-link" href="#sec1"><span class="num">01</span>简介</a>
+        <a class="sidebar-link" href="#sec2"><span class="num">02</span>环境搭建</a>
+        <a class="sidebar-link" href="#sec3"><span class="num">03</span>基本语法</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">基础</div>
+        <a class="sidebar-link" href="#sec4"><span class="num">04</span>变量与数据类型</a>
+        <a class="sidebar-link" href="#sec5"><span class="num">05</span>运算符</a>
+        <a class="sidebar-link" href="#sec6"><span class="num">06</span>字符串</a>
+        <a class="sidebar-link" href="#sec7"><span class="num">07</span>列表与元组</a>
+        <a class="sidebar-link" href="#sec8"><span class="num">08</span>字典与集合</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">流程</div>
+        <a class="sidebar-link" href="#sec9"><span class="num">09</span>条件判断</a>
+        <a class="sidebar-link" href="#sec10"><span class="num">10</span>循环语句</a>
+        <a class="sidebar-link" href="#sec11"><span class="num">11</span>推导式</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">函数</div>
+        <a class="sidebar-link" href="#sec12"><span class="num">12</span>函数定义</a>
+        <a class="sidebar-link" href="#sec13"><span class="num">13</span>参数与返回值</a>
+        <a class="sidebar-link" href="#sec14"><span class="num">14</span>匿名函数</a>
+        <a class="sidebar-link" href="#sec15"><span class="num">15</span>作用域</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">面向对象</div>
+        <a class="sidebar-link" href="#sec16"><span class="num">16</span>类与对象</a>
+        <a class="sidebar-link" href="#sec17"><span class="num">17</span>继承与多态</a>
+        <a class="sidebar-link" href="#sec18"><span class="num">18</span>魔术方法</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">进阶</div>
+        <a class="sidebar-link" href="#sec19"><span class="num">19</span>模块与包</a>
+        <a class="sidebar-link" href="#sec20"><span class="num">20</span>异常处理</a>
+        <a class="sidebar-link" href="#sec21"><span class="num">21</span>文件操作</a>
+        <a class="sidebar-link" href="#sec22"><span class="num">22</span>装饰器</a>
+        <a class="sidebar-link" href="#sec23"><span class="num">23</span>生成器与迭代器</a>
+        <a class="sidebar-link" href="#sec24"><span class="num">24</span>多线程与异步</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">实战</div>
+        <a class="sidebar-link" href="#sec25"><span class="num">25</span>最佳实践与常见陷阱</a>
+    </div>
+</nav>
+<main class="main">
+    <h1>Python 教程</h1>
+    <p class="subtitle">从零开始系统学习 Python 编程语言，涵盖语法基础、面向对象、进阶特性和实战最佳实践。Python 是一种解释型、面向对象、动态类型的高级编程语言，以其简洁优雅的语法和强大的生态系统著称。</p>
+
+    <!-- ==================== 第1节：简介 ==================== -->
+    <h2 id="sec1">1. Python 简介</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：为什么选择 Python</div>
+        <p>Python 由 Guido van Rossum 于 1991 年发布，设计哲学强调<strong>代码可读性</strong>和<strong>简洁性</strong>。Python 采用"一种方式，最好只有一种方式"的哲学，使得不同开发者写出的代码风格高度一致。</p>
+        <p>Python 是<strong>动态类型语言</strong>，变量不需要声明类型，解释器会在运行时自动推断。同时它是<strong>强类型语言</strong>，不会自动进行类型隐式转换（比如字符串和数字不能直接相加）。</p>
+        <p>Python 的应用领域极为广泛：<strong>Web 开发</strong>（Django、Flask）、<strong>数据科学</strong>（NumPy、Pandas）、<strong>人工智能</strong>（PyTorch、TensorFlow）、<strong>自动化运维</strong>（Ansible）、<strong>桌面应用</strong>（PyQt）、<strong>游戏开发</strong>（Pygame）等。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># Python 的设计哲学 —— 用 import this 查看</span>
+<span class="kw">import</span> this
+
+<span class="cm"># 输出 Python 之禅（The Zen of Python）的核心思想：</span>
+<span class="cm"># Beautiful is better than ugly.        优美胜于丑陋</span>
+<span class="cm"># Explicit is better than implicit.     明确胜于含蓄</span>
+<span class="cm"># Simple is better than complex.        简单胜于复杂</span>
+<span class="cm"># Readability counts.                   可读性很重要</span>
+
+<span class="cm"># Hello World —— Python 的简洁性一目了然</span>
+<span class="fn">print</span>(<span class="st">"Hello, World!"</span>)
+
+<span class="cm"># 交换变量 —— 不需要临时变量</span>
+a, b <span class="op">=</span> <span class="nm">1</span>, <span class="nm">2</span>
+a, b <span class="op">=</span> b, a
+<span class="fn">print</span>(a, b)  <span class="cm"># 2 1</span></code></pre>
+    </div>
+
+    <div class="tip">Python 3.x 是当前主流版本，Python 2 已于 2020 年停止维护。新项目请始终使用 Python 3。</div>
+
+    <!-- ==================== 第2节：环境搭建 ==================== -->
+    <h2 id="sec2">2. 环境搭建</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Python 的运行方式</div>
+        <p>Python 是<strong>解释型语言</strong>，代码不需要编译成二进制文件，而是由 Python 解释器逐行读取并执行。Python 代码（.py 文件）首先被编译成<strong>字节码</strong>（.pyc 文件），然后由<strong>Python 虚拟机（PVM）</strong>执行字节码。</p>
+        <p>建议使用<strong>虚拟环境</strong>（venv 或 conda）隔离不同项目的依赖，避免包版本冲突。虚拟环境本质上是一个独立的 Python 解释器副本和包安装目录。</p>
+    </div>
+
+    <h3>安装 Python</h3>
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># Windows: 从 python.org 下载安装包，勾选 "Add Python to PATH"</span>
+<span class="cm"># macOS:</span>
+brew install python@<span class="nm">3.12</span>
+
+<span class="cm"># 验证安装</span>
+python --version
+pip --version</code></pre>
+    </div>
+
+    <h3>创建虚拟环境</h3>
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># 创建虚拟环境</span>
+python -m venv myenv
+
+<span class="cm"># 激活虚拟环境</span>
+<span class="cm"># Windows:</span>
+myenv\Scripts\activate
+<span class="cm"># macOS/Linux:</span>
+source myenv/bin/activate
+
+<span class="cm"># 安装依赖</span>
+pip install requests flask
+
+<span class="cm"># 导出依赖列表</span>
+pip freeze > requirements.txt
+
+<span class="cm"># 从依赖列表安装</span>
+pip install -r requirements.txt
+
+<span class="cm"># 退出虚拟环境</span>
+deactivate</code></pre>
+    </div>
+
+    <div class="warning">永远不要在系统全局 Python 环境中安装项目依赖包，这会导致不同项目之间的版本冲突。</div>
+
+    <!-- ==================== 第3节：基本语法 ==================== -->
+    <h2 id="sec3">3. 基本语法</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Python 的缩进机制</div>
+        <p>Python 使用<strong>缩进</strong>（通常是 4 个空格）来定义代码块，而不是像 C/Java 那样使用花括号。这是 Python 最显著的特征之一。缩进不是装饰性的——它是语法的一部分，缩进错误会导致 <code>IndentationError</code>。</p>
+        <p>这种设计强制程序员编写格式统一的代码，从根本上消除了"代码风格混乱"的问题。Python 社区约定使用 <strong>PEP 8</strong> 规范，推荐 4 空格缩进。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># Python 使用缩进定义代码块（4 个空格为一个缩进级别）</span>
+<span class="kw">def</span> <span class="fn">greet</span>(name):
+    <span class="kw">if</span> name:                          <span class="cm"># if 语句块开始</span>
+        <span class="fn">print</span>(<span class="st">f"你好，</span>{name}<span class="st">！"</span>)        <span class="cm"># 缩进 4 空格</span>
+    <span class="kw">else</span>:                              <span class="cm"># 与 if 同级缩进</span>
+        <span class="fn">print</span>(<span class="st">"你好，陌生人！"</span>)
+
+<span class="cm"># 注释：单行注释用 #，多行注释用三引号字符串</span>
+<span class="cm"># 这是单行注释</span>
+
+<span class="cm">"""
+这是多行注释（实际上是多行字符串）
+常用于文档字符串（docstring）
+"""</span>
+
+<span class="cm"># 行的续写：使用反斜杠或括号</span>
+total <span class="op">=</span> <span class="nm">1</span> <span class="op">+</span> <span class="nm">2</span> <span class="op">+</span> <span class="nm">3</span> <span class="op">+</span> <span class="nm">4</span> <span class="op">+</span> <span class="nm">5</span> <span class="op">+</span> <span class="nm">6</span> <span class="op">+</span> <span class="nm">7</span> \
+        <span class="op">+</span> <span class="nm">8</span> <span class="op">+</span> <span class="nm">9</span> <span class="op">+</span> <span class="nm">10</span>
+
+<span class="cm"># 括号内的表达式可以自然换行</span>
+result <span class="op">=</span> (
+    <span class="nm">1</span> <span class="op">+</span> <span class="nm">2</span> <span class="op">+</span> <span class="nm">3</span>
+    <span class="op">+</span> <span class="nm">4</span> <span class="op">+</span> <span class="nm">5</span>
+    <span class="op">+</span> <span class="nm">6</span> <span class="op">+</span> <span class="nm">7</span>
+)</code></pre>
+    </div>
+
+    <!-- ==================== 第4节：变量与数据类型 ==================== -->
+    <h2 id="sec4">4. 变量与数据类型</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Python 的对象模型</div>
+        <p>在 Python 中，<strong>一切皆对象</strong>。变量本质上是对象的<strong>引用（标签）</strong>，而不是存储值的容器。当你写 <code>x = 42</code> 时，Python 在内存中创建一个整数对象 42，然后让变量 x 指向它。</p>
+        <p>Python 的变量是<strong>动态类型</strong>的——同一个变量可以指向不同类型的对象。但变量本身有类型检查：<code>x = 5</code> 后 x 指向 int 对象，<code>x = "hello"</code> 后 x 指向 str 对象。</p>
+        <p>可变对象（list、dict、set）和不可变对象（int、str、tuple）的行为不同。不可变对象的"修改"实际上是创建新对象，而可变对象可以在原地修改。</p>
+    </div>
+
+    <h3>基本数据类型</h3>
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 整数 int —— 任意精度，没有溢出限制</span>
+age <span class="op">=</span> <span class="nm">25</span>
+big_num <span class="op">=</span> <span class="nm">10</span><span class="op">**</span><span class="nm">100</span>          <span class="cm"># 一个googol，Python可以轻松处理</span>
+hex_val <span class="op">=</span> <span class="nm">0xFF</span>             <span class="cm"># 十六进制 → 255</span>
+oct_val <span class="nm">0o77</span>              <span class="cm"># 八进制 → 63</span>
+bin_val <span class="op">=</span> <span class="nm">0b1010</span>           <span class="cm"># 二进制 → 10</span>
+
+<span class="cm"># 浮点数 float —— 双精度浮点数（IEEE 754）</span>
+pi <span class="op">=</span> <span class="nm">3.14159</span>
+sci <span class="op">=</span> <span class="nm">2.5e10</span>              <span class="cm"># 科学计数法 → 25000000000.0</span>
+
+<span class="cm"># 布尔 bool —— int 的子类</span>
+is_active <span class="op">=</span> <span class="kw">True</span>
+is_admin <span class="op">=</span> <span class="kw">False</span>
+<span class="fn">print</span>(<span class="fn">isinstance</span>(<span class="kw">True</span>, <span class="tp">int</span>))  <span class="cm"># True，bool 是 int 的子类</span>
+<span class="fn">print</span>(<span class="kw">True</span> <span class="op">+</span> <span class="kw">True</span>)           <span class="cm"># 2</span>
+
+<span class="cm"># NoneType —— 表示"空"</span>
+result <span class="op">=</span> <span class="kw">None</span>
+<span class="fn">print</span>(<span class="fn">type</span>(result))          <span class="cm"># &lt;class 'NoneType'&gt;</span>
+
+<span class="cm"># 类型检查</span>
+<span class="fn">print</span>(<span class="fn">type</span>(age))              <span class="cm"># &lt;class 'int'&gt;</span>
+<span class="fn">print</span>(<span class="fn">isinstance</span>(age, <span class="tp">int</span>))  <span class="cm"># True</span></code></pre>
+    </div>
+
+    <h3>变量赋值与内存模型</h3>
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># Python 中变量是引用，不是盒子</span>
+a <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>]
+b <span class="op">=</span> a                <span class="cm"># b 和 a 指向同一个列表对象</span>
+b.append(<span class="nm">4</span>)
+<span class="fn">print</span>(a)             <span class="cm"># [1, 2, 3, 4] —— a 也被修改了！</span>
+
+<span class="cm"># 要创建独立副本，使用切片或 copy()</span>
+c <span class="op">=</span> a[:]             <span class="cm"># 浅拷贝</span>
+d <span class="op">=</span> a.<span class="fn">copy</span>()         <span class="cm"># 浅拷贝</span>
+<span class="kw">import</span> copy
+e <span class="op">=</span> copy.<span class="fn">deepcopy</span>(a)  <span class="cm"># 深拷贝（处理嵌套对象）</span>
+
+<span class="cm"># 多重赋值</span>
+x <span class="op">=</span> y <span class="op">=</span> z <span class="op">=</span> <span class="nm">0</span>        <span class="cm"># 所有变量指向同一个对象</span>
+a, b, c <span class="op">=</span> <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>    <span class="cm"># 解包赋值</span>
+a, *b <span class="op">=</span> <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>   <span class="cm"># a=1, b=[2, 3, 4]</span></code></pre>
+    </div>
+
+    <div class="danger">可变对象的赋值是引用传递，不是值拷贝。对 b 的修改会影响 a，这是 Python 初学者最常见的 bug 来源之一。</div>
+
+    <h3>元组解包与高级赋值</h3>
+    <div class="code-block" data-lang="python">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">Python</span>
+        </div>
+<pre><code><span class="cm"># 元组解包 —— 同时交换多个变量</span>
+x, y, z <span class="op">=</span> <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>
+x, y, z <span class="op">=</span> z, x, y
+<span class="fn">print</span>(x, y, z)  <span class="cm"># 3 1 2</span>
+
+<span class="cm"># 嵌套解包</span>
+(a, b), c <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>], <span class="nm">3</span>
+<span class="fn">print</span>(a, b, c)  <span class="cm"># 1 2 3</span>
+
+<span class="cm"># 星号解包收集剩余元素</span>
+first, *middle, last <span class="op">=</span> <span class="fn">range</span>(<span class="nm">5</span>)
+<span class="fn">print</span>(first, middle, last)  <span class="cm"># 0 [1, 2, 3] 4</span>
+
+<span class="cm"># 忽略不需要的变量</span>
+_, name, *_, score <span class="op">=</span> <span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="nm">90</span>, <span class="nm">85</span>
+
+<span class="cm"># walrus 运算符 :=（Python 3.8+）—— 赋值表达式</span>
+<span class="cm"># 在表达式内部赋值，避免重复计算</span>
+<span class="kw">import</span> re
+text <span class="op">=</span> <span class="st">"电话: 138-0013-8000"</span>
+<span class="kw">if</span> (m <span class="op">:=</span> re.<span class="fn">search</span>(<span class="st">r'\d{3}-\d{4}-\d{4}'</span>, text)):
+    <span class="fn">print</span>(<span class="st">f"找到号码: </span>{m.<span class="fn">group</span>()}<span class="st">"</span>)
+
+<span class="cm"># walrus 在列表推导中过滤并转换</span>
+data <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">-2</span>, <span class="nm">3</span>, <span class="nm">-4</span>, <span class="nm">5</span>, <span class="nm">0</span>]
+positives <span class="op">=</span> [y <span class="kw">for</span> x <span class="kw">in</span> data <span class="kw">if</span> (y <span class="op">:=</span> abs(x)) <span class="op">></span> <span class="nm">0</span>]
+<span class="fn">print</span>(positives)  <span class="cm"># [1, 2, 3, 4, 5]</span></code></pre>
+    </div>
+
+    <!-- ==================== 第5节：运算符 ==================== -->
+    <h2 id="sec5">5. 运算符</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Python 运算符的特殊性</div>
+        <p>Python 的运算符有几个显著特点：(1) <strong>整数除法</strong>使用 <code>//</code>，不是 <code>/</code>（Python 3 中 <code>/</code> 始终返回浮点数）；(2) <strong>幂运算</strong>使用 <code>**</code>，比 <code>math.pow()</code> 更高效；(3) Python 支持<strong>链式比较</strong>（<code>1 &lt; x &lt; 10</code>），这是 C/Java 不支持的。</p>
+        <p>Python 的 <code>is</code> 和 <code>==</code> 有本质区别：<code>==</code> 比较<strong>值</strong>是否相等，<code>is</code> 比较<strong>身份</strong>（是否是同一个对象）。对于小整数（-5 到 256），Python 会缓存复用，所以 <code>a is b</code> 可能为 True，但这不是可靠的做法。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 算术运算符</span>
+<span class="fn">print</span>(<span class="nm">10</span> <span class="op">/</span> <span class="nm">3</span>)      <span class="cm"># 3.3333... (真除法)</span>
+<span class="fn">print</span>(<span class="nm">10</span> <span class="op">//</span> <span class="nm">3</span>)     <span class="cm"># 3  (整除，向下取整)</span>
+<span class="fn">print</span>(<span class="nm">10</span> <span class="op">%</span> <span class="nm">3</span>)      <span class="cm"># 1  (取余)</span>
+<span class="fn">print</span>(<span class="nm">2</span> <span class="op">**</span> <span class="nm">10</span>)     <span class="cm"># 1024 (幂运算)</span>
+<span class="fn">print</span>(<span class="nm">-7</span> <span class="op">//</span> <span class="nm">2</span>)     <span class="cm"># -4  (向下取整，不是截断！)</span>
+
+<span class="cm"># 链式比较 —— Python 独有的语法</span>
+x <span class="op">=</span> <span class="nm">5</span>
+<span class="fn">print</span>(<span class="nm">1</span> <span class="op">&lt;</span> x <span class="op">&lt;</span> <span class="nm">10</span>)       <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="nm">1</span> <span class="op">&lt;</span> x <span class="op">&lt;</span> <span class="nm">3</span> <span class="op">or</span> <span class="nm">8</span> <span class="op">&lt;</span> x <span class="op">&lt;</span> <span class="nm">10</span>)  <span class="cm"># True</span>
+
+<span class="cm"># is 与 == 的区别</span>
+a <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>]
+b <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>]
+<span class="fn">print</span>(a <span class="op">==</span> b)     <span class="cm"># True  (值相同)</span>
+<span class="fn">print</span>(a <span class="op">is</span> b)     <span class="cm"># False (不是同一个对象)</span>
+
+<span class="cm"># 短路求值</span>
+<span class="cm"># and: 第一个为假则返回第一个，否则返回第二个</span>
+<span class="cm"># or:  第一个为真则返回第一个，否则返回第二个</span>
+result <span class="op">=</span> <span class="kw">None</span> <span class="op">or</span> <span class="st">"默认值"</span>  <span class="cm"># "默认值"</span>
+name <span class="op">=</span> <span class="st">"Alice"</span> <span class="op">or</span> <span class="st">"Bob"</span>   <span class="cm"># "Alice" (短路)</span></code></pre>
+    </div>
+
+    <!-- ==================== 第6节：字符串 ==================== -->
+    <h2 id="sec6">6. 字符串</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Python 字符串的不可变性</div>
+        <p>Python 字符串是<strong>不可变序列</strong>（immutable sequence）。这意味着一旦创建，字符串的内容不能被修改。每次对字符串的"修改"（如拼接、替换）实际上都会创建一个<strong>新的字符串对象</strong>。</p>
+        <p>这个设计有重要影响：频繁拼接字符串应该使用 <code>list</code> + <code>join()</code>，而不是 <code>+=</code>。因为每次 <code>+=</code> 都会创建新字符串并复制已有内容，导致 O(n²) 的时间复杂度。</p>
+        <p>Python 字符串默认使用 <strong>UTF-8</strong> 编码，原生支持 Unicode 字符。字符串中的每个字符都是一个 Unicode 码点，可以用 <code>ord()</code> 获取码点，<code>chr()</code> 从码点创建字符。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># f-string 格式化（Python 3.6+，推荐方式）</span>
+name <span class="op">=</span> <span class="st">"Alice"</span>
+age <span class="op">=</span> <span class="nm">30</span>
+<span class="fn">print</span>(<span class="st">f"</span>{name}<span class="st">今年</span>{age}<span class="st">岁"</span>)
+
+<span class="cm"># f-string 中可以嵌入表达式</span>
+<span class="fn">print</span>(<span class="st">f"</span>{<span class="nm">2</span> <span class="op">+</span> <span class="nm">3</span>}<span class="st">"</span>)                     <span class="cm"># 5</span>
+<span class="fn">print</span>(<span class="st">f"</span>{name.lower()}<span class="st">"</span>)              <span class="cm"># alice</span>
+<span class="fn">print</span>(<span class="st">f"</span>{<span class="nm">3.14159</span>:<span class="st">.2f}</span><span class="st">"</span>)              <span class="cm"># 3.14</span>
+
+<span class="cm"># 常用字符串方法</span>
+s <span class="op">=</span> <span class="st">"  Hello, World!  "</span>
+<span class="fn">print</span>(s.<span class="fn">strip</span>())          <span class="cm"># "Hello, World!" (去除首尾空白)</span>
+<span class="fn">print</span>(s.<span class="fn">lower</span>())          <span class="cm"># "  hello, world!  "</span>
+<span class="fn">print</span>(s.<span class="fn">replace</span>(<span class="st">"World"</span>, <span class="st">"Python"</span>))  <span class="cm"># "  Hello, Python!  "</span>
+<span class="fn">print</span>(s.<span class="fn">split</span>(<span class="st">","</span>))      <span class="cm"># ['  Hello', ' World!  ']</span>
+
+<span class="cm"># 字符串切片（与列表相同）</span>
+text <span class="op">=</span> <span class="st">"Python"</span>
+<span class="fn">print</span>(text[<span class="nm">0</span>:<span class="nm">3</span>])        <span class="cm"># "Pyt" (左闭右开)</span>
+<span class="fn">print</span>(text[::<span class="nm">-1</span>])        <span class="cm"># "nohtyP" (反转字符串)</span>
+
+<span class="cm"># 多行字符串</span>
+multi <span class="op">=</span> <span class="st">"""这是
+多行
+字符串"""</span>
+
+<span class="cm"># 字符串拼接性能：用 join 而不是 +=</span>
+<span class="cm"># 不好的方式</span>
+result <span class="op">=</span> <span class="st">""</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10000</span>):
+    result <span class="op">+=</span> <span class="fn">str</span>(i)    <span class="cm"># 每次都创建新字符串！O(n²)</span>
+
+<span class="cm"># 好的方式</span>
+result <span class="op">=</span> <span class="st">""</span>.<span class="fn">join</span>(<span class="fn">str</span>(i) <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10000</span>))  <span class="cm"># O(n)</span></code></pre>
+    </div>
+
+    <div class="compare">
+        <div class="compare-item">
+            <div class="compare-label bad">不推荐</div>
+<pre><code><span class="cm"># 用 += 拼接字符串</span>
+result <span class="op">=</span> <span class="st">""</span>
+<span class="kw">for</span> item <span class="kw">in</span> items:
+    result <span class="op">+=</span> item <span class="op">+</span> <span class="st">", "</span></code></pre>
+        </div>
+        <div class="compare-item">
+            <div class="compare-label good">推荐</div>
+<pre><code><span class="cm"># 用 join 拼接字符串</span>
+result <span class="op">=</span> <span class="st">", "</span>.<span class="fn">join</span>(items)</code></pre>
+        </div>
+    </div>
+
+    <h3>f-string 进阶与正则表达式</h3>
+    <div class="code-block" data-lang="python">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">Python</span>
+        </div>
+<pre><code><span class="cm"># f-string 进阶格式化</span>
+price <span class="op">=</span> <span class="nm">1234567.89</span>
+<span class="fn">print</span>(<span class="st">f"金额: </span>{price:<span class="st">,</span>}<span class="st">元"</span>)        <span class="cm"># 金额: 1,234,567.89元</span>
+<span class="fn">print</span>(<span class="st">f"百分比: </span>{<span class="nm">0.856</span>:<span class="st">.1%</span>}<span class="st">"</span>)      <span class="cm"># 百分比: 85.6%</span>
+<span class="fn">print</span>(<span class="st">f"对齐: </span>{<span class="st">'hi'</span>:<span class="st">&gt;10</span>}<span class="st">"</span>)          <span class="cm">#          hi</span>
+<span class="fn">print</span>(<span class="st">f"补零: </span>{<span class="nm">42</span>:<span class="st">05d</span>}<span class="st">"</span>)           <span class="cm"># 00042</span>
+<span class="fn">print</span>(<span class="st">f"二进制: </span>{<span class="nm">255</span>:<span class="st">b</span>}<span class="st">, 十六进制: </span>{<span class="nm">255</span>:<span class="st">x</span>}<span class="st">"</span>)  <span class="cm"># 二进制: 11111111, 十六进制: ff</span>
+
+<span class="cm"># f-string 中调试输出（Python 3.8+）</span>
+name <span class="op">=</span> <span class="st">"Alice"</span>
+age <span class="op">=</span> <span class="nm">30</span>
+<span class="fn">print</span>(<span class="st">f"</span>{name=}, {age=}<span class="st">"</span>)  <span class="cm"># name='Alice', age=30</span>
+
+<span class="cm"># 正则表达式基础</span>
+<span class="kw">import</span> re
+
+text <span class="op">=</span> <span class="st">"联系方式: alice@example.com, 电话: 138-0013-8000"</span>
+
+<span class="cm"># 搜索匹配</span>
+email <span class="op">=</span> re.<span class="fn">search</span>(<span class="st">r'[\w.]+@[\w.]+'</span>, text)
+<span class="fn">print</span>(email.<span class="fn">group</span>())  <span class="cm"># alice@example.com</span>
+
+<span class="cm"># 查找所有匹配</span>
+numbers <span class="op">=</span> re.<span class="fn">findall</span>(<span class="st">r'\d+[-\d]*'</span>, text)
+<span class="fn">print</span>(numbers)  <span class="cm"># ['138-0013-8000']</span>
+
+<span class="cm"># 替换</span>
+cleaned <span class="op">=</span> re.<span class="fn">sub</span>(<span class="st">r'\d'</span>, <span class="st">'*'</span>, <span class="st">"电话: 13800138000"</span>)
+<span class="fn">print</span>(cleaned)  <span class="cm"># 电话: ***********</span></code></pre>
+    </div>
+
+    <!-- ==================== 第7节：列表与元组 ==================== -->
+    <h2 id="sec7">7. 列表与元组</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：可变与不可变序列</div>
+        <p><strong>列表（list）</strong>是 Python 中最常用的数据结构，它是<strong>可变序列</strong>，可以存储任意类型的对象。列表底层是一个<strong>动态数组</strong>（指针数组），当元素增加时会自动扩容。Python 的列表扩容策略是：新容量 = 旧容量 + (旧容量 >> 3) + 6，即约 12.5% 的增长。</p>
+        <p><strong>元组（tuple）</strong>是<strong>不可变序列</strong>。一旦创建，不能添加、删除或修改元素。元组的主要优势：(1) 更省内存；(2) 可以作为字典的键；(3) 线程安全；(4) 语义上表示"不可变的数据集合"。</p>
+        <p>Python 3.12+ 中元组支持 <code>x | y</code> 语法进行连接，进一步提升了元组的易用性。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 列表操作</span>
+fruits <span class="op">=</span> [<span class="st">"苹果"</span>, <span class="st">"香蕉"</span>, <span class="st">"橙子"</span>]
+
+<span class="cm"># 增</span>
+fruits.<span class="fn">append</span>(<span class="st">"葡萄"</span>)         <span class="cm"># 末尾追加</span>
+fruits.<span class="fn">insert</span>(<span class="nm">1</span>, <span class="st">"芒果"</span>)      <span class="cm"># 指定位置插入</span>
+fruits.<span class="fn">extend</span>([<span class="st">"西瓜"</span>, <span class="st">"樱桃"</span>]) <span class="cm"># 扩展列表</span>
+
+<span class="cm"># 删</span>
+fruits.<span class="fn">remove</span>(<span class="st">"香蕉"</span>)          <span class="cm"># 按值删除（第一个匹配项）</span>
+popped <span class="op">=</span> fruits.<span class="fn">pop</span>()         <span class="cm"># 弹出末尾元素</span>
+<span class="kw">del</span> fruits[<span class="nm">0</span>]                 <span class="cm"># 按索引删除</span>
+
+<span class="cm"># 查</span>
+<span class="fn">print</span>(<span class="st">"苹果"</span> <span class="kw">in</span> fruits)        <span class="cm"># True（成员检查）</span>
+<span class="fn">print</span>(fruits.<span class="fn">index</span>(<span class="st">"橙子"</span>))     <span class="cm"># 返回索引</span>
+<span class="fn">print</span>(fruits.<span class="fn">count</span>(<span class="st">"苹果"</span>))     <span class="cm"># 出现次数</span>
+
+<span class="cm"># 列表切片（非常强大的特性）</span>
+nums <span class="op">=</span> [<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>, <span class="nm">7</span>, <span class="nm">8</span>, <span class="nm">9</span>]
+<span class="fn">print</span>(nums[<span class="nm">2</span>:<span class="nm">5</span>])         <span class="cm"># [2, 3, 4]</span>
+<span class="fn">print</span>(nums[::<span class="nm">2</span>])          <span class="cm"># [0, 2, 4, 6, 8] (步长为2)</span>
+<span class="fn">print</span>(nums[::<span class="nm">-1</span>])         <span class="cm"># [9, 8, 7, 6, 5, 4, 3, 2, 1, 0] (反转)</span>
+nums[<span class="nm">3</span>:<span class="nm">6</span>] <span class="op">=</span> [<span class="nm">30</span>, <span class="nm">40</span>, <span class="nm">50</span>]  <span class="cm"># 切片赋值（可以改变长度）</span>
+
+<span class="cm"># 列表排序</span>
+nums.<span class="fn">sort</span>()                     <span class="cm"># 原地排序</span>
+nums.<span class="fn">sort</span>(reverse<span class="op">=</span><span class="kw">True</span>)          <span class="cm"># 降序排序</span>
+sorted_nums <span class="op">=</span> <span class="fn">sorted</span>(nums)       <span class="cm"># 返回新列表，不修改原列表</span>
+
+<span class="cm"># 元组 —— 不可变序列</span>
+point <span class="op">=</span> (<span class="nm">3</span>, <span class="nm">4</span>)
+<span class="fn">print</span>(<span class="fn">len</span>(point))           <span class="cm"># 2</span>
+<span class="fn">print</span>(point[<span class="nm">0</span>])            <span class="cm"># 3</span>
+<span class="cm"># point[0] = 5             # TypeError: 不能修改元组</span>
+
+<span class="cm"># 元组拆包</span>
+x, y <span class="op">=</span> point
+<span class="fn">print</span>(x, y)                <span class="cm"># 3 4</span></code></pre>
+    </div>
+
+    <h3>列表推导模式与切片技巧</h3>
+    <div class="code-block" data-lang="python">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">Python</span>
+        </div>
+<pre><code><span class="cm"># 列表推导实用模式</span>
+<span class="cm"># 扁平化嵌套列表</span>
+nested <span class="op">=</span> [[<span class="nm">1</span>, <span class="nm">2</span>], [<span class="nm">3</span>, <span class="nm">4</span>], [<span class="nm">5</span>, <span class="nm">6</span>]]
+flat <span class="op">=</span> [x <span class="kw">for</span> sub <span class="kw">in</span> nested <span class="kw">for</span> x <span class="kw">in</span> sub]
+<span class="fn">print</span>(flat)  <span class="cm"># [1, 2, 3, 4, 5, 6]</span>
+
+<span class="cm"># 矩阵转置</span>
+matrix <span class="op">=</span> [[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>], [<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>]]
+transposed <span class="op">=</span> [[row[i] <span class="kw">for</span> row <span class="kw">in</span> matrix] <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">3</span>)]
+<span class="fn">print</span>(transposed)  <span class="cm"># [[1, 4], [2, 5], [3, 6]]</span>
+
+<span class="cm"># 切片技巧</span>
+items <span class="op">=</span> [<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>, <span class="nm">7</span>, <span class="nm">8</span>, <span class="nm">9</span>]
+
+<span class="cm"># 每N个取一个</span>
+every_third <span class="op">=</span> items[::<span class="nm">3</span>]     <span class="cm"># [0, 3, 6, 9]</span>
+
+<span class="cm"># 原地清空列表（保持引用）</span>
+lst <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>]
+lst_ref <span class="op">=</span> lst
+<span class="kw">del</span> lst[:]             <span class="cm"># lst 和 lst_ref 都变成 []</span>
+
+<span class="cm"># 用切片批量赋值</span>
+items[<span class="nm">2</span>:<span class="nm">5</span>] <span class="op">=</span> [<span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>]  <span class="cm"># 替换索引 2-4 的元素</span>
+
+<span class="cm"># 列表分组（每n个一组）</span>
+<span class="kw">def</span> <span class="fn">chunks</span>(lst, n):
+    <span class="kw">return</span> [lst[i:i<span class="op">+</span>n] <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">0</span>, <span class="fn">len</span>(lst), n)]
+
+<span class="fn">print</span>(<span class="fn">chunks</span>(<span class="fn">range</span>(<span class="nm">10</span>), <span class="nm">3</span>))
+<span class="cm"># [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]</span></code></pre>
+    </div>
+
+    <!-- ==================== 第8节：字典与集合 ==================== -->
+    <h2 id="sec8">8. 字典与集合</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：哈希表的魔法</div>
+        <p>Python 字典底层是<strong>哈希表</strong>（hash table），这是 Python 中查找速度最快的数据结构。字典的键必须是<strong>可哈希的</strong>（hashable），即实现了 <code>__hash__()</code> 方法且不可变。这就是为什么列表不能作为字典的键，但元组可以（如果元组中的所有元素也是可哈希的）。</p>
+        <p>Python 3.7+ 中，字典<strong>保持插入顺序</strong>（ordered by insertion）。Python 3.6 中 CPython 实现也保持顺序，但官方保证是从 3.7 开始的。</p>
+        <p><strong>集合（set）</strong>也是基于哈希表实现的，它不存储重复元素，支持高效的成员测试（O(1)）和集合运算（交集、并集、差集）。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 字典操作</span>
+person <span class="op">=</span> {
+    <span class="st">"name"</span>: <span class="st">"Alice"</span>,
+    <span class="st">"age"</span>: <span class="nm">30</span>,
+    <span class="st">"city"</span>: <span class="st">"北京"</span>
+}
+
+<span class="cm"># 访问</span>
+<span class="fn">print</span>(person[<span class="st">"name"</span>])        <span class="cm"># "Alice"</span>
+<span class="fn">print</span>(person.<span class="fn">get</span>(<span class="st">"email"</span>, <span class="st">"N/A"</span>))  <span class="cm"># "N/A" (安全访问)</span>
+
+<span class="cm"># 修改和添加</span>
+person[<span class="st">"age"</span>] <span class="op">=</span> <span class="nm">31</span>           <span class="cm"># 修改</span>
+person[<span class="st">"email"</span>] <span class="op">=</span> <span class="st">"alice@example.com"</span>  <span class="cm"># 添加</span>
+
+<span class="cm"># 删除</span>
+<span class="kw">del</span> person[<span class="st">"city"</span>]
+popped <span class="op">=</span> person.<span class="fn">pop</span>(<span class="st">"email"</span>)
+
+<span class="cm"># 字典推导式</span>
+squares <span class="op">=</span> {x: x<span class="op">**</span><span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">5</span>)}
+<span class="cm"># {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}</span>
+
+<span class="cm"># 遍历字典</span>
+<span class="kw">for</span> key, value <span class="kw">in</span> person.<span class="fn">items</span>():
+    <span class="fn">print</span>(<span class="st">f"</span>{key}: {value}<span class="st">"</span>)
+
+<span class="cm"># 合并字典（Python 3.9+）</span>
+dict1 <span class="op">=</span> {<span class="st">"a"</span>: <span class="nm">1</span>, <span class="st">"b"</span>: <span class="nm">2</span>}
+dict2 <span class="op">=</span> {<span class="st">"b"</span>: <span class="nm">3</span>, <span class="st">"c"</span>: <span class="nm">4</span>}
+merged <span class="op">=</span> dict1 <span class="op">|</span> dict2   <span class="cm"># {'a': 1, 'b': 3, 'c': 4}</span>
+
+<span class="cm"># 集合</span>
+a <span class="op">=</span> {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>}
+b <span class="op">=</span> {<span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>}
+<span class="fn">print</span>(a <span class="op">&</span> b)      <span class="cm"># {3, 4} (交集)</span>
+<span class="fn">print</span>(a <span class="op">|</span> b)      <span class="cm"># {1, 2, 3, 4, 5, 6} (并集)</span>
+<span class="fn">print</span>(a <span class="op">-</span> b)      <span class="cm"># {1, 2} (差集)</span>
+<span class="fn">print</span>(a <span class="op">^</span> b)      <span class="cm"># {1, 2, 5, 6} (对称差集)</span>
+
+<span class="cm"># 集合去重</span>
+nums <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">3</span>, <span class="nm">3</span>]
+unique <span class="op">=</span> <span class="fn">list</span>(<span class="fn">set</span>(nums))  <span class="cm"># [1, 2, 3]</span></code></pre>
+    </div>
+
+    <h3>字典推导与高级数据结构</h3>
+    <div class="code-block" data-lang="python">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">Python</span>
+        </div>
+<pre><code><span class="cm"># 字典推导实战</span>
+<span class="cm"># 反转字典</span>
+original <span class="op">=</span> {<span class="st">"a"</span>: <span class="nm">1</span>, <span class="st">"b"</span>: <span class="nm">2</span>, <span class="st">"c"</span>: <span class="nm">3</span>}
+reversed_d <span class="op">=</span> {v: k <span class="kw">for</span> k, v <span class="kw">in</span> original.<span class="fn">items</span>()}
+<span class="fn">print</span>(reversed_d)  <span class="cm"># {1: 'a', 2: 'b', 3: 'c'}</span>
+
+<span class="cm"># 过滤字典</span>
+scores <span class="op">=</span> {<span class="st">"Alice"</span>: <span class="nm">90</span>, <span class="st">"Bob"</span>: <span class="nm">55</span>, <span class="st">"Charlie"</span>: <span class="nm">75</span>}
+passed <span class="op">=</span> {k: v <span class="kw">for</span> k, v <span class="kw">in</span> scores.<span class="fn">items</span>() <span class="kw">if</span> v <span class="op">>=</span> <span class="nm">60</span>}
+<span class="fn">print</span>(passed)  <span class="cm"># {'Alice': 90, 'Charlie': 75}</span>
+
+<span class="cm"># defaultdict —— 自动处理缺失键</span>
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+
+<span class="cm"># 按首字母分组</span>
+words <span class="op">=</span> [<span class="st">"apple"</span>, <span class="st">"banana"</span>, <span class="st">"avocado"</span>, <span class="st">"blueberry"</span>]
+groups <span class="op">=</span> <span class="tp">defaultdict</span>(<span class="tp">list</span>)
+<span class="kw">for</span> w <span class="kw">in</span> words:
+    groups[w[<span class="nm">0</span>]].<span class="fn">append</span>(w)
+<span class="fn">print</span>(<span class="fn">dict</span>(groups))  <span class="cm"># {'a': ['apple', 'avocado'], 'b': ['banana', 'blueberry']}</span>
+
+<span class="cm"># Counter —— 计数器</span>
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+
+text <span class="op">=</span> <span class="st">"the quick brown fox jumps over the lazy dog"</span>
+word_freq <span class="op">=</span> <span class="tp">Counter</span>(text.<span class="fn">split</span>())
+<span class="fn">print</span>(word_freq.<span class="fn">most_common</span>(<span class="nm">3</span>))
+<span class="cm"># [('the', 2), ('quick', 1), ('brown', 1)]</span>
+
+<span class="cm"># Counter 做元素统计</span>
+<span class="fn">print</span>(<span class="tp">Counter</span>(<span class="st">"abracadabra"</span>).<span class="fn">most_common</span>(<span class="nm">2</span>))
+<span class="cm"># [('a', 5), ('b', 2)]</span></code></pre>
+    </div>
+
+    <!-- ==================== 第9节：条件判断 ==================== -->
+    <h2 id="sec9">9. 条件判断</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Python 的真值判断</div>
+        <p>Python 中以下值被视为 <strong>False</strong>：<code>False</code>、<code>None</code>、<code>0</code>（整数）、<code>0.0</code>（浮点数）、<code>""</code>（空字符串）、<code>[]</code>（空列表）、<code>{}</code>（空字典）、<code>()</code>（空元组）、<code>set()</code>（空集合）。其他所有值都为 <strong>True</strong>，包括非零数字、非空字符串、所有容器对象。</p>
+        <p>这个特性使得 Python 代码可以非常简洁：<code>if items:</code> 比 <code>if len(items) > 0:</code> 更 Pythonic。但要注意：数字 <code>0</code> 和空序列都为 False，所以在数字判断时要小心。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># if-elif-else 结构</span>
+score <span class="op">=</span> <span class="nm">85</span>
+
+<span class="kw">if</span> score <span class="op">>=</span> <span class="nm">90</span>:
+    grade <span class="op">=</span> <span class="st">"优秀"</span>
+<span class="kw">elif</span> score <span class="op">>=</span> <span class="nm">80</span>:
+    grade <span class="op">=</span> <span class="st">"良好"</span>
+<span class="kw">elif</span> score <span class="op">>=</span> <span class="nm">70</span>:
+    grade <span class="op">=</span> <span class="st">"中等"</span>
+<span class="kw">elif</span> score <span class="op">>=</span> <span class="nm">60</span>:
+    grade <span class="op">=</span> <span class="st">"及格"</span>
+<span class="kw">else</span>:
+    grade <span class="op">=</span> <span class="st">"不及格"</span>
+
+<span class="cm"># 三元表达式（条件表达式）</span>
+age <span class="op">=</span> <span class="nm">20</span>
+status <span class="op">=</span> <span class="st">"成年"</span> <span class="kw">if</span> age <span class="op">>=</span> <span class="nm">18</span> <span class="kw">else</span> <span class="st">"未成年"</span>
+
+<span class="cm"># match-case 模式匹配（Python 3.10+）</span>
+command <span class="op">=</span> <span class="st">"quit"</span>
+
+<span class="kw">match</span> command:
+    <span class="kw">case</span> <span class="st">"start"</span> <span class="op">|</span> <span class="st">"go"</span>:      <span class="cm"># 多个模式用 | 分隔</span>
+        <span class="fn">print</span>(<span class="st">"启动程序"</span>)
+    <span class="kw">case</span> <span class="st">"stop"</span> <span class="op">|</span> <span class="st">"quit"</span>:
+        <span class="fn">print</span>(<span class="st">"退出程序"</span>)
+    <span class="kw">case</span> <span class="st">f"login </span>{user}<span class="st">"</span>:       <span class="cm"># 捕获模式</span>
+        <span class="fn">print</span>(<span class="st">f"登录用户: </span>{user}<span class="st">"</span>)
+    <span class="kw">case</span> _:</span>
+        <span class="fn">print</span>(<span class="st">"未知命令"</span>)
+
+<span class="cm"># 真值判断（Pythonic 写法）</span>
+name <span class="op">=</span> <span class="st">"Alice"</span>
+<span class="kw">if</span> name:                    <span class="cm"># 等价于 if name is not None and name != "":</span>
+    <span class="fn">print</span>(<span class="st">"有名字"</span>)
+
+items <span class="op">=</span> []
+<span class="kw">if</span> <span class="kw">not</span> items:              <span class="cm"># 等价于 if len(items) == 0:</span>
+    <span class="fn">print</span>(<span class="st">"列表为空"</span>)</code></pre>
+    </div>
+
+    <!-- ==================== 第10节：循环语句 ==================== -->
+    <h2 id="sec10">10. 循环语句</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Python 循环的底层机制</div>
+        <p>Python 的 <code>for</code> 循环实际上是<strong>迭代器协议</strong>的语法糖。当你写 <code>for x in items</code> 时，Python 会调用 <code>iter(items)</code> 创建迭代器，然后反复调用 <code>next()</code> 获取下一个元素，直到 <code>StopIteration</code> 异常。</p>
+        <p>这意味着任何实现了 <code>__iter__()</code> 和 <code>__next__()</code> 方法的对象都可以被 for 循环遍历，包括文件对象、数据库游标、自定义数据结构等。</p>
+        <p><code>enumerate()</code> 返回索引和值的元组，<code>zip()</code> 将多个可迭代对象"拉链"在一起，<code>reversed()</code> 返回反向迭代器。这些内置函数避免了手动管理索引的麻烦。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># for 循环 —— 遍历可迭代对象</span>
+fruits <span class="op">=</span> [<span class="st">"苹果"</span>, <span class="st">"香蕉"</span>, <span class="st">"橙子"</span>]
+<span class="kw">for</span> fruit <span class="kw">in</span> fruits:
+    <span class="fn">print</span>(fruit)
+
+<span class="cm"># 使用 enumerate 同时获取索引和值</span>
+<span class="kw">for</span> i, fruit <span class="kw">in</span> <span class="fn">enumerate</span>(fruits):
+    <span class="fn">print</span>(<span class="st">f"</span>{i}: {fruit}<span class="st">"</span>)
+
+<span class="cm"># 使用 zip 并行遍历多个列表</span>
+names <span class="op">=</span> [<span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Charlie"</span>]
+scores <span class="op">=</span> [<span class="nm">95</span>, <span class="nm">87</span>, <span class="nm">92</span>]
+<span class="kw">for</span> name, score <span class="kw">in</span> <span class="fn">zip</span>(names, scores):
+    <span class="fn">print</span>(<span class="st">f"</span>{name}: {score}<span class="st">"</span>)
+
+<span class="cm"># while 循环</span>
+count <span class="op">=</span> <span class="nm">0</span>
+<span class="kw">while</span> count <span class="op">&lt;</span> <span class="nm">5</span>:
+    <span class="fn">print</span>(count)
+    count <span class="op">+=</span> <span class="nm">1</span>
+
+<span class="cm"># break 和 continue</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10</span>):
+    <span class="kw">if</span> i <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>:
+        <span class="kw">continue</span>     <span class="cm"># 跳过偶数</span>
+    <span class="kw">if</span> i <span class="op">></span> <span class="nm">7</span>:
+        <span class="kw">break</span>        <span class="cm"># 超过 7 退出循环</span>
+    <span class="fn">print</span>(i)         <span class="cm"># 输出: 1, 3, 5, 7</span>
+
+<span class="cm"># for-else 和 while-else</span>
+<span class="cm"># else 子句在循环正常结束时执行（没有 break）</span>
+<span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">2</span>, <span class="nm">100</span>):
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">2</span>, <span class="fn">int</span>(n <span class="op">**</span> <span class="nm">0.5</span>) <span class="op">+</span> <span class="nm">1</span>):
+        <span class="kw">if</span> n <span class="op">%</span> i <span class="op">==</span> <span class="nm">0</span>:
+            <span class="kw">break</span>
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="st">f"</span>{n}<span class="st"> 是素数"</span>)  <span class="cm"># 只有当 for 循环没有 break 时才执行</span></code></pre>
+    </div>
+
+    <!-- ==================== 第11节：推导式 ==================== -->
+    <h2 id="sec11">11. 推导式</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：推导式的本质与性能</div>
+        <p>推导式（comprehension）是 Python 中创建可迭代对象的<strong>语法糖</strong>。列表推导式在底层会被编译为一个专门的字节码指令 <code>LIST_COMP</code>，比等价的 <code>for</code> 循环 + <code>append()</code> 快约 <strong>20-30%</strong>，因为减少了函数调用的开销。</p>
+        <p>推导式的核心思想：<strong>将循环和条件判断内联到表达式中</strong>，让代码更简洁、更接近数学表达。但当逻辑过于复杂时，应该退回到传统的 for 循环以保持可读性。</p>
+        <p>生成器表达式（generator expression）使用圆括号 <code>()</code>，它不会一次性创建所有元素，而是<strong>惰性求值</strong>——每次迭代只生成一个元素，适合处理大数据集。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 列表推导式</span>
+squares <span class="op">=</span> [x<span class="op">**</span><span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10</span>)]
+<span class="cm"># [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]</span>
+
+<span class="cm"># 带条件的推导式</span>
+evens <span class="op">=</span> [x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">20</span>) <span class="kw">if</span> x <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>]
+<span class="cm"># [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]</span>
+
+<span class="cm"># 嵌套推导式</span>
+matrix <span class="op">=</span> [[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>], [<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>], [<span class="nm">7</span>, <span class="nm">8</span>, <span class="nm">9</span>]]
+flat <span class="op">=</span> [x <span class="kw">for</span> row <span class="kw">in</span> matrix <span class="kw">for</span> x <span class="kw">in</span> row]
+<span class="cm"># [1, 2, 3, 4, 5, 6, 7, 8, 9]</span>
+
+<span class="cm"># 字典推导式</span>
+word <span class="op">=</span> <span class="st">"hello"</span>
+char_count <span class="op">=</span> {ch: word.<span class="fn">count</span>(ch) <span class="kw">for</span> ch <span class="kw">in</span> <span class="fn">set</span>(word)}
+<span class="cm"># {'h': 1, 'e': 1, 'l': 2, 'o': 1}</span>
+
+<span class="cm"># 集合推导式</span>
+unique_lengths <span class="op">=</span> {<span class="fn">len</span>(w) <span class="kw">for</span> w <span class="kw">in</span> [<span class="st">"hello"</span>, <span class="st">"world"</span>, <span class="st">"hi"</span>]}
+<span class="cm"># {2, 5}</span>
+
+<span class="cm"># 生成器表达式（惰性求值，节省内存）</span>
+<span class="cm"># 注意使用圆括号而非方括号</span>
+total <span class="op">=</span> <span class="fn">sum</span>(x<span class="op">**</span><span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1000000</span>))  <span class="cm"># 不会创建百万元素的列表</span>
+
+<span class="cm"># 实际应用：过滤和转换数据</span>
+users <span class="op">=</span> [
+    {<span class="st">"name"</span>: <span class="st">"Alice"</span>, <span class="st">"age"</span>: <span class="nm">30</span>, <span class="st">"active"</span>: <span class="kw">True</span>},
+    {<span class="st">"name"</span>: <span class="st">"Bob"</span>, <span class="st">"age"</span>: <span class="nm">25</span>, <span class="st">"active"</span>: <span class="kw">False</span>},
+    {<span class="st">"name"</span>: <span class="st">"Charlie"</span>, <span class="st">"age"</span>: <span class="nm">35</span>, <span class="st">"active"</span>: <span class="kw">True</span>},
+]
+active_names <span class="op">=</span> [u[<span class="st">"name"</span>] <span class="kw">for</span> u <span class="kw">in</span> users <span class="kw">if</span> u[<span class="st">"active"</span>]]
+<span class="cm"># ['Alice', 'Charlie']</span></code></pre>
+    </div>
+
+    <div class="compare">
+        <div class="compare-item">
+            <div class="compare-label bad">不推荐（过于复杂）</div>
+<pre><code><span class="cm"># 嵌套过多，可读性差</span>
+result <span class="op">=</span> [
+    f(x, y)
+    <span class="kw">for</span> x <span class="kw">in</span> range(<span class="nm">10</span>)
+    <span class="kw">if</span> g(x)
+    <span class="kw">for</span> y <span class="kw">in</span> range(<span class="nm">20</span>)
+    <span class="kw">if</span> h(y)
+]</code></pre>
+        </div>
+        <div class="compare-item">
+            <div class="compare-label good">推荐（用 for 循环）</div>
+<pre><code><span class="cm"># 清晰易读</span>
+result <span class="op">=</span> []
+<span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10</span>):
+    <span class="kw">if</span> <span class="fn">g</span>(x):
+        <span class="kw">for</span> y <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">20</span>):
+            <span class="kw">if</span> <span class="fn">h</span>(y):
+                result.<span class="fn">append</span>(<span class="fn">f</span>(x, y))</code></pre>
+        </div>
+    </div>
+
+    <!-- ==================== 第12节：函数定义 ==================== -->
+    <h2 id="sec12">12. 函数定义</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Python 函数是一等公民</div>
+        <p>在 Python 中，函数是<strong>一等公民</strong>（first-class citizen）——函数可以赋值给变量、作为参数传递、作为返回值、存储在数据结构中。这是因为 Python 中函数也是<strong>对象</strong>，每个函数都是 <code>function</code> 类的实例。</p>
+        <p>这个特性是装饰器、回调函数、高阶函数等高级特性的基础。Python 函数支持<strong>默认参数</strong>、<strong>关键字参数</strong>、<strong>*args</strong> 和 <strong>**kwargs</strong>，使得函数接口非常灵活。</p>
+        <p>文档字符串（docstring）是函数定义后的第一个字符串字面量，可以通过 <code>help()</code> 或 <code>__doc__</code> 属性访问，是 Python 文档生态系统的基础。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 基本函数定义</span>
+<span class="kw">def</span> <span class="fn">greet</span>(name, greeting=<span class="st">"你好"</span>):
+    <span class="st">"""向用户打招呼。
+
+    Args:
+        name: 用户名称
+        greeting: 问候语，默认为"你好"
+
+    Returns:
+        格式化的问候字符串
+    """</span>
+    <span class="kw">return</span> <span class="st">f"</span>{greeting}，{name}<span class="st">！"</span>
+
+<span class="fn">print</span>(<span class="fn">greet</span>(<span class="st">"Alice"</span>))              <span class="cm"># 你好，Alice！</span>
+<span class="fn">print</span>(<span class="fn">greet</span>(<span class="st">"Bob"</span>, <span class="st">"Hello"</span>))      <span class="cm"># Hello，Bob！</span>
+
+<span class="cm"># 函数作为对象</span>
+<span class="kw">def</span> <span class="fn">add</span>(a, b):
+    <span class="kw">return</span> a <span class="op">+</span> b
+
+<span class="cm"># 函数赋值给变量</span>
+plus <span class="op">=</span> add
+<span class="fn">print</span>(<span class="fn">plus</span>(<span class="nm">3</span>, <span class="nm">4</span>))     <span class="cm"># 7</span>
+
+<span class="cm"># 函数存储在数据结构中</span>
+operations <span class="op">=</span> {
+    <span class="st">"add"</span>: add,
+    <span class="st">"sub"</span>: <span class="kw">lambda</span> a, b: a <span class="op">-</span> b,
+}
+<span class="fn">print</span>(operations[<span class="st">"add"</span>](<span class="nm">5</span>, <span class="nm">3</span>))  <span class="cm"># 8</span>
+
+<span class="cm"># 高阶函数 —— 接受或返回函数的函数</span>
+<span class="kw">def</span> <span class="fn">apply_operation</span>(func, a, b):
+    <span class="kw">return</span> <span class="fn">func</span>(a, b)
+
+<span class="fn">print</span>(<span class="fn">apply_operation</span>(add, <span class="nm">10</span>, <span class="nm">20</span>))  <span class="cm"># 30</span>
+
+<span class="cm"># 内置高阶函数</span>
+nums <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>]
+doubled <span class="op">=</span> <span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> x: x <span class="op">*</span> <span class="nm">2</span>, nums))   <span class="cm"># [2, 4, 6, 8, 10]</span>
+filtered <span class="op">=</span> <span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> x: x <span class="op">></span> <span class="nm">3</span>, nums)) <span class="cm"># [4, 5]</span></code></pre>
+    </div>
+
+    <h3>*args/**kwargs 模式与闭包</h3>
+    <div class="code-block" data-lang="python">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">Python</span>
+        </div>
+<pre><code><span class="cm"># *args 和 **kwargs 实用模式</span>
+<span class="cm"># 参数转发（装饰器常用）</span>
+<span class="kw">def</span> <span class="fn">log_call</span>(func, *args, **kwargs):
+    <span class="fn">print</span>(<span class="st">f"调用 </span>{func.__name__}<span class="st">"</span>)
+    <span class="kw">return</span> <span class="fn">func</span>(*args, **kwargs)
+
+<span class="cm"># keyword-only 参数（* 后的参数必须用关键字传递）</span>
+<span class="kw">def</span> <span class="fn">create_account</span>(name, *, email, password):
+    <span class="kw">return</span> {<span class="st">"name"</span>: name, <span class="st">"email"</span>: email}
+
+<span class="cm"># 参数强制顺序：positional → *args → keyword-only → **kwargs</span>
+<span class="kw">def</span> <span class="fn">universal</span>(a, b, *args, verbose<span class="op">=</span><span class="kw">False</span>, **kwargs):
+    <span class="kw">if</span> verbose:
+        <span class="fn">print</span>(<span class="st">f"a=</span>{a}<span class="st">, b=</span>{b}<span class="st">, args=</span>{args}<span class="st">, kwargs=</span>{kwargs}<span class="st">"</span>)
+
+<span class="cm"># 闭包实际应用 —— 缓存/记忆化</span>
+<span class="kw">def</span> <span class="fn">memoize</span>(func):
+    cache <span class="op">=</span> {}
+    <span class="kw">def</span> <span class="fn">wrapper</span>(*args):
+        <span class="kw">if</span> args <span class="kw">not in</span> cache:
+            cache[args] <span class="op">=</span> <span class="fn">func</span>(*args)
+        <span class="kw">return</span> cache[args]
+    <span class="kw">return</span> wrapper
+
+<span class="dc">@memoize</span>
+<span class="kw">def</span> <span class="fn">fibonacci</span>(n):
+    <span class="kw">if</span> n <span class="op">&lt;</span> <span class="nm">2</span>: <span class="kw">return</span> n
+    <span class="kw">return</span> <span class="fn">fibonacci</span>(n<span class="op">-</span><span class="nm">1</span>) <span class="op">+</span> <span class="fn">fibonacci</span>(n<span class="op">-</span><span class="nm">2</span>)
+
+<span class="fn">print</span>(<span class="fn">fibonacci</span>(<span class="nm">100</span>))  <span class="cm"># 秒出结果</span>
+
+<span class="cm"># 闭包实现计数器工厂</span>
+<span class="kw">def</span> <span class="fn">make_counter</span>(start<span class="op">=</span><span class="nm">0</span>, step<span class="op">=</span><span class="nm">1</span>):
+    count <span class="op">=</span> start
+    <span class="kw">def</span> <span class="fn">next_val</span>():
+        <span class="kw">nonlocal</span> count
+        val <span class="op">=</span> count
+        count <span class="op">+=</span> step
+        <span class="kw">return</span> val
+    <span class="kw">return</span> next_val
+
+c <span class="op">=</span> <span class="fn">make_counter</span>(<span class="nm">10</span>, <span class="nm">5</span>)
+<span class="fn">print</span>(<span class="fn">c</span>(), <span class="fn">c</span>(), <span class="fn">c</span>())  <span class="cm"># 10 15 20</span></code></pre>
+    </div>
+
+    <!-- ==================== 第13节：参数与返回值 ==================== -->
+    <h2 id="sec13">13. 参数与返回值</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Python 参数传递的真相</div>
+        <p>Python 的参数传递方式被称为<strong>"传对象引用"</strong>（pass by object reference）或<strong>"传共享赋值"</strong>（pass by assignment）。函数参数实际上是形参绑定到实参对象上——如果对象是不可变的（int、str、tuple），函数内修改形参不会影响外部；如果对象是可变的（list、dict），函数内修改会影响外部。</p>
+        <p>这个机制不是简单的"值传递"或"引用传递"，而是<strong>统一的绑定规则</strong>。理解这个机制是避免 Python 中"副作用 bug"的关键。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># *args 和 **kwargs</span>
+<span class="kw">def</span> <span class="fn">flexible</span>(*args, **kwargs):
+    <span class="st">"""接收任意数量的位置参数和关键字参数"""</span>
+    <span class="fn">print</span>(<span class="st">"位置参数:"</span>, args)
+    <span class="fn">print</span>(<span class="st">"关键字参数:"</span>, kwargs)
+
+<span class="fn">flexible</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, name<span class="op">=</span><span class="st">"Alice"</span>, age<span class="op">=</span><span class="nm">30</span>)
+<span class="cm"># 位置参数: (1, 2, 3)</span>
+<span class="cm"># 关键字参数: {'name': 'Alice', 'age': 30}</span>
+
+<span class="cm"># 参数解包</span>
+<span class="kw">def</span> <span class="fn">add</span>(a, b, c):
+    <span class="kw">return</span> a <span class="op">+</span> b <span class="op">+</span> c
+
+nums <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>]
+<span class="fn">print</span>(<span class="fn">add</span>(*nums))              <span class="cm"># 6（解包列表）</span>
+
+config <span class="op">=</span> {<span class="st">"a"</span>: <span class="nm">10</span>, <span class="st">"b"</span>: <span class="nm">20</span>, <span class="st">"c"</span>: <span class="nm">30</span>}
+<span class="fn">print</span>(<span class="fn">add</span>(**config))            <span class="cm"># 60（解包字典）</span>
+
+<span class="cm"># 仅限关键字参数（Python 3+）</span>
+<span class="kw">def</span> <span class="fn">create_user</span>(name, *, email, age):
+    <span class="kw">return</span> {<span class="st">"name"</span>: name, <span class="st">"email"</span>: email, <span class="st">"age"</span>: age}
+
+<span class="cm"># create_user("Alice", "alice@example.com", 30)  # TypeError</span>
+<span class="fn">create_user</span>(<span class="st">"Alice"</span>, email<span class="op">=</span><span class="st">"alice@example.com"</span>, age<span class="op">=</span><span class="nm">30</span>)  <span class="cm"># 正确</span>
+
+<span class="cm"># 多返回值（实际上是返回元组）</span>
+<span class="kw">def</span> <span class="fn">divide</span>(a, b):
+    <span class="kw">if</span> b <span class="op">==</span> <span class="nm">0</span>:
+        <span class="kw">return</span> <span class="kw">None</span>, <span class="st">"除数不能为零"</span>
+    <span class="kw">return</span> a <span class="op">/</span> b, <span class="st">"计算成功"</span>
+
+quotient, message <span class="op">=</span> <span class="fn">divide</span>(<span class="nm">10</span>, <span class="nm">3</span>)
+<span class="fn">print</span>(quotient, message)
+
+<span class="cm"># 可变对象作为默认参数（常见陷阱！）</span>
+<span class="cm"># 不要这样做：</span>
+<span class="kw">def</span> <span class="fn">bad_append</span>(item, lst<span class="op">=</span>[]):  <span class="cm"># 默认列表在函数定义时创建！</span>
+    lst.<span class="fn">append</span>(item)
+    <span class="kw">return</span> lst
+
+<span class="cm"># 应该这样做：</span>
+<span class="kw">def</span> <span class="fn">good_append</span>(item, lst<span class="op">=</span><span class="kw">None</span>):
+    <span class="kw">if</span> lst <span class="kw">is</span> <span class="kw">None</span>:
+        lst <span class="op">=</span> []
+    lst.<span class="fn">append</span>(item)
+    <span class="kw">return</span> lst</code></pre>
+    </div>
+
+    <div class="danger">可变对象作为默认参数会在函数定义时创建一次，后续调用共享同一个对象。这是 Python 最常见的陷阱之一，务必使用 None 作为默认值。</div>
+
+    <!-- ==================== 第14节：匿名函数 ==================== -->
+    <h2 id="sec14">14. 匿名函数</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：lambda 的本质</div>
+        <p><code>lambda</code> 表达式创建的是<strong>匿名函数对象</strong>，和 <code>def</code> 定义的函数本质上是同一种对象（都是 function 类型）。lambda 只是语法上的简化——它限制只能有<strong>一个表达式</strong>，不能包含语句（如赋值、print、if-else 语句块等）。</p>
+        <p>lambda 最常见的用途是作为<strong>高阶函数的参数</strong>，比如 <code>sorted()</code> 的 <code>key</code> 参数、<code>map()</code>/<code>filter()</code> 的回调等。当逻辑超过一行时，应该使用 <code>def</code> 定义命名函数。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 基本 lambda</span>
+add <span class="op">=</span> <span class="kw">lambda</span> a, b: a <span class="op">+</span> b
+<span class="fn">print</span>(<span class="fn">add</span>(<span class="nm">3</span>, <span class="nm">4</span>))  <span class="cm"># 7</span>
+
+<span class="cm"># lambda 的常见用法</span>
+
+<span class="cm"># 1. 排序的 key 函数</span>
+students <span class="op">=</span> [
+    {<span class="st">"name"</span>: <span class="st">"Alice"</span>, <span class="st">"score"</span>: <span class="nm">95</span>},
+    {<span class="st">"name"</span>: <span class="st">"Bob"</span>, <span class="st">"score"</span>: <span class="nm">87</span>},
+    {<span class="st">"name"</span>: <span class="st">"Charlie"</span>, <span class="st">"score"</span>: <span class="nm">92</span>},
+]
+sorted_students <span class="op">=</span> <span class="fn">sorted</span>(students, key<span class="op">=</span><span class="kw">lambda</span> s: s[<span class="st">"score"</span>], reverse<span class="op">=</span><span class="kw">True</span>)
+
+<span class="cm"># 2. map —— 对每个元素应用函数</span>
+nums <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>]
+squared <span class="op">=</span> <span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> x: x<span class="op">**</span><span class="nm">2</span>, nums))
+<span class="cm"># [1, 4, 9, 16, 25]</span>
+
+<span class="cm"># 3. filter —— 过滤满足条件的元素</span>
+evens <span class="op">=</span> <span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> x: x <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>, nums))
+<span class="cm"># [2, 4]</span>
+
+<span class="cm"># 4. reduce —— 累积计算（需要 import）</span>
+<span class="kw">from</span> functools <span class="kw">import</span> reduce
+total <span class="op">=</span> <span class="fn">reduce</span>(<span class="kw">lambda</span> a, b: a <span class="op">+</span> b, nums)
+<span class="cm"># 15</span>
+
+<span class="cm"># 5. 用字典替代多分支 lambda</span>
+operations <span class="op">=</span> {
+    <span class="st">"+"</span>: <span class="kw">lambda</span> a, b: a <span class="op">+</span> b,
+    <span class="st">"-"</span>: <span class="kw">lambda</span> a, b: a <span class="op">-</span> b,
+    <span class="st">"*"</span>: <span class="kw">lambda</span> a, b: a <span class="op">*</span> b,
+}
+<span class="fn">print</span>(operations[<span class="st">"*"</span>](<span class="nm">3</span>, <span class="nm">4</span>))  <span class="cm"># 12</span></code></pre>
+    </div>
+
+    <!-- ==================== 第15节：作用域 ==================== -->
+    <h2 id="sec15">15. 作用域</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：LEGB 规则与闭包</div>
+        <p>Python 使用 <strong>LEGB 规则</strong>来查找变量：<strong>L</strong>ocal（局部作用域）→ <strong>E</strong>nclosing（闭包作用域）→ <strong>G</strong>lobal（模块全局作用域）→ <strong>B</strong>uilt-in（内置作用域）。当在当前作用域找不到变量时，会依次向外层查找。</p>
+        <p><strong>闭包</strong>（closure）是函数和其引用的外部变量的组合。当内部函数引用了外部函数的变量，且外部函数已经返回后，这些变量仍然被内部函数"记住"。闭包是装饰器和函数式编程的核心机制。</p>
+        <p><code>nonlocal</code> 关键字用于在内部函数中修改<strong>闭包作用域</strong>中的变量（Python 3+），<code>global</code> 用于修改<strong>模块全局</strong>变量。滥用这些关键字会破坏封装性，应该尽量避免。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># LEGB 作用域</span>
+x <span class="op">=</span> <span class="st">"全局变量"</span>         <span class="cm"># Global</span>
+
+<span class="kw">def</span> <span class="fn">outer</span>():
+    x <span class="op">=</span> <span class="st">"外层变量"</span>     <span class="cm"># Enclosing</span>
+
+    <span class="kw">def</span> <span class="fn">inner</span>():
+        x <span class="op">=</span> <span class="st">"局部变量"</span> <span class="cm"># Local</span>
+        <span class="fn">print</span>(x)        <span class="cm"># 局部变量</span>
+
+    <span class="fn">inner</span>()
+    <span class="fn">print</span>(x)            <span class="cm"># 外层变量</span>
+
+<span class="fn">outer</span>()
+<span class="fn">print</span>(x)               <span class="cm"># 全局变量</span>
+
+<span class="cm"># 闭包 —— 函数记住外部变量</span>
+<span class="kw">def</span> <span class="fn">make_counter</span>():
+    count <span class="op">=</span> <span class="nm">0</span>
+    <span class="kw">def</span> <span class="fn">counter</span>():
+        <span class="kw">nonlocal</span> count    <span class="cm"># 声明使用闭包作用域的变量</span>
+        count <span class="op">+=</span> <span class="nm">1</span>
+        <span class="kw">return</span> count
+    <span class="kw">return</span> counter
+
+my_counter <span class="op">=</span> <span class="fn">make_counter</span>()
+<span class="fn">print</span>(<span class="fn">my_counter</span>())   <span class="cm"># 1</span>
+<span class="fn">print</span>(<span class="fn">my_counter</span>())   <span class="cm"># 2</span>
+<span class="fn">print</span>(<span class="fn">my_counter</span>())   <span class="cm"># 3</span>
+
+<span class="cm"># 闭包的实际应用：数据验证器</span>
+<span class="kw">def</span> <span class="fn">make_validator</span>(min_val, max_val):
+    <span class="kw">def</span> <span class="fn">validate</span>(value):
+        <span class="kw">if</span> <span class="kw">not</span> min_val <span class="op">&lt;=</span> value <span class="op">&lt;=</span> max_val:
+            <span class="kw">raise</span> <span class="tp">ValueError</span>(<span class="st">f"值必须在 </span>{min_val}<span class="st"> 到 </span>{max_val}<span class="st"> 之间"</span>)
+        <span class="kw">return</span> <span class="kw">True</span>
+    <span class="kw">return</span> validate
+
+age_validator <span class="op">=</span> <span class="fn">make_validator</span>(<span class="nm">0</span>, <span class="nm">150</span>)
+<span class="fn">age_validator</span>(<span class="nm">25</span>)     <span class="cm"># True</span>
+<span class="cm"># age_validator(-1)   # ValueError</span></code></pre>
+    </div>
+
+    <!-- ==================== 第16节：类与对象 ==================== -->
+    <h2 id="sec16">16. 类与对象</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Python 的对象模型</div>
+        <p>Python 的类是<strong>对象的蓝图</strong>。当你定义一个类时，Python 会创建一个<strong>类对象</strong>（type 类的实例）。当实例化时，Python 调用类的 <code>__new__()</code> 方法创建实例对象，然后调用 <code>__init__()</code> 方法初始化实例。</p>
+        <p>Python 的实例方法的第一个参数 <code>self</code> 是<strong>实例本身的引用</strong>。这不是关键字，只是一个约定。Python 不需要像 Java 那样使用 <code>this</code>，因为方法调用时 Python 会自动将实例作为第一个参数传入。</p>
+        <p>Python 使用<strong>鸭子类型</strong>（duck typing）：<strong>如果它走起来像鸭子，叫起来像鸭子，那它就是鸭子</strong>。你不需要显式声明接口，只要对象实现了需要的方法，就可以使用。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 基本类定义</span>
+<span class="kw">class</span> <span class="tp">Dog</span>:
+    <span class="cm"># 类属性（所有实例共享）</span>
+    species <span class="op">=</span> <span class="st">"犬科"</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, age):
+        <span class="cm"># 实例属性（每个实例独立）</span>
+        self.name <span class="op">=</span> name
+        self.age <span class="op">=</span> age
+
+    <span class="kw">def</span> <span class="fn">bark</span>(self):
+        <span class="kw">return</span> <span class="st">f"</span>{self.name}<span class="st">说：汪汪！"</span>
+
+    <span class="kw">def</span> <span class="fn">__str__</span>(self):
+        <span class="kw">return</span> <span class="st">f"Dog(</span>{self.name}<span class="st">, </span>{self.age}<span class="st">岁)"</span>
+
+<span class="cm"># 创建实例</span>
+dog <span class="op">=</span> <span class="tp">Dog</span>(<span class="st">"旺财"</span>, <span class="nm">3</span>)
+<span class="fn">print</span>(dog.<span class="fn">bark</span>())      <span class="cm"># 旺财说：汪汪！</span>
+<span class="fn">print</span>(dog)             <span class="cm"># Dog(旺财, 3岁)</span>
+<span class="fn">print</span>(dog.species)     <span class="cm"># 犬科</span>
+
+<span class="cm"># @property —— 将方法伪装为属性</span>
+<span class="kw">class</span> <span class="tp">Circle</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, radius):
+        self._radius <span class="op">=</span> radius
+
+    <span class="dc">@property</span>
+    <span class="kw">def</span> <span class="fn">radius</span>(self):
+        <span class="kw">return</span> self._radius
+
+    <span class="dc">@radius.setter</span>
+    <span class="kw">def</span> <span class="fn">radius</span>(self, value):
+        <span class="kw">if</span> value <span class="op">&lt;</span> <span class="nm">0</span>:
+            <span class="kw">raise</span> <span class="tp">ValueError</span>(<span class="st">"半径不能为负"</span>)
+        self._radius <span class="op">=</span> value
+
+    <span class="dc">@property</span>
+    <span class="kw">def</span> <span class="fn">area</span>(self):
+        <span class="kw">return</span> <span class="nm">3.14159</span> <span class="op">*</span> self._radius <span class="op">**</span> <span class="nm">2</span>
+
+c <span class="op">=</span> <span class="tp">Circle</span>(<span class="nm">5</span>)
+<span class="fn">print</span>(c.area)           <span class="cm"># 78.53975（像访问属性一样调用）</span>
+c.radius <span class="op">=</span> <span class="nm">10</span>           <span class="cm"># 像赋值属性一样调用 setter</span></code></pre>
+    </div>
+
+    <h3>dataclass 与 __slots__</h3>
+    <div class="code-block" data-lang="python">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">Python</span>
+        </div>
+<pre><code><span class="cm"># dataclass —— 自动生成 __init__, __repr__, __eq__ 等</span>
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass, field
+
+<span class="dc">@dataclass</span>
+<span class="kw">class</span> <span class="tp">User</span>:
+    name: <span class="tp">str</span>
+    age: <span class="tp">int</span>
+    email: <span class="tp">str</span>
+    tags: <span class="tp">list</span> <span class="op">=</span> field(default_factory<span class="op">=</span><span class="tp">list</span>)
+
+user <span class="op">=</span> <span class="tp">User</span>(<span class="st">"Alice"</span>, <span class="nm">30</span>, <span class="st">"alice@example.com"</span>)
+<span class="fn">print</span>(user)  <span class="cm"># User(name='Alice', age=30, email='alice@example.com', tags=[])</span>
+
+<span class="dc">@dataclass</span>(frozen<span class="op">=</span><span class="kw">True</span>)  <span class="cm"># 不可变 dataclass</span>
+<span class="kw">class</span> <span class="tp">Point</span>:
+    x: <span class="tp">float</span>
+    y: <span class="tp">float</span>
+
+p <span class="op">=</span> <span class="tp">Point</span>(<span class="nm">1</span>, <span class="nm">2</span>)
+<span class="cm"># p.x = 3  # FrozenInstanceError</span>
+
+<span class="cm"># __slots__ —— 节省内存，加速属性访问</span>
+<span class="kw">class</span> <span class="tp">Vector</span>:
+    __slots__ <span class="op">=</span> (<span class="st">'x'</span>, <span class="st">'y'</span>, <span class="st">'z'</span>)
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, x, y, z):
+        self.x <span class="op">=</span> x
+        self.y <span class="op">=</span> y
+        self.z <span class="op">=</span> z
+
+v <span class="op">=</span> <span class="tp">Vector</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>)
+<span class="cm"># v.w = 4  # AttributeError: 'Vector' object has no attribute 'w'</span>
+
+<span class="cm"># dataclass + __slots__（Python 3.10+）</span>
+<span class="dc">@dataclass</span>(slots<span class="op">=</span><span class="kw">True</span>)
+<span class="kw">class</span> <span class="tp">Config</span>:
+    host: <span class="tp">str</span>
+    port: <span class="tp">int</span>
+    debug: <span class="tp">bool</span> <span class="op">=</span> <span class="kw">False</span></code></pre>
+    </div>
+
+    <!-- ==================== 第17节：继承与多态 ==================== -->
+    <h2 id="sec17">17. 继承与多态</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：MRO 与多继承</div>
+        <p>Python 支持<strong>多继承</strong>，一个类可以同时继承多个父类。这带来了<strong>菱形继承问题</strong>（Diamond Problem）：如果 A 继承 B 和 C，B 和 C 都继承 D，那么调用 A 的方法时应该走哪条路径？</p>
+        <p>Python 使用<strong>C3 线性化算法</strong>（C3 Linearization）来确定<strong>方法解析顺序</strong>（MRO，Method Resolution Order）。通过 <code>ClassName.__mro__</code> 可以查看 MRO 顺序。C3 算法确保：(1) 子类在父类之前；(2) 多个父类保持声明顺序；(3) 不违反继承关系。</p>
+        <p><code>super()</code> 在多继承中不是调用"父类"，而是调用 MRO 中的<strong>下一个类</strong>。理解这一点对于正确使用多继承至关重要。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 继承</span>
+<span class="kw">class</span> <span class="tp">Animal</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name):
+        self.name <span class="op">=</span> name
+
+    <span class="kw">def</span> <span class="fn">speak</span>(self):
+        <span class="kw">raise</span> <span class="tp">NotImplementedError</span>(<span class="st">"子类必须实现 speak 方法"</span>)
+
+<span class="kw">class</span> <span class="tp">Dog</span>(<span class="tp">Animal</span>):
+    <span class="kw">def</span> <span class="fn">speak</span>(self):
+        <span class="kw">return</span> <span class="st">f"</span>{self.name}<span class="st">说：汪汪！"</span>
+
+<span class="kw">class</span> <span class="tp">Cat</span>(<span class="tp">Animal</span>):
+    <span class="kw">def</span> <span class="fn">speak</span>(self):
+        <span class="kw">return</span> <span class="st">f"</span>{self.name}<span class="st">说：喵喵！"</span>
+
+<span class="cm"># 多态 —— 鸭子类型</span>
+<span class="kw">def</span> <span class="fn">animal_sound</span>(animal):
+    <span class="fn">print</span>(animal.<span class="fn">speak</span>())   <span class="cm"># 不需要知道具体类型，只要能 speak 就行</span>
+
+<span class="fn">animal_sound</span>(<span class="tp">Dog</span>(<span class="st">"旺财"</span>))
+<span class="fn">animal_sound</span>(<span class="tp">Cat</span>(<span class="st">"咪咪"</span>))
+
+<span class="cm"># super() 在多继承中的使用</span>
+<span class="kw">class</span> <span class="tp">A</span>:
+    <span class="kw">def</span> <span class="fn">method</span>(self):
+        <span class="fn">print</span>(<span class="st">"A.method"</span>)
+
+<span class="kw">class</span> <span class="tp">B</span>(<span class="tp">A</span>):
+    <span class="kw">def</span> <span class="fn">method</span>(self):
+        <span class="fn">print</span>(<span class="st">"B.method"</span>)
+        <span class="fn">super</span>().<span class="fn">method</span>()   <span class="cm"># 调用 MRO 中的下一个类</span>
+
+<span class="kw">class</span> <span class="tp">C</span>(<span class="tp">A</span>):
+    <span class="kw">def</span> <span class="fn">method</span>(self):
+        <span class="fn">print</span>(<span class="st">"C.method"</span>)
+        <span class="fn">super</span>().<span class="fn">method</span>()
+
+<span class="kw">class</span> <span class="tp">D</span>(<span class="tp">B</span>, <span class="tp">C</span>):
+    <span class="kw">def</span> <span class="fn">method</span>(self):
+        <span class="fn">print</span>(<span class="st">"D.method"</span>)
+        <span class="fn">super</span>().<span class="fn">method</span>()
+
+<span class="fn">print</span>(<span class="tp">D</span>.__mro__)
+<span class="cm"># (&lt;class 'D'&gt;, &lt;class 'B'&gt;, &lt;class 'C'&gt;, &lt;class 'A'&gt;, &lt;class 'object'&gt;)</span>
+
+d <span class="op">=</span> <span class="tp">D</span>()
+d.<span class="fn">method</span>()
+<span class="cm"># D.method → B.method → C.method → A.method</span></code></pre>
+    </div>
+
+    <!-- ==================== 第18节：魔术方法 ==================== -->
+    <h2 id="sec18">18. 魔术方法</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：魔术方法的运行机制</div>
+        <p>魔术方法（dunder methods）是 Python 的<strong>运算符重载</strong>和<strong>协议</strong>机制。当你写 <code>a + b</code> 时，Python 会调用 <code>a.__add__(b)</code>；当你用 <code>len(obj)</code> 时，Python 会调用 <code>obj.__len__()</code>。</p>
+        <p>这种机制使得自定义类可以像内置类型一样使用。比如实现 <code>__iter__()</code> 和 <code>__next__()</code> 就能让自定义类支持 for 循环，实现 <code>__getitem__()</code> 就能让类支持下标访问。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 常用魔术方法</span>
+<span class="kw">class</span> <span class="tp">Vector</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, x, y):
+        self.x <span class="op">=</span> x
+        self.y <span class="op">=</span> y
+
+    <span class="cm"># 字符串表示</span>
+    <span class="kw">def</span> <span class="fn">__repr__</span>(self):
+        <span class="kw">return</span> <span class="st">f"Vector(</span>{self.x}<span class="st">, </span>{self.y}<span class="st">)"</span>
+
+    <span class="kw">def</span> <span class="fn">__str__</span>(self):
+        <span class="kw">return</span> <span class="st">f"(</span>{self.x}<span class="st">, </span>{self.y}<span class="st">)"</span>
+
+    <span class="cm"># 运算符重载</span>
+    <span class="kw">def</span> <span class="fn">__add__</span>(self, other):
+        <span class="kw">return</span> <span class="tp">Vector</span>(self.x <span class="op">+</span> other.x, self.y <span class="op">+</span> other.y)
+
+    <span class="kw">def</span> <span class="fn">__mul__</span>(self, scalar):
+        <span class="kw">return</span> <span class="tp">Vector</span>(self.x <span class="op">*</span> scalar, self.y <span class="op">*</span> scalar)
+
+    <span class="kw">def</span> <span class="fn">__abs__</span>(self):
+        <span class="kw">return</span> (self.x<span class="op">**</span><span class="nm">2</span> <span class="op">+</span> self.y<span class="op">**</span><span class="nm">2</span>) <span class="op">**</span> <span class="nm">0.5</span>
+
+    <span class="cm"># 比较运算</span>
+    <span class="kw">def</span> <span class="fn">__eq__</span>(self, other):
+        <span class="kw">return</span> self.x <span class="op">==</span> other.x <span class="kw">and</span> self.y <span class="op">==</span> other.y
+
+    <span class="cm"># 可调用（函数式风格）</span>
+    <span class="kw">def</span> <span class="fn">__len__</span>(self):
+        <span class="kw">return</span> <span class="nm">2</span>
+
+    <span class="cm"># 支持下标访问</span>
+    <span class="kw">def</span> <span class="fn">__getitem__</span>(self, index):
+        <span class="kw">if</span> index <span class="op">==</span> <span class="nm">0</span>: <span class="kw">return</span> self.x
+        <span class="kw">if</span> index <span class="op">==</span> <span class="nm">1</span>: <span class="kw">return</span> self.y
+        <span class="kw">raise</span> <span class="tp">IndexError</span>(<span class="st">"Index out of range"</span>)
+
+v1 <span class="op">=</span> <span class="tp">Vector</span>(<span class="nm">1</span>, <span class="nm">2</span>)
+v2 <span class="op">=</span> <span class="tp">Vector</span>(<span class="nm">3</span>, <span class="nm">4</span>)
+<span class="fn">print</span>(v1 <span class="op">+</span> v2)       <span class="cm"># (4, 6)</span>
+<span class="fn">print</span>(v1 <span class="op">*</span> <span class="nm">3</span>)       <span class="cm"># (3, 6)</span>
+<span class="fn">print</span>(<span class="fn">abs</span>(v1))     <span class="cm"># 2.236...</span>
+<span class="fn">print</span>(v1[<span class="nm">0</span>])        <span class="cm"># 1</span></code></pre>
+    </div>
+
+    <!-- ==================== 第19节：模块与包 ==================== -->
+    <h2 id="sec19">19. 模块与包</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：模块系统的工作原理</div>
+        <p>Python 的<strong>模块</strong>就是 .py 文件，<strong>包</strong>是包含 <code>__init__.py</code> 的目录（Python 3.3+ 可选）。当 <code>import</code> 一个模块时，Python 会：(1) 在 <code>sys.path</code> 中搜索模块；(2) 编译模块为字节码（.pyc）；(3) 在 <code>sys.modules</code> 缓存中注册模块；(4) 执行模块代码。</p>
+        <p><code>__init__.py</code> 可以为空，也可以包含包的初始化代码和 <code>__all__</code> 变量（控制 <code>from package import *</code> 的行为）。Python 3 引入了<strong>命名空间包</strong>（namespace package），允许包跨越多个目录。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 导入方式</span>
+<span class="kw">import</span> os                       <span class="cm"># 导入整个模块</span>
+<span class="kw">from</span> os <span class="kw">import</span> path              <span class="cm"># 导入特定成员</span>
+<span class="kw">from</span> os <span class="kw">import</span> path <span class="kw">as</span> ospath     <span class="cm"># 导入并重命名</span>
+<span class="kw">from</span> os <span class="kw">import</span> *                  <span class="cm"># 不推荐：导入所有公开成员</span>
+
+<span class="cm"># 常用标准库</span>
+<span class="kw">import</span> json                     <span class="cm"># JSON 序列化</span>
+<span class="kw">import</span> datetime                 <span class="cm"># 日期时间</span>
+<span class="kw">import</span> collections              <span class="cm"># 高级数据结构</span>
+<span class="kw">import</span> itertools                <span class="cm"># 迭代器工具</span>
+<span class="kw">import</span> functools                <span class="cm"># 函数工具</span>
+<span class="kw">import</span> pathlib                  <span class="cm"># 路径操作</span>
+<span class="kw">import</span> re                       <span class="cm"># 正则表达式</span>
+<span class="kw">import</span> typing                   <span class="cm"># 类型提示</span>
+
+<span class="cm"># 包结构示例</span>
+<span class="cm"># mypackage/</span>
+<span class="cm"># ├── __init__.py          # 包初始化</span>
+<span class="cm"># ├── core.py              # 核心模块</span>
+<span class="cm"># ├── utils/               # 子包</span>
+<span class="cm"># │   ├── __init__.py</span>
+<span class="cm"># │   └── helpers.py</span>
+<span class="cm"># └── tests/               # 测试包</span>
+<span class="cm">#     ├── __init__.py</span>
+<span class="cm">#     └── test_core.py</span>
+
+<span class="cm"># __init__.py 中的 __all__ 控制 * 导出</span>
+<span class="cm"># mypackage/__init__.py:</span>
+<span class="cm"># __all__ = ["core", "utils"]</span></code></pre>
+    </div>
+
+    <!-- ==================== 第20节：异常处理 ==================== -->
+    <h2 id="sec20">20. 异常处理</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：异常的继承体系</div>
+        <p>Python 的异常是一个<strong>类继承层次结构</strong>：<code>BaseException</code> → <code>Exception</code> → 各种具体异常。<code>Exception</code> 是所有"常规"异常的基类，<code>BaseException</code> 还包括 <code>SystemExit</code>、<code>KeyboardInterrupt</code> 等不应被捕获的系统级异常。</p>
+        <p>Python 的 <code>with</code> 语句是<strong>上下文管理器</strong>协议的语法糖。任何实现了 <code>__enter__()</code> 和 <code>__exit__()</code> 方法的对象都可以用在 with 语句中，确保资源（文件、网络连接、锁等）在使用后被正确清理。</p>
+        <p>EAFP（Easier to Ask for Forgiveness than Permission）是 Python 的编程风格——先尝试操作，失败了再处理异常，而不是先检查条件。这比 LBYL（Look Before You Leap）更 Pythonic，也更高效。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># try-except-else-finally</span>
+<span class="kw">try</span>:
+    result <span class="op">=</span> <span class="nm">10</span> <span class="op">/</span> <span class="nm">0</span>
+<span class="kw">except</span> <span class="tp">ZeroDivisionError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="st">f"除零错误: </span>{e}<span class="st">"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"没有异常时执行"</span>)
+<span class="kw">finally</span>:
+    <span class="fn">print</span>(<span class="st">"始终执行（清理工作）"</span>)
+
+<span class="cm"># 捕获多种异常</span>
+<span class="kw">try</span>:
+    <span class="cm">...</span>
+<span class="kw">except</span> (<span class="tp">ValueError</span>, <span class="tp">TypeError</span>) <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="st">f"值或类型错误: </span>{e}<span class="st">"</span>)
+
+<span class="cm"># 自定义异常</span>
+<span class="kw">class</span> <span class="tp">AppError</span>(<span class="tp">Exception</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, message, code<span class="op">=</span><span class="nm">500</span>):
+        <span class="fn">super</span>().<span class="fn">__init__</span>(message)
+        self.code <span class="op">=</span> code
+
+<span class="kw">raise</span> <span class="tp">AppError</span>(<span class="st">"服务不可用"</span>, code<span class="op">=</span><span class="nm">503</span>)
+
+<span class="cm"># 上下文管理器（with 语句）</span>
+<span class="kw">class</span> <span class="tp">Timer</span>:
+    <span class="kw">def</span> <span class="fn">__enter__</span>(self):
+        <span class="kw">import</span> time
+        self.start <span class="op">=</span> time.<span class="fn">perf_counter</span>()
+        <span class="kw">return</span> self
+
+    <span class="kw">def</span> <span class="fn">__exit__</span>(self, exc_type, exc_val, exc_tb):
+        <span class="kw">import</span> time
+        self.elapsed <span class="op">=</span> time.<span class="fn">perf_counter</span>() <span class="op">-</span> self.start
+        <span class="fn">print</span>(<span class="st">f"耗时: </span>{self.elapsed:<span class="st">.4f}</span><span class="st">秒"</span>)
+        <span class="kw">return</span> <span class="kw">False</span>  <span class="cm"># 不抑制异常</span>
+
+<span class="kw">with</span> <span class="tp">Timer</span>():
+    total <span class="op">=</span> <span class="fn">sum</span>(<span class="fn">range</span>(<span class="nm">1000000</span>))
+
+<span class="cm"># contextlib 简化上下文管理器</span>
+<span class="kw">from</span> contextlib <span class="kw">import</span> contextmanager
+
+<span class="dc">@contextmanager</span>
+<span class="kw">def</span> <span class="fn">managed_file</span>(name, mode):
+    <span class="kw">try</span>:
+        f <span class="op">=</span> <span class="fn">open</span>(name, mode)
+        <span class="kw">yield</span> f
+    <span class="kw">finally</span>:
+        f.<span class="fn">close</span>()</code></pre>
+    </div>
+
+    <!-- ==================== 第21节：文件操作 ==================== -->
+    <h2 id="sec21">21. 文件操作</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：文件对象与缓冲</div>
+        <p>Python 的文件操作基于<strong>文件对象</strong>（file object），它是操作系统文件描述符的封装。文件对象实现了<strong>上下文管理器协议</strong>，可以与 <code>with</code> 语句配合使用，确保文件在操作完成后被正确关闭。</p>
+        <p>Python 的文件 I/O 有<strong>缓冲机制</strong>：文本模式下默认行缓冲，二进制模式下默认块缓冲（通常 4KB）。<code>flush()</code> 可以强制将缓冲区内容写入磁盘，<code>close()</code> 会自动 flush。</p>
+        <p>对于大文件，应该使用<strong>迭代器模式</strong>逐行读取，而不是一次性读入内存。<code>pathlib</code> 模块提供了面向对象的路径操作，是 <code>os.path</code> 的现代替代。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 文本文件读写</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"example.txt"</span>, <span class="st">"w"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="kw">as</span> f:
+    f.<span class="fn">write</span>(<span class="st">"第一行\n"</span>)
+    f.<span class="fn">write</span>(<span class="st">"第二行\n"</span>)
+    f.<span class="fn">writelines</span>([<span class="st">"第三行\n"</span>, <span class="st">"第四行\n"</span>])
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"example.txt"</span>, <span class="st">"r"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="kw">as</span> f:
+    content <span class="op">=</span> f.<span class="fn">read</span>()          <span class="cm"># 读取全部内容</span>
+    lines <span class="op">=</span> f.<span class="fn">readlines</span>()        <span class="cm"># 读取所有行到列表</span>
+
+<span class="cm"># 逐行读取大文件（内存友好）</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"large_file.txt"</span>, <span class="st">"r"</span>) <span class="kw">as</span> f:
+    <span class="kw">for</span> line <span class="kw">in</span> f:              <span class="cm"># 文件对象本身就是迭代器</span>
+        <span class="fn">print</span>(line.<span class="fn">rstrip</span>())
+
+<span class="cm"># pathlib —— 现代路径操作</span>
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+
+path <span class="op">=</span> <span class="tp">Path</span>(<span class="st">"."</span>)
+<span class="fn">print</span>(path.<span class="fn">resolve</span>())           <span class="cm"># 绝对路径</span>
+<span class="fn">print</span>(<span class="fn">list</span>(path.<span class="fn">glob</span>(<span class="st">"*.py"</span>))) <span class="cm"># 列出所有 .py 文件</span>
+
+<span class="cm"># 读写 JSON</span>
+<span class="kw">import</span> json
+
+data <span class="op">=</span> {<span class="st">"name"</span>: <span class="st">"Alice"</span>, <span class="st">"age"</span>: <span class="nm">30</span>}
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"data.json"</span>, <span class="st">"w"</span>) <span class="kw">as</span> f:
+    json.<span class="fn">dump</span>(data, f, ensure_ascii<span class="op">=</span><span class="kw">False</span>, indent<span class="op">=</span><span class="nm">2</span>)
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"data.json"</span>) <span class="kw">as</span> f:
+    loaded <span class="op">=</span> json.<span class="fn">load</span>(f)
+
+<span class="cm"># 二进制文件</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"image.png"</span>, <span class="st">"rb"</span>) <span class="kw">as</span> f:
+    data <span class="op">=</span> f.<span class="fn">read</span>()</code></pre>
+    </div>
+
+    <!-- ==================== 第22节：装饰器 ==================== -->
+    <h2 id="sec22">22. 装饰器</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：装饰器的运行时机制</div>
+        <p>装饰器本质上是一个<strong>高阶函数</strong>，它接受一个函数作为参数，返回一个新函数。<code>@decorator</code> 语法只是 <code>func = decorator(func)</code> 的语法糖。装饰器在<strong>模块加载时</strong>执行（函数定义时），不是在函数调用时执行。</p>
+        <p>带参数的装饰器是三层嵌套：<code>@decorator(args)</code> 等价于 <code>func = decorator(args)(func)</code>。最外层接收装饰器参数，中间层接收被装饰的函数，最内层是实际的包装函数。</p>
+        <p><code>functools.wraps</code> 装饰器保留被装饰函数的 <code>__name__</code>、<code>__doc__</code> 等元数据，是编写装饰器的<strong>必备工具</strong>。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="kw">import</span> functools
+<span class="kw">import</span> time
+
+<span class="cm"># 基本装饰器</span>
+<span class="kw">def</span> <span class="fn">timer</span>(func):
+    <span class="dc">@functools.wraps</span>(func)  <span class="cm"># 保留原函数的元数据</span>
+    <span class="kw">def</span> <span class="fn">wrapper</span>(*args, **kwargs):
+        start <span class="op">=</span> time.<span class="fn">perf_counter</span>()
+        result <span class="op">=</span> <span class="fn">func</span>(*args, **kwargs)
+        elapsed <span class="op">=</span> time.<span class="fn">perf_counter</span>() <span class="op">-</span> start
+        <span class="fn">print</span>(<span class="st">f"</span>{func.__name__}<span class="st"> 执行耗时: </span>{elapsed:<span class="st">.4f}</span><span class="st">秒"</span>)
+        <span class="kw">return</span> result
+    <span class="kw">return</span> wrapper
+
+<span class="dc">@timer</span>
+<span class="kw">def</span> <span class="fn">slow_function</span>(n):
+    time.<span class="fn">sleep</span>(n)
+    <span class="kw">return</span> n
+
+<span class="cm"># 带参数的装饰器</span>
+<span class="kw">def</span> <span class="fn">retry</span>(max_attempts<span class="op">=</span><span class="nm">3</span>, delay<span class="op">=</span><span class="nm">1</span>):
+    <span class="kw">def</span> <span class="fn">decorator</span>(func):
+        <span class="dc">@functools.wraps</span>(func)
+        <span class="kw">def</span> <span class="fn">wrapper</span>(*args, **kwargs):
+            <span class="kw">for</span> attempt <span class="kw">in</span> <span class="fn">range</span>(max_attempts):
+                <span class="kw">try</span>:
+                    <span class="kw">return</span> <span class="fn">func</span>(*args, **kwargs)
+                <span class="kw">except</span> <span class="tp">Exception</span> <span class="kw">as</span> e:
+                    <span class="kw">if</span> attempt <span class="op">==</span> max_attempts <span class="op">-</span> <span class="nm">1</span>:
+                        <span class="kw">raise</span>
+                    <span class="fn">print</span>(<span class="st">f"重试 </span>{attempt<span class="op">+</span><span class="nm">1</span>}<span class="st">/</span>{max_attempts}<span class="st">: </span>{e}<span class="st">"</span>)
+                    time.<span class="fn">sleep</span>(delay)
+        <span class="kw">return</span> wrapper
+    <span class="kw">return</span> decorator
+
+<span class="dc">@retry</span>(max_attempts<span class="op">=</span><span class="nm">3</span>, delay<span class="op">=</span><span class="nm">0.5</span>)
+<span class="kw">def</span> <span class="fn">fetch_data</span>(url):
+    <span class="kw">import</span> requests
+    <span class="kw">return</span> requests.<span class="fn">get</span>(url).<span class="fn">json</span>()
+
+<span class="cm"># 类装饰器</span>
+<span class="kw">class</span> <span class="tp">CountCalls</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, func):
+        functools.<span class="fn">update_wrapper</span>(self, func)
+        self.func <span class="op">=</span> func
+        self.count <span class="op">=</span> <span class="nm">0</span>
+
+    <span class="kw">def</span> <span class="fn">__call__</span>(self, *args, **kwargs):
+        self.count <span class="op">+=</span> <span class="nm">1</span>
+        <span class="fn">print</span>(<span class="st">f"</span>{self.func.__name__}<span class="st"> 被调用了 </span>{self.count}<span class="st"> 次"</span>)
+        <span class="kw">return</span> <span class="fn">self.func</span>(*args, **kwargs)
+
+<span class="dc">@CountCalls</span>
+<span class="kw">def</span> <span class="fn">say_hello</span>():
+    <span class="fn">print</span>(<span class="st">"Hello!"</span>)</code></pre>
+    </div>
+
+    <h3>上下文管理器与装饰器进阶</h3>
+    <div class="code-block" data-lang="python">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">Python</span>
+        </div>
+<pre><code><span class="cm"># 自定义上下文管理器</span>
+<span class="kw">class</span> <span class="tp">DatabaseConnection</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, host):
+        self.host <span class="op">=</span> host
+        self.conn <span class="op">=</span> <span class="kw">None</span>
+
+    <span class="kw">def</span> <span class="fn">__enter__</span>(self):
+        <span class="fn">print</span>(<span class="st">f"连接到 </span>{self.host}<span class="st">"</span>)
+        self.conn <span class="op">=</span> <span class="st">"模拟连接"</span>
+        <span class="kw">return</span> self
+
+    <span class="kw">def</span> <span class="fn">__exit__</span>(self, exc_type, exc_val, exc_tb):
+        <span class="fn">print</span>(<span class="st">"关闭连接"</span>)
+        self.conn <span class="op">=</span> <span class="kw">None</span>
+        <span class="kw">return</span> <span class="kw">False</span>
+
+<span class="kw">with</span> <span class="tp">DatabaseConnection</span>(<span class="st">"localhost"</span>) <span class="kw">as</span> db:
+    <span class="fn">print</span>(<span class="st">f"使用: </span>{db.conn}<span class="st">"</span>)
+
+<span class="cm"># contextlib.contextmanager 装饰器写法</span>
+<span class="kw">from</span> contextlib <span class="kw">import</span> contextmanager
+
+<span class="dc">@contextmanager</span>
+<span class="kw">def</span> <span class="fn">temporary_directory</span>():
+    <span class="kw">import</span> tempfile, shutil
+    d <span class="op">=</span> tempfile.<span class="fn">mkdtemp</span>()
+    <span class="kw">try</span>:
+        <span class="kw">yield</span> d
+    <span class="kw">finally</span>:
+        shutil.<span class="fn">rmtree</span>(d)
+
+<span class="cm"># 装饰器带参数 + 类型提示</span>
+<span class="kw">from</span> functools <span class="kw">import</span> wraps
+<span class="kw">from</span> typing <span class="kw">import</span> Callable, TypeVar
+F <span class="op">=</span> TypeVar(<span class="st">'F'</span>, bound<span class="op">=</span>Callable)
+
+<span class="kw">def</span> <span class="fn">deprecated</span>(reason: <span class="tp">str</span>) -> Callable[[F], F]:
+    <span class="kw">def</span> <span class="fn">decorator</span>(func: F) -> F:
+        <span class="dc">@wraps</span>(func)
+        <span class="kw">def</span> <span class="fn">wrapper</span>(*args, **kwargs):
+            <span class="fn">print</span>(<span class="st">f"⚠ {func.__name__} 已弃用: </span>{reason}<span class="st">"</span>)
+            <span class="kw">return</span> <span class="fn">func</span>(*args, **kwargs)
+        <span class="kw">return</span> wrapper
+    <span class="kw">return</span> decorator
+
+<span class="dc">@deprecated</span>(<span class="st">"请使用 new_func 替代"</span>)
+<span class="kw">def</span> <span class="fn">old_func</span>():
+    <span class="kw">pass</span></code></pre>
+    </div>
+
+    <!-- ==================== 第23节：生成器与迭代器 ==================== -->
+    <h2 id="sec23">23. 生成器与迭代器</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：惰性求值的力量</div>
+        <p><strong>迭代器</strong>是实现了 <code>__iter__()</code> 和 <code>__next__()</code> 方法的对象。每次调用 <code>next()</code> 返回下一个值，直到 <code>StopIteration</code> 异常。迭代器是<strong>一次性</strong>的——遍历完后不能重新开始。</p>
+        <p><strong>生成器</strong>是使用 <code>yield</code> 关键字的特殊迭代器。当函数包含 <code>yield</code> 时，调用函数不会执行代码，而是返回一个<strong>生成器对象</strong>。每次调用 <code>next()</code>，函数执行到下一个 <code>yield</code>，返回 yield 的值，然后<strong>暂停</strong>执行，保留所有局部变量的状态。</p>
+        <p>生成器的核心优势：<strong>惰性求值</strong>——只在需要时才生成值，非常适合处理大数据流。生成器表达式 <code>(x**2 for x in range(1000000))</code> 不会创建百万元素的列表，而是按需生成。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 生成器函数</span>
+<span class="kw">def</span> <span class="fn">countdown</span>(n):
+    <span class="st">"""倒计时生成器"""</span>
+    <span class="kw">while</span> n <span class="op">></span> <span class="nm">0</span>:
+        <span class="kw">yield</span> n         <span class="cm"># 暂停并返回值</span>
+        n <span class="op">-=</span> <span class="nm">1</span>
+
+<span class="cm"># 使用生成器</span>
+<span class="kw">for</span> num <span class="kw">in</span> <span class="fn">countdown</span>(<span class="nm">5</span>):
+    <span class="fn">print</span>(num)         <span class="cm"># 5, 4, 3, 2, 1</span>
+
+<span class="cm"># 生成器表达式（惰性求值）</span>
+<span class="cm"># 列表推导式：一次性创建所有元素</span>
+squares_list <span class="op">=</span> [x<span class="op">**</span><span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1000000</span>)]  <span class="cm"># 占用大量内存</span>
+
+<span class="cm"># 生成器表达式：按需生成</span>
+squares_gen <span class="op">=</span> (x<span class="op">**</span><span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1000000</span>))  <span class="cm"># 几乎不占内存</span>
+
+<span class="cm"># yield from —— 委托生成器</span>
+<span class="kw">def</span> <span class="fn">chain</span>(*iterables):
+    <span class="kw">for</span> it <span class="kw">in</span> iterables:
+        <span class="kw">yield from</span> it     <span class="cm"># 等价于 for item in it: yield item</span>
+
+<span class="fn">list</span>(<span class="fn">chain</span>([<span class="nm">1</span>, <span class="nm">2</span>], [<span class="nm">3</span>, <span class="nm">4</span>], [<span class="nm">5</span>, <span class="nm">6</span>]))
+<span class="cm"># [1, 2, 3, 4, 5, 6]</span>
+
+<span class="cm"># 生成器的实际应用：读取大文件</span>
+<span class="kw">def</span> <span class="fn">read_large_file</span>(filepath):
+    <span class="kw">with</span> <span class="fn">open</span>(filepath) <span class="kw">as</span> f:
+        <span class="kw">for</span> line <span class="kw">in</span> f:
+            <span class="kw">yield</span> line.<span class="fn">rstrip</span>()
+
+<span class="cm"># 无限序列生成器</span>
+<span class="kw">def</span> <span class="fn">fibonacci</span>():
+    <span class="st">"""无限斐波那契数列"""</span>
+    a, b <span class="op">=</span> <span class="nm">0</span>, <span class="nm">1</span>
+    <span class="kw">while</span> <span class="kw">True</span>:
+        <span class="kw">yield</span> a
+        a, b <span class="op">=</span> b, a <span class="op">+</span> b
+
+<span class="cm"># 取前 10 个斐波那契数</span>
+fib <span class="op">=</span> <span class="fn">fibonacci</span>()
+first_ten <span class="op">=</span> [<span class="fn">next</span>(fib) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10</span>)]</code></pre>
+    </div>
+
+    <h3>生成器管道</h3>
+    <div class="code-block" data-lang="python">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">Python</span>
+        </div>
+<pre><code><span class="cm"># 生成器管道 —— 将多个生成器串联成数据流水线</span>
+<span class="kw">def</span> <span class="fn">read_data</span>(source):
+    <span class="st">"""从数据源逐行读取"""</span>
+    <span class="kw">for</span> line <span class="kw">in</span> source:
+        <span class="kw">yield</span> line.<span class="fn">strip</span>()
+
+<span class="kw">def</span> <span class="fn">filter_comments</span>(lines):
+    <span class="st">"""过滤空行和注释"""</span>
+    <span class="kw">for</span> line <span class="kw">in</span> lines:
+        <span class="kw">if</span> line <span class="kw">and not</span> line.<span class="fn">startswith</span>(<span class="st">'#'</span>):
+            <span class="kw">yield</span> line
+
+<span class="kw">def</span> <span class="fn">parse_csv</span>(lines):
+    <span class="st">"""解析 CSV 格式"""</span>
+    <span class="kw">for</span> line <span class="kw">in</span> lines:
+        <span class="kw">yield</span> line.<span class="fn">split</span>(<span class="st">','</span>)
+
+<span class="cm"># 组合成管道（惰性求值，内存高效）</span>
+raw <span class="op">=</span> <span class="fn">read_data</span>([<span class="st">"# header"</span>, <span class="st">"name,age"</span>, <span class="st">"Alice,30"</span>, <span class="st">""</span>, <span class="st">"Bob,25"</span>])
+clean <span class="op">=</span> <span class="fn">filter_comments</span>(raw)
+parsed <span class="op">=</span> <span class="fn">parse_csv</span>(clean)
+
+<span class="kw">for</span> row <span class="kw">in</span> parsed:
+    <span class="fn">print</span>(row)  <span class="cm"># ['name', 'age'] → ['Alice', '30'] → ['Bob', '25']</span>
+
+<span class="cm"># itertools 高级迭代器</span>
+<span class="kw">from</span> itertools <span class="kw">import</span> islice, takewhile, chain, groupby
+
+<span class="cm"># 无限流中取前N个</span>
+<span class="kw">def</span> <span class="fn">count</span>(start<span class="op">=</span><span class="nm">0</span>, step<span class="op">=</span><span class="nm">1</span>):
+    n <span class="op">=</span> start
+    <span class="kw">while</span> <span class="kw">True</span>:
+        <span class="kw">yield</span> n
+        n <span class="op">+=</span> step
+
+<span class="fn">list</span>(<span class="fn">islice</span>(<span class="fn">count</span>(), <span class="nm">5</span>))  <span class="cm"># [0, 1, 2, 3, 4]</span></code></pre>
+    </div>
+
+    <!-- ==================== 第24节：多线程与异步 ==================== -->
+    <h2 id="sec24">24. 多线程与异步</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：GIL 的影响与选择</div>
+        <p><strong>GIL（Global Interpreter Lock，全局解释器锁）</strong>是 CPython 解释器中的一个互斥锁，它确保同一时刻只有一个线程执行 Python 字节码。这意味着 Python 多线程<strong>无法利用多核 CPU 进行并行计算</strong>。</p>
+        <p>但 GIL 并不影响所有场景：<strong>I/O 密集型任务</strong>（网络请求、文件读写、数据库操作）在等待 I/O 时会释放 GIL，所以多线程仍然有效。<strong>CPU 密集型任务</strong>应该使用 <code>multiprocessing</code> 模块（多进程）来利用多核。</p>
+        <p><strong>asyncio</strong> 是 Python 的异步 I/O 框架，使用<strong>协程</strong>（coroutine）实现单线程并发。协程比线程更轻量（没有上下文切换开销），适合高并发的网络应用。async/await 语法让异步代码看起来像同步代码。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 多线程 —— 适合 I/O 密集型任务</span>
+<span class="kw">import</span> threading
+<span class="kw">import</span> time
+
+<span class="kw">def</span> <span class="fn">download</span>(url):
+    <span class="fn">print</span>(<span class="st">f"开始下载: </span>{url}<span class="st">"</span>)
+    time.<span class="fn">sleep</span>(<span class="nm">2</span>)  <span class="cm"># 模拟 I/O 操作</span>
+    <span class="fn">print</span>(<span class="st">f"完成下载: </span>{url}<span class="st">"</span>)
+
+urls <span class="op">=</span> [<span class="st">"url1"</span>, <span class="st">"url2"</span>, <span class="st">"url3"</span>]
+threads <span class="op">=</span> [threading.<span class="tp">Thread</span>(target<span class="op">=</span>download, args<span class="op">=</span>(url,)) <span class="kw">for</span> url <span class="kw">in</span> urls]
+
+<span class="kw">for</span> t <span class="kw">in</span> threads:
+    t.<span class="fn">start</span>()
+<span class="kw">for</span> t <span class="kw">in</span> threads:
+    t.<span class="fn">join</span>()
+
+<span class="cm"># ThreadPoolExecutor —— 更高级的线程池</span>
+<span class="kw">from</span> concurrent.futures <span class="kw">import</span> ThreadPoolExecutor
+
+<span class="kw">with</span> <span class="tp">ThreadPoolExecutor</span>(max_workers<span class="op">=</span><span class="nm">5</span>) <span class="kw">as</span> executor:
+    results <span class="op">=</span> <span class="fn">list</span>(executor.<span class="fn">map</span>(download, urls))
+
+<span class="cm"># multiprocessing —— 适合 CPU 密集型任务</span>
+<span class="kw">from</span> multiprocessing <span class="kw">import</span> Pool
+
+<span class="kw">def</span> <span class="fn">cpu_heavy</span>(n):
+    <span class="kw">return</span> <span class="fn">sum</span>(i <span class="op">*</span> i <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(n))
+
+<span class="kw">with</span> <span class="tp">Pool</span>(processes<span class="op">=</span><span class="nm">4</span>) <span class="kw">as</span> pool:
+    results <span class="op">=</span> pool.<span class="fn">map</span>(cpu_heavy, [<span class="nm">10</span><span class="op">**</span><span class="nm">6</span>] <span class="op">*</span> <span class="nm">4</span>])
+
+<span class="cm"># asyncio —— 异步编程</span>
+<span class="kw">import</span> asyncio
+
+<span class="kw">async def</span> <span class="fn">fetch</span>(url):
+    <span class="fn">print</span>(<span class="st">f"开始请求: </span>{url}<span class="st">"</span>)
+    <span class="kw">await</span> asyncio.<span class="fn">sleep</span>(<span class="nm">1</span>)  <span class="cm"># 异步等待</span>
+    <span class="fn">print</span>(<span class="st">f"完成请求: </span>{url}<span class="st">"</span>)
+    <span class="kw">return</span> <span class="st">f"</span>{url}<span class="st"> 的响应"</span>
+
+<span class="kw">async def</span> <span class="fn">main</span>():
+    <span class="cm"># 并发执行多个协程</span>
+    tasks <span class="op">=</span> [fetch(<span class="st">f"url</span>{i}<span class="st">"</span>) <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">3</span>)]
+    results <span class="op">=</span> <span class="kw">await</span> asyncio.<span class="fn">gather</span>(*tasks)
+    <span class="fn">print</span>(results)
+
+asyncio.<span class="fn">run</span>(<span class="fn">main</span>())</code></pre>
+    </div>
+
+    <h3>并发编程实战</h3>
+    <div class="code-block" data-lang="python">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">Python</span>
+        </div>
+<pre><code><span class="cm"># threading vs multiprocessing 对比</span>
+<span class="kw">import</span> threading
+<span class="kw">import</span> multiprocessing
+<span class="kw">import</span> time
+
+<span class="kw">def</span> <span class="fn">io_task</span>(n):
+    <span class="st">"""I/O 密集型 —— 多线程有效"""</span>
+    time.<span class="fn">sleep</span>(n)
+    <span class="kw">return</span> n
+
+<span class="kw">def</span> <span class="fn">cpu_task</span>(n):
+    <span class="st">"""CPU 密集型 —— 多进程有效"""</span>
+    <span class="kw">return</span> <span class="fn">sum</span>(i <span class="op">*</span> i <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(n))
+
+<span class="cm"># 线程池（I/O 密集型）</span>
+<span class="kw">from</span> concurrent.futures <span class="kw">import</span> ThreadPoolExecutor, ProcessPoolExecutor
+
+<span class="kw">with</span> <span class="tp">ThreadPoolExecutor</span>(max_workers<span class="op">=</span><span class="nm">4</span>) <span class="kw">as</span> pool:
+    results <span class="op">=</span> <span class="fn">list</span>(pool.<span class="fn">map</span>(io_task, [<span class="nm">1</span>, <span class="nm">1</span>, <span class="nm">1</span>, <span class="nm">1</span>]))
+    <span class="cm"># 4个任务并行，总耗时约 1 秒</span>
+
+<span class="cm"># 进程池（CPU 密集型）</span>
+<span class="kw">with</span> <span class="tp">ProcessPoolExecutor</span>(max_workers<span class="op">=</span><span class="nm">4</span>) <span class="kw">as</span> pool:
+    results <span class="op">=</span> <span class="fn">list</span>(pool.<span class="fn">map</span>(cpu_task, [<span class="nm">10</span><span class="op">**</span><span class="nm">6</span>] <span class="op">*</span> <span class="nm">4</span>))
+
+<span class="cm"># asyncio 异步编程进阶</span>
+<span class="kw">import</span> asyncio
+
+<span class="kw">async def</span> <span class="fn">fetch_with_timeout</span>(url, timeout<span class="op">=</span><span class="nm">5</span>):
+    <span class="kw">try</span>:
+        <span class="kw">async with</span> asyncio.<span class="fn">timeout</span>(timeout):
+            <span class="kw">await</span> asyncio.<span class="fn">sleep</span>(<span class="nm">1</span>)  <span class="cm"># 模拟网络请求</span>
+            <span class="kw">return</span> <span class="st">f"</span>{url}<span class="st"> 响应"</span>
+    <span class="kw">except</span> <span class="tp">TimeoutError</span>:
+        <span class="kw">return</span> <span class="st">f"</span>{url}<span class="st"> 超时"</span>
+
+<span class="kw">async def</span> <span class="fn">main</span>():
+    <span class="cm"># 并发执行并收集结果</span>
+    urls <span class="op">=</span> [<span class="st">"url1"</span>, <span class="st">"url2"</span>, <span class="st">"url3"</span>]
+    results <span class="op">=</span> <span class="kw">await</span> asyncio.<span class="fn">gather</span>(
+        *[<span class="fn">fetch_with_timeout</span>(u) <span class="kw">for</span> u <span class="kw">in</span> urls]
+    )
+    <span class="kw">for</span> r <span class="kw">in</span> results:
+        <span class="fn">print</span>(r)
+
+asyncio.<span class="fn">run</span>(<span class="fn">main</span>())</code></pre>
+    </div>
+
+    <div class="compare">
+        <div class="compare-item">
+            <div class="compare-label bad">CPU 密集型用多线程</div>
+<pre><code><span class="cm"># GIL 导致无法并行！</span>
+<span class="kw">from</span> threading <span class="kw">import</span> Thread
+
+<span class="kw">def</span> <span class="fn">compute</span>(n):
+    <span class="kw">return</span> <span class="fn">sum</span>(i*i <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(n))
+
+threads <span class="op">=</span> [<span class="tp">Thread</span>(target<span class="op">=</span>compute, args<span class="op">=</span>(<span class="nm">10</span><span class="op">**</span><span class="nm">7</span>,))
+           <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">4</span>)]</code></pre>
+        </div>
+        <div class="compare-item">
+            <div class="compare-label good">CPU 密集型用多进程</div>
+<pre><code><span class="cm"># 绕过 GIL，真正并行</span>
+<span class="kw">from</span> multiprocessing <span class="kw">import</span> Pool
+
+<span class="kw">def</span> <span class="fn">compute</span>(n):
+    <span class="kw">return</span> <span class="fn">sum</span>(i*i <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(n))
+
+<span class="kw">with</span> <span class="tp">Pool</span>(<span class="nm">4</span>) <span class="kw">as</span> p:
+    p.<span class="fn">map</span>(compute, [<span class="nm">10</span><span class="op">**</span><span class="nm">7</span>]*<span class="nm">4</span>)</code></pre>
+        </div>
+    </div>
+
+    <!-- ==================== 第25节：最佳实践与常见陷阱 ==================== -->
+    <h2 id="sec25">25. 最佳实践与常见陷阱</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Pythonic 代码的本质</div>
+        <p>"Pythonic"代码是指符合 Python 设计哲学和社区惯例的代码。PEP 8 是 Python 的代码风格指南，几乎所有 Python 项目都遵循它。但 Pythonic 不仅仅是格式——它是一种<strong>思维方式</strong>：用简洁、清晰、地道的方式解决问题。</p>
+        <p>Python 的核心原则：<strong>Simple is better than complex</strong>。当你的代码变得复杂时，先问问是否可以用更简单的方式实现。Python 的标准库提供了大量"开箱即用"的工具，很多情况下不需要自己造轮子。</p>
+    </div>
+
+    <h3>常见陷阱</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 陷阱 1：可变默认参数</span>
+<span class="kw">def</span> <span class="fn">append_to</span>(item, target<span class="op">=</span>[]):  <span class="cm"># 错误！</span>
+    target.<span class="fn">append</span>(item)
+    <span class="kw">return</span> target
+
+<span class="cm"># 正确做法</span>
+<span class="kw">def</span> <span class="fn">append_to</span>(item, target<span class="op">=</span><span class="kw">None</span>):
+    <span class="kw">if</span> target <span class="kw">is</span> <span class="kw">None</span>:
+        target <span class="op">=</span> []
+    target.<span class="fn">append</span>(item)
+    <span class="kw">return</span> target
+
+<span class="cm"># 陷阱 2：循环变量泄露（Python 2 遗留问题，Python 3 已修复）</span>
+<span class="cm"># Python 3 中 for 循环的变量不会泄露到外层作用域</span>
+
+<span class="cm"># 陷阱 3：is 和 == 混用</span>
+<span class="kw">def</span> <span class="fn">is_none</span>(x):
+    <span class="kw">return</span> x <span class="op">is</span> <span class="kw">None</span>   <span class="cm"># 正确：None 是单例对象</span>
+    <span class="cm"># return x == None  # 不推荐</span>
+
+<span class="cm"># 陷阱 4：字符串格式化的选择</span>
+name <span class="op">=</span> <span class="st">"Alice"</span>
+<span class="cm"># f-string（推荐，Python 3.6+）</span>
+<span class="fn">print</span>(<span class="st">f"Hello, </span>{name}<span class="st">"</span>)
+<span class="cm"># .format()（次选）</span>
+<span class="fn">print</span>(<span class="st">"Hello, {}"</span>.<span class="fn">format</span>(name))
+<span class="cm"># % 格式化（不推荐）</span>
+<span class="fn">print</span>(<span class="st">"Hello, %s"</span> <span class="op">%</span> name)
+
+<span class="cm"># 陷阱 5：异常捕获范围过大</span>
+<span class="kw">try</span>:
+    <span class="cm">...</span>
+<span class="kw">except</span> <span class="tp">Exception</span>:     <span class="cm"># 不推荐：捕获所有异常</span>
+    <span class="kw">pass</span>
+<span class="cm"># 应该捕获具体的异常类型</span>
+<span class="kw">except</span> <span class="tp">ValueError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="st">f"值错误: </span>{e}<span class="st">"</span>)</code></pre>
+    </div>
+
+    <h3>最佳实践</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Python</div>
+        </div>
+<pre><code><span class="cm"># 1. 使用类型提示（Python 3.5+）</span>
+<span class="kw">def</span> <span class="fn">greet</span>(name: <span class="tp">str</span>, times: <span class="tp">int</span> <span class="op">=</span> <span class="nm">1</span>) -> <span class="tp">list</span>[<span class="tp">str</span>]:
+    <span class="kw">return</span> [<span class="st">f"Hello, </span>{name}<span class="st">!"</span>] <span class="op">*</span> times
+
+<span class="cm"># 2. 使用 pathlib 而不是 os.path</span>
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+path <span class="op">=</span> <span class="tp">Path</span>(<span class="st">"data"</span>) <span class="op">/</span> <span class="st">"users.json"</span>
+
+<span class="cm"># 3. 使用 dataclass 简化类定义（Python 3.7+）</span>
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass
+
+<span class="dc">@dataclass</span>
+<span class="kw">class</span> <span class="tp">Point</span>:
+    x: <span class="tp">float</span>
+    y: <span class="tp">float</span>
+    <span class="cm"># 自动生成 __init__, __repr__, __eq__ 等方法</span>
+
+<span class="cm"># 4. 使用 Enum 替代魔法数字</span>
+<span class="kw">from</span> enum <span class="kw">import</span> Enum
+
+<span class="kw">class</span> <span class="tp">Status</span>(Enum):
+    PENDING <span class="op">=</span> <span class="st">"pending"</span>
+    APPROVED <span class="op">=</span> <span class="st">"approved"</span>
+    REJECTED <span class="op">=</span> <span class="st">"rejected"</span>
+
+<span class="cm"># 5. 使用 collections 模块的高级数据结构</span>
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict, Counter, deque
+
+<span class="cm"># defaultdict —— 自动初始化默认值</span>
+word_count <span class="op">=</span> <span class="tp">defaultdict</span>(<span class="tp">int</span>)
+<span class="kw">for</span> word <span class="kw">in</span> <span class="st">"hello world"</span>.<span class="fn">split</span>():
+    word_count[word] <span class="op">+=</span> <span class="nm">1</span>
+
+<span class="cm"># Counter —— 计数器</span>
+counts <span class="op">=</span> <span class="tp">Counter</span>(<span class="st">"abracadabra"</span>)
+
+<span class="cm"># deque —— 双端队列（O(1) 两端操作）</span>
+dq <span class="op">=</span> <span class="tp">deque</span>([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])
+dq.<span class="fn">appendleft</span>(<span class="nm">0</span>)    <span class="cm"># O(1)</span>
+dq.<span class="fn">pop</span>()            <span class="cm"># O(1)</span>
+
+<span class="cm"># 6. 使用 walrus 运算符简化代码（Python 3.8+）</span>
+<span class="cm"># 传统写法</span>
+data <span class="op">=</span> <span class="fn">get_data</span>()
+<span class="kw">if</span> data:
+    <span class="fn">process</span>(data)
+
+<span class="cm"># 使用 walrus 运算符</span>
+<span class="kw">if</span> (data <span class="op">:=</span> <span class="fn">get_data</span>()):
+    <span class="fn">process</span>(data)
+
+<span class="cm"># 7. 使用 match-case 替代复杂的 if-elif（Python 3.10+）</span>
+<span class="kw">def</span> <span class="fn">handle_command</span>(cmd):
+    <span class="kw">match</span> cmd:
+        <span class="kw">case</span> {<span class="st">"action"</span>: <span class="st">"move"</span>, <span class="st">"x"</span>: x, <span class="st">"y"</span>: y}:
+            <span class="fn">move_to</span>(x, y)
+        <span class="kw">case</span> {<span class="st">"action"</span>: <span class="st">"attack"</span>, <span class="st">"target"</span>: t}:
+            <span class="fn">attack</span>(t)
+        <span class="kw">case</span> _:
+            <span class="fn">print</span>(<span class="st">"未知命令"</span>)</code></pre>
+    </div>
+
+    <div class="tip">遵循 PEP 8 风格指南，使用 Black 自动格式化代码，使用 mypy 进行类型检查，使用 ruff 进行 lint。好的代码风格让团队协作更高效。</div>
+
+    <div class="warning">Python 中没有真正的私有属性。单下划线 _ 前缀表示"内部使用"（约定），双下划线 __ 前缀会触发名称改写（name mangling），但仍然可以通过 _ClassName__attr 访问。不要依赖双下划线来保护数据。</div>
+
+</main>
+
+<script src="../assets/editor.js"></script>
+<script>
+// 侧边栏导航高亮
+document.addEventListener('DOMContentLoaded', () => {
+    const links = document.querySelectorAll('.sidebar-link');
+    const sections = [];
+
+    links.forEach(link => {
+        const id = link.getAttribute('href')?.slice(1);
+        if (id) {
+            const el = document.getElementById(id);
+            if (el) sections.push({ el, link });
+        }
+    });
+
+    const onScroll = () => {
+        let current = null;
+        for (const s of sections) {
+            if (s.el.getBoundingClientRect().top <= 120) {
+                current = s;
+            }
+        }
+        links.forEach(l => l.classList.remove('active'));
+        if (current) current.link.classList.add('active');
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 完全教程 - 从入门到精通</title>
+    <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<!-- 固定头部 -->
+<header class="header">
+    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+    <a href="../index.html" class="header-logo">Zoe<span>Basic</span>Code</a>
+    <div class="header-nav">
+        <span class="lang-badge">📘 JavaScript</span>
+    </div>
+</header>
+
+<!-- 侧边栏导航 -->
+<aside class="sidebar">
+    <div class="sidebar-section">
+        <div class="sidebar-title">入门</div>
+        <a href="#intro" class="sidebar-link"><span class="num">01</span>简介</a>
+        <a href="#environment" class="sidebar-link"><span class="num">02</span>环境搭建</a>
+        <a href="#syntax" class="sidebar-link"><span class="num">03</span>基本语法</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">基础</div>
+        <a href="#variables" class="sidebar-link"><span class="num">04</span>变量与数据类型</a>
+        <a href="#operators" class="sidebar-link"><span class="num">05</span>运算符</a>
+        <a href="#strings" class="sidebar-link"><span class="num">06</span>字符串</a>
+        <a href="#arrays" class="sidebar-link"><span class="num">07</span>数组</a>
+        <a href="#objects" class="sidebar-link"><span class="num">08</span>对象</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">流程</div>
+        <a href="#conditionals" class="sidebar-link"><span class="num">09</span>条件判断</a>
+        <a href="#loops" class="sidebar-link"><span class="num">10</span>循环语句</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">函数</div>
+        <a href="#functions" class="sidebar-link"><span class="num">11</span>函数定义</a>
+        <a href="#arrow-functions" class="sidebar-link"><span class="num">12</span>箭头函数</a>
+        <a href="#closures" class="sidebar-link"><span class="num">13</span>闭包</a>
+        <a href="#higher-order" class="sidebar-link"><span class="num">14</span>高阶函数</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">面向对象</div>
+        <a href="#prototype" class="sidebar-link"><span class="num">15</span>原型与原型链</a>
+        <a href="#es6-class" class="sidebar-link"><span class="num">16</span>ES6 类</a>
+        <a href="#inheritance" class="sidebar-link"><span class="num">17</span>继承</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">异步</div>
+        <a href="#callbacks" class="sidebar-link"><span class="num">18</span>回调函数</a>
+        <a href="#promises" class="sidebar-link"><span class="num">19</span>Promises</a>
+        <a href="#async-await" class="sidebar-link"><span class="num">20</span>Async/Await</a>
+        <a href="#event-loop" class="sidebar-link"><span class="num">21</span>事件循环</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">进阶</div>
+        <a href="#scope-hoisting" class="sidebar-link"><span class="num">22</span>作用域与提升</a>
+        <a href="#modules" class="sidebar-link"><span class="num">23</span>模块系统</a>
+        <a href="#error-handling" class="sidebar-link"><span class="num">24</span>错误处理</a>
+        <a href="#iterators" class="sidebar-link"><span class="num">25</span>迭代器与生成器</a>
+        <a href="#symbol-weakmap" class="sidebar-link"><span class="num">26</span>Symbol与WeakMap</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">实战</div>
+        <a href="#best-practices" class="sidebar-link"><span class="num">27</span>最佳实践与常见陷阱</a>
+    </div>
+</aside>
+
+<!-- 主内容区域 -->
+<main class="main">
+
+<!-- ==================== 入门篇 ==================== -->
+
+<h1>JavaScript 完全教程</h1>
+<p class="subtitle">从零基础到进阶，全面掌握 JavaScript 核心概念与实战技巧。本教程涵盖事件循环、闭包、原型链、异步编程等 JavaScript 最重要的特性。</p>
+
+<!-- 1. 简介 -->
+<h2 id="intro">1. JavaScript 简介</h2>
+
+<p>JavaScript 是一种轻量级、解释型的编程语言，最初由 Brendan Eich 在 1995 年用 10 天时间设计。如今它已成为 Web 开发的核心技术之一，与 HTML（结构）和 CSS（样式）共同构成前端三驾马车。</p>
+
+<p>JavaScript 的应用范围早已超越浏览器：</p>
+<ul>
+    <li><strong>浏览器端</strong>：页面交互、DOM 操作、表单验证、单页应用（SPA）</li>
+    <li><strong>服务器端</strong>：Node.js 构建高性能后端服务</li>
+    <li><strong>移动端</strong>：React Native、Flutter (Dart 语法类似) 跨平台开发</li>
+    <li><strong>桌面端</strong>：Electron 开发桌面应用（VS Code 就是用 Electron 构建的）</li>
+    <li><strong>嵌入式</strong>：物联网设备、智能硬件的编程控制</li>
+</ul>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：为什么 JavaScript 如此流行？</div>
+    <p>JavaScript 成功的关键因素：</p>
+    <p><strong>1. 无需编译，浏览器原生支持</strong>——用户无需安装任何开发环境，打开浏览器就能运行。这极大地降低了编程入门门槛。</p>
+    <p><strong>2. 事件驱动 + 非阻塞 I/O</strong>——Node.js 的事件循环模型让单线程也能处理高并发请求，这是 JavaScript 在服务端崛起的技术基础。</p>
+    <p><strong>3. 语言本身的灵活性</strong>——函数是一等公民、动态类型、原型继承等特性让 JavaScript 极其灵活（但也带来了陷阱，后续章节会详细讲解）。</p>
+    <p><strong>4. 庞大的生态系统</strong>——npm 上有超过 200 万个开源包，几乎任何需求都能找到现成的解决方案。</p>
+</div>
+
+<!-- 2. 环境搭建 -->
+<h2 id="environment">2. 环境搭建</h2>
+
+<p>学习 JavaScript 需要两样东西：<strong>浏览器</strong>和<strong>文本编辑器</strong>。</p>
+
+<h3>浏览器控制台</h3>
+<p>所有现代浏览器都内置了 JavaScript 引擎，可以直接运行 JS 代码：</p>
+<ul>
+    <li><strong>Chrome</strong>：按 <code>F12</code> 或 <code>Ctrl+Shift+I</code> 打开开发者工具，切换到 Console 面板</li>
+    <li><strong>Firefox</strong>：按 <code>F12</code>，使用内置控制台</li>
+    <li><strong>Edge</strong>：与 Chrome 相同的操作方式</li>
+</ul>
+
+<h3>Node.js 安装</h3>
+<p>Node.js 让 JavaScript 脱离浏览器运行，推荐安装 LTS（长期支持）版本：</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">bash</span>
+    </div>
+    <pre><code><span class="cm"># 下载并安装 Node.js（建议使用 nvm 管理版本）</span>
+<span class="cm"># Windows: 访问 nodejs.org 下载安装包</span>
+<span class="cm"># macOS/Linux: 使用 nvm</span>
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+nvm install 20
+nvm use 20
+
+<span class="cm"># 验证安装</span>
+node <span class="nm">--version</span>    <span class="cm"># v20.x.x</span>
+npm <span class="nm">--version</span>    <span class="cm"># 10.x.x</span></code></pre>
+</div>
+
+<h3>推荐编辑器</h3>
+<ul>
+    <li><strong>VS Code</strong>（推荐）：安装 JavaScript (ES6) 代码片段、ESLint、Prettier 等插件</li>
+    <li><strong>WebStorm</strong>：JetBrains 出品的 JavaScript IDE，开箱即用</li>
+</ul>
+
+<!-- 3. 基本语法 -->
+<h2 id="syntax">3. 基本语法</h2>
+
+<p>JavaScript 的基本语法结构包括语句、注释、分号和大小写规则。</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 单行注释</span>
+
+<span class="cm">/* 多行注释
+   可以跨越多行 */</span>
+
+<span class="cm">// 每条语句以分号结尾（可选，但推荐加上）</span>
+<span class="kw">let</span> message <span class="op">=</span> <span class="st">"Hello, JavaScript!"</span>;
+<span class="fn">console</span>.<span class="fn">log</span>(message);
+
+<span class="cm">// JavaScript 区分大小写</span>
+<span class="kw">let</span> myVar <span class="op">=</span> <span class="nm">1</span>;    <span class="cm">// 正确</span>
+<span class="kw">let</span> MyVar <span class="op">=</span> <span class="nm">2</span>;    <span class="cm">// 这是另一个变量</span>
+<span class="kw">let</span> myvar <span class="op">=</span> <span class="nm">3</span>;    <span class="cm">// 这还是另一个变量</span>
+
+<span class="cm">// 使用 console.log 输出到控制台</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"调试信息"</span>);
+<span class="fn">console</span>.<span class="fn">warn</span>(<span class="st">"警告信息"</span>);
+<span class="fn">console</span>.<span class="fn">error</span>(<span class="st">"错误信息"</span>);</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：JavaScript 引擎的工作流程</div>
+    <p>当你在浏览器中执行 JavaScript 代码时，引擎会经过以下步骤：</p>
+    <p><strong>1. 词法分析（Lexical Analysis）</strong>——将源代码拆分成一个个 Token（词法单元），如关键字、标识符、运算符等。</p>
+    <p><strong>2. 语法分析（Parsing）</strong>——根据 ECMAScript 规范，将 Token 流构建成抽象语法树（AST）。如果语法有误，会在这里报 SyntaxError。</p>
+    <p><strong>3. 编译（Compilation）</strong>——现代引擎（V8、SpiderMonkey）会将 AST 编译成字节码或机器码，这就是 JIT（即时编译）技术。</p>
+    <p><strong>4. 执行（Execution）</strong>——在执行上下文中运行代码，创建变量对象、作用域链、this 绑定。</p>
+    <p>理解这个流程有助于你理解后续的作用域、变量提升、闭包等重要概念。</p>
+</div>
+
+<!-- ==================== 基础篇 ==================== -->
+
+<!-- 4. 变量与数据类型 -->
+<h2 id="variables">4. 变量与数据类型</h2>
+
+<h3>变量声明方式</h3>
+<p>JavaScript 提供三种变量声明方式，它们的行为有重要区别：</p>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// var：函数作用域，存在变量提升</span>
+<span class="fn">console</span>.<span class="fn">log</span>(x);  <span class="cm">// undefined（变量提升，不报错）</span>
+<span class="kw">var</span> x <span class="op">=</span> <span class="nm">10</span>;
+
+<span class="cm">// let：块级作用域，无变量提升，暂时性死区</span>
+<span class="cm">// console.log(y);  // ReferenceError!</span>
+<span class="kw">let</span> y <span class="op">=</span> <span class="nm">20</span>;
+
+<span class="cm">// const：块级作用域，声明时必须赋值，不可重新赋值</span>
+<span class="kw">const</span> z <span class="op">=</span> <span class="nm">30</span>;
+<span class="cm">// z = 40;  // TypeError: Assignment to constant variable.</span></code></pre>
+</div>
+
+<div class="tip">优先使用 <code>const</code>，只在需要重新赋值时使用 <code>let</code>，完全避免使用 <code>var</code>。</div>
+
+<h3>原始数据类型</h3>
+<p>JavaScript 有 7 种原始类型（Primitive Types），它们是<strong>不可变的</strong>：</p>
+
+<table>
+    <thead>
+        <tr><th>类型</th><th>说明</th><th>示例</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>number</code></td><td>整数和浮点数，还包括 Infinity、-Infinity、NaN</td><td><code>42</code>, <code>3.14</code>, <code>NaN</code></td></tr>
+        <tr><td><code>bigint</code></td><td>任意精度整数</td><td><code>9007199254740991n</code></td></tr>
+        <tr><td><code>string</code></td><td>文本字符串</td><td><code>"hello"</code>, <code>'world'</code>, <code>`template`</code></td></tr>
+        <tr><td><code>boolean</code></td><td>逻辑值</td><td><code>true</code>, <code>false</code></td></tr>
+        <tr><td><code>undefined</code></td><td>未定义的值</td><td><code>let x;</code> → <code>undefined</code></td></tr>
+        <tr><td><code>null</code></td><td>有意的空值</td><td><code>let x = null;</code></td></tr>
+        <tr><td><code>symbol</code></td><td>唯一标识符</td><td><code>Symbol('id')</code></td></tr>
+    </tbody>
+</table>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// typeof 运算符检测类型</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">typeof</span> <span class="nm">42</span>);          <span class="cm">// "number"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">typeof</span> <span class="st">"hello"</span>);     <span class="cm">// "string"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">typeof</span> <span class="kw">true</span>);        <span class="cm">// "boolean"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">typeof</span> <span class="kw">undefined</span>);   <span class="cm">// "undefined"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">typeof</span> <span class="kw">null</span>);        <span class="cm">// "object"（历史遗留 bug！）</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">typeof</span> []);          <span class="cm">// "object"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">typeof</span> {});          <span class="cm">// "object"</span></code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：原始类型 vs 引用类型</div>
+    <p><strong>原始类型</strong>（primitive）的值直接存储在栈内存中，赋值时会<strong>复制值</strong>：</p>
+    <p>当你执行 <code>let a = 1; let b = a;</code> 时，<code>b</code> 获得的是 <code>a</code> 的一个独立副本，修改 <code>b</code> 不会影响 <code>a</code>。</p>
+    <p><strong>引用类型</strong>（对象、数组、函数）存储在堆内存中，变量存储的是<strong>引用地址</strong>：</p>
+    <p>当你执行 <code>let arr1 = [1,2,3]; let arr2 = arr1;</code> 时，<code>arr1</code> 和 <code>arr2</code> 指向同一个数组对象，修改一个会影响另一个。</p>
+    <p>这就是为什么 <code>typeof null</code> 返回 <code>"object"</code>——在 JS 最初的实现中，值在底层以 32 位存储，前 3 位为类型标志，而 <code>null</code> 被表示为全零（与对象的类型标志相同），这个 bug 因为兼容性原因被保留了下来。</p>
+</div>
+
+<div class="warning">JavaScript 的数字类型是 IEEE 754 双精度浮点数，存在精度问题：<code>0.1 + 0.2 !== 0.3</code>。在金融计算等场景中，建议使用整数运算或 <code>BigInt</code>。</div>
+
+<!-- 5. 运算符 -->
+<h2 id="operators">5. 运算符</h2>
+
+<h3>算术运算符</h3>
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="kw">let</span> a <span class="op">=</span> <span class="nm">10</span>, b <span class="op">=</span> <span class="nm">3</span>;
+
+a <span class="op">+</span> b    <span class="cm">// 13  加法</span>
+a <span class="op">-</span> b    <span class="cm">// 7   减法</span>
+a <span class="op">*</span> b    <span class="cm">// 30  乘法</span>
+a <span class="op">/</span> b    <span class="cm">// 3.333...  除法</span>
+a <span class="op">%</span> b    <span class="cm">// 1   取模（余数）</span>
+a <span class="op">**</span> b   <span class="cm">// 1000 幂运算</span>
+
+<span class="cm">// 特殊情况</span>
+<span class="nm">0.1</span> <span class="op">+</span> <span class="nm">0.2</span>           <span class="cm">// 0.30000000000000004（精度问题）</span>
+<span class="nm">0.1</span> <span class="op">+</span> <span class="nm">0.2</span> <span class="op">===</span> <span class="nm">0.3</span>  <span class="cm">// false</span>
+<span class="kw">Infinity</span> <span class="op">+</span> <span class="nm">1</span>       <span class="cm">// Infinity</span>
+<span class="nm">1</span> <span class="op">/</span> <span class="nm">0</span>               <span class="cm">// Infinity</span>
+<span class="nm">0</span> <span class="op">/</span> <span class="nm">0</span>               <span class="cm">// NaN</span></code></pre>
+</div>
+
+<h3>比较运算符</h3>
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// == 和 !=（宽松相等，会进行类型转换）</span>
+<span class="nm">1</span> <span class="op">==</span> <span class="st">"1"</span>      <span class="cm">// true（字符串 "1" 转为数字 1）</span>
+<span class="nm">0</span> <span class="op">==</span> <span class="kw">false</span>    <span class="cm">// true（false 转为 0）</span>
+<span class="st">""</span> <span class="op">==</span> <span class="nm">0</span>        <span class="cm">// true（空字符串转为 0）</span>
+<span class="kw">null</span> <span class="op">==</span> <span class="kw">undefined</span>  <span class="cm">// true</span>
+
+<span class="cm">// === 和 !==（严格相等，不做类型转换）</span>
+<span class="nm">1</span> <span class="op">===</span> <span class="st">"1"</span>     <span class="cm">// false（类型不同）</span>
+<span class="nm">0</span> <span class="op">===</span> <span class="kw">false</span>   <span class="cm">// false（类型不同）</span>
+<span class="kw">null</span> <span class="op">===</span> <span class="kw">undefined</span>  <span class="cm">// false</span></code></pre>
+</div>
+
+<div class="tip">始终使用 <code>===</code> 和 <code>!==</code>。宽松相等 <code>==</code> 的类型转换规则极其复杂，容易产生难以察觉的 bug。</div>
+
+<h3>逻辑运算符</h3>
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 逻辑与 &&（短路求值）</span>
+<span class="kw">true</span> <span class="op">&&</span> <span class="kw">true</span>    <span class="cm">// true</span>
+<span class="kw">true</span> <span class="op">&&</span> <span class="kw">false</span>   <span class="cm">// false</span>
+<span class="st">"hello"</span> <span class="op">&&</span> <span class="nm">42</span>    <span class="cm">// 42（非空字符串是 truthy）</span>
+<span class="kw">null</span> <span class="op">&&</span> <span class="st">"hi"</span>    <span class="cm">// null（null 是 falsy，短路返回）</span>
+
+<span class="cm">// 逻辑或 ||（短路求值）</span>
+<span class="kw">false</span> <span class="op">||</span> <span class="kw">false</span>  <span class="cm">// false</span>
+<span class="kw">null</span> <span class="op">||</span> <span class="st">"默认值"</span>  <span class="cm">// "默认值"（null 是 falsy）</span>
+<span class="st">"有值"</span> <span class="op">||</span> <span class="st">"不会执行"</span>  <span class="cm">// "有值"</span>
+
+<span class="cm">// 逻辑非 !（一元运算符）</span>
+<span class="op">!</span><span class="kw">true</span>    <span class="cm">// false</span>
+<span class="op">!</span><span class="nm">0</span>       <span class="cm">// true（0 是 falsy）</span>
+<span class="op">!</span><span class="st">"hi"</span>    <span class="cm">// false（非空字符串是 truthy）</span></code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：JavaScript 的真值（Truthy）与假值（Falsy）</div>
+    <p>JavaScript 中所有值在布尔上下文中都会被隐式转换为 <code>true</code> 或 <code>false</code>。以下是仅有的 <strong>7 个 Falsy 值</strong>：</p>
+    <p><code>false</code>、<code>0</code>、<code>-0</code>、<code>0n</code>（BigInt 零）、<code>""</code>（空字符串）、<code>null</code>、<code>undefined</code>、<code>NaN</code></p>
+    <p><strong>其他所有值都是 Truthy</strong>，包括：</p>
+    <p><code>[]</code>（空数组）、<code>{}</code>（空对象）、<code>"0"</code>（字符串零）、<code>false</code> 的包装对象等。这些常常让人感到意外。</p>
+    <p>短路求值（Short-circuit evaluation）利用了这个特性：<code>a || b</code> 返回第一个 truthy 值，<code>a && b</code> 返回第一个 falsy 值。这在设置默认值时非常有用：<code>const name = input || "匿名"</code>。</p>
+</div>
+
+<!-- 6. 字符串 -->
+<h2 id="strings">6. 字符串</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 三种定义方式</span>
+<span class="kw">let</span> s1 <span class="op">=</span> <span class="st">'单引号'</span>;
+<span class="kw">let</span> s2 <span class="op">=</span> <span class="st">"双引号"</span>;
+<span class="kw">let</span> s3 <span class="op">=</span> <span class="st">`模板字符串</span>`;
+
+<span class="cm">// 模板字符串（强烈推荐）</span>
+<span class="kw">let</span> name <span class="op">=</span> <span class="st">"张三"</span>;
+<span class="kw">let</span> age <span class="op">=</span> <span class="nm">25</span>;
+<span class="kw">let</span> greeting <span class="op">=</span> <span class="st">`你好，我是${name}，今年${age}岁`</span>;
+<span class="fn">console</span>.<span class="fn">log</span>(greeting);  <span class="cm">// "你好，我是张三，今年25岁"</span>
+
+<span class="cm">// 模板字符串支持多行</span>
+<span class="kw">let</span> html <span class="op">=</span> <span class="st">`
+&lt;div class="card"&gt;
+    &lt;h2&gt;${name}&lt;/h2&gt;
+    &lt;p&gt;年龄: ${age}&lt;/p&gt;
+&lt;/div&gt;
+`</span>;
+
+<span class="cm">// 常用字符串方法</span>
+<span class="kw">let</span> str <span class="op">=</span> <span class="st">"Hello, JavaScript!"</span>;
+str.<span class="fn">length</span>              <span class="cm">// 19</span>
+str.<span class="fn">toUpperCase</span>()       <span class="cm">// "HELLO, JAVASCRIPT!"</span>
+str.<span class="fn">toLowerCase</span>()       <span class="cm">// "hello, javascript!"</span>
+str.<span class="fn">includes</span>(<span class="st">"Java"</span>)   <span class="cm">// true</span>
+str.<span class="fn">startsWith</span>(<span class="st">"Hello"</span>) <span class="cm">// true</span>
+str.<span class="fn">endsWith</span>(<span class="st">"!"</span>)      <span class="cm">// true</span>
+str.<span class="fn">indexOf</span>(<span class="st">"Java"</span>)    <span class="cm">// 7</span>
+str.<span class="fn">slice</span>(<span class="nm">7</span>, <span class="nm">17</span>)        <span class="cm">// "JavaScript"</span>
+str.<span class="fn">replace</span>(<span class="st">"JavaScript"</span>, <span class="st">"JS"</span>)  <span class="cm">// "Hello, JS!"</span>
+str.<span class="fn">split</span>(<span class="st">", "</span>)         <span class="cm">// ["Hello", "JavaScript!"]</span>
+
+<span class="cm">// 字符串是不可变的</span>
+<span class="kw">let</span> hello <span class="op">=</span> <span class="st">"hello"</span>;
+hello[<span class="nm">0</span>] <span class="op">=</span> <span class="st">"H"</span>;
+<span class="fn">console</span>.<span class="fn">log</span>(hello);  <span class="cm">// "hello"（没有改变！）</span></code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：字符串的不可变性</div>
+    <p>JavaScript 中的字符串是<strong>不可变的（immutable）</strong>。当你尝试修改字符串中的某个字符时（如 <code>str[0] = 'H'</code>），这个操作会静默失败（严格模式下会抛出 TypeError）。</p>
+    <p>这意味着字符串方法<strong>永远不会修改原始字符串</strong>，而是返回一个新字符串。例如 <code>str.toUpperCase()</code> 不会改变 <code>str</code>，而是返回一个新的全大写字符串。</p>
+    <p>在性能敏感的场景中（如循环内拼接字符串），频繁创建新字符串可能影响性能。现代引擎会做一些优化，但使用 <code>Array.join()</code> 或模板字符串拼接通常是更好的选择。</p>
+</div>
+
+<!-- 7. 数组 -->
+<h2 id="arrays">7. 数组</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 创建数组</span>
+<span class="kw">let</span> arr1 <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>];
+<span class="kw">let</span> arr2 <span class="op">=</span> <span class="kw">new</span> <span class="tp">Array</span>(<span class="nm">3</span>);         <span class="cm">// [empty × 3]（3个空槽位）</span>
+<span class="kw">let</span> arr3 <span class="op">=</span> <span class="tp">Array</span>.<span class="fn">from</span>(<span class="st">"hello"</span>);  <span class="cm">// ["h","e","l","l","o"]</span>
+
+<span class="cm">// 数组可以包含不同类型的元素（但不推荐）</span>
+<span class="kw">let</span> mixed <span class="op">=</span> [<span class="nm">1</span>, <span class="st">"hello"</span>, <span class="kw">true</span>, <span class="kw">null</span>, {}];</code></pre>
+</div>
+
+<h3>常用数组方法</h3>
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="kw">let</span> fruits <span class="op">=</span> [<span class="st">"苹果"</span>, <span class="st">"香蕉"</span>, <span class="st">"橙子"</span>];
+
+<span class="cm">// 增删改</span>
+fruits.<span class="fn">push</span>(<span class="st">"葡萄"</span>);       <span class="cm">// 末尾添加 → ["苹果","香蕉","橙子","葡萄"]</span>
+fruits.<span class="fn">pop</span>();               <span class="cm">// 末尾删除 → ["苹果","香蕉","橙子"]</span>
+fruits.<span class="fn">unshift</span>(<span class="st">"草莓"</span>);    <span class="cm">// 开头添加</span>
+fruits.<span class="fn">shift</span>();             <span class="cm">// 开头删除</span>
+fruits.<span class="fn">splice</span>(<span class="nm">1</span>, <span class="nm">1</span>);        <span class="cm">// 从索引1删除1个元素</span>
+fruits.<span class="fn">splice</span>(<span class="nm">1</span>, <span class="nm">0</span>, <span class="st">"芒果"</span>); <span class="cm">// 在索引1插入元素</span>
+
+<span class="cm">// 查找</span>
+fruits.<span class="fn">includes</span>(<span class="st">"香蕉"</span>);    <span class="cm">// true</span>
+fruits.<span class="fn">indexOf</span>(<span class="st">"橙子"</span>);    <span class="cm">// 索引</span>
+fruits.<span class="fn">find</span>(f <span class="op">=></span> f.<span class="fn">startsWith</span>(<span class="st">"香"</span>));  <span class="cm">// "香蕉"</span>
+fruits.<span class="fn">findIndex</span>(f <span class="op">=></span> f <span class="op">===</span> <span class="st">"橙子"</span>);   <span class="cm">// 索引</span>
+
+<span class="cm">// 遍历（高阶函数）</span>
+fruits.<span class="fn">forEach</span>((fruit, i) <span class="op">=></span> {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">`${i}: ${fruit}`</span>);
+});
+
+<span class="cm">// map：映射为新数组</span>
+<span class="kw">let</span> upper <span class="op">=</span> fruits.<span class="fn">map</span>(f <span class="op">=></span> f.<span class="fn">toUpperCase</span>());
+
+<span class="cm">// filter：过滤</span>
+<span class="kw">let</span> long <span class="op">=</span> fruits.<span class="fn">filter</span>(f <span class="op">=></span> f.<span class="fn">length</span> <span class="op">></span> <span class="nm">2</span>);
+
+<span class="cm">// reduce：归约</span>
+<span class="kw">let</span> nums <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>];
+<span class="kw">let</span> sum <span class="op">=</span> nums.<span class="fn">reduce</span>((acc, n) <span class="op">=></span> acc <span class="op">+</span> n, <span class="nm">0</span>);  <span class="cm">// 15</span>
+
+<span class="cm">// 展开运算符和解构</span>
+<span class="kw">let</span> arr <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];
+<span class="kw">let</span> copy <span class="op">=</span> [...arr, <span class="nm">4</span>, <span class="nm">5</span>];   <span class="cm">// [1, 2, 3, 4, 5]</span>
+<span class="kw">let</span> [first, second, ...rest] <span class="op">=</span> arr;  <span class="cm">// rest = [3]</span></code></pre>
+</div>
+
+<div class="warning">数组的 <code>push</code>/<code>pop</code> 操作的是<strong>最后一个元素</strong>，时间复杂度 O(1)；而 <code>shift</code>/<code>unshift</code> 操作的是<strong>第一个元素</strong>，时间复杂度 O(n)，因为需要移动所有元素。</div>
+
+<!-- 8. 对象 -->
+<h2 id="objects">8. 对象</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 对象字面量（最常用）</span>
+<span class="kw">let</span> person <span class="op">=</span> {
+    name: <span class="st">"张三"</span>,
+    age: <span class="nm">25</span>,
+    <span class="st">"favorite color"</span>: <span class="st">"蓝色"</span>,  <span class="cm">// 含空格的键必须加引号</span>
+    greet() {                   <span class="cm">// 方法简写</span>
+        <span class="kw">return</span> <span class="st">`你好，我是${this.name}`</span>;
+    }
+};
+
+<span class="cm">// 计算属性名</span>
+<span class="kw">let</span> key <span class="op">=</span> <span class="st">"age"</span>;
+<span class="kw">let</span> obj <span class="op">=</span> { [key]: <span class="nm">25</span> };  <span class="cm">// { age: 25 }</span>
+
+<span class="cm">// 属性访问</span>
+person.name          <span class="cm">// 点号访问（属性名是合法标识符时）</span>
+person[<span class="st">"age"</span>]       <span class="cm">// 方括号访问（动态属性名）</span>
+
+<span class="cm">// 添加/修改/删除属性</span>
+person.email <span class="op">=</span> <span class="st">"zhangsan@example.com"</span>;
+person.age <span class="op">=</span> <span class="nm">26</span>;
+<span class="kw">delete</span> person.age;
+
+<span class="cm">// 解构赋值</span>
+<span class="kw">let</span> { name, age } <span class="op">=</span> person;
+<span class="kw">let</span> { name: personName } <span class="op">=</span> person;  <span class="cm">// 重命名</span>
+<span class="kw">let</span> { name, address <span class="op">=</span> <span class="st">"未知"</span> } <span class="op">=</span> person;  <span class="cm">// 默认值</span>
+
+<span class="cm">// 展开运算符（浅拷贝）</span>
+<span class="kw">let</span> copy <span class="op">=</span> { ...person, age: <span class="nm">30</span> };
+
+<span class="cm">// Object 静态方法</span>
+<span class="tp">Object</span>.<span class="fn">keys</span>(person);      <span class="cm">// ["name", "email"]</span>
+<span class="tp">Object</span>.<span class="fn">values</span>(person);    <span class="cm">// ["张三", "zhangsan@example.com"]</span>
+<span class="tp">Object</span>.<span class="fn">entries</span>(person);   <span class="cm">// [["name","张三"], ["email","..."]]</span>
+<span class="tp">Object</span>.<span class="fn">freeze</span>(person);   <span class="cm">// 冻结对象（不可增删改属性）</span></code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：JavaScript 对象的本质</div>
+    <p>JavaScript 中<strong>一切皆对象</strong>（除了原始类型）。对象本质上是一个<strong>无序的键值对集合</strong>（也称为属性字典）。</p>
+    <p>与 Java/C++ 的类不同，JS 对象的属性是<strong>动态的</strong>——可以随时添加或删除，不需要预先定义"类结构"。这种设计来自 Self 语言的"原型"思想。</p>
+    <p><strong>属性描述符</strong>：每个属性其实包含 4 个描述符——<code>value</code>（值）、<code>writable</code>（是否可写）、<code>enumerable</code>（是否可枚举）、<code>configurable</code>（是否可配置）。通过 <code>Object.getOwnPropertyDescriptor()</code> 可以查看。</p>
+    <p><strong>this 绑定规则</strong>：对象方法中的 <code>this</code> 指向调用该方法的对象。但当方法被赋值给变量后调用，<code>this</code> 会丢失绑定——这是 JS 中最常见的陷阱之一。</p>
+</div>
+
+<!-- ==================== 流程篇 ==================== -->
+
+<!-- 9. 条件判断 -->
+<h2 id="conditionals">9. 条件判断</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// if...else if...else</span>
+<span class="kw">let</span> score <span class="op">=</span> <span class="nm">85</span>;
+
+<span class="kw">if</span> (score <span class="op">>=</span> <span class="nm">90</span>) {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"优秀"</span>);
+} <span class="kw">else if</span> (score <span class="op">>=</span> <span class="nm">80</span>) {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"良好"</span>);
+} <span class="kw">else if</span> (score <span class="op">>=</span> <span class="nm">60</span>) {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"及格"</span>);
+} <span class="kw">else</span> {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"不及格"</span>);
+}
+
+<span class="cm">// 三元运算符（简洁的条件表达式）</span>
+<span class="kw">let</span> age <span class="op">=</span> <span class="nm">20</span>;
+<span class="kw">let</span> status <span class="op">=</span> age <span class="op">>=</span> <span class="nm">18</span> <span class="op">?</span> <span class="st">"成年"</span> <span class="op">:</span> <span class="st">"未成年"</span>;
+
+<span class="cm">// switch 语句（注意 break！）</span>
+<span class="kw">let</span> day <span class="op">=</span> <span class="st">"Monday"</span>;
+<span class="kw">switch</span> (day) {
+    <span class="kw">case</span> <span class="st">"Monday"</span>:
+    <span class="kw">case</span> <span class="st">"Tuesday"</span>:
+    <span class="kw">case</span> <span class="st">"Wednesday"</span>:
+    <span class="kw">case</span> <span class="st">"Thursday"</span>:
+    <span class="kw">case</span> <span class="st">"Friday"</span>:
+        <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"工作日"</span>);
+        <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="st">"Saturday"</span>:
+    <span class="kw">case</span> <span class="st">"Sunday"</span>:
+        <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"周末"</span>);
+        <span class="kw">break</span>;
+    <span class="kw">default</span>:
+        <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"未知"</span>);
+}</code></pre>
+</div>
+
+<h3>多值匹配</h3>
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 使用数组 includes 方法</span>
+<span class="kw">let</span> fruit <span class="op">=</span> <span class="st">"苹果"</span>;
+<span class="kw">if</span> ([<span class="st">"苹果"</span>, <span class="st">"香蕉"</span>, <span class="st">"橙子"</span>].<span class="fn">includes</span>(fruit)) {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"这是一个常见的水果"</span>);
+}
+
+<span class="cm">// 使用 Set</span>
+<span class="kw">const</span> weekdays <span class="op">=</span> <span class="kw">new</span> <span class="tp">Set</span>([<span class="st">"周一"</span>, <span class="st">"周二"</span>, <span class="st">"周三"</span>, <span class="st">"周四"</span>, <span class="st">"周五"</span>]);
+<span class="kw">if</span> (weekdays.<span class="fn">has</span>(<span class="st">"周三"</span>)) {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"今天是工作日"</span>);
+}</code></pre>
+</div>
+
+<div class="warning"><code>switch</code> 使用 <code>===</code> 严格比较，所以 <code>switch(1)</code> 不会匹配 <code>case "1"</code>。</div>
+
+<!-- 10. 循环语句 -->
+<h2 id="loops">10. 循环语句</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// for 循环</span>
+<span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> <span class="nm">5</span>; i<span class="op">++</span>) {
+    <span class="fn">console</span>.<span class="fn">log</span>(i);
+}
+
+<span class="cm">// while 循环</span>
+<span class="kw">let</span> count <span class="op">=</span> <span class="nm">0</span>;
+<span class="kw">while</span> (count <span class="op">&lt;</span> <span class="nm">5</span>) {
+    count<span class="op">++</span>;
+}
+
+<span class="cm">// do...while 循环（至少执行一次）</span>
+<span class="kw">let</span> input;
+<span class="kw">do</span> {
+    input <span class="op">=</span> <span class="fn">prompt</span>(<span class="st">"请输入密码："</span>);
+} <span class="kw">while</span> (input <span class="op">!==</span> <span class="st">"secret"</span>);
+
+<span class="cm">// for...of（遍历可迭代对象的值）</span>
+<span class="kw">let</span> arr <span class="op">=</span> [<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>];
+<span class="kw">for</span> (<span class="kw">let</span> val <span class="kw">of</span> arr) {
+    <span class="fn">console</span>.<span class="fn">log</span>(val);
+}
+
+<span class="cm">// for...in（遍历对象的键）</span>
+<span class="kw">let</span> obj <span class="op">=</span> { a: <span class="nm">1</span>, b: <span class="nm">2</span>, c: <span class="nm">3</span> };
+<span class="kw">for</span> (<span class="kw">let</span> key <span class="kw">in</span> obj) {
+    <span class="fn">console</span>.<span class="fn">log</span>(key, obj[key]);
+}
+
+<span class="cm">// break 和 continue</span>
+<span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> <span class="nm">10</span>; i<span class="op">++</span>) {
+    <span class="kw">if</span> (i <span class="op">===</span> <span class="nm">3</span>) <span class="kw">continue</span>;  <span class="cm">// 跳过 3</span>
+    <span class="kw">if</span> (i <span class="op">===</span> <span class="nm">7</span>) <span class="kw">break</span>;      <span class="cm">// 到 7 停止</span>
+    <span class="fn">console</span>.<span class="fn">log</span>(i);
+}
+<span class="cm">// 输出: 0, 1, 2, 4, 5, 6</span></code></pre>
+</div>
+
+<div class="compare">
+    <div class="compare-item">
+        <div class="compare-label good">推荐使用</div>
+        <div class="code-block">
+            <pre><code><span class="cm">// for...of：遍历值</span>
+<span class="kw">for</span> (<span class="kw">const</span> item <span class="kw">of</span> array) {
+    <span class="cm">// item 是数组元素</span>
+}
+
+<span class="cm">// forEach：数组专用</span>
+array.<span class="fn">forEach</span>((item, index) <span class="op">=></span> {
+    <span class="cm">// 处理每个元素</span>
+});</code></pre>
+        </div>
+    </div>
+    <div class="compare-item">
+        <div class="compare-label bad">避免使用</div>
+        <div class="code-block">
+            <pre><code><span class="cm">// for...in：遍历键（有原型链风险）</span>
+<span class="kw">for</span> (<span class="kw">const</span> key <span class="kw">in</span> array) {
+    <span class="cm">// key 是字符串索引！</span>
+    <span class="cm">// 会遍历原型链上的属性</span>
+}
+
+<span class="cm">// 传统 for：容易出错</span>
+<span class="kw">for</span> (<span class="kw">var</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> arr.length; i<span class="op">++</span>) {
+    <span class="cm">// var 作用域问题</span>
+    <span class="cm">// arr.length 每次都重新计算</span>
+}</code></pre>
+        </div>
+    </div>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：for...of vs for...in 的本质区别</div>
+    <p><strong>for...in</strong> 遍历的是对象的<strong>可枚举属性名</strong>（键），包括原型链上的可枚举属性。它设计用于遍历普通对象的键，不适合遍历数组（因为数组索引本质上是字符串，而且可能遍历到原型上的方法）。</p>
+    <p><strong>for...of</strong> 遍历的是<strong>可迭代对象（Iterable）的值</strong>。数组、字符串、Map、Set 等都实现了迭代器协议（<code>Symbol.iterator</code>）。它不会访问原型链，也不会访问属性名。</p>
+    <p>简单记忆：<strong>用 for...of 遍历数组，用 for...in 遍历对象</strong>。</p>
+</div>
+
+<!-- ==================== 函数篇 ==================== -->
+
+<!-- 11. 函数定义 -->
+<h2 id="functions">11. 函数定义</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 函数声明（会被提升）</span>
+<span class="kw">function</span> <span class="fn">greet</span>(name) {
+    <span class="kw">return</span> <span class="st">`你好，${name}！`</span>;
+}
+
+<span class="cm">// 函数表达式（不会被提升）</span>
+<span class="kw">const</span> add <span class="op">=</span> <span class="kw">function</span>(a, b) {
+    <span class="kw">return</span> a <span class="op">+</span> b;
+};
+
+<span class="cm">// 默认参数</span>
+<span class="kw">function</span> <span class="fn">createUser</span>(name, role <span class="op">=</span> <span class="st">"user"</span>) {
+    <span class="kw">return</span> { name, role };
+}
+<span class="fn">createUser</span>(<span class="st">"张三"</span>);           <span class="cm">// { name: "张三", role: "user" }</span>
+<span class="fn">createUser</span>(<span class="st">"张三"</span>, <span class="st">"admin"</span>);  <span class="cm">// { name: "张三", role: "admin" }</span>
+
+<span class="cm">// 剩余参数</span>
+<span class="kw">function</span> <span class="fn">sum</span>(...numbers) {
+    <span class="kw">return</span> numbers.<span class="fn">reduce</span>((a, b) <span class="op">=></span> a <span class="op">+</span> b, <span class="nm">0</span>);
+}
+<span class="fn">sum</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>);  <span class="cm">// 15</span>
+
+<span class="cm">// 解构参数</span>
+<span class="kw">function</span> <span class="fn">printUser</span>({ name, age, email <span class="op">=</span> <span class="st">"N/A"</span> }) {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">`${name}, ${age}, ${email}`</span>);
+}
+<span class="fn">printUser</span>({ name: <span class="st">"张三"</span>, age: <span class="nm">25</span> });  <span class="cm">// "张三, 25, N/A"</span>
+
+<span class="cm">// 立即执行函数表达式（IIFE）</span>
+(<span class="kw">function</span>() {
+    <span class="kw">const</span> secret <span class="op">=</span> <span class="st">"这是私有变量"</span>;
+    <span class="fn">console</span>.<span class="fn">log</span>(secret);
+})();</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：函数是一等公民</div>
+    <p>在 JavaScript 中，<strong>函数和数字、字符串一样，是"一等公民"（First-class Citizen）</strong>。这意味着函数可以：</p>
+    <p><strong>1. 赋值给变量</strong>：<code>const fn = function() {}</code></p>
+    <p><strong>2. 作为参数传递</strong>：<code>setTimeout(callback, 1000)</code></p>
+    <p><strong>3. 作为返回值</strong>：<code>function createFn() { return function() {}; }</code></p>
+    <p><strong>4. 拥有属性</strong>：<code>fn.name</code>、<code>fn.length</code>（形参个数）</p>
+    <p><strong>5. 存储在数据结构中</strong>：可以放进数组、对象等</p>
+    <p>这个特性是闭包、高阶函数、回调模式、函数式编程的理论基础。理解"函数是值"这个概念，是掌握 JavaScript 高级特性的关键。</p>
+</div>
+
+<!-- 12. 箭头函数 -->
+<h2 id="arrow-functions">12. 箭头函数</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 基本语法</span>
+<span class="kw">const</span> add <span class="op">=</span> (a, b) <span class="op">=></span> a <span class="op">+</span> b;
+
+<span class="cm">// 单参数可省略括号</span>
+<span class="kw">const</span> double <span class="op">=</span> x <span class="op">=></span> x <span class="op">*</span> <span class="nm">2</span>;
+
+<span class="cm">// 无参数必须有括号</span>
+<span class="kw">const</span> sayHi <span class="op">=</span> () <span class="op">=></span> <span class="st">"Hi!"</span>;
+
+<span class="cm">// 多行函数体用大括号和 return</span>
+<span class="kw">const</span> calculate <span class="op">=</span> (a, b) <span class="op">=></span> {
+    <span class="kw">const</span> sum <span class="op">=</span> a <span class="op">+</span> b;
+    <span class="kw">const</span> product <span class="op">=</span> a <span class="op">*</span> b;
+    <span class="kw">return</span> { sum, product };
+};
+
+<span class="cm">// 返回对象字面量需要加括号</span>
+<span class="kw">const</span> createUser <span class="op">=</span> (name, age) <span class="op">=></span> ({ name, age });
+
+<span class="cm">// 箭头函数不会创建自己的 this</span>
+<span class="kw">const</span> timer <span class="op">=</span> {
+    seconds: <span class="nm">0</span>,
+    start() {
+        <span class="cm">// 箭头函数继承外层的 this</span>
+        <span class="fn">setInterval</span>(() <span class="op">=></span> {
+            <span class="kw">this</span>.seconds<span class="op">++</span>;
+            <span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">this</span>.seconds);
+        }, <span class="nm">1000</span>);
+    }
+};</code></pre>
+</div>
+
+<div class="compare">
+    <div class="compare-item">
+        <div class="compare-label good">箭头函数</div>
+        <div class="code-block">
+            <pre><code><span class="cm">// 没有自己的 this</span>
+<span class="cm">// 没有 arguments 对象</span>
+<span class="cm">// 不能用作构造函数</span>
+<span class="cm">// 没有 prototype 属性</span>
+
+<span class="cm">// 适合：回调、简洁函数</span>
+[<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>].<span class="fn">map</span>(x <span class="op">=></span> x <span class="op">*</span> <span class="nm">2</span>);
+[<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>].<span class="fn">filter</span>(x <span class="op">=></span> x <span class="op">></span> <span class="nm">1</span>);</code></pre>
+        </div>
+    </div>
+    <div class="compare-item">
+        <div class="compare-label bad">普通函数</div>
+        <div class="code-block">
+            <pre><code><span class="cm">// 有自己的 this（调用时决定）</span>
+<span class="cm">// 有 arguments 对象</span>
+<span class="cm">// 可以用作构造函数</span>
+<span class="cm">// 有 prototype 属性</span>
+
+<span class="cm">// 适合：对象方法、构造函数</span>
+<span class="kw">function</span> <span class="fn">Person</span>(name) {
+    <span class="kw">this</span>.name <span class="op">=</span> name;
+}</code></pre>
+        </div>
+    </div>
+</div>
+
+<div class="danger">箭头函数<strong>不能</strong>用作构造函数（不能使用 <code>new</code>），也<strong>没有</strong>自己的 <code>arguments</code> 对象。在需要 <code>this</code> 指向调用者的场景（如对象方法、DOM 事件处理）中，应使用普通函数。</div>
+
+<!-- 13. 闭包 -->
+<h2 id="closures">13. 闭包</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 经典闭包：计数器</span>
+<span class="kw">function</span> <span class="fn">createCounter</span>() {
+    <span class="kw">let</span> count <span class="op">=</span> <span class="nm">0</span>;  <span class="cm">// 外部函数的局部变量</span>
+    <span class="kw">return</span> {
+        increment() { count<span class="op">++</span>; },
+        decrement() { count<span class="op">--</span>; },
+        getCount()  { <span class="kw">return</span> count; }
+    };
+}
+
+<span class="kw">const</span> counter <span class="op">=</span> <span class="fn">createCounter</span>();
+counter.<span class="fn">increment</span>();
+counter.<span class="fn">increment</span>();
+counter.<span class="fn">getCount</span>();   <span class="cm">// 2</span>
+counter.<span class="fn">decrement</span>();
+counter.<span class="fn">getCount</span>();   <span class="cm">// 1</span>
+
+<span class="cm">// count 变量被"关"在闭包中，外部无法直接访问</span>
+<span class="cm">// counter.count  → undefined</span></code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 闭包在循环中的经典问题（var vs let）</span>
+<span class="cm">// 错误写法</span>
+<span class="kw">for</span> (<span class="kw">var</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> <span class="nm">5</span>; i<span class="op">++</span>) {
+    <span class="fn">setTimeout</span>(() <span class="op">=></span> {
+        <span class="fn">console</span>.<span class="fn">log</span>(i);  <span class="cm">// 全部输出 5！</span>
+    }, <span class="nm">1000</span>);
+}
+
+<span class="cm">// 正确写法 1：使用 let（每次循环创建新块作用域）</span>
+<span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> <span class="nm">5</span>; i<span class="op">++</span>) {
+    <span class="fn">setTimeout</span>(() <span class="op">=></span> {
+        <span class="fn">console</span>.<span class="fn">log</span>(i);  <span class="cm">// 0, 1, 2, 3, 4</span>
+    }, <span class="nm">1000</span>);
+}
+
+<span class="cm">// 正确写法 2：使用 IIFE 创建独立作用域</span>
+<span class="kw">for</span> (<span class="kw">var</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> <span class="nm">5</span>; i<span class="op">++</span>) {
+    (<span class="kw">function</span>(j) {
+        <span class="fn">setTimeout</span>(() <span class="op">=></span> {
+            <span class="fn">console</span>.<span class="fn">log</span>(j);  <span class="cm">// 0, 1, 2, 3, 4</span>
+        }, <span class="nm">1000</span>);
+    })(i);
+}</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：闭包是什么？</div>
+    <p><strong>闭包（Closure）</strong>是指一个函数能够记住并访问它被创建时所在的<strong>词法作用域</strong>，即使这个函数在该作用域之外执行。</p>
+    <p>实现原理：</p>
+    <p><strong>1. 每个函数在创建时都会保存一个对「词法环境」的引用</strong>——这个环境包含该函数定义时的所有局部变量。</p>
+    <p><strong>2. 当内部函数引用了外部函数的变量</strong>，这些变量不会被垃圾回收，因为内部函数仍然持有对它们的引用。</p>
+    <p><strong>3. 即使外部函数已经执行完毕</strong>，只要内部函数还活着，它引用的外部变量就不会被回收。</p>
+    <p>闭包的应用场景：数据封装（私有变量）、函数工厂、柯里化、模块模式、防抖/节流等。它是 JavaScript 中最强大也最容易被误用的特性之一。</p>
+</div>
+
+<!-- 14. 高阶函数 -->
+<h2 id="higher-order">14. 高阶函数</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 高阶函数：接受函数作为参数，或返回函数</span>
+
+<span class="cm">// 1. 函数作为参数</span>
+<span class="kw">function</span> <span class="fn">applyTwice</span>(fn, value) {
+    <span class="kw">return</span> <span class="fn">fn</span>(<span class="fn">fn</span>(value));
+}
+<span class="fn">applyTwice</span>(x <span class="op">=></span> x <span class="op">*</span> <span class="nm">2</span>, <span class="nm">3</span>);  <span class="cm">// 12 (3 * 2 * 2)</span>
+
+<span class="cm">// 2. 函数作为返回值（函数工厂）</span>
+<span class="kw">function</span> <span class="fn">multiply</span>(factor) {
+    <span class="kw">return</span> (number) <span class="op">=></span> number <span class="op">*</span> factor;
+}
+<span class="kw">const</span> double <span class="op">=</span> <span class="fn">multiply</span>(<span class="nm">2</span>);
+<span class="kw">const</span> triple <span class="op">=</span> <span class="fn">multiply</span>(<span class="nm">3</span>);
+<span class="fn">double</span>(<span class="nm">5</span>);   <span class="cm">// 10</span>
+<span class="fn">triple</span>(<span class="nm">5</span>);   <span class="cm">// 15</span>
+
+<span class="cm">// 3. 实用的高阶函数组合</span>
+<span class="kw">function</span> <span class="fn">pipe</span>(...fns) {
+    <span class="kw">return</span> (value) <span class="op">=></span> fns.<span class="fn">reduce</span>((acc, fn) <span class="op">=></span> <span class="fn">fn</span>(acc), value);
+}
+
+<span class="kw">const</span> process <span class="op">=</span> <span class="fn">pipe</span>(
+    x <span class="op">=></span> x.<span class="fn">trim</span>(),
+    x <span class="op">=></span> x.<span class="fn">toLowerCase</span>(),
+    x <span class="op">=></span> x.<span class="fn">replace</span>(<span class="st">/\s+/g</span>, <span class="st">"_"</span>)
+);
+<span class="fn">process</span>(<span class="st">"  Hello World  "</span>);  <span class="cm">// "hello_world"</span>
+
+<span class="cm">// 4. 防抖函数（Debounce）</span>
+<span class="kw">function</span> <span class="fn">debounce</span>(fn, delay) {
+    <span class="kw">let</span> timer;
+    <span class="kw">return</span> (...args) <span class="op">=></span> {
+        <span class="fn">clearTimeout</span>(timer);
+        timer <span class="op">=</span> <span class="fn">setTimeout</span>(() <span class="op">=></span> <span class="fn">fn</span>(...args), delay);
+    };
+}
+
+<span class="cm">// 5. 节流函数（Throttle）</span>
+<span class="kw">function</span> <span class="fn">throttle</span>(fn, limit) {
+    <span class="kw">let</span> inThrottle;
+    <span class="kw">return</span> (...args) <span class="op">=></span> {
+        <span class="kw">if</span> (<span class="op">!</span>inThrottle) {
+            <span class="fn">fn</span>(...args);
+            inThrottle <span class="op">=</span> <span class="kw">true</span>;
+            <span class="fn">setTimeout</span>(() <span class="op">=></span> inThrottle <span class="op">=</span> <span class="kw">false</span>, limit);
+        }
+    };
+}</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：为什么高阶函数如此重要？</div>
+    <p>高阶函数体现了<strong>抽象的力量</strong>——它让你把"做什么"和"怎么做"分离。</p>
+    <p><strong>map/filter/reduce</strong> 三个函数涵盖了绝大多数数据变换需求。相比手动写 for 循环，它们：</p>
+    <p><strong>1. 更具声明性</strong>——代码表达的是"意图"而不是"步骤"。</p>
+    <p><strong>2. 减少错误</strong>——不需要手动管理索引、边界条件。</p>
+    <p><strong>3. 可组合性强</strong>——可以用 pipe 将多个操作串联起来。</p>
+    <p><strong>防抖和节流</strong>是高阶函数在实际开发中最经典的应用场景：防抖用于搜索输入（用户停止输入后再发送请求），节流用于滚动事件（限制事件处理频率）。</p>
+</div>
+
+<!-- ==================== 面向对象篇 ==================== -->
+
+<!-- 15. 原型与原型链 -->
+<h2 id="prototype">15. 原型与原型链</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 每个对象都有一个内部链接 [[Prototype]]</span>
+<span class="kw">const</span> person <span class="op">=</span> {
+    <span class="fn">greet</span>() {
+        <span class="kw">return</span> <span class="st">`我是 ${this.name}`</span>;
+    }
+};
+
+<span class="kw">const</span> john <span class="op">=</span> <span class="tp">Object</span>.<span class="fn">create</span>(person);
+john.name <span class="op">=</span> <span class="st">"John"</span>;
+john.<span class="fn">greet</span>();  <span class="cm">// "我是 John"（通过原型链找到 greet 方法）</span>
+
+<span class="cm">// 查看原型链</span>
+<span class="tp">Object</span>.<span class="fn">getPrototypeOf</span>(john) <span class="op">===</span> person;  <span class="cm">// true</span>
+
+<span class="cm">// 构造函数与原型</span>
+<span class="kw">function</span> <span class="fn">Dog</span>(name) {
+    <span class="kw">this</span>.name <span class="op">=</span> name;
+}
+Dog.prototype.<span class="fn">bark</span> <span class="op">=</span> <span class="kw">function</span>() {
+    <span class="kw">return</span> <span class="st">`${this.name} 说：汪汪！`</span>;
+};
+
+<span class="kw">const</span> dog1 <span class="op">=</span> <span class="kw">new</span> <span class="fn">Dog</span>(<span class="st">"旺财"</span>);
+<span class="kw">const</span> dog2 <span class="op">=</span> <span class="kw">new</span> <span class="fn">Dog</span>(<span class="st">"来福"</span>);
+
+dog1.<span class="fn">bark</span>();  <span class="cm">// "旺财 说：汪汪！"</span>
+
+<span class="cm">// 所有实例共享同一个 bark 方法（节省内存）</span>
+dog1.<span class="fn">bark</span> <span class="op">===</span> dog2.<span class="fn">bark</span>;  <span class="cm">// true</span>
+
+<span class="cm">// 原型链查找</span>
+<span class="fn">console</span>.<span class="fn">log</span>(dog1.<span class="fn">hasOwnProperty</span>(<span class="st">"name"</span>));  <span class="cm">// true（自有属性）</span>
+<span class="fn">console</span>.<span class="fn">log</span>(dog1.<span class="fn">hasOwnProperty</span>(<span class="st">"bark"</span>)); <span class="cm">// false（来自原型）</span></code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：原型链的工作机制</div>
+    <p>JavaScript 使用<strong>原型链（Prototype Chain）</strong>实现继承，而非传统的类继承。这是 JS 最核心的设计理念之一。</p>
+    <p><strong>原型链查找规则</strong>：当你访问 <code>obj.prop</code> 时：</p>
+    <p><strong>第一步</strong>：在 <code>obj</code> 自身属性中查找，如果找到就返回。</p>
+    <p><strong>第二步</strong>：如果没找到，沿着 <code>obj.[[Prototype]]</code> 链接向上查找。</p>
+    <p><strong>第三步</strong>：持续向上，直到 <code>[[Prototype]]</code> 为 <code>null</code>（即 <code>Object.prototype</code> 的原型），此时返回 <code>undefined</code>。</p>
+    <p><strong>关键点</strong>：所有对象最终都继承自 <code>Object.prototype</code>，而 <code>Object.prototype.__proto__</code> 为 <code>null</code>，这就是原型链的终点。</p>
+    <p><strong>性能考量</strong>：原型链越长，属性查找越慢。将共享方法放在 <code>prototype</code> 上，而非实例上，可以大幅节省内存——因为所有实例共享同一个方法引用。</p>
+</div>
+
+<!-- 16. ES6 类 -->
+<h2 id="es6-class">16. ES6 类</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="kw">class</span> <span class="tp">Animal</span> {
+    <span class="cm">// 静态属性</span>
+    <span class="kw">static</span> count <span class="op">=</span> <span class="nm">0</span>;
+
+    <span class="cm">// 构造函数</span>
+    <span class="kw">constructor</span>(name, sound) {
+        <span class="kw">this</span>.name <span class="op">=</span> name;
+        <span class="kw">this</span>._sound <span class="op">=</span> sound;
+        <span class="tp">Animal</span>.count<span class="op">++</span>;
+    }
+
+    <span class="cm">// 实例方法</span>
+    speak() {
+        <span class="kw">return</span> <span class="st">`${this.name} says ${this._sound}`</span>;
+    }
+
+    <span class="cm">// getter（属性访问器）</span>
+    <span class="kw">get</span> <span class="fn">info</span>() {
+        <span class="kw">return</span> <span class="st">`${this.name} (${this.constructor.name})`</span>;
+    }
+
+    <span class="cm">// setter</span>
+    <span class="kw">set</span> <span class="fn">sound</span>(value) {
+        <span class="kw">this</span>._sound <span class="op">=</span> value;
+    }
+
+    <span class="cm">// 静态方法</span>
+    <span class="kw">static</span> <span class="fn">create</span>(name, sound) {
+        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">Animal</span>(name, sound);
+    }
+}
+
+<span class="kw">class</span> <span class="tp">Dog</span> <span class="kw">extends</span> <span class="tp">Animal</span> {
+    <span class="kw">constructor</span>(name) {
+        <span class="kw">super</span>(name, <span class="st">"Woof"</span>);  <span class="cm">// 必须先调用 super</span>
+        <span class="kw">this</span>.tricks <span class="op">=</span> [];
+    }
+
+    learn(trick) {
+        <span class="kw">this</span>.tricks.<span class="fn">push</span>(trick);
+        <span class="kw">return</span> <span class="kw">this</span>;  <span class="cm">// 链式调用</span>
+    }
+
+    <span class="cm">// 重写父类方法</span>
+    speak() {
+        <span class="kw">return</span> <span class="st">`${super.speak()}! 🐕`</span>;
+    }
+}
+
+<span class="kw">const</span> dog <span class="op">=</span> <span class="kw">new</span> <span class="tp">Dog</span>(<span class="st">"旺财"</span>);
+dog.<span class="fn">learn</span>(<span class="st">"握手"</span>).<span class="fn">learn</span>(<span class="st">"翻滚"</span>);
+<span class="fn">console</span>.<span class="fn">log</span>(dog.<span class="fn">speak</span>());   <span class="cm">// "旺财 says Woof! 🐕"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(dog.<span class="fn">info</span>);      <span class="cm">// "旺财 (Dog)"</span></code></pre>
+</div>
+
+<div class="warning">ES6 的 <code>class</code> 本质只是<strong>语法糖</strong>，底层仍然是基于原型的继承。但 <code>class</code> 语法强制使用 <code>new</code> 关键字，并且不允许在未调用 <code>super()</code> 之前访问 <code>this</code>。</div>
+
+<!-- 17. 继承 -->
+<h2 id="inheritance">17. 继承</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 类继承（ES6 标准方式）</span>
+<span class="kw">class</span> <span class="tp">Shape</span> {
+    <span class="kw">constructor</span>(color <span class="op">=</span> <span class="st">"black"</span>) {
+        <span class="kw">this</span>.color <span class="op">=</span> color;
+    }
+
+    area() {
+        <span class="kw">throw new</span> <span class="tp">Error</span>(<span class="st">"子类必须实现 area() 方法"</span>);
+    }
+
+    toString() {
+        <span class="kw">return</span> <span class="st">`${this.constructor.name}(颜色: ${this.color}, 面积: ${this.area().toFixed(2)})`</span>;
+    }
+}
+
+<span class="kw">class</span> <span class="tp">Circle</span> <span class="kw">extends</span> <span class="tp">Shape</span> {
+    <span class="kw">constructor</span>(radius, color) {
+        <span class="kw">super</span>(color);
+        <span class="kw">this</span>.radius <span class="op">=</span> radius;
+    }
+
+    area() {
+        <span class="kw">return</span> Math.PI <span class="op">*</span> <span class="kw">this</span>.radius <span class="op">**</span> <span class="nm">2</span>;
+    }
+}
+
+<span class="kw">class</span> <span class="tp">Rectangle</span> <span class="kw">extends</span> <span class="tp">Shape</span> {
+    <span class="kw">constructor</span>(width, height, color) {
+        <span class="kw">super</span>(color);
+        <span class="kw">this</span>.width <span class="op">=</span> width;
+        <span class="kw">this</span>.height <span class="op">=</span> height;
+    }
+
+    area() {
+        <span class="kw">return</span> <span class="kw">this</span>.width <span class="op">*</span> <span class="kw">this</span>.height;
+    }
+}
+
+<span class="kw">const</span> circle <span class="op">=</span> <span class="kw">new</span> <span class="tp">Circle</span>(<span class="nm">5</span>, <span class="st">"red"</span>);
+<span class="kw">const</span> rect <span class="op">=</span> <span class="kw">new</span> <span class="tp">Rectangle</span>(<span class="nm">4</span>, <span class="nm">6</span>, <span class="st">"blue"</span>);
+
+<span class="fn">console</span>.<span class="fn">log</span>(circle.<span class="fn">toString</span>());  <span class="cm">// "Circle(颜色: red, 面积: 78.54)"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(rect.<span class="fn">toString</span>());   <span class="cm">// "Rectangle(颜色: blue, 面积: 24.00)"</span>
+
+<span class="cm">// instanceof 检测继承关系</span>
+circle <span class="kw">instanceof</span> <span class="tp">Circle</span>;    <span class="cm">// true</span>
+circle <span class="kw">instanceof</span> <span class="tp">Shape</span>;     <span class="cm">// true</span>
+rect <span class="kw">instanceof</span> <span class="tp">Shape</span>;      <span class="cm">// true</span></code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：JavaScript 继承的本质</div>
+    <p>JavaScript 的继承通过<strong>原型委托</strong>实现，而非类拷贝。</p>
+    <p>当你写 <code>class Dog extends Animal</code> 时，引擎实际做了：</p>
+    <p><strong>1. 创建 <code>Dog.prototype</code></strong>，将其 <code>[[Prototype]]</code> 指向 <code>Animal.prototype</code>。</p>
+    <p><strong>2. 创建 <code>Dog</code> 构造函数本身</strong>，将其 <code>[[Prototype]]</code> 指向 <code>Animal</code>（这样静态方法也能继承）。</p>
+    <p><strong>3. <code>super</code> 关键字</strong>会调用父类构造函数，并将 <code>this</code> 绑定到当前实例。</p>
+    <p>这种设计的优势是<strong>灵活性</strong>——原型是动态的，继承关系可以随时修改。劣势是性能略低于传统的类继承（因为需要遍历原型链）。</p>
+</div>
+
+<!-- ==================== 异步篇 ==================== -->
+
+<!-- 18. 回调函数 -->
+<h2 id="callbacks">18. 回调函数</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 回调函数：将函数作为参数传递，在异步操作完成后调用</span>
+
+<span class="cm">// 模拟异步操作</span>
+<span class="kw">function</span> <span class="fn">fetchData</span>(url, callback) {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">`正在请求 ${url}...`</span>);
+    <span class="fn">setTimeout</span>(() <span class="op">=></span> {
+        <span class="kw">const</span> data <span class="op">=</span> { id: <span class="nm">1</span>, name: <span class="st">"测试数据"</span> };
+        <span class="fn">callback</span>(<span class="kw">null</span>, data);  <span class="cm">// 按照 Node.js 约定，第一个参数是 error</span>
+    }, <span class="nm">1000</span>);
+}
+
+<span class="fn">fetchData</span>(<span class="st">"/api/users"</span>, (error, data) <span class="op">=></span> {
+    <span class="kw">if</span> (error) {
+        <span class="fn">console</span>.<span class="fn">error</span>(<span class="st">"请求失败："</span>, error);
+        <span class="kw">return</span>;
+    }
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"获取到数据："</span>, data);
+});
+
+<span class="cm">// 回调地狱（Callback Hell）—— 嵌套过深，难以维护</span>
+<span class="fn">fetchData</span>(<span class="st">"/api/user"</span>, (err, user) <span class="op">=></span> {
+    <span class="fn">fetchData</span>(<span class="st">`/api/posts/${user.id}`</span>, (err, posts) <span class="op">=></span> {
+        <span class="fn">fetchData</span>(<span class="st">`/api/comments/${posts[0].id}`</span>, (err, comments) <span class="op">=></span> {
+            <span class="fn">console</span>.<span class="fn">log</span>(comments);
+            <span class="cm">// 越来越深，形成金字塔形状</span>
+        });
+    });
+});</code></pre>
+</div>
+
+<div class="danger">回调地狱不仅代码难以阅读，错误处理也很困难——每个回调都需要单独处理错误。这就是 Promise 和 async/await 诞生的原因。</div>
+
+<!-- 19. Promises -->
+<h2 id="promises">19. Promises</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// Promise 表示一个异步操作的最终结果</span>
+<span class="kw">const</span> fetchData <span class="op">=</span> (url) <span class="op">=></span> {
+    <span class="kw">return new</span> <span class="tp">Promise</span>((resolve, reject) <span class="op">=></span> {
+        <span class="fn">setTimeout</span>(() <span class="op">=></span> {
+            <span class="kw">if</span> (url) {
+                <span class="fn">resolve</span>({ id: <span class="nm">1</span>, name: <span class="st">"数据"</span> });
+            } <span class="kw">else</span> {
+                <span class="fn">reject</span>(<span class="kw">new</span> <span class="tp">Error</span>(<span class="st">"URL 不能为空"</span>));
+            }
+        }, <span class="nm">1000</span>);
+    });
+};
+
+<span class="cm">// 使用 Promise（链式调用，告别回调地狱）</span>
+<span class="fn">fetchData</span>(<span class="st">"/api/user"</span>)
+    .<span class="fn">then</span>(user <span class="op">=></span> {
+        <span class="kw">return</span> <span class="fn">fetchData</span>(<span class="st">`/api/posts/${user.id}`</span>);
+    })
+    .<span class="fn">then</span>(posts <span class="op">=></span> {
+        <span class="kw">return</span> <span class="fn">fetchData</span>(<span class="st">`/api/comments/${posts[0].id}`</span>);
+    })
+    .<span class="fn">then</span>(comments <span class="op">=></span> {
+        <span class="fn">console</span>.<span class="fn">log</span>(comments);
+    })
+    .<span class="fn">catch</span>(error <span class="op">=></span> {
+        <span class="fn">console</span>.<span class="fn">error</span>(<span class="st">"任何步骤出错都会到这里："</span>, error);
+    })
+    .<span class="fn">finally</span>(() <span class="op">=></span> {
+        <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"无论成功失败都会执行"</span>);
+    });
+
+<span class="cm">// Promise 静态方法</span>
+<span class="tp">Promise</span>.<span class="fn">all</span>([<span class="fn">fetchData</span>(<span class="st">"/a"</span>), <span class="fn">fetchData</span>(<span class="st">"/b"</span>), <span class="fn">fetchData</span>(<span class="st">"/c"</span>)])
+    .<span class="fn">then</span>([a, b, c] <span class="op">=></span> {
+        <span class="cm">// 所有请求都完成后执行</span>
+    });
+
+<span class="tp">Promise</span>.<span class="fn">race</span>([<span class="fn">fetchData</span>(<span class="st">"/a"</span>), <span class="fn">fetchData</span>(<span class="st">"/b"</span>)])
+    .<span class="fn">then</span>(fastest <span class="op">=></span> {
+        <span class="cm">// 只要有一个完成就执行（用于超时控制）</span>
+    });
+
+<span class="tp">Promise</span>.<span class="fn">allSettled</span>([<span class="fn">fetchData</span>(<span class="st">"/a"</span>), <span class="fn">fetchData</span>(<span class="kw">null</span>)])
+    .<span class="fn">then</span>(results <span class="op">=></span> {
+        results.<span class="fn">forEach</span>(r <span class="op">=></span> {
+            <span class="kw">if</span> (r.status <span class="op">===</span> <span class="st">"fulfilled"</span>) { <span class="cm">/* 成功 */</span> }
+            <span class="kw">else</span> { <span class="cm">/* 失败，r.reason 是错误 */</span> }
+        });
+    });
+
+<span class="tp">Promise</span>.<span class="fn">any</span>([<span class="fn">fetchData</span>(<span class="st">"/a"</span>), <span class="fn">fetchData</span>(<span class="st">"/b"</span>)])
+    .<span class="fn">then</span>(first <span class="op">=></span> {
+        <span class="cm">// 第一个成功的 Promise</span>
+    });</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：Promise 的三种状态</div>
+    <p>Promise 是一个状态机，有且只有三种状态：</p>
+    <p><strong>1. Pending（等待中）</strong>——初始状态，异步操作尚未完成。</p>
+    <p><strong>2. Fulfilled（已完成）</strong>——异步操作成功完成，调用 <code>resolve(value)</code> 进入此状态。</p>
+    <p><strong>3. Rejected（已拒绝）</strong>——异步操作失败，调用 <code>reject(error)</code> 进入此状态。</p>
+    <p><strong>关键特性</strong>：状态一旦改变就不可逆。这保证了 <code>.then()</code> 和 <code>.catch()</code> 中的回调只会被执行一次。</p>
+    <p><strong>.then() 返回新 Promise</strong>：每次调用 <code>.then()</code> 都会返回一个<strong>全新的 Promise</strong>，这就是链式调用的原理。如果回调函数返回一个 Promise，后续的 <code>.then()</code> 会等待该 Promise 完成。</p>
+</div>
+
+<!-- 20. Async/Await -->
+<h2 id="async-await">20. Async/Await</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// async/await 是 Promise 的语法糖，让异步代码看起来像同步代码</span>
+
+<span class="kw">async function</span> <span class="fn">loadUserData</span>() {
+    <span class="kw">try</span> {
+        <span class="cm">// await 暂停执行，直到 Promise 完成</span>
+        <span class="kw">const</span> user <span class="op">=</span> <span class="kw">await</span> <span class="fn">fetchData</span>(<span class="st">"/api/user"</span>);
+        <span class="kw">const</span> posts <span class="op">=</span> <span class="kw">await</span> <span class="fn">fetchData</span>(<span class="st">`/api/posts/${user.id}`</span>);
+        <span class="kw">const</span> comments <span class="op">=</span> <span class="kw">await</span> <span class="fn">fetchData</span>(<span class="st">`/api/comments/${posts[0].id}`</span>);
+        <span class="kw">return</span> { user, posts, comments };
+    } <span class="kw">catch</span> (error) {
+        <span class="fn">console</span>.<span class="fn">error</span>(<span class="st">"加载失败："</span>, error);
+        <span class="kw">throw</span> error;
+    }
+}
+
+<span class="cm">// 并行执行多个异步操作</span>
+<span class="kw">async function</span> <span class="fn">loadDashboard</span>() {
+    <span class="cm">// ❌ 串行（慢）：总耗时 = 请求1 + 请求2 + 请求3</span>
+    <span class="kw">const</span> users <span class="op">=</span> <span class="kw">await</span> <span class="fn">fetchData</span>(<span class="st">"/api/users"</span>);
+    <span class="kw">const</span> posts <span class="op">=</span> <span class="kw">await</span> <span class="fn">fetchData</span>(<span class="st">"/api/posts"</span>);
+    <span class="kw">const</span> comments <span class="op">=</span> <span class="kw">await</span> <span class="fn">fetchData</span>(<span class="st">"/api/comments"</span>);
+
+    <span class="cm">// ✅ 并行（快）：总耗时 = max(请求1, 请求2, 请求3)</span>
+    <span class="kw">const</span> [users2, posts2, comments2] <span class="op">=</span> <span class="kw">await</span> <span class="tp">Promise</span>.<span class="fn">all</span>([
+        <span class="fn">fetchData</span>(<span class="st">"/api/users"</span>),
+        <span class="fn">fetchData</span>(<span class="st">"/api/posts"</span>),
+        <span class="fn">fetchData</span>(<span class="st">"/api/comments"</span>)
+    ]);
+
+    <span class="kw">return</span> { users: users2, posts: posts2, comments: comments2 };
+}
+
+<span class="cm">// 在循环中使用 await（注意陷阱！）</span>
+<span class="kw">async function</span> <span class="fn">processItems</span>(items) {
+    <span class="cm">// ❌ 顺序执行（通常不是你想要的）</span>
+    <span class="kw">for</span> (<span class="kw">const</span> item <span class="kw">of</span> items) {
+        <span class="kw">await</span> <span class="fn">processItem</span>(item);
+    }
+
+    <span class="cm">// ✅ 并行执行</span>
+    <span class="kw">await</span> <span class="tp">Promise</span>.<span class="fn">all</span>(items.<span class="fn">map</span>(item <span class="op">=></span> <span class="fn">processItem</span>(item)));
+}</code></pre>
+</div>
+
+<div class="tip">在 <code>async</code> 函数中，<code>return</code> 一个值等同于 <code>Promise.resolve(value)</code>，<code>throw</code> 一个错误等同于 <code>Promise.reject(error)</code>。</div>
+
+<!-- 21. 事件循环 -->
+<h2 id="event-loop">21. 事件循环</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 事件循环的执行顺序演示</span>
+
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"1. 同步代码"</span>);
+
+<span class="fn">setTimeout</span>(() <span class="op">=></span> {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"2. setTimeout 宏任务"</span>);
+}, <span class="nm">0</span>);
+
+<span class="tp">Promise</span>.<span class="fn">resolve</span>().<span class="fn">then</span>(() <span class="op">=></span> {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"3. Promise 微任务"</span>);
+});
+
+<span class="fn">queueMicrotask</span>(() <span class="op">=></span> {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"4. queueMicrotask 微任务"</span>);
+});
+
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"5. 同步代码结束"</span>);
+
+<span class="cm">// 输出顺序：</span>
+<span class="cm">// 1. 同步代码</span>
+<span class="cm">// 5. 同步代码结束</span>
+<span class="cm">// 3. Promise 微任务</span>
+<span class="cm">// 4. queueMicrotask 微任务</span>
+<span class="cm">// 2. setTimeout 宏任务</span></code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：事件循环（Event Loop）的工作原理</div>
+    <p>JavaScript 是<strong>单线程</strong>语言（主线程只有一个），但浏览器/Node.js 提供了多线程能力（网络请求、定时器、文件 I/O 等由浏览器 API 处理）。事件循环是协调这些操作的核心机制。</p>
+    <p><strong>执行模型</strong>：</p>
+    <p><strong>1. 执行调用栈（Call Stack）中所有同步代码</strong>——直到调用栈清空。</p>
+    <p><strong>2. 清空微任务队列（Microtask Queue）</strong>——<code>Promise.then/catch/finally</code>、<code>queueMicrotask</code>、<code>MutationObserver</code> 都是微任务。<strong>微任务在当前宏任务结束后、下一个宏任务开始前全部清空</strong>。</p>
+    <p><strong>3. 取一个宏任务（Macrotask）执行</strong>——<code>setTimeout/setInterval</code>、<code>setImmediate</code>（Node.js）、<code>I/O</code>、<code>UI 渲染</code> 都是宏任务。</p>
+    <p><strong>4. 回到步骤 2</strong>——再次清空所有微任务，然后执行下一个宏任务。</p>
+    <p><strong>为什么 Promise 比 setTimeout 先执行？</strong> 因为 Promise.then 是微任务，setTimeout 是宏任务。微任务永远优先于宏任务执行。</p>
+    <p><strong>为什么需要微任务？</strong> 微任务确保 Promise 的回调在当前同步代码执行完后<strong>立即</strong>执行，而不需要等待下一个定时器或渲染周期。这保证了 Promise 链的连续性。</p>
+</div>
+
+<div class="compare">
+    <div class="compare-item">
+        <div class="compare-label good">宏任务（Macrotask）</div>
+        <div class="code-block">
+            <pre><code><span class="cm">// 宏任务队列中的常见类型：</span>
+<span class="fn">setTimeout</span>(fn, <span class="nm">0</span>)
+<span class="fn">setInterval</span>(fn, <span class="nm">1000</span>)
+<span class="fn">setImmediate</span>(fn)       <span class="cm">// Node.js</span>
+I/O 回调
+UI 渲染
+<span class="fn">requestAnimationFrame</span></code></pre>
+        </div>
+    </div>
+    <div class="compare-item">
+        <div class="compare-label bad">微任务（Microtask）</div>
+        <div class="code-block">
+            <pre><code><span class="cm">// 微任务队列中的常见类型：</span>
+<span class="tp">Promise</span>.<span class="fn">resolve</span>().<span class="fn">then</span>(fn)
+<span class="tp">Promise</span>.<span class="fn">reject</span>().<span class="fn">catch</span>(fn)
+<span class="fn">queueMicrotask</span>(fn)
+<span class="tp">MutationObserver</span>
+<span class="kw">async</span>/<span class="kw">await</span> <span class="cm">// await之后的代码</span></code></pre>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 进阶篇 ==================== -->
+
+<!-- 22. 作用域与提升 -->
+<h2 id="scope-hoisting">22. 作用域与提升</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 作用域类型</span>
+<span class="cm">// 1. 全局作用域</span>
+<span class="kw">var</span> globalVar <span class="op">=</span> <span class="st">"全局"</span>;
+
+<span class="cm">// 2. 函数作用域（var）</span>
+<span class="kw">function</span> <span class="fn">example</span>() {
+    <span class="kw">var</span> localVar <span class="op">=</span> <span class="st">"函数内"</span>;
+    <span class="fn">console</span>.<span class="fn">log</span>(globalVar);  <span class="cm">// ✅ 可以访问</span>
+    <span class="fn">console</span>.<span class="fn">log</span>(localVar);   <span class="cm">// ✅ 可以访问</span>
+}
+<span class="cm">// console.log(localVar);  // ❌ ReferenceError</span>
+
+<span class="cm">// 3. 块级作用域（let/const）</span>
+<span class="kw">if</span> (<span class="kw">true</span>) {
+    <span class="kw">let</span> blockVar <span class="op">=</span> <span class="st">"块级"</span>;
+    <span class="kw">const</span> blockConst <span class="op">=</span> <span class="st">"也是块级"</span>;
+}
+<span class="cm">// console.log(blockVar);    // ❌ ReferenceError</span>
+<span class="cm">// console.log(blockConst);  // ❌ ReferenceError</span>
+
+<span class="cm">// 作用域链</span>
+<span class="kw">const</span> outer <span class="op">=</span> <span class="st">"外层"</span>;
+<span class="kw">function</span> <span class="fn">outerFn</span>() {
+    <span class="kw">const</span> middle <span class="op">=</span> <span class="st">"中层"</span>;
+    <span class="kw">function</span> <span class="fn">innerFn</span>() {
+        <span class="kw">const</span> inner <span class="op">=</span> <span class="st">"内层"</span>;
+        <span class="cm">// 内层可以访问中层和外层</span>
+        <span class="fn">console</span>.<span class="fn">log</span>(outer, middle, inner);
+    }
+    <span class="cm">// 中层可以访问外层，不能访问内层</span>
+    <span class="fn">console</span>.<span class="fn">log</span>(outer, middle);
+    <span class="cm">// console.log(inner);  // ❌</span>
+}</code></pre>
+</div>
+
+<h3>变量提升（Hoisting）</h3>
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// var 的提升：变量声明被提升到作用域顶部，赋值留在原处</span>
+<span class="fn">console</span>.<span class="fn">log</span>(x);     <span class="cm">// undefined（声明已提升，但未赋值）</span>
+<span class="kw">var</span> x <span class="op">=</span> <span class="nm">10</span>;
+<span class="fn">console</span>.<span class="fn">log</span>(x);     <span class="cm">// 10</span>
+
+<span class="cm">// 等价于（概念上的执行顺序）：</span>
+<span class="kw">var</span> x;              <span class="cm">// 声明被提升</span>
+<span class="fn">console</span>.<span class="fn">log</span>(x);     <span class="cm">// undefined</span>
+x <span class="op">=</span> <span class="nm">10</span>;              <span class="cm">// 赋值留在原处</span>
+
+<span class="cm">// 函数声明的提升：整个函数被提升</span>
+<span class="fn">greet</span>();  <span class="cm">// ✅ "Hello!"（函数声明完全提升）</span>
+<span class="kw">function</span> <span class="fn">greet</span>() {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"Hello!"</span>);
+}
+
+<span class="cm">// 函数表达式不会提升</span>
+<span class="cm">// sayHi();  // ❌ TypeError: sayHi is not a function</span>
+<span class="kw">var</span> sayHi <span class="op">=</span> <span class="kw">function</span>() {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"Hi!"</span>);
+};
+
+<span class="cm">// let/const 有提升，但处于"暂时性死区"（TDZ）</span>
+<span class="cm">// console.log(y);  // ❌ ReferenceError（TDZ）</span>
+<span class="kw">let</span> y <span class="op">=</span> <span class="nm">20</span>;
+<span class="fn">console</span>.<span class="fn">log</span>(y);    <span class="cm">// 20</span></code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：暂时性死区（Temporal Dead Zone）</div>
+    <p><code>let</code> 和 <code>const</code> 声明的变量也会被提升到所在块作用域的顶部，但在声明语句执行之前，它们处于<strong>暂时性死区（TDZ）</strong>——访问会抛出 <code>ReferenceError</code>。</p>
+    <p>这是 JavaScript 引擎的设计选择：<code>var</code> 的提升行为导致了大量难以调试的 bug（变量在声明前就被使用）。TDZ 强制你在使用变量之前先声明，消除了这类问题。</p>
+    <p><strong>常见陷阱</strong>：<code>typeof</code> 运算符在 TDZ 中也会报错：<code>typeof undeclaredVar</code> 返回 <code>"undefined"</code>，但 <code>typeof letVar</code>（letVar 在 TDZ 中）会抛出 <code>ReferenceError</code>。</p>
+</div>
+
+<!-- 23. 模块系统 -->
+<h2 id="modules">23. 模块系统</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// ES6 模块（现代标准）</span>
+
+<span class="cm">// math.js - 导出</span>
+<span class="kw">export const</span> PI <span class="op">=</span> <span class="nm">3.14159</span>;
+
+<span class="kw">export function</span> <span class="fn">add</span>(a, b) {
+    <span class="kw">return</span> a <span class="op">+</span> b;
+}
+
+<span class="kw">export default function</span> <span class="fn">multiply</span>(a, b) {
+    <span class="kw">return</span> a <span class="op">*</span> b;
+}
+
+<span class="cm">// app.js - 导入</span>
+<span class="kw">import</span> multiply, { PI, add } <span class="kw">from</span> <span class="st">"./math.js"</span>;
+<span class="cm">// multiply 是默认导出，{ PI, add } 是命名导出</span>
+
+<span class="cm">// 重命名导入</span>
+<span class="kw">import</span> { add <span class="kw">as</span> sum } <span class="kw">from</span> <span class="st">"./math.js"</span>;
+
+<span class="cm">// 导入全部</span>
+<span class="kw">import</span> * <span class="kw">as</span> MathUtils <span class="kw">from</span> <span class="st">"./math.js"</span>;
+MathUtils.PI;       <span class="cm">// 3.14159</span>
+MathUtils.<span class="fn">add</span>(<span class="nm">1</span>, <span class="nm">2</span>);  <span class="cm">// 3</span>
+
+<span class="cm">// 动态导入（按需加载）</span>
+<span class="kw">const</span> module <span class="op">=</span> <span class="kw">await</span> <span class="kw">import</span>(<span class="st">"./heavy-module.js"</span>);
+
+<span class="cm">// CommonJS（Node.js 传统模块系统）</span>
+<span class="cm">// utils.js</span>
+<span class="kw">const</span> utils <span class="op">=</span> {
+    formatDate(date) { <span class="cm">/* ... */</span> },
+    capitalize(str) { <span class="cm">/* ... */</span> }
+};
+module.exports <span class="op">=</span> utils;
+
+<span class="cm">// 使用</span>
+<span class="kw">const</span> utils <span class="op">=</span> <span class="fn">require</span>(<span class="st">"./utils.js"</span>);</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：ES6 模块 vs CommonJS</div>
+    <p><strong>ES6 模块</strong>（<code>import/export</code>）：</p>
+    <p>• <strong>编译时解析</strong>——引擎在执行代码之前就知道依赖关系，可以进行<strong>静态分析</strong>和<strong>Tree Shaking</strong>（删除未使用的代码）。</p>
+    <p>• <strong>值的只读引用</strong>——导入的绑定是"活的"，但不能重新赋值。</p>
+    <p>• <strong>异步加载</strong>——天然支持浏览器环境的按需加载。</p>
+    <p><strong>CommonJS</strong>（<code>require/module.exports</code>）：</p>
+    <p>• <strong>运行时加载</strong>——<code>require()</code> 是函数调用，可以在任何地方执行。</p>
+    <p>• <strong>值的拷贝</strong>——导入的是导出值的副本，修改不会同步。</p>
+    <p>• <strong>同步加载</strong>——适合服务端（文件系统读取很快）。</p>
+    <p>Node.js 已经开始原生支持 ES6 模块（需要 <code>.mjs</code> 后缀或在 <code>package.json</code> 中设置 <code>"type": "module"</code>）。</p>
+</div>
+
+<!-- 24. 错误处理 -->
+<h2 id="error-handling">24. 错误处理</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// try...catch...finally</span>
+<span class="kw">function</span> <span class="fn">parseJSON</span>(str) {
+    <span class="kw">try</span> {
+        <span class="kw">const</span> data <span class="op">=</span> JSON.<span class="fn">parse</span>(str);
+        <span class="kw">return</span> { success: <span class="kw">true</span>, data };
+    } <span class="kw">catch</span> (error) {
+        <span class="fn">console</span>.<span class="fn">error</span>(<span class="st">"解析失败："</span>, error.message);
+        <span class="kw">return</span> { success: <span class="kw">false</span>, error: error.message };
+    } <span class="kw">finally</span> {
+        <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"解析完成"</span>);  <span class="cm">// 总是执行</span>
+    }
+}
+
+<span class="cm">// 自定义错误类</span>
+<span class="kw">class</span> <span class="tp">ValidationError</span> <span class="kw">extends</span> <span class="tp">Error</span> {
+    <span class="kw">constructor</span>(field, message) {
+        <span class="kw">super</span>(message);
+        <span class="kw">this</span>.name <span class="op">=</span> <span class="st">"ValidationError"</span>;
+        <span class="kw">this</span>.field <span class="op">=</span> field;
+    }
+}
+
+<span class="kw">function</span> <span class="fn">validateAge</span>(age) {
+    <span class="kw">if</span> (<span class="kw">typeof</span> age <span class="op">!==</span> <span class="st">"number"</span>) {
+        <span class="kw">throw new</span> <span class="tp">TypeError</span>(<span class="st">"年龄必须是数字"</span>);
+    }
+    <span class="kw">if</span> (age <span class="op">&lt;</span> <span class="nm">0</span> <span class="op">||</span> age <span class="op">></span> <span class="nm">150</span>) {
+        <span class="kw">throw new</span> <span class="tp">ValidationError</span>(<span class="st">"age"</span>, <span class="st">"年龄必须在 0-150 之间"</span>);
+    }
+    <span class="kw">return</span> <span class="kw">true</span>;
+}
+
+<span class="cm">// 使用自定义错误</span>
+<span class="kw">try</span> {
+    <span class="fn">validateAge</span>(<span class="nm">-5</span>);
+} <span class="kw">catch</span> (error) {
+    <span class="kw">if</span> (error <span class="kw">instanceof</span> <span class="tp">ValidationError</span>) {
+        <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">`字段 ${error.field} 验证失败：${error.message}`</span>);
+    } <span class="kw">else</span> {
+        <span class="kw">throw</span> error;  <span class="cm">// 重新抛出非预期错误</span>
+    }
+}
+
+<span class="cm">// 错误边界（React 模式的思想）</span>
+<span class="kw">async function</span> <span class="fn">safeAsync</span>(asyncFn) {
+    <span class="kw">try</span> {
+        <span class="kw">const</span> result <span class="op">=</span> <span class="kw">await</span> <span class="fn">asyncFn</span>();
+        <span class="kw">return</span> [<span class="kw">null</span>, result];
+    } <span class="kw">catch</span> (error) {
+        <span class="kw">return</span> [error, <span class="kw">null</span>];
+    }
+}
+
+<span class="cm">// 使用</span>
+<span class="kw">const</span> [error, data] <span class="op">=</span> <span class="kw">await</span> <span class="fn">safeAsync</span>(() <span class="op">=></span> <span class="fn">fetchData</span>(<span class="st">"/api"</span>));
+<span class="kw">if</span> (error) {
+    <span class="fn">console</span>.<span class="fn">error</span>(error);
+} <span class="kw">else</span> {
+    <span class="fn">console</span>.<span class="fn">log</span>(data);
+}</code></pre>
+</div>
+
+<div class="warning">永远不要使用 <code>try...catch</code> 来控制正常的程序流程。异常处理应该用于真正的异常情况，而不是替代 <code>if/else</code> 判断。</div>
+
+<!-- 25. 迭代器与生成器 -->
+<h2 id="iterators">25. 迭代器与生成器</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 迭代器协议：对象必须实现 next() 方法</span>
+<span class="kw">const</span> range <span class="op">=</span> {
+    <span class="kw">from</span>: <span class="nm">1</span>,
+    to: <span class="nm">5</span>,
+    [<span class="tp">Symbol</span>.<span class="fn">iterator</span>]() {
+        <span class="kw">let</span> current <span class="op">=</span> <span class="kw">this</span>.from;
+        <span class="kw">const</span> last <span class="op">=</span> <span class="kw">this</span>.to;
+        <span class="kw">return</span> {
+            <span class="fn">next</span>() {
+                <span class="kw">if</span> (current <span class="op">&lt;=</span> last) {
+                    <span class="kw">return</span> { value: current<span class="op">++</span>, done: <span class="kw">false</span> };
+                }
+                <span class="kw">return</span> { value: <span class="kw">undefined</span>, done: <span class="kw">true</span> };
+            }
+        };
+    }
+};
+
+<span class="cm">// 可以用 for...of 遍历</span>
+<span class="kw">for</span> (<span class="kw">const</span> num <span class="kw">of</span> range) {
+    <span class="fn">console</span>.<span class="fn">log</span>(num);  <span class="cm">// 1, 2, 3, 4, 5</span>
+}
+
+<span class="cm">// 展开运算符也能用</span>
+<span class="kw">const</span> nums <span class="op">=</span> [...range];  <span class="cm">// [1, 2, 3, 4, 5]</span></code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 生成器函数：使用 function* 和 yield</span>
+<span class="kw">function*</span> <span class="fn">fibonacci</span>() {
+    <span class="kw">let</span> a <span class="op">=</span> <span class="nm">0</span>, b <span class="op">=</span> <span class="nm">1</span>;
+    <span class="kw">while</span> (<span class="kw">true</span>) {
+        <span class="kw">yield</span> a;  <span class="cm">// 暂停并返回值</span>
+        [a, b] <span class="op">=</span> [b, a <span class="op">+</span> b];
+    }
+}
+
+<span class="cm">// 使用生成器</span>
+<span class="kw">const</span> fib <span class="op">=</span> <span class="fn">fibonacci</span>();
+fib.<span class="fn">next</span>();  <span class="cm">// { value: 0, done: false }</span>
+fib.<span class="fn">next</span>();  <span class="cm">// { value: 1, done: false }</span>
+fib.<span class="fn">next</span>();  <span class="cm">// { value: 1, done: false }</span>
+fib.<span class="fn">next</span>();  <span class="cm">// { value: 2, done: false }</span>
+
+<span class="cm">// 配合 for...of 使用（自动在 done: true 时停止）</span>
+<span class="kw">let</span> count <span class="op">=</span> <span class="nm">0</span>;
+<span class="kw">for</span> (<span class="kw">const</span> num <span class="kw">of</span> <span class="fn">fibonacci</span>()) {
+    <span class="kw">if</span> (count<span class="op">++</span> <span class="op">></span> <span class="nm">10</span>) <span class="kw">break</span>;
+    <span class="fn">console</span>.<span class="fn">log</span>(num);
+}
+
+<span class="cm">// 生成器与异步编程</span>
+<span class="kw">function*</span> <span class="fn">asyncFlow</span>() {
+    <span class="kw">const</span> user <span class="op">=</span> <span class="kw">yield</span> <span class="fn">fetchData</span>(<span class="st">"/api/user"</span>);
+    <span class="kw">const</span> posts <span class="op">=</span> <span class="kw">yield</span> <span class="fn">fetchData</span>(<span class="st">`/api/posts/${user.id}`</span>);
+    <span class="kw">return</span> { user, posts };
+}</code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：生成器为什么重要？</div>
+    <p><strong>生成器（Generator）</strong>是一种可以暂停和恢复执行的特殊函数。它不会一次性执行完所有代码，而是每次遇到 <code>yield</code> 就暂停，将控制权交还给调用者。</p>
+    <p><strong>惰性求值</strong>：生成器只在需要时才计算下一个值。这意味着你可以创建无限序列（如斐波那契数列）而不必担心内存溢出。</p>
+    <p><strong>双向通信</strong>：<code>yield</code> 可以向外输出值，<code>next(value)</code> 也可以向生成器内部传入值。这使得生成器可以作为协程使用。</p>
+    <p><strong>async/await 的基础</strong>：实际上，<code>async/await</code> 就是基于生成器和 Promise 实现的语法糖。理解生成器的工作原理有助于深入理解 async/await 的行为。</p>
+</div>
+
+<!-- 26. Symbol 与 WeakMap -->
+<h2 id="symbol-weakmap">26. Symbol 与 WeakMap</h2>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// Symbol：唯一且不可变的标识符</span>
+<span class="kw">const</span> id1 <span class="op">=</span> <span class="tp">Symbol</span>(<span class="st">"id"</span>);
+<span class="kw">const</span> id2 <span class="op">=</span> <span class="tp">Symbol</span>(<span class="st">"id"</span>);
+<span class="fn">console</span>.<span class="fn">log</span>(id1 <span class="op">===</span> id2);  <span class="cm">// false（每个 Symbol 都是唯一的）</span>
+
+<span class="cm">// 用作对象的唯一键（避免命名冲突）</span>
+<span class="kw">const</span> PRIVATE <span class="op">=</span> <span class="tp">Symbol</span>(<span class="st">"private"</span>);
+<span class="kw">class</span> <span class="tp">User</span> {
+    <span class="kw">constructor</span>(name) {
+        <span class="kw">this</span>.name <span class="op">=</span> name;
+        <span class="kw">this</span>[PRIVATE] <span class="op">=</span> <span class="st">"secret"</span>;
+    }
+}
+<span class="kw">const</span> user <span class="op">=</span> <span class="kw">new</span> <span class="tp">User</span>(<span class="st">"张三"</span>);
+<span class="fn">console</span>.<span class="fn">log</span>(user[PRIVATE]);  <span class="cm">// "secret"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="tp">Object</span>.<span class="fn">getOwnPropertySymbols</span>(user));  <span class="cm">// [Symbol(id)]</span>
+
+<span class="cm">// 内置 Symbol</span>
+<span class="cm">// Symbol.iterator - 定义对象的迭代行为</span>
+<span class="cm">// Symbol.toPrimitive - 定义类型转换行为</span>
+<span class="cm">// Symbol.hasInstance - 定义 instanceof 行为</span>
+<span class="kw">const</span> obj <span class="op">=</span> {
+    [<span class="tp">Symbol</span>.<span class="fn">toPrimitive</span>](hint) {
+        <span class="kw">if</span> (hint <span class="op">===</span> <span class="st">"number"</span>) <span class="kw">return</span> <span class="nm">42</span>;
+        <span class="kw">if</span> (hint <span class="op">===</span> <span class="st">"string"</span>) <span class="kw">return</span> <span class="st">"hello"</span>;
+        <span class="kw">return</span> <span class="kw">true</span>;
+    }
+};
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="op">+</span>obj);        <span class="cm">// 42</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="st">`${obj}`</span>);   <span class="cm">// "hello"</span></code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// WeakMap：键必须是对象，弱引用（不会阻止垃圾回收）</span>
+<span class="kw">const</span> weakMap <span class="op">=</span> <span class="kw">new</span> <span class="tp">WeakMap</span>();
+
+<span class="kw">let</span> obj <span class="op">=</span> { name: <span class="st">"张三"</span> };
+weakMap.<span class="fn">set</span>(obj, <span class="st">"一些元数据"</span>);
+<span class="fn">console</span>.<span class="fn">log</span>(weakMap.<span class="fn">get</span>(obj));  <span class="cm">// "一些元数据"</span>
+
+obj <span class="op">=</span> <span class="kw">null</span>;  <span class="cm">// 原对象被回收，WeakMap 中的条目也自动清除</span>
+
+<span class="cm">// WeakMap 的典型应用：为对象附加私有数据</span>
+<span class="kw">const</span> privateData <span class="op">=</span> <span class="kw">new</span> <span class="tp">WeakMap</span>();
+
+<span class="kw">class</span> <span class="tp">Secret</span> {
+    <span class="kw">constructor</span>(secret) {
+        privateData.<span class="fn">set</span>(<span class="kw">this</span>, { secret });
+    }
+
+    <span class="fn">getSecret</span>() {
+        <span class="kw">return</span> privateData.<span class="fn">get</span>(<span class="kw">this</span>).secret;
+    }
+}
+
+<span class="cm">// WeakSet：类似 Set，但只能存对象且弱引用</span>
+<span class="kw">const</span> visited <span class="op">=</span> <span class="kw">new</span> <span class="tp">WeakSet</span>();
+<span class="kw">const</span> node1 <span class="op">=</span> { name: <span class="st">"节点1"</span> };
+visited.<span class="fn">add</span>(node1);
+<span class="fn">console</span>.<span class="fn">log</span>(visited.<span class="fn">has</span>(node1));  <span class="cm">// true</span></code></pre>
+</div>
+
+<div class="principle">
+    <div class="principle-title">原理讲解：WeakMap/WeakSet 的弱引用机制</div>
+    <p><strong>普通 Map/Set</strong> 对键持有<strong>强引用</strong>——只要 Map/Set 还活着，键对象就不会被垃圾回收，即使你已经在其他地方把键的引用设为了 <code>null</code>。</p>
+    <p><strong>WeakMap/WeakSet</strong> 对键持有<strong>弱引用</strong>——如果一个对象除了 WeakMap/WeakSet 之外没有其他引用，垃圾回收器会自动回收这个对象，WeakMap/WeakSet 中对应的条目也会消失。</p>
+    <p><strong>为什么需要弱引用？</strong> 防止内存泄漏。当你需要给对象关联一些额外数据，但不想因为这些数据的存在而阻止对象被回收时，WeakMap 是理想选择。</p>
+    <p><strong>为什么 WeakMap 没有 size、没有 forEach、不能遍历？</strong> 因为弱引用的对象可能在任何时候被回收，引擎无法保证遍历时所有条目都还存在。这是刻意的设计，不是缺陷。</p>
+</div>
+
+<!-- ==================== 实战篇 ==================== -->
+
+<!-- 27. 最佳实践与常见陷阱 -->
+<h2 id="best-practices">27. 最佳实践与常见陷阱</h2>
+
+<h3>常见陷阱</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// 陷阱 1：浮点数精度</span>
+<span class="nm">0.1</span> <span class="op">+</span> <span class="nm">0.2</span> <span class="op">===</span> <span class="nm">0.3</span>       <span class="cm">// false！</span>
+<span class="nm">0.1</span> <span class="op">+</span> <span class="nm">0.2</span>                <span class="cm">// 0.30000000000000004</span>
+<span class="cm">// 修复：</span>
+Math.<span class="fn">abs</span>(<span class="nm">0.1</span> <span class="op">+</span> <span class="nm">0.2</span> <span class="op">-</span> <span class="nm">0.3</span>) <span class="op">&lt;</span> Number.EPSILON  <span class="cm">// true</span>
+
+<span class="cm">// 陷阱 2：typeof null === "object"（历史 bug）</span>
+<span class="kw">typeof</span> <span class="kw">null</span>  <span class="cm">// "object"</span>
+
+<span class="cm">// 陷阱 3：数组的 typeof</span>
+<span class="kw">typeof</span> []    <span class="cm">// "object"（应该用 Array.isArray()）</span>
+<span class="tp">Array</span>.<span class="fn">isArray</span>([])  <span class="cm">// true</span>
+
+<span class="cm">// 陷阱 4：字符串不可变</span>
+<span class="kw">let</span> str <span class="op">=</span> <span class="st">"hello"</span>;
+str[<span class="nm">0</span>] <span class="op">=</span> <span class="st">"H"</span>;     <span class="cm">// 静默失败（严格模式报错）</span>
+<span class="fn">console</span>.<span class="fn">log</span>(str);  <span class="cm">// "hello"</span>
+
+<span class="cm">// 陷阱 5：引用类型的浅拷贝</span>
+<span class="kw">const</span> original <span class="op">=</span> { nested: { value: <span class="nm">1</span> } };
+<span class="kw">const</span> copy <span class="op">=</span> { ...original };
+copy.nested.value <span class="op">=</span> <span class="nm">999</span>;
+<span class="fn">console</span>.<span class="fn">log</span>(original.nested.value);  <span class="cm">// 999（被修改了！）</span>
+
+<span class="cm">// 深拷贝</span>
+<span class="kw">const</span> deepCopy <span class="op">=</span> structuredClone(original);  <span class="cm">// 现代方法</span>
+
+<span class="cm">// 陷阱 6：== 的隐式转换</span>
+<span class="st">""</span> <span class="op">==</span> <span class="kw">false</span>     <span class="cm">// true（令人困惑！）</span>
+<span class="st">"0"</span> <span class="op">==</span> <span class="nm">0</span>         <span class="cm">// true</span>
+<span class="nm">0</span> <span class="op">==</span> <span class="st">"0"</span>         <span class="cm">// true</span>
+<span class="nm">0</span> <span class="op">==</span> <span class="kw">false</span>       <span class="cm">// true</span>
+<span class="st">"0"</span> <span class="op">==</span> <span class="kw">false</span>     <span class="cm">// true</span>
+<span class="cm">// 永远用 ===</span>
+
+<span class="cm">// 陷阱 7：闭包中的循环变量</span>
+<span class="kw">for</span> (<span class="kw">var</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> <span class="nm">3</span>; i<span class="op">++</span>) {
+    <span class="fn">setTimeout</span>(() <span class="op">=></span> <span class="fn">console</span>.<span class="fn">log</span>(i), <span class="nm">100</span>);  <span class="cm">// 3, 3, 3</span>
+}
+<span class="cm">// 修复：使用 let</span>
+<span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> <span class="nm">3</span>; i<span class="op">++</span>) {
+    <span class="fn">setTimeout</span>(() <span class="op">=></span> <span class="fn">console</span>.<span class="fn">log</span>(i), <span class="nm">100</span>);  <span class="cm">// 0, 1, 2</span>
+}</code></pre>
+</div>
+
+<h3>最佳实践</h3>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// ✅ 1. 使用 const 优先，需要重新赋值时用 let，避免 var</span>
+<span class="kw">const</span> API_URL <span class="op">=</span> <span class="st">"https://api.example.com"</span>;
+<span class="kw">let</span> page <span class="op">=</span> <span class="nm">1</span>;
+page<span class="op">++</span>;
+
+<span class="cm">// ✅ 2. 使用严格相等 ===</span>
+<span class="kw">if</span> (value <span class="op">===</span> <span class="kw">null</span>) { <span class="cm">/* ... */</span> }
+
+<span class="cm">// ✅ 3. 用解构赋值简化代码</span>
+<span class="kw">function</span> <span class="fn">processUser</span>({ name, age, email <span class="op">=</span> <span class="st">"N/A"</span> }) {
+    <span class="kw">return</span> { name, age, email };
+}
+
+<span class="cm">// ✅ 4. 用模板字符串代替字符串拼接</span>
+<span class="kw">const</span> msg <span class="op">=</span> <span class="st">`你好，${name}！欢迎来到${city}。`</span>;
+
+<span class="cm">// ✅ 5. 用可选链和空值合并处理可能为空的值</span>
+<span class="kw">const</span> street <span class="op">=</span> user<span class="op">?.</span>address<span class="op">?.</span>street <span class="op">??</span> <span class="st">"未知地址"</span>;
+
+<span class="cm">// ✅ 6. 用数组方法代替 for 循环</span>
+<span class="kw">const</span> doubled <span class="op">=</span> numbers.<span class="fn">map</span>(n <span class="op">=></span> n <span class="op">*</span> <span class="nm">2</span>);
+<span class="kw">const</span> evens <span class="op">=</span> numbers.<span class="fn">filter</span>(n <span class="op">=></span> n <span class="op">%</span> <span class="nm">2</span> <span class="op">===</span> <span class="nm">0</span>);
+
+<span class="cm">// ✅ 7. 用早返回减少嵌套</span>
+<span class="kw">function</span> <span class="fn">process</span>(data) {
+    <span class="kw">if</span> (<span class="op">!</span>data) <span class="kw">return</span>;
+    <span class="kw">if</span> (<span class="op">!</span>data.items) <span class="kw">return</span>;
+    <span class="cm">// 主要逻辑...</span>
+}
+
+<span class="cm">// ✅ 8. 用 Map 替代对象作为字典（当键不是字符串时）</span>
+<span class="kw">const</span> cache <span class="op">=</span> <span class="kw">new</span> <span class="tp">Map</span>();
+cache.<span class="fn">set</span>(<span class="nm">1</span>, <span class="st">"one"</span>);
+cache.<span class="fn">set</span>(<span class="st">"key"</span>, <span class="st">"value"</span>);
+cache.<span class="fn">set</span>(<span class="tp">Symbol</span>(), <span class="st">"symbol"</span>);
+
+<span class="cm">// ✅ 9. 善用展开运算符进行浅拷贝和合并</span>
+<span class="kw">const</span> merged <span class="op">=</span> { ...defaults, ...userConfig };
+
+<span class="cm">// ✅ 10. 用解构交换变量</span>
+<span class="kw">let</span> a <span class="op">=</span> <span class="nm">1</span>, b <span class="op">=</span> <span class="nm">2</span>;
+[a, b] <span class="op">=</span> [b, a];  <span class="cm">// a=2, b=1</span></code></pre>
+</div>
+
+<div class="code-block">
+    <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">JavaScript</span>
+    </div>
+    <pre><code><span class="cm">// ✅ 11. 使用 Optional Chaining 和 Nullish Coalescing</span>
+<span class="kw">const</span> user <span class="op">=</span> { profile: { address: <span class="kw">null</span> } };
+
+<span class="cm">// 旧写法</span>
+<span class="kw">const</span> city1 <span class="op">=</span> user <span class="op">&amp;&amp;</span> user.profile <span class="op">&amp;&amp;</span> user.profile.address <span class="op">&amp;&amp;</span> user.profile.address.city;
+
+<span class="cm">// 新写法</span>
+<span class="kw">const</span> city2 <span class="op">=</span> user<span class="op">?.</span>profile<span class="op">?.</span>address<span class="op">?.</span>city;  <span class="cm">// undefined</span>
+
+<span class="cm">// 使用 ??（只对 null/undefined 生效，不像 || 对所有 falsy 生效）</span>
+<span class="kw">const</span> count1 <span class="op">=</span> <span class="nm">0</span> <span class="op">||</span> <span class="nm">10</span>;    <span class="cm">// 10（0 是 falsy）</span>
+<span class="kw">const</span> count2 <span class="op">=</span> <span class="nm">0</span> <span class="op">??</span> <span class="nm">10</span>;    <span class="cm">// 0（0 不是 null/undefined）</span>
+
+<span class="cm">// ✅ 12. 使用 Array.from 和 spread 将类数组转为数组</span>
+<span class="kw">const</span> argsArray <span class="op">=</span> [...arguments];    <span class="cm">// 函数 arguments</span>
+<span class="kw">const</span> nodeList <span class="op">=</span> <span class="tp">Array</span>.<span class="fn">from</span>(document.<span class="fn">querySelectorAll</span>(<span class="st">"div"</span>));
+
+<span class="cm">// ✅ 13. 使用 Object.groupBy（ES2024）进行分组</span>
+<span class="kw">const</span> people <span class="op">=</span> [
+    { name: <span class="st">"张三"</span>, city: <span class="st">"北京"</span> },
+    { name: <span class="st">"李四"</span>, city: <span class="st">"上海"</span> },
+    { name: <span class="st">"王五"</span>, city: <span class="st">"北京"</span> }
+];
+<span class="kw">const</span> byCity <span class="op">=</span> <span class="tp">Object</span>.<span class="fn">groupBy</span>(people, p <span class="op">=></span> p.city);</code></pre>
+</div>
+
+<div class="tip">
+    <strong>JavaScript 学习路径建议</strong>：
+    <p>1. 先掌握基础语法和数据类型（1-8 章）</p>
+    <p>2. 深入理解函数、作用域和闭包（11-14、22 章）</p>
+    <p>3. 学会异步编程：Promise → async/await → 事件循环（18-21 章）</p>
+    <p>4. 掌握面向对象：原型链 → ES6 class → 继承（15-17 章）</p>
+    <p>5. 了解高级特性：模块系统、迭代器、Symbol（23-26 章）</p>
+    <p>6. 多写代码，多踩坑，在实践中巩固知识（27 章）</p>
+</div>
+
+</main>
+
+<!-- 侧边栏导航高亮脚本 -->
+<script>
+    // 移动端菜单切换
+    document.querySelector('.menu-toggle').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('open');
+    });
+
+    // 点击主内容区域关闭侧边栏
+    document.querySelector('.main').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.remove('open');
+    });
+
+    // 侧边栏导航高亮
+    const sections = document.querySelectorAll('h2[id]');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+    function highlightNav() {
+        let currentSection = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100;
+            if (window.scrollY >= sectionTop) {
+                currentSection = section.getAttribute('id');
+            }
+        });
+
+        sidebarLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + currentSection) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', highlightNav);
+    highlightNav();
+
+    // 点击侧边栏链接后关闭菜单（移动端）
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.remove('open');
+        });
+    });
+</script>
+
+</body>
+</html>

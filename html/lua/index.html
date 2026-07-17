@@ -1,0 +1,2077 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lua语言完整教程 - 从入门到精通</title>
+    <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2 style="padding: 20px; color: #000080; font-size: 1.3em; border-bottom: 1px solid #333;">🌙 Lua语言教程</h2>
+        
+        <h3 style="padding: 10px 20px; color: #888; font-size: 0.9em; text-transform: uppercase;">入门</h3>
+        <a href="#intro" class="sidebar-link"><span class="num">01</span>简介</a>
+        <a href="#environment" class="sidebar-link"><span class="num">02</span>环境搭建</a>
+        <a href="#basics" class="sidebar-link"><span class="num">03</span>基本语法</a>
+        
+        <h3 style="padding: 10px 20px; color: #888; font-size: 0.9em; text-transform: uppercase;">基础</h3>
+        <a href="#variables" class="sidebar-link"><span class="num">04</span>变量与类型</a>
+        <a href="#operators" class="sidebar-link"><span class="num">05</span>运算符</a>
+        <a href="#strings" class="sidebar-link"><span class="num">06</span>字符串</a>
+        <a href="#tables" class="sidebar-link"><span class="num">07</span>表(table)</a>
+        
+        <h3 style="padding: 10px 20px; color: #888; font-size: 0.9em; text-transform: uppercase;">流程</h3>
+        <a href="#conditions" class="sidebar-link"><span class="num">08</span>条件判断</a>
+        <a href="#loops" class="sidebar-link"><span class="num">09</span>循环语句</a>
+        
+        <h3 style="padding: 10px 20px; color: #888; font-size: 0.9em; text-transform: uppercase;">函数</h3>
+        <a href="#functions" class="sidebar-link"><span class="num">10</span>函数</a>
+        <a href="#multi-return" class="sidebar-link"><span class="num">11</span>多返回值</a>
+        <a href="#closures" class="sidebar-link"><span class="num">12</span>闭包</a>
+        
+        <h3 style="padding: 10px 20px; color: #888; font-size: 0.9em; text-transform: uppercase;">高级</h3>
+        <a href="#metatables" class="sidebar-link"><span class="num">13</span>元表与元方法</a>
+        <a href="#oop" class="sidebar-link"><span class="num">14</span>面向对象</a>
+        <a href="#modules" class="sidebar-link"><span class="num">15</span>模块系统</a>
+        
+        <h3 style="padding: 10px 20px; color: #888; font-size: 0.9em; text-transform: uppercase;">进阶</h3>
+        <a href="#coroutines" class="sidebar-link"><span class="num">16</span>协程</a>
+        <a href="#gc" class="sidebar-link"><span class="num">17</span>垃圾回收</a>
+        <a href="#debug" class="sidebar-link"><span class="num">18</span>调试</a>
+        <a href="#capi" class="sidebar-link"><span class="num">19</span>与C交互</a>
+        
+        <h3 style="padding: 10px 20px; color: #888; font-size: 0.9em; text-transform: uppercase;">实战</h3>
+        <a href="#gamedev" class="sidebar-link"><span class="num">20</span>游戏开发应用</a>
+        <a href="#best-practices" class="sidebar-link"><span class="num">21</span>最佳实践</a>
+    </div>
+
+    <div class="main">
+        <!-- 第1章：简介 -->
+        <section id="intro">
+            <h1>1. Lua语言简介</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua是什么？</div>
+                <p>Lua是一门小巧、快速、可移植的脚本语言，诞生于1993年的巴西里约热内卢天主教大学（PUC-Rio）。名字"Lua"在葡萄牙语中意为"月亮"，呼应了巴西国旗上的月亮图案。Lua以其<strong>极小的体积</strong>（标准库编译后仅约200KB）、<strong>极快的执行速度</strong>（JIT版本可达C的1/3速度）和<strong>出色的可嵌入性</strong>而闻名于世。</p>
+                
+                <p>Lua的设计哲学是<strong>"提供机制而非策略"</strong>（mechanisms, not policies）。它不会替你决定如何编程，而是提供一套精巧的原语，让你自由组合出所需的特性。这种设计使得Lua成为了游戏开发、嵌入式系统、Web服务器等领域的首选脚本语言。</p>
+                
+                <div class="principle-title">Lua的设计哲学</div>
+                <p><strong>极致的简洁性</strong>：Lua的语法核心只有约20个关键字，完整的语言规范文档不过百页。但这种简洁并非功能的缺失——通过元表（metatable）、闭包（closure）和协程（coroutine）等机制，Lua可以表达极其复杂的编程模式。</p>
+                
+                <p><strong>表驱动架构（Table-Driven）</strong>：Lua中"表"（table）是唯一的数据结构。数组、字典、对象、模块、甚至命名空间——一切皆表。这种统一性使得Lua的概念数量极少，却能灵活应对各种场景。</p>
+                
+                <p><strong>渐进式扩展</strong>：Lua不追求语言本身的庞大，而是通过C API让宿主程序将自身能力"注入"到Lua环境中。LuaJIT的FFI、LuaSocket等扩展都体现了这种"小核心、大生态"的理念。</p>
+            </div>
+
+            <div class="principle">
+                <div class="principle-title">Lua的应用领域</div>
+                <p><strong>游戏开发</strong>：Lua是游戏脚本领域的事实标准。World of Warcraft、Angry Birds、Roblox、Garry's Mod等知名游戏均使用Lua作为脚本语言。LÖVE、Defold、Solar2D等游戏引擎以Lua为核心。</p>
+                <p><strong>嵌入式系统</strong>：Lua的微型体积使其非常适合资源受限的环境。许多路由器固件（如OpenWrt）、IoT设备和工业控制器使用Lua作为配置和扩展语言。</p>
+                <p><strong>Web开发</strong>：OpenResty/Nginx通过Lua实现了高性能的Web服务。Lapis、Sailor等框架让Lua也能胜任Web后端开发。</p>
+                <p><strong>数据库扩展</strong>：Redis从2.6版本开始内置Lua解释器，支持用Lua脚本实现原子性的复杂操作。MySQL也支持Lua存储过程。</p>
+                <p><strong>网络工具</strong>：Nmap的脚本引擎（NSE）、Wireshark的协议解析器都使用Lua编写。</p>
+            </div>
+
+            <div class="principle">
+                <div class="principle-title">Lua版本演进</div>
+                <p><strong>Lua 5.0（2003年）</strong>：引入协程（coroutine），实现真正的非对称协程模型。</p>
+                <p><strong>Lua 5.1（2006年）</strong>：引入模块系统（require/module），垃圾回收器改为分代式增量回收，是目前使用最广泛的稳定版本。</p>
+                <p><strong>Lua 5.2（2011年）</strong>：移除模块系统的隐式全局变量，引入可变参数的更好支持，增加goto语句。</p>
+                <p><strong>Lua 5.3（2015年）</strong>：引入原生64位整数支持和位运算库，加强了与C的互操作性。</p>
+                <p><strong>Lua 5.4（2020年）</strong>：引入新的垃圾回收器（分代+增量混合），支持即时值（ephemeron），改进了弱引用语义。</p>
+                <p><strong>LuaJIT</strong>：Mike Pall开发的Lua即时编译器，提供接近C的执行性能，是Lua性能的标杆。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 第一个Lua程序：Hello, World!</span>
+<span class="fn">print</span>(<span class="st">"Hello, World!"</span>)
+
+<span class="cm">-- Lua的核心优势一览</span>
+<span class="fn">print</span>(<span class="st">"体积: 约200KB"</span>)
+<span class="fn">print</span>(<span class="st">"关键字: 仅20个"</span>)
+<span class="fn">print</span>(<span class="st">"数据结构: 仅table一种"</span>)
+<span class="fn">print</span>(<span class="st">"设计理念: 机制而非策略"</span>)</code></pre>
+            </div>
+        </section>
+
+        <!-- 第2章：环境搭建 -->
+        <section id="environment">
+            <h1>2. 环境搭建</h1>
+            
+            <div class="principle">
+                <div class="principle-title">安装Lua解释器</div>
+                <p>Lua的安装极为简单，这是其"嵌入式友好"设计的体现。在大多数系统上，Lua可以通过包管理器一行命令完成安装。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Shell</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm"># Windows（使用winget）</span>
+winget install Lua.Lua
+
+<span class="cm"># macOS（使用Homebrew）</span>
+brew install lua
+
+<span class="cm"># Ubuntu/Debian</span>
+sudo apt-get install lua5.4 liblua5.4-dev
+
+<span class="cm"># CentOS/RHEL</span>
+sudo yum install lua lua-devel
+
+<span class="cm"># 从源码编译（所有平台通用）</span>
+curl -R -O https://www.lua.org/ftp/lua-5.4.7.tar.gz
+tar zxf lua-5.4.7.tar.gz
+<span class="kw">cd</span> lua-5.4.7
+make linux test    <span class="cm"># Linux</span>
+make macosx test   <span class="cm"># macOS</span></code></pre>
+            </div>
+
+            <div class="principle">
+                <div class="principle-title">LuaJIT — 极速Lua</div>
+                <p>LuaJIT是Mike Pall开发的Lua即时编译器，能将Lua代码编译为机器码执行，性能接近纯C。对于性能敏感的应用（如游戏服务器、高频交易），推荐使用LuaJIT替代标准Lua。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Shell</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm"># 安装LuaJIT</span>
+<span class="cm"># Ubuntu/Debian</span>
+sudo apt-get install luajit
+
+<span class="cm"># macOS</span>
+brew install luajit
+
+<span class="cm"># 验证安装</span>
+luajit -v
+<span class="cm"># LuaJIT 2.1.1727870382 (Lua 5.1)</span>
+
+<span class="cm"># 运行Lua脚本</span>
+lua script.lua         <span class="cm"># 标准Lua</span>
+luajit script.lua      <span class="cm"># LuaJIT</span></code></pre>
+            </div>
+
+            <div class="principle">
+                <div class="principle-title">推荐的开发工具</div>
+                <p><strong>VS Code + Lua插件</strong>：安装"Lua"插件（sumneko）提供语法高亮、代码补全、类型检查和格式化。</p>
+                <p><strong>ZeroBrane Studio</strong>：专为Lua设计的轻量级IDE，内置调试器，支持远程调试。</p>
+                <p><strong>LuaRocks</strong>：Lua的包管理器，类似Python的pip或Node.js的npm。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Shell</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm"># 安装LuaRocks</span>
+<span class="cm"># Ubuntu/Debian</span>
+sudo apt-get install luarocks
+
+<span class="cm"># macOS</span>
+brew install luarocks
+
+<span class="cm"># 使用LuaRocks安装库</span>
+luarocks install luasocket      <span class="cm"># 网络库</span>
+luarocks install luasec         <span class="cm"># SSL支持</span>
+luarocks install cjson          <span class="cm"># JSON解析</span>
+luarocks install inspect        <span class="cm"># 数据结构检查</span>
+luarocks install busted         <span class="cm"># 测试框架</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第3章：基本语法 -->
+        <section id="basics">
+            <h1>3. 基本语法</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua的语法规则</div>
+                <p>Lua的语法设计追求<strong>最小惊奇原则</strong>。如果你有其他脚本语言的经验，Lua的大部分语法都会觉得很熟悉。Lua使用<strong>缩进不敏感</strong>的语法（与Python不同），使用<strong>end</strong>关键字结束代码块（与Ruby/Bash类似），注释使用<strong>--</strong>（单行）和<strong>--[[ ]]</strong>（多行）。</p>
+                
+                <p><strong>大小写敏感</strong>：Lua区分大小写，<code>variable</code>、<code>Variable</code>和<code>VARIABLE</code>是三个不同的标识符。</p>
+                <p><strong>标识符命名</strong>：以字母或下划线开头，后跟字母、数字或下划线。Lua约定以<strong>下划线开头</strong>的变量是"私有"的（如<code>_private</code>），全大写用于常量（如<code>MAX_SIZE</code>）。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- Lua的20个关键字（Lua 5.4）</span>
+<span class="cm">-- and       break     do        else      elseif</span>
+<span class="cm">-- end       false     for       function  goto</span>
+<span class="cm">-- if        in        local     nil       not</span>
+<span class="cm">-- or        repeat    return    then      true</span>
+<span class="cm">-- until     while</span>
+
+<span class="cm">-- 基本输出</span>
+<span class="fn">print</span>(<span class="st">"Hello, Lua!"</span>)
+<span class="fn">print</span>(<span class="nm">42</span>)           <span class="cm">-- 整数</span>
+<span class="fn">print</span>(<span class="nm">3.14</span>)         <span class="cm">-- 浮点数</span>
+<span class="fn">print</span>(<span class="kw">true</span>)         <span class="cm">-- 布尔值</span>
+<span class="fn">print</span>(<span class="kw">nil</span>)          <span class="cm">-- 空值</span>
+
+<span class="cm">-- 注释</span>
+<span class="cm">-- 这是单行注释</span>
+
+<span class="cm">--[[
+    这是多行注释
+    可以跨越多行
+]]</span>
+
+<span class="cm">--[=[
+    这也是多行注释
+    使用 [=[ 和 ]=] 作为界定符
+    可以嵌套 --[[ ]] 注释
+]=]</span>
+
+<span class="cm">-- 语句结束符（可选）</span>
+<span class="fn">print</span>(<span class="st">"分号是可选的"</span>)<span class="op">;</span> <span class="fn">print</span>(<span class="st">"同一行多语句"</span>)
+
+<span class="cm">-- do...end 代码块</span>
+<span class="kw">do</span>
+    <span class="kw">local</span> x = <span class="nm">10</span>
+    <span class="kw">local</span> y = <span class="nm">20</span>
+    <span class="fn">print</span>(x + y)  <span class="cm">-- 30</span>
+<span class="kw">end</span> <span class="cm">-- x 和 y 在这里不可见</span>
+
+<span class="cm">-- 多重赋值</span>
+<span class="kw">local</span> a, b, c = <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>
+<span class="kw">local</span> x, y = <span class="nm">10</span>, <span class="nm">20</span>
+<span class="kw">local</span> p, q = <span class="nm">1</span>     <span class="cm">-- p=1, q=nil（未赋值的变量为nil）</span></code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- Lua 5.2+ 支持 goto 语句</span>
+<span class="kw">local</span> i = <span class="nm">1</span>
+<span class="kw">while</span> i &lt;= <span class="nm">10</span> <span class="kw">do</span>
+    <span class="kw">if</span> i == <span class="nm">5</span> <span class="kw">then</span>
+        <span class="kw">goto</span> continue
+    <span class="kw">end</span>
+    <span class="fn">print</span>(i)
+    ::continue::
+    i = i + <span class="nm">1</span>
+<span class="kw">end</span>
+
+<span class="cm">-- goto 也可用于跳出多层循环</span>
+<span class="kw">for</span> i = <span class="nm">1</span>, <span class="nm">100</span> <span class="kw">do</span>
+    <span class="kw">for</span> j = <span class="nm">1</span>, <span class="nm">100</span> <span class="kw">do</span>
+        <span class="kw">if</span> i * j == <span class="nm">24</span> <span class="kw">then</span>
+            <span class="kw">goto</span> done
+        <span class="kw">end</span>
+    <span class="kw">end</span>
+<span class="kw">end</span>
+::done::
+<span class="fn">print</span>(<span class="st">"跳出多层循环"</span>)</code></pre>
+            </div>
+        </section>
+
+        <!-- 第4章：变量与类型 -->
+        <section id="variables">
+            <h1>4. 变量与类型</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua的动态类型系统</div>
+                <p>Lua是<strong>动态类型语言</strong>，变量本身没有类型，只有值才有类型。Lua提供<strong>8种基本类型</strong>：</p>
+                <p><strong>nil</strong>：空值类型，全局唯一的nil值。所有未初始化的变量都是nil。nil既是"没有值"的表示，也是"删除表字段"的工具。</p>
+                <p><strong>boolean</strong>：布尔类型，只有true和false两个值。在Lua中，<strong>只有nil和false是假值</strong>，其他所有值（包括0和空字符串""）都是真值。</p>
+                <p><strong>number</strong>：数字类型，Lua 5.3+统一了整数（integer）和浮点数（float），不再有显式区分。</p>
+                <p><strong>string</strong>：字符串类型，不可变的字节序列。Lua字符串是二进制安全的，可以包含任意字节。</p>
+                <p><strong>function</strong>：函数类型，Lua中的函数是一等公民，可以赋值给变量、作为参数传递。</p>
+                <p><strong>table</strong>：表类型，Lua<strong>唯一的数据结构</strong>。关联数组的实现，可同时充当数组和字典。</p>
+                <p><strong>userdata</strong>：用户数据类型，用于将C/C++数据暴露给Lua。</p>
+                <p><strong>thread</strong>：协程类型，用于实现协作式多任务。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 使用 type() 函数检查变量类型</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="kw">nil</span>))          <span class="cm">-- nil</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="kw">true</span>))         <span class="cm">-- boolean</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="nm">42</span>))           <span class="cm">-- number</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="nm">3.14</span>))         <span class="cm">-- number</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="st">"hello"</span>))      <span class="cm">-- string</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="fn">print</span>))        <span class="cm">-- function</span>
+<span class="fn">print</span>(<span class="fn">type</span>({}))           <span class="cm">-- table</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="kw">nil</span>))          <span class="cm">-- nil</span>
+
+<span class="cm">-- 整数与浮点数（Lua 5.3+）</span>
+<span class="kw">local</span> int_val = <span class="nm">42</span>         <span class="cm">-- 整数</span>
+<span class="kw">local</span> float_val = <span class="nm">3.14</span>     <span class="cm">-- 浮点数</span>
+<span class="fn">print</span>(<span class="fn">math.type</span>(int_val))   <span class="cm">-- integer</span>
+<span class="fn">print</span>(<span class="fn">math.type</span>(float_val)) <span class="cm">-- float</span>
+
+<span class="cm">-- 数字字面量的多种写法</span>
+<span class="kw">local</span> a = <span class="nm">42</span>            <span class="cm">-- 十进制整数</span>
+<span class="kw">local</span> b = <span class="nm">0xFF</span>          <span class="cm">-- 十六进制</span>
+<span class="kw">local</span> c = <span class="nm">0b1010</span>        <span class="cm">-- 二进制（Lua 5.2+）</span>
+<span class="kw">local</span> d = <span class="nm">1e3</span>           <span class="cm">-- 科学计数法（1000）</span>
+<span class="kw">local</span> e = <span class="nm">3.14e-2</span>       <span class="cm">-- 0.0314</span>
+<span class="kw">local</span> f = <span class="nm">1_000_000</span>     <span class="cm">-- 下划线分隔（Lua 5.2+）</span>
+
+<span class="cm">-- 两种变量声明方式</span>
+x = <span class="nm">10</span>              <span class="cm">-- 全局变量（不推荐）</span>
+<span class="kw">local</span> y = <span class="nm">20</span>        <span class="cm">-- 局部变量（推荐）</span></code></pre>
+            </div>
+
+            <div class="principle">
+                <div class="principle-title">Lua的真值系统</div>
+                <p>Lua采用了一种<strong>极简的真值判断</strong>：只有<code>nil</code>和<code>false</code>是假值，<strong>其他一切都是真值</strong>。这意味着：</p>
+                <p><code>0</code>是真值（与C/Python不同），<code>""</code>（空字符串）是真值，<code>{}</code>（空表）是真值。这种设计避免了"0是否为假"这类歧义，简化了条件判断逻辑。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- Lua的真值系统</span>
+<span class="kw">if</span> <span class="nm">0</span> <span class="kw">then</span> <span class="fn">print</span>(<span class="st">"0 是真值！"</span>) <span class="kw">end</span>         <span class="cm">-- 会执行</span>
+<span class="kw">if</span> <span class="st">""</span> <span class="kw">then</span> <span class="fn">print</span>(<span class="st">"空字符串是真值！"</span>) <span class="kw">end</span>  <span class="cm">-- 会执行</span>
+<span class="kw">if</span> {} <span class="kw">then</span> <span class="fn">print</span>(<span class="st">"空表是真值！"</span>) <span class="kw">end</span>      <span class="cm">-- 会执行</span>
+<span class="kw">if</span> <span class="kw">nil</span> <span class="kw">then</span> <span class="fn">print</span>(<span class="st">"这条不会显示"</span>) <span class="kw">end</span>   <span class="cm">-- 不执行</span>
+<span class="kw">if</span> <span class="kw">false</span> <span class="kw">then</span> <span class="fn">print</span>(<span class="st">"这条也不会显示"</span>) <span class="kw">end</span> <span class="cm">-- 不执行</span>
+
+<span class="cm">-- 变量作用域与生命期</span>
+<span class="kw">do</span>
+    <span class="kw">local</span> a = <span class="nm">1</span>    <span class="cm">-- a 的作用域从这里开始</span>
+    <span class="fn">print</span>(a)       <span class="cm">-- 1</span>
+<span class="kw">end</span>
+<span class="cm">-- print(a)  -- 错误！a 已经超出作用域</span>
+
+<span class="cm">-- 变量遮蔽（Shadowing）</span>
+<span class="kw">local</span> x = <span class="nm">10</span>
+<span class="kw">do</span>
+    <span class="kw">local</span> x = <span class="nm">20</span>   <span class="cm">-- 这是一个新的 x，遮蔽了外部的 x</span>
+    <span class="fn">print</span>(x)       <span class="cm">-- 20</span>
+<span class="kw">end</span>
+<span class="fn">print</span>(x)          <span class="cm">-- 10（外部的 x）</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第5章：运算符 -->
+        <section id="operators">
+            <h1>5. 运算符</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua运算符概览</div>
+                <p>Lua提供了<strong>算术、关系、逻辑、位运算、连接和长度</strong>六大类运算符。运算符优先级从高到低排列：一元运算符 > 连接 > 算术 > 关系 > 逻辑 > 赋值。</p>
+                
+                <p>值得注意的是，Lua的<strong>逻辑运算符</strong>采用<strong>短路求值</strong>，但它们返回的是<strong>操作数本身</strong>而非布尔值（类似JavaScript的<code>||</code>和<code>&&</code>）。这个特性在设置默认值时非常有用。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 算术运算符</span>
+<span class="fn">print</span>(<span class="nm">10</span> + <span class="nm">3</span>)     <span class="cm">-- 13  加法</span>
+<span class="fn">print</span>(<span class="nm">10</span> - <span class="nm">3</span>)     <span class="cm">-- 7   减法</span>
+<span class="fn">print</span>(<span class="nm">10</span> * <span class="nm">3</span>)     <span class="cm">-- 30  乘法</span>
+<span class="fn">print</span>(<span class="nm">10</span> / <span class="nm">3</span>)     <span class="cm">-- 3.333... 除法</span>
+<span class="fn">print</span>(<span class="nm">10</span> // <span class="nm">3</span>)    <span class="cm">-- 3   整除（Lua 5.3+）</span>
+<span class="fn">print</span>(<span class="nm">10</span> % <span class="nm">3</span>)     <span class="cm">-- 1   取模</span>
+<span class="fn">print</span>(<span class="nm">10</span> ^ <span class="nm">3</span>)     <span class="cm">-- 1000 乘方</span>
+
+<span class="cm">-- 一元运算符</span>
+<span class="fn">print</span>(-<span class="nm">5</span>)           <span class="cm">-- -5   取负</span>
+<span class="fn">print</span>(#<span class="st">"hello"</span>)     <span class="cm">-- 5    长度运算符</span>
+<span class="fn">print</span>(#{}           <span class="cm">-- 0    空表长度</span>
+
+<span class="cm">-- 关系运算符（返回 boolean）</span>
+<span class="fn">print</span>(<span class="nm">1</span> == <span class="nm">1</span>)       <span class="cm">-- true  等于</span>
+<span class="fn">print</span>(<span class="nm">1</span> ~= <span class="nm">2</span>)       <span class="cm">-- true  不等于</span>
+<span class="fn">print</span>(<span class="nm">1</span> &lt; <span class="nm">2</span>)        <span class="cm">-- true  小于</span>
+<span class="fn">print</span>(<span class="nm">2</span> &gt; <span class="nm">1</span>)        <span class="cm">-- true  大于</span>
+<span class="fn">print</span>(<span class="nm">1</span> &lt;= <span class="nm">1</span>)       <span class="cm">-- true  小于等于</span>
+<span class="fn">print</span>(<span class="nm">2</span> &gt;= <span class="nm">2</span>)       <span class="cm">-- true  大于等于</span>
+
+<span class="cm">-- 逻辑运算符（短路求值，返回操作数）</span>
+<span class="fn">print</span>(<span class="kw">true</span> <span class="kw">and</span> <span class="st">"yes"</span>)    <span class="cm">-- "yes"（返回第二个操作数）</span>
+<span class="fn">print</span>(<span class="kw">false</span> <span class="kw">and</span> <span class="st">"yes"</span>)   <span class="cm">-- false（短路返回第一个操作数）</span>
+<span class="fn">print</span>(<span class="kw">nil</span> <span class="kw">or</span> <span class="st">"default"</span>)  <span class="cm">-- "default"（nil为假，返回第二个）</span>
+<span class="fn">print</span>(<span class="kw">false</span> <span class="kw">or</span> <span class="st">"hi"</span>)    <span class="cm">-- "hi"</span>
+<span class="fn">print</span>(<span class="kw">not</span> <span class="kw">false</span>)         <span class="cm">-- true</span>
+
+<span class="cm">-- 常用模式：设置默认值</span>
+<span class="kw">local</span> name = <span class="kw">nil</span>
+<span class="kw">local</span> display_name = name <span class="kw">or</span> <span class="st">"匿名"</span>
+<span class="fn">print</span>(display_name)  <span class="cm">-- "匿名"</span>
+
+<span class="cm">-- 位运算符（Lua 5.3+）</span>
+<span class="fn">print</span>(<span class="nm">0xFF</span> &amp; <span class="nm">0x0F</span>)    <span class="cm">-- 15   按位与</span>
+<span class="fn">print</span>(<span class="nm">0xF0</span> | <span class="nm">0x0F</span>)    <span class="cm">-- 255  按位或</span>
+<span class="fn">print</span>(<span class="nm">0xFF</span> ~ <span class="nm">0x0F</span>)    <span class="cm">-- 240  按位异或</span>
+<span class="fn">print</span>(~<span class="nm">0</span>)              <span class="cm">-- -1   按位取反</span>
+<span class="fn">print</span>(<span class="nm">1</span> &lt;&lt; <span class="nm">8</span>)          <span class="cm">-- 256  左移</span>
+<span class="fn">print</span>(<span class="nm">256</span> &gt;&gt; <span class="nm">4</span>)        <span class="cm">-- 16   右移</span></code></pre>
+            </div>
+
+            <div class="warning">
+                Lua的逻辑运算符返回操作数而非布尔值。<code>nil or 0</code>返回<code>0</code>，<code>false and 1</code>返回<code>false</code>。在需要布尔结果时，请显式使用<code>not not x</code>进行转换。
+            </div>
+        </section>
+
+        <!-- 第6章：字符串 -->
+        <section id="strings">
+            <h1>6. 字符串</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua字符串的内部实现</div>
+                <p>Lua字符串是<strong>不可变的字节序列</strong>，由<strong>自动内存管理</strong>（GC）负责分配和回收。每个字符串在Lua中都是<strong>内驻化</strong>（interned）的——相同的字符串字面量在内存中只存在一份副本，通过<strong>哈希表</strong>管理。这意味着字符串比较（<code>==</code>）实际上是比较指针，时间复杂度为O(1)。</p>
+                
+                <p>Lua字符串是<strong>二进制安全</strong>的，可以包含任意字节（包括<code>\0</code>）。长度运算符<code>#</code>返回字符串的<strong>字节数</strong>而非字符数（对于UTF-8字符串，字节数 ≠ 字符数）。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 字符串的三种声明方式</span>
+<span class="kw">local</span> s1 = <span class="st">'单引号字符串'</span>
+<span class="kw">local</span> s2 = <span class="st">"双引号字符串"</span>
+<span class="kw">local</span> s3 = <span class="st">[[多行字符串
+可以跨越多行
+不需要转义]]</span>
+
+<span class="cm">-- 长括号语法（防止嵌套问题）</span>
+<span class="kw">local</span> s4 = <span class="st">[=[
+    这可以包含 [[ ]] 而不会产生嵌套问题
+    使用 [=[ 和 ]=] 作为界定符
+]=]</span>
+
+<span class="cm">-- 转义序列</span>
+<span class="fn">print</span>(<span class="st">"换行符: \n制表符: \t反斜杠: \\"</span>)
+<span class="fn">print</span>(<span class="st">"空字符: \0二进制安全"</span>)  <span class="cm">-- 字符串可以包含 \0</span>
+<span class="fn">print</span>(<span class="st">"十六进制: \x48\x65\x6C\x6C\x6F"</span>)  <span class="cm">-- Hello（Lua 5.2+）</span>
+
+<span class="cm">-- Unicode支持（Lua 5.3+）</span>
+<span class="fn">print</span>(<span class="st">"\u{4F60}\u{597D}"</span>)  <span class="cm">-- 你好</span>
+
+<span class="cm">-- 字符串长度</span>
+<span class="fn">print</span>(#<span class="st">"hello"</span>)          <span class="cm">-- 5</span>
+<span class="fn">print</span>(#<span class="st">"你好"</span>)           <span class="cm">-- 6（UTF-8编码的字节数）</span></code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 字符串操作函数</span>
+<span class="kw">local</span> s = <span class="st">"Hello, World!"</span>
+
+<span class="cm">-- 大小写转换</span>
+<span class="fn">print</span>(<span class="fn">string.upper</span>(s))     <span class="cm">-- HELLO, WORLD!</span>
+<span class="fn">print</span>(<span class="fn">string.lower</span>(s))     <span class="cm">-- hello, world!</span>
+
+<span class="cm">-- 查找与提取</span>
+<span class="kw">local</span> start, stop = <span class="fn">string.find</span>(s, <span class="st">"World"</span>)
+<span class="fn">print</span>(start, stop)          <span class="cm">-- 8 12</span>
+<span class="fn">print</span>(<span class="fn">string.sub</span>(s, start, stop))  <span class="cm">-- World</span>
+
+<span class="cm">-- 格式化输出（类似C的printf）</span>
+<span class="fn">print</span>(<span class="fn">string.format</span>(<span class="st">"姓名: %s, 年龄: %d, 身高: %.1f"</span>,
+    <span class="st">"小明"</span>, <span class="nm">25</span>, <span class="nm">1.75</span>))
+
+<span class="cm">-- 字符串反转与重复</span>
+<span class="fn">print</span>(<span class="fn">string.reverse</span>(<span class="st">"abc"</span>))  <span class="cm">-- cba</span>
+<span class="fn">print</span>(<span class="fn">string.rep</span>(<span class="st">"ha"</span>, <span class="nm">3</span>))    <span class="cm">-- hahaha</span>
+
+<span class="cm">-- 字符串与数值转换</span>
+<span class="kw">local</span> num = <span class="fn">tonumber</span>(<span class="st">"42"</span>)     <span class="cm">-- 42</span>
+<span class="kw">local</span> str = <span class="fn">tostring</span>(<span class="nm">42</span>)       <span class="cm">-- "42"</span>
+
+<span class="cm">-- 字符串拼接</span>
+<span class="kw">local</span> full = <span class="st">"Hello"</span> .. <span class="st">", "</span> .. <span class="st">"World!"</span>
+<span class="fn">print</span>(full)                  <span class="cm">-- Hello, World!</span>
+
+<span class="cm">-- table.concat 高效拼接多字符串</span>
+<span class="kw">local</span> parts = {<span class="st">"Lua"</span>, <span class="st">"is"</span>, <span class="st">"great"</span>}
+<span class="fn">print</span>(<span class="fn">table.concat</span>(parts, <span class="st">" "</span>))  <span class="cm">-- Lua is great</span></code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 模式匹配（Pattern Matching）— Lua的杀手锏</span>
+<span class="cm">-- Lua不使用正则表达式，而是使用自己的模式匹配系统</span>
+<span class="cm">-- 模式比正则更简洁，但功能也略有不同</span>
+
+<span class="kw">local</span> text = <span class="st">"Today is 2025-01-15"</span>
+
+<span class="cm">-- 基本匹配</span>
+<span class="kw">local</span> date = <span class="fn">string.match</span>(text, <span class="st">"%d%d%d%d%-%d%d%-%d%d"</span>)
+<span class="fn">print</span>(date)  <span class="cm">-- 2025-01-15</span>
+
+<span class="cm">-- 捕获组（使用括号）</span>
+<span class="kw">local</span> year, month, day = <span class="fn">string.match</span>(text, <span class="st">"(%d%d%d%d)%-(%d%d)%-(%d%d)"</span>)
+<span class="fn">print</span>(year, month, day)  <span class="cm">-- 2025  01  15</span>
+
+<span class="cm">-- 迭代所有匹配</span>
+<span class="kw">local</span> s = <span class="st">"cat, dog, fish"</span>
+<span class="kw">for</span> animal <span class="kw">in</span> <span class="fn">string.gmatch</span>(s, <span class="st">"%w+"</span>) <span class="kw">do</span>
+    <span class="fn">print</span>(animal)
+<span class="kw">end</span>
+<span class="cm">-- 输出: cat, dog, fish</span>
+
+<span class="cm">-- 替换</span>
+<span class="kw">local</span> result = <span class="fn">string.gsub</span>(text, <span class="st">"%d+"</span>, <span class="st">"**"</span>)
+<span class="fn">print</span>(result)  <span class="cm">-- Today is **-**-**</span>
+
+<span class="cm">-- 模式匹配特殊字符</span>
+<span class="cm">-- .  匹配任意字符</span>
+<span class="cm">-- %a 匹配字母</span>
+<span class="cm">-- %d 匹配数字</span>
+<span class="cm">-- %s 匹配空白字符</span>
+<span class="cm">-- %w 匹配字母和数字</span>
+<span class="cm">-- +  一次或多次</span>
+<span class="cm">-- *  零次或多次</span>
+<span class="cm">-- -  零次或多次（最短匹配）</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第7章：表 -->
+        <section id="tables">
+            <h1>7. 表(Table)</h1>
+            
+            <div class="principle">
+                <div class="principle-title">表的内部实现原理</div>
+                <p>Lua的表（table）是整个语言中<strong>最核心的数据结构</strong>，也是唯一的数据结构。它在底层实际上是一个<strong>混合数据结构</strong>，根据使用方式的不同，Lua会自动选择最优的存储策略：</p>
+                
+                <p><strong>数组部分（Array Part）</strong>：当表的键是连续的正整数（1, 2, 3, ...）时，Lua会将其存储在一个<strong>连续的C数组</strong>中，类似其他语言的动态数组。这使得按下标访问的时间复杂度为O(1)，与C数组一样快。</p>
+                
+                <p><strong>哈希部分（Hash Part）</strong>：对于非整数键（字符串键、负数键、稀疏整数键），Lua使用<strong>开放寻址哈希表</strong>实现。哈希表使用<strong>控制探针</strong>（controlled probing）来解决冲突，保证良好的缓存局部性。</p>
+                
+                <p><strong>自动重组</strong>：当Lua检测到表的使用模式发生变化时（如从连续数组变为稀疏使用），会自动重新组织内部存储。例如，当你向一个只有整数键的表中插入字符串键时，Lua会分配哈希部分。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 表的创建与基本操作</span>
+<span class="kw">local</span> fruit = {}           <span class="cm">-- 创建空表</span>
+fruit[<span class="nm">1</span>] = <span class="st">"苹果"</span>          <span class="cm">-- 数组式访问</span>
+fruit[<span class="nm">2</span>] = <span class="st">"香蕉"</span>
+fruit[<span class="nm">3</span>] = <span class="st">"橙子"</span>
+
+<span class="cm">-- 构造器语法</span>
+<span class="kw">local</span> colors = {<span class="st">"红"</span>, <span class="st">"绿"</span>, <span class="st">"蓝"</span>}      <span class="cm">-- 数组</span>
+<span class="kw">local</span> person = {name = <span class="st">"张三"</span>, age = <span class="nm">30</span>}  <span class="cm">-- 字典</span>
+<span class="kw">local</span> mixed = {<span class="nm">1</span>, <span class="nm">2</span>, name = <span class="st">"测试"</span>}       <span class="cm">-- 混合</span>
+
+<span class="cm">-- 访问方式</span>
+<span class="fn">print</span>(colors[<span class="nm">1</span>])           <span class="cm">-- 红（下标访问）</span>
+<span class="fn">print</span>(person.name)         <span class="cm">-- 张三（点号访问）</span>
+<span class="fn">print</span>(person[<span class="st">"name"</span>])      <span class="cm">-- 张三（字符串键访问）</span>
+
+<span class="cm">-- 表长度</span>
+<span class="fn">print</span>(#colors)             <span class="cm">-- 3（整数序列长度）</span>
+<span class="fn">print</span>(#person)             <span class="cm">-- 0（没有整数键，长度为0）</span>
+
+<span class="cm">-- 遍历</span>
+<span class="kw">for</span> i, v <span class="kw">in</span> <span class="fn">ipairs</span>(colors) <span class="kw">do</span>  <span class="cm">-- ipairs: 只遍历整数序列</span>
+    <span class="fn">print</span>(i, v)
+<span class="kw">end</span>
+
+<span class="kw">for</span> k, v <span class="kw">in</span> <span class="fn">pairs</span>(person) <span class="kw">do</span>  <span class="cm">-- pairs: 遍历所有键值对</span>
+    <span class="fn">print</span>(k, v)
+<span class="kw">end</span></code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 表的高级用法</span>
+
+<span class="cm">-- 插入与删除</span>
+<span class="kw">local</span> list = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>}
+<span class="fn">table.insert</span>(list, <span class="nm">4</span>)         <span class="cm">-- 在末尾插入</span>
+<span class="fn">table.insert</span>(list, <span class="nm">2</span>, <span class="nm">99</span>)    <span class="cm">-- 在位置2插入</span>
+<span class="fn">print</span>(<span class="fn">table.concat</span>(list, <span class="st">", "</span>))  <span class="cm">-- 1, 99, 2, 3, 4</span>
+
+<span class="fn">table.remove</span>(list, <span class="nm">1</span>)        <span class="cm">-- 删除位置1的元素</span>
+<span class="fn">print</span>(<span class="fn">table.concat</span>(list, <span class="st">", "</span>))  <span class="cm">-- 99, 2, 3, 4</span>
+
+<span class="cm">-- 排序</span>
+<span class="kw">local</span> nums = {<span class="nm">5</span>, <span class="nm">3</span>, <span class="nm">1</span>, <span class="nm">4</span>, <span class="nm">2</span>}
+<span class="fn">table.sort</span>(nums)
+<span class="fn">print</span>(<span class="fn">table.concat</span>(nums, <span class="st">" "</span>))  <span class="cm">-- 1 2 3 4 5</span>
+
+<span class="cm">-- 自定义排序</span>
+<span class="kw">local</span> names = {<span class="st">"Charlie"</span>, <span class="st">"Alice"</span>, <span class="st">"Bob"</span>}
+<span class="fn">table.sort</span>(names, <span class="kw">function</span>(a, b) <span class="kw">return</span> a &lt; b <span class="kw">end</span>)
+<span class="fn">print</span>(<span class="fn">table.concat</span>(names, <span class="st">", "</span>))  <span class="cm">-- Alice, Bob, Charlie</span>
+
+<span class="cm">-- 表作为栈和队列</span>
+<span class="kw">local</span> stack = {}
+<span class="fn">table.insert</span>(stack, <span class="st">"a"</span>)   <span class="cm">-- push</span>
+<span class="fn">table.insert</span>(stack, <span class="st">"b"</span>)   <span class="cm">-- push</span>
+<span class="kw">local</span> top = <span class="fn">table.remove</span>(stack)  <span class="cm">-- pop → "b"</span>
+
+<span class="cm">-- 多维数组</span>
+<span class="kw">local</span> matrix = {}
+<span class="kw">for</span> i = <span class="nm">1</span>, <span class="nm">3</span> <span class="kw">do</span>
+    matrix[i] = {}
+    <span class="kw">for</span> j = <span class="nm">1</span>, <span class="nm">3</span> <span class="kw">do</span>
+        matrix[i][j] = i * j
+    <span class="kw">end</span>
+<span class="kw">end</span>
+<span class="fn">print</span>(matrix[<span class="nm">2</span>][<span class="nm">3</span>])  <span class="cm">-- 6</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第8章：条件判断 -->
+        <section id="conditions">
+            <h1>8. 条件判断</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua的控制流结构</div>
+                <p>Lua提供了三种条件判断结构：<code>if...then...end</code>、<code>if...elseif...else...end</code>和三元运算符模式（利用逻辑运算符）。所有条件判断都基于<strong>真值系统</strong>：只有<code>nil</code>和<code>false</code>为假。</p>
+                
+                <p>注意：Lua<strong>没有switch/case语句</strong>。对于多分支判断，可以使用<strong>if...elseif</strong>链，或者利用<strong>表映射</strong>模拟switch。Lua 5.2引入的<strong>goto</strong>语句也可以模拟某些switch模式。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 基本 if...then</span>
+<span class="kw">local</span> temperature = <span class="nm">35</span>
+<span class="kw">if</span> temperature &gt; <span class="nm">30</span> <span class="kw">then</span>
+    <span class="fn">print</span>(<span class="st">"很热！开空调"</span>)
+<span class="kw">end</span>
+
+<span class="cm">-- if...else</span>
+<span class="kw">local</span> age = <span class="nm">16</span>
+<span class="kw">if</span> age &gt;= <span class="nm">18</span> <span class="kw">then</span>
+    <span class="fn">print</span>(<span class="st">"成年人"</span>)
+<span class="kw">else</span>
+    <span class="fn">print</span>(<span class="st">"未成年人"</span>)
+<span class="kw">end</span>
+
+<span class="cm">-- if...elseif...else</span>
+<span class="kw">local</span> score = <span class="nm">85</span>
+<span class="kw">if</span> score &gt;= <span class="nm">90</span> <span class="kw">then</span>
+    <span class="fn">print</span>(<span class="st">"优秀"</span>)
+<span class="kw">elseif</span> score &gt;= <span class="nm">80</span> <span class="kw">then</span>
+    <span class="fn">print</span>(<span class="st">"良好"</span>)
+<span class="kw">elseif</span> score &gt;= <span class="nm">60</span> <span class="kw">then</span>
+    <span class="fn">print</span>(<span class="st">"及格"</span>)
+<span class="kw">else</span>
+    <span class="fn">print</span>(<span class="st">"不及格"</span>)
+<span class="kw">end</span>
+
+<span class="cm">-- 三元运算符模式</span>
+<span class="kw">local</span> x = <span class="nm">5</span>
+<span class="kw">local</span> max = (x &gt; <span class="nm">10</span>) <span class="kw">and</span> x <span class="kw">or</span> <span class="nm">10</span>
+<span class="fn">print</span>(max)  <span class="cm">-- 10</span>
+
+<span class="cm">-- 表驱动的 switch 模拟</span>
+<span class="kw">local</span> ops = {
+    [<span class="st">"add"</span>] = <span class="kw">function</span>(a, b) <span class="kw">return</span> a + b <span class="kw">end</span>,
+    [<span class="st">"sub"</span>] = <span class="kw">function</span>(a, b) <span class="kw">return</span> a - b <span class="kw">end</span>,
+    [<span class="st">"mul"</span>] = <span class="kw">function</span>(a, b) <span class="kw">return</span> a * b <span class="kw">end</span>,
+}
+<span class="kw">local</span> op = <span class="st">"add"</span>
+<span class="kw">local</span> result = ops[op](<span class="nm">3</span>, <span class="nm">4</span>)
+<span class="fn">print</span>(result)  <span class="cm">-- 7</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第9章：循环语句 -->
+        <section id="loops">
+            <h1>9. 循环语句</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua的四种循环结构</div>
+                <p>Lua提供了四种循环结构：<code>while...do...end</code>、<code>repeat...until</code>、<code>for...do...end</code>（数值for）和<code>for...in...do...end</code>（泛型for）。其中<code>repeat...until</code>的条件是"直到条件为真时退出"，这与其他语言的"当条件为真时继续"恰好相反。</p>
+                
+                <p><strong>break</strong>只能退出<strong>最内层</strong>的循环。如果需要跳出多层循环，应使用<strong>goto</strong>语句（Lua 5.2+）。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- while 循环</span>
+<span class="kw">local</span> i = <span class="nm">1</span>
+<span class="kw">while</span> i &lt;= <span class="nm">5</span> <span class="kw">do</span>
+    <span class="fn">print</span>(i)
+    i = i + <span class="nm">1</span>
+<span class="kw">end</span>
+
+<span class="cm">-- repeat...until（至少执行一次）</span>
+<span class="kw">local</span> count = <span class="nm">0</span>
+<span class="kw">repeat</span>
+    count = count + <span class="nm">1</span>
+    <span class="fn">print</span>(<span class="st">"第"</span> .. count .. <span class="st">"次"</span>)
+<span class="kw">until</span> count &gt;= <span class="nm">5</span>
+
+<span class="cm">-- 数值 for（包含起始值和结束值）</span>
+<span class="kw">for</span> i = <span class="nm">1</span>, <span class="nm">10</span> <span class="kw">do</span>
+    <span class="fn">print</span>(i)     <span class="cm">-- 1, 2, 3, ..., 10</span>
+<span class="kw">end</span>
+
+<span class="cm">-- 带步长的 for</span>
+<span class="kw">for</span> i = <span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">2</span> <span class="kw">do</span>
+    <span class="fn">print</span>(i)     <span class="cm">-- 0, 2, 4, 6, 8, 10</span>
+<span class="kw">end</span>
+
+<span class="cm">-- 反向遍历</span>
+<span class="kw">for</span> i = <span class="nm">10</span>, <span class="nm">1</span>, -<span class="nm">1</span> <span class="kw">do</span>
+    <span class="fn">print</span>(i)     <span class="cm">-- 10, 9, 8, ..., 1</span>
+<span class="kw">end</span>
+
+<span class="cm">-- ipairs: 遍历数组部分</span>
+<span class="kw">local</span> fruits = {<span class="st">"苹果"</span>, <span class="st">"香蕉"</span>, <span class="st">"橙子"</span>}
+<span class="kw">for</span> index, value <span class="kw">in</span> <span class="fn">ipairs</span>(fruits) <span class="kw">do</span>
+    <span class="fn">print</span>(index, value)
+<span class="kw">end</span>
+
+<span class="cm">-- pairs: 遍历所有键值对</span>
+<span class="kw">local</span> config = {width = <span class="nm">800</span>, height = <span class="nm">600</span>, title = <span class="st">"游戏"</span>}
+<span class="kw">for</span> key, value <span class="kw">in</span> <span class="fn">pairs</span>(config) <span class="kw">do</span>
+    <span class="fn">print</span>(key .. <span class="st">" = "</span> .. <span class="fn">tostring</span>(value))
+<span class="kw">end</span>
+
+<span class="cm">-- 嵌套循环与 break</span>
+<span class="kw">for</span> i = <span class="nm">1</span>, <span class="nm">5</span> <span class="kw">do</span>
+    <span class="kw">for</span> j = <span class="nm">1</span>, <span class="nm">5</span> <span class="kw">do</span>
+        <span class="kw">if</span> i * j == <span class="nm">12</span> <span class="kw">then</span>
+            <span class="fn">print</span>(<span class="fn">string.format</span>(<span class="st">"找到: %d x %d = 12"</span>, i, j))
+            <span class="kw">goto</span> done  <span class="cm">-- 跳出两层循环</span>
+        <span class="kw">end</span>
+    <span class="kw">end</span>
+<span class="kw">end</span>
+::done::<span class="fn">print</span>(<span class="st">"搜索完成"</span>)</code></pre>
+            </div>
+        </section>
+
+        <!-- 第10章：函数 -->
+        <section id="functions">
+            <h1>10. 函数</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua函数的本质</div>
+                <p>Lua中的函数是<strong>一等公民</strong>（first-class citizen），这意味着函数可以赋值给变量、作为参数传递、作为返回值返回。在底层，Lua函数实际上是一个<strong>闭包</strong>（closure），包含一个<strong>函数原型</strong>（prototype）和一个<strong>引用环境</strong>（upvalue引用链）。</p>
+                
+                <p>函数的定义有两种语法：<code>function foo() end</code>是<code>foo = function() end</code>的语法糖。Lua还支持<strong>局部函数</strong>（<code>local function</code>），其效率比全局函数更高，因为局部变量的访问比全局变量快得多。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 函数定义的两种等价方式</span>
+<span class="kw">function</span> <span class="fn">greet</span>(name)
+    <span class="fn">print</span>(<span class="st">"你好, "</span> .. name .. <span class="st">"!"</span>)
+<span class="kw">end</span>
+
+<span class="kw">local</span> greet2 = <span class="kw">function</span>(name)
+    <span class="fn">print</span>(<span class="st">"你好, "</span> .. name .. <span class="st">"!"</span>)
+<span class="kw">end</span>
+
+<span class="cm">-- 局部函数（推荐使用）</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">add</span>(a, b)
+    <span class="kw">return</span> a + b
+<span class="kw">end</span>
+
+<span class="cm">-- 可变参数</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">sum</span>(...)
+    <span class="kw">local</span> args = {...}
+    <span class="kw">local</span> total = <span class="nm">0</span>
+    <span class="kw">for</span> _, v <span class="kw">in</span> <span class="fn">ipairs</span>(args) <span class="kw">do</span>
+        total = total + v
+    <span class="kw">end</span>
+    <span class="kw">return</span> total
+<span class="kw">end</span>
+
+<span class="fn">print</span>(<span class="fn">sum</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>))  <span class="cm">-- 15</span>
+
+<span class="cm">-- Lua 5.0 风格的可变参数（更高效）</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">printf</span>(fmt, ...)
+    <span class="kw">local</span> args = <span class="fn">table.pack</span>(...)
+    <span class="kw">for</span> i = <span class="nm">1</span>, args.n <span class="kw">do</span>
+        args[i] = <span class="fn">tostring</span>(args[i])
+    <span class="kw">end</span>
+    <span class="fn">print</span>(<span class="fn">string.format</span>(fmt, <span class="fn">table.unpack</span>(args, <span class="nm">1</span>, args.n)))
+<span class="kw">end</span>
+
+<span class="cm">-- 尾调用优化（Tail Call Optimization）</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">factorial</span>(n, acc)
+    acc = acc <span class="kw">or</span> <span class="nm">1</span>
+    <span class="kw">if</span> n &lt;= <span class="nm">1</span> <span class="kw">then</span>
+        <span class="kw">return</span> acc  <span class="cm">-- 尾调用：return f(args) 的形式</span>
+    <span class="kw">end</span>
+    <span class="kw">return</span> <span class="fn">factorial</span>(n - <span class="nm">1</span>, n * acc)  <span class="cm">-- 尾调用优化</span>
+<span class="kw">end</span>
+
+<span class="fn">print</span>(<span class="fn">factorial</span>(<span class="nm">100</span>))  <span class="cm">-- 不会栈溢出！</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第11章：多返回值 -->
+        <section id="multi-return">
+            <h1>11. 多返回值</h1>
+            
+            <div class="principle">
+                <div class="principle-title">多返回值机制</div>
+                <p>Lua的函数可以<strong>同时返回多个值</strong>，这是Lua最强大的特性之一。在底层，多返回值通过<strong>Lua栈</strong>实现——函数将返回值依次压入栈中，调用者再依次弹出。</p>
+                
+                <p>需要注意的是，多返回值在<strong>赋值</strong>时会被完整接收，但在<strong>作为函数参数传递</strong>或<strong>作为表达式使用</strong>时，只有<strong>第一个值</strong>会被保留（除非使用括号强制保留所有值）。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 多返回值函数</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">swap</span>(a, b)
+    <span class="kw">return</span> b, a
+<span class="kw">end</span>
+
+<span class="kw">local</span> x, y = <span class="fn">swap</span>(<span class="nm">1</span>, <span class="nm">2</span>)
+<span class="fn">print</span>(x, y)  <span class="cm">-- 2  1</span>
+
+<span class="cm">-- 常见模式：返回值 + 状态</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">find</span>(tbl, target)
+    <span class="kw">for</span> i, v <span class="kw">in</span> <span class="fn">ipairs</span>(tbl) <span class="kw">do</span>
+        <span class="kw">if</span> v == target <span class="kw">then</span>
+            <span class="kw">return</span> i, <span class="kw">true</span>  <span class="cm">-- 找到：返回位置和成功标志</span>
+        <span class="kw">end</span>
+    <span class="kw">end</span>
+    <span class="kw">return</span> <span class="kw">nil</span>, <span class="kw">false</span>  <span class="cm">-- 未找到：返回nil和失败标志</span>
+<span class="kw">end</span>
+
+<span class="kw">local</span> list = {<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>}
+<span class="kw">local</span> idx, found = <span class="fn">find</span>(list, <span class="nm">30</span>)
+<span class="kw">if</span> found <span class="kw">then</span>
+    <span class="fn">print</span>(<span class="st">"找到位置: "</span> .. idx)
+<span class="kw">end</span>
+
+<span class="cm">-- 调整返回值数量（适配左值数量）</span>
+<span class="kw">local</span> a, b, c = <span class="fn">swap</span>(<span class="nm">1</span>, <span class="nm">2</span>)
+<span class="fn">print</span>(a, b, c)  <span class="cm">-- 2  1  nil（c没有对应返回值）</span>
+
+<span class="kw">local</span> d = <span class="fn">swap</span>(<span class="nm">1</span>, <span class="nm">2</span>)
+<span class="fn">print</span>(d)        <span class="cm">-- 2（只取第一个返回值）</span>
+
+<span class="cm">-- 使用括号强制保留所有返回值</span>
+<span class="kw">local</span> results = {<span class="fn">swap</span>(<span class="nm">1</span>, <span class="nm">2</span>)}  <span class="cm">-- 使用表收集</span>
+<span class="fn">print</span>(<span class="fn">select</span>(<span class="nm">#</span>results, <span class="fn">swap</span>(<span class="nm">1</span>, <span class="nm">2</span>)))  <span class="cm">-- 使用 select</span>
+
+<span class="cm">-- 标准库中的多返回值函数</span>
+<span class="kw">local</span> <span class="fn">string.find</span>(s, pattern) <span class="kw">returns</span> start, stop
+<span class="kw">local</span> <span class="fn">string.gmatch</span>(s, pattern) <span class="kw">returns</span> iterator
+<span class="kw">local</span> <span class="fn">math.modf</span>(x) <span class="kw">returns</span> integer_part, fractional_part
+
+<span class="kw">local</span> int_part, frac_part = <span class="fn">math.modf</span>(<span class="nm">3.14</span>)
+<span class="fn">print</span>(int_part, frac_part)  <span class="cm">-- 3  0.14</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第12章：闭包 -->
+        <section id="closures">
+            <h1>12. 闭包</h1>
+            
+            <div class="principle">
+                <div class="principle-title">闭包的实现机制</div>
+                <p>闭包（closure）是Lua最优雅的特性之一。一个<strong>闭包</strong>由两部分组成：一个<strong>内部函数</strong>和对该函数<strong>外部局部变量（upvalue）的引用</strong>。即使外部函数已经返回，闭包仍然可以访问和修改那些局部变量的值。</p>
+                
+                <p>在Lua虚拟机内部，upvalue通过<strong>链表</strong>管理。当函数首次创建时，所有upvalue都是<strong>"打开"</strong>状态——直接指向栈上的变量。当外部函数返回后，Lua会将这些upvalue<strong>"关闭"</strong>——从栈上复制到堆上，确保它们在外部函数销毁后仍然存活。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 经典的计数器闭包</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">create_counter</span>(start)
+    <span class="kw">local</span> count = start  <span class="cm">-- 这个局部变量被闭包捕获</span>
+    <span class="kw">return</span> <span class="kw">function</span>()
+        count = count + <span class="nm">1</span>
+        <span class="kw">return</span> count
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="kw">local</span> counter = <span class="fn">create_counter</span>(<span class="nm">0</span>)
+<span class="fn">print</span>(<span class="fn">counter</span>())  <span class="cm">-- 1</span>
+<span class="fn">print</span>(<span class="fn">counter</span>())  <span class="cm">-- 2</span>
+<span class="fn">print</span>(<span class="fn">counter</span>())  <span class="cm">-- 3</span>
+
+<span class="cm">-- 每个闭包都有自己独立的状态</span>
+<span class="kw">local</span> counter2 = <span class="fn">create_counter</span>(<span class="nm">100</span>)
+<span class="fn">print</span>(<span class="fn">counter2</span>())  <span class="cm">-- 101</span>
+<span class="fn">print</span>(<span class="fn">counter2</span>())  <span class="cm">-- 102</span>
+
+<span class="cm">-- 闭包实现函数工厂</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">create_multiplier</span>(factor)
+    <span class="kw">return</span> <span class="kw">function</span>(x)
+        <span class="kw">return</span> x * factor
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="kw">local</span> double = <span class="fn">create_multiplier</span>(<span class="nm">2</span>)
+<span class="kw">local</span> triple = <span class="fn">create_multiplier</span>(<span class="nm">3</span>)
+<span class="fn">print</span>(<span class="fn">double</span>(<span class="nm">5</span>))   <span class="cm">-- 10</span>
+<span class="fn">print</span>(<span class="fn">triple</span>(<span class="nm">5</span>))   <span class="cm">-- 15</span>
+
+<span class="cm">-- 闭包实现迭代器</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">range</span>(start, stop, step)
+    step = step <span class="kw">or</span> <span class="nm">1</span>
+    <span class="kw">local</span> current = start - step
+    <span class="kw">return</span> <span class="kw">function</span>()
+        current = current + step
+        <span class="kw">if</span> current &lt;= stop <span class="kw">then</span>
+            <span class="kw">return</span> current
+        <span class="kw">end</span>
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, <span class="nm">10</span>, <span class="nm">2</span>) <span class="kw">do</span>
+    <span class="fn">print</span>(n)  <span class="cm">-- 1, 3, 5, 7, 9</span>
+<span class="kw">end</span>
+
+<span class="cm">-- 闭包实现私有变量（模拟对象）</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">create_bank_account</span>(owner, initial)
+    <span class="kw">local</span> balance = initial  <span class="cm">-- 私有变量</span>
+    <span class="kw">return</span> {
+        deposit = <span class="kw">function</span>(amount)
+            balance = balance + amount
+            <span class="fn">print</span>(<span class="fn">string.format</span>(<span class="st">"存入 %.2f, 余额 %.2f"</span>, amount, balance))
+        <span class="kw">end</span>,
+        withdraw = <span class="kw">function</span>(amount)
+            <span class="kw">if</span> amount &gt; balance <span class="kw">then</span>
+                <span class="fn">print</span>(<span class="st">"余额不足！"</span>)
+                <span class="kw">return</span> <span class="kw">false</span>
+            <span class="kw">end</span>
+            balance = balance - amount
+            <span class="fn">print</span>(<span class="fn">string.format</span>(<span class="st">"取出 %.2f, 余额 %.2f"</span>, amount, balance))
+            <span class="kw">return</span> <span class="kw">true</span>
+        <span class="kw">end</span>,
+        get_balance = <span class="kw">function</span>()
+            <span class="kw">return</span> balance
+        <span class="kw">end</span>
+    }
+<span class="kw">end</span>
+
+<span class="kw">local</span> account = <span class="fn">create_bank_account</span>(<span class="st">"张三"</span>, <span class="nm">1000</span>)
+account.<span class="fn">deposit</span>(<span class="nm">500</span>)
+account.<span class="fn">withdraw</span>(<span class="nm">200</span>)
+<span class="fn">print</span>(<span class="st">"余额: "</span> .. account.<span class="fn">get_balance</span>())</code></pre>
+            </div>
+        </section>
+
+        <!-- 第13章：元表与元方法 -->
+        <section id="metatables">
+            <h1>13. 元表与元方法</h1>
+            
+            <div class="principle">
+                <div class="principle-title">元表的底层机制</div>
+                <p>元表（metatable）是Lua实现<strong>运算符重载</strong>、<strong>属性自定义</strong>和<strong>面向对象</strong>的核心机制。每个表（以及userdata）都可以拥有一个元表，元表定义了该表在特定操作下的行为。</p>
+                
+                <p>在底层，元表是一个<strong>普通表</strong>，其中的键是<strong>元方法名</strong>（以双下划线<code>__</code>开头），值是<strong>函数</strong>。当Lua对一个表执行某种操作时（如加法、索引访问、tostring），它会检查该表是否有元表，如果有则查找对应的元方法并调用。</p>
+                
+                <p><strong>元方法查找机制</strong>：Lua提供了两个控制元方法查找的元方法：<code>__index</code>（控制键不存在时的查找）和<code>__newindex</code>（控制新键赋值时的行为）。这两个元方法可以是<strong>函数</strong>，也可以是<strong>另一个表</strong>（表作为继承链）。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 常用元方法一览</span>
+<span class="cm">-- __index     : 索引访问 t[key] 时触发</span>
+<span class="cm">-- __newindex  : 索引赋值 t[key]=v 时触发</span>
+<span class="cm">-- __add       : 加法 t + other 时触发</span>
+<span class="cm">-- __sub       : 减法 t - other</span>
+<span class="cm">-- __mul       : 乘法 t * other</span>
+<span class="cm">-- __div       : 除法 t / other</span>
+<span class="cm">-- __mod       : 取模 t % other</span>
+<span class="cm">-- __pow       : 乘方 t ^ other</span>
+<span class="cm">-- __unm       : 取负 -t</span>
+<span class="cm">-- __concat    : 连接 t .. other</span>
+<span class="cm">-- __len       : 长度 #t</span>
+<span class="cm">-- __eq        : 相等 t == other</span>
+<span class="cm">-- __lt        : 小于 t &lt; other</span>
+<span class="cm">-- __le        : 小于等于 t &lt;= other</span>
+<span class="cm">-- __call      : 函数调用 t()</span>
+<span class="cm">-- __tostring  : 转字符串 tostring(t)</span>
+
+<span class="cm">-- __index 元方法：基本的属性查找</span>
+<span class="kw">local</span> person = {
+    name = <span class="st">"张三"</span>,
+    age = <span class="nm">30</span>
+}
+
+<span class="cm">-- 设置元表</span>
+<span class="kw">local</span> mt = {
+    __index = <span class="kw">function</span>(t, key)
+        <span class="kw">if</span> key == <span class="st">"greeting"</span> <span class="kw">then</span>
+            <span class="kw">return</span> <span class="st">"你好，我是"</span> .. t.name
+        <span class="kw">end</span>
+        <span class="kw">return</span> <span class="kw">nil</span>
+    <span class="kw">end</span>
+}
+<span class="fn">setmetatable</span>(person, mt)
+
+<span class="fn">print</span>(person.name)       <span class="cm">-- 张三（直接访问）</span>
+<span class="fn">print</span>(person.greeting)   <span class="cm">-- 你好，我是张三（通过 __index）</span>
+<span class="fn">print</span>(person.email)      <span class="cm">-- nil（__index 返回 nil）</span>
+
+<span class="cm">-- __index 使用表（更高效的继承方式）</span>
+<span class="kw">local</span> defaults = {
+    color = <span class="st">"红色"</span>,
+    size = <span class="st">"中号"</span>,
+    font = <span class="st">"宋体"</span>
+}
+
+<span class="kw">local</span> config = {color = <span class="st">"蓝色"</span>}
+<span class="fn">setmetatable</span>(config, {__index = defaults})
+
+<span class="fn">print</span>(config.color)  <span class="cm">-- 蓝色（自身有）</span>
+<span class="fn">print</span>(config.size)   <span class="cm">-- 中号（从 defaults 继承）</span></code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 运算符重载示例：向量类</span>
+<span class="kw">local</span> Vector = {}
+Vector.__index = Vector
+
+<span class="kw">function</span> Vector.<span class="fn">new</span>(cls, x, y)
+    <span class="kw">return</span> <span class="fn">setmetatable</span>({x = x <span class="kw">or</span> <span class="nm">0</span>, y = y <span class="kw">or</span> <span class="nm">0</span>}, cls)
+<span class="kw">end</span>
+
+<span class="kw">function</span> Vector:<span class="fn">__add</span>(other)
+    <span class="kw">return</span> Vector:<span class="fn">new</span>(self.x + other.x, self.y + other.y)
+<span class="kw">end</span>
+
+<span class="kw">function</span> Vector:<span class="fn">__sub</span>(other)
+    <span class="kw">return</span> Vector:<span class="fn">new</span>(self.x - other.x, self.y - other.y)
+<span class="kw">end</span>
+
+<span class="kw">function</span> Vector:<span class="fn">__mul</span>(scalar)
+    <span class="kw">return</span> Vector:<span class="fn">new</span>(self.x * scalar, self.y * scalar)
+<span class="kw">end</span>
+
+<span class="kw">function</span> Vector:<span class="fn">__eq</span>(other)
+    <span class="kw">return</span> self.x == other.x <span class="kw">and</span> self.y == other.y
+<span class="kw">end</span>
+
+<span class="kw">function</span> Vector:<span class="fn">__tostring</span>()
+    <span class="kw">return</span> <span class="fn">string.format</span>(<span class="st">"Vector(%g, %g)"</span>, self.x, self.y)
+<span class="kw">end</span>
+
+<span class="kw">function</span> Vector:<span class="fn">__len</span>()
+    <span class="kw">return</span> <span class="fn">math.sqrt</span>(self.x ^ <span class="nm">2</span> + self.y ^ <span class="nm">2</span>)
+<span class="kw">end</span>
+
+<span class="cm">-- 使用</span>
+<span class="kw">local</span> v1 = Vector:<span class="fn">new</span>(<span class="nm">3</span>, <span class="nm">4</span>)
+<span class="kw">local</span> v2 = Vector:<span class="fn">new</span>(<span class="nm">1</span>, <span class="nm">2</span>)
+
+<span class="fn">print</span>(v1 + v2)          <span class="cm">-- Vector(4, 6)</span>
+<span class="fn">print</span>(v1 - v2)          <span class="cm">-- Vector(2, 2)</span>
+<span class="fn">print</span>(v1 * <span class="nm">2</span>)           <span class="cm">-- Vector(6, 8)</span>
+<span class="fn">print</span>(#v1)              <span class="cm">-- 5（向量长度）</span>
+<span class="fn">print</span>(v1 == v2)         <span class="cm">-- false</span></code></pre>
+            </div>
+
+            <div class="principle">
+                <div class="principle-title">__call 与 __len 的深层含义</div>
+                <p><code>__call</code>元方法使表可以像函数一样被调用。这在实现<strong>代理模式</strong>、<strong>工厂模式</strong>和<strong>惰性求值</strong>时非常有用。在底层，<code>t(args)</code>会被转化为<code>getmetatable(t).__call(t, args)</code>。</p>
+                
+                <p><code>__len</code>元方法允许自定义<code>#t</code>的行为。标准库中，<code>string</code>和<code>table</code>的长度运算都使用了元方法。如果表没有<code>__len</code>元方法，Lua会使用<strong>序列长度</strong>（sequence length）——即从1开始的连续整数键的数量。</p>
+            </div>
+        </section>
+
+        <!-- 第14章：面向对象 -->
+        <section id="oop">
+            <h1>14. 面向对象</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua的面向对象实现</div>
+                <p>Lua没有内置的类（class）或对象（object）概念，但通过<strong>表</strong>、<strong>元表</strong>和<strong>闭包</strong>的组合，可以实现完整的面向对象编程。这种实现方式的核心思想是：</p>
+                
+                <p><strong>对象</strong>就是一个表，包含数据（字段）和操作（方法）。<strong>类</strong>就是一个元表，定义了对象的行为。<strong>继承</strong>通过元表链实现——子类的<code>__index</code>指向父类，形成原型链。</p>
+                
+                <p>这种实现方式与JavaScript的<strong>原型继承</strong>类似，但更加灵活——因为Lua的元表机制允许你拦截任何操作。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 创建一个"类"</span>
+<span class="kw">local</span> Animal = {}
+Animal.__index = Animal
+
+<span class="cm">-- 构造函数</span>
+<span class="kw">function</span> Animal.<span class="fn">new</span>(name, sound)
+    <span class="kw">local</span> self = <span class="fn">setmetatable</span>({}, Animal)
+    self.name = name
+    self.sound = sound
+    self.energy = <span class="nm">100</span>
+    <span class="kw">return</span> self
+<span class="kw">end</span>
+
+<span class="cm">-- 方法（使用冒号语法自动传递 self）</span>
+<span class="kw">function</span> Animal:<span class="fn">speak</span>()
+    <span class="fn">print</span>(self.name .. <span class="st">"说: "</span> .. self.sound .. <span class="st">"!"</span>)
+<span class="kw">end</span>
+
+<span class="kw">function</span> Animal:<span class="fn">eat</span>(food)
+    self.energy = self.energy + <span class="nm">10</span>
+    <span class="fn">print</span>(self.name .. <span class="st">"吃了"</span> .. food)
+<span class="kw">end</span>
+
+<span class="kw">function</span> Animal:<span class="fn">get_energy</span>()
+    <span class="kw">return</span> self.energy
+<span class="kw">end</span>
+
+<span class="cm">-- 使用</span>
+<span class="kw">local</span> cat = Animal:<span class="fn">new</span>(<span class="st">"小猫"</span>, <span class="st">"喵"</span>)
+cat:<span class="fn">speak</span>()     <span class="cm">-- 小猫说: 喵!</span>
+cat:<span class="fn">eat</span>(<span class="st">"鱼"</span>)   <span class="cm">-- 小猫吃了鱼</span>
+<span class="fn">print</span>(cat:<span class="fn">get_energy</span>())  <span class="cm">-- 110</span></code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 继承：从 Animal 派生 Dog 类</span>
+<span class="kw">local</span> Dog = <span class="fn">setmetatable</span>({}, {__index = Animal})
+Dog.__index = Dog
+
+<span class="kw">function</span> Dog.<span class="fn">new</span>(name)
+    <span class="kw">local</span> self = Animal.<span class="fn">new</span>(name, <span class="st">"汪"</span>)  <span class="cm">-- 调用父类构造函数</span>
+    <span class="kw">return</span> <span class="fn">setmetatable</span>(self, Dog)
+<span class="kw">end</span>
+
+<span class="kw">function</span> Dog:<span class="fn">fetch</span>(item)
+    <span class="fn">print</span>(self.name .. <span class="st">"叼回了"</span> .. item)
+    self.energy = self.energy - <span class="nm">5</span>
+<span class="kw">end</span>
+
+<span class="cm">-- 覆盖父类方法</span>
+<span class="kw">function</span> Dog:<span class="fn">speak</span>()
+    <span class="fn">print</span>(self.name .. <span class="st">"大声叫: "</span> .. self.sound .. <span class="st">"!!!"</span>)
+<span class="kw">end</span>
+
+<span class="cm">-- 使用继承的类</span>
+<span class="kw">local</span> dog = Dog:<span class="fn">new</span>(<span class="st">"旺财"</span>)
+dog:<span class="fn">speak</span>()       <span class="cm">-- 旺财大声叫: 汪!!!（子类方法）</span>
+dog:<span class="fn">eat</span>(<span class="st">"骨头"</span>)  <span class="cm">-- 旺财吃了骨头（继承的方法）</span>
+dog:<span class="fn">fetch</span>(<span class="st">"球"</span>)  <span class="cm">-- 旺财叼回了球</span>
+
+<span class="cm">-- 类型检查</span>
+<span class="kw">function</span> Animal:<span class="fn">is_a</span>(cls)
+    <span class="kw">local</span> mt = <span class="fn">getmetatable</span>(self)
+    <span class="kw">while</span> mt <span class="kw">do</span>
+        <span class="kw">if</span> mt == cls <span class="kw">then</span> <span class="kw">return</span> <span class="kw">true</span> <span class="kw">end</span>
+        mt = mt.__index
+    <span class="kw">end</span>
+    <span class="kw">return</span> <span class="kw">false</span>
+<span class="kw">end</span>
+
+<span class="fn">print</span>(dog:<span class="fn">is_a</span>(Dog))      <span class="cm">-- true</span>
+<span class="fn">print</span>(dog:<span class="fn">is_a</span>(Animal))   <span class="cm">-- true</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第15章：模块系统 -->
+        <section id="modules">
+            <h1>15. 模块系统</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua模块的加载机制</div>
+                <p>Lua的模块系统基于<strong>require</strong>函数和<strong>package</strong>表。当调用<code>require("module_name")</code>时，Lua会按照<code>package.path</code>定义的路径搜索模块文件，执行该文件，并返回其返回的表。模块只会被加载<strong>一次</strong>，后续require调用会返回缓存的结果。</p>
+                
+                <p>模块的标准模式是创建一个<strong>局部表</strong>，将所有公开接口放入表中，最后返回该表。这确保了模块不会污染全局命名空间。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- mathutils.lua — 定义一个模块</span>
+<span class="kw">local</span> M = {}  <span class="cm">-- 模块表</span>
+
+<span class="cm">-- 模块级局部变量（私有）</span>
+<span class="kw">local</span> PI = <span class="nm">3.14159265</span>
+
+<span class="cm">-- 公开函数</span>
+<span class="kw">function</span> M.<span class="fn">circle_area</span>(radius)
+    <span class="kw">return</span> PI * radius ^ <span class="nm">2</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> M.<span class="fn">circle_perimeter</span>(radius)
+    <span class="cm">return</span> <span class="nm">2</span> * PI * radius
+<span class{kw">end</span>
+
+<span class="cm">-- 返回模块表</span>
+<span class="kw">return</span> M</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- main.lua — 使用模块</span>
+<span class="kw">local</span> mathutils = <span class="kw">require</span>(<span class="st">"mathutils"</span>)
+
+<span class="fn">print</span>(mathutils.<span class="fn">circle_area</span>(<span class="nm">5</span>))         <span class="cm">-- 78.5398...</span>
+<span class="fn">print</span>(mathutils.<span class="fn">circle_perimeter</span>(<span class="nm">5</span>))   <span class="cm">-- 31.4159...</span>
+
+<span class="cm">-- require 的路径搜索</span>
+<span class="fn">print</span>(<span class="fn">package.path</span>)
+<span class="cm">-- 输出类似: ./?.lua;/usr/local/share/lua/5.4/?.lua;...</span>
+
+<span class="cm">-- 自定义搜索路径</span>
+<span class="fn">table.insert</span>(<span class="fn">package.path</span>, <span class="st">"./lib/?.lua"</span>)
+
+<span class="cm">-- package.preload — 预加载模块</span>
+<span class="fn">package.preload</span>[<span class="st">"mymod"</span>] = <span class="kw">function</span>()
+    <span class="kw">return</span> {greet = <span class="kw">function</span>() <span class="fn">print</span>(<span class="st">"Hello!"</span>) <span class="kw">end</span>}
+<span class="kw">end</span>
+
+<span class="kw">local</span> mymod = <span class="kw">require</span>(<span class="st">"mymod"</span>)
+mymod.<span class="fn">greet</span>()
+
+<span class="cm">-- Lua 5.3+ 的模块写法（更简洁）</span>
+<span class="cm">-- utils.lua</span>
+<span class="kw">local</span> M = {}
+
+<span class="kw">function</span> M.<span class="fn">trim</span>(s)
+    <span class="kw">return</span> (s:<span class="fn">match</span>(<span class="st">"^%s*(.-)%s*$"</span>))
+<span class="kw">end</span>
+
+<span class="kw">return</span> M</code></pre>
+            </div>
+        </section>
+
+        <!-- 第16章：协程 -->
+        <section id="coroutines">
+            <h1>16. 协程</h1>
+            
+            <div class="principle">
+                <div class="principle-title">协程的实现原理</div>
+                <p>Lua的协程（coroutine）是一种<strong>协作式多任务</strong>机制，与操作系统线程不同，协程的切换完全由程序控制。每个协程都有自己的<strong>独立栈</strong>、<strong>指令指针</strong>和<strong>局部变量</strong>，但它们运行在同一个操作系统线程中。</p>
+                
+                <p>在底层，Lua协程通过<strong>longjmp/setjmp</strong>实现上下文切换。当协程挂起（yield）时，Lua会将整个调用栈保存到堆上；当恢复（resume）时，再将栈恢复。这意味着协程的切换开销比线程小得多，但每个协程的栈占用更多内存。</p>
+                
+                <p>Lua提供两种协程类型：<strong>非对称协程</strong>（asymmetric coroutine，Lua默认）和<strong>对称协程</strong>（symmetric coroutine，通过库实现）。非对称协程只能从创建者处挂起和恢复。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 协程的基本状态</span>
+<span class="cm">-- "suspended" — 挂起状态（初始状态和yield后）</span>
+<span class="cm">-- "running"   — 运行状态</span>
+<span class="cm">-- "normal"    — 正常状态（resume后在父协程中）</span>
+<span class="cm">-- "dead"      — 死亡状态（函数执行完毕或错误）</span>
+
+<span class="cm">-- 创建协程</span>
+<span class="kw">local</span> co = <span class="fn">coroutine.create</span>(<span class="kw">function</span>()
+    <span class="fn">print</span>(<span class="st">"协程开始执行"</span>)
+    <span class="fn">coroutine.yield</span>(<span class="st">"挂起时返回的值"</span>)
+    <span class="fn">print</span>(<span class="st">"协程恢复执行"</span>)
+    <span class="kw">return</span> <span class="st">"最终返回值"</span>
+<span class="kw">end</span>)
+
+<span class="fn">print</span>(<span class="fn">coroutine.status</span>(co))  <span class="cm">-- suspended</span>
+
+<span class="kw">local</span> success, value = <span class="fn">coroutine.resume</span>(co)
+<span class="fn">print</span>(success, value)  <span class="cm">-- true  挂起时返回的值</span>
+
+<span class="kw">local</span> success, value = <span class="fn">coroutine.resume</span>(co)
+<span class="fn">print</span>(success, value)  <span class="cm">-- true  最终返回值</span>
+
+<span class="fn">print</span>(<span class="fn">coroutine.status</span>(co))  <span class="cm">-- dead</span>
+
+<span class="cm">-- 协程间传递数据</span>
+<span class="kw">local</span> producer = <span class="fn">coroutine.create</span>(<span class="kw">function</span>()
+    <span class="kw">for</span> i = <span class="nm">1</span>, <span class="nm">5</span> <span class="kw">do</span>
+        <span class="fn">coroutine.yield</span>(i * <span class="nm">10</span>)  <span class="cm">-- 产出数据</span>
+    <span class="kw">end</span>
+<span class="kw">end</span>)
+
+<span class="cm">-- 消费者模式</span>
+<span class="kw">while</span> <span class="fn">coroutine.status</span>(producer) ~= <span class="st">"dead"</span> <span class="kw">do</span>
+    <span class="kw">local</span> success, value = <span class="fn">coroutine.resume</span>(producer)
+    <span class="kw">if</span> success <span class="kw">and</span> value <span class="kw">then</span>
+        <span class="fn">print</span>(<span class="st">"收到:"</span>, value)
+    <span class="kw">end</span>
+<span class="kw">end</span></code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 协程实现协作式调度器</span>
+<span class="kw">local</span> scheduler = {}
+
+<span class="kw">function</span> scheduler.<span class="fn">create</span>(func)
+    <span class="kw">local</span> co = <span class="fn">coroutine.create</span>(func)
+    <span class="fn">table.insert</span>(scheduler, co)
+<span class="kw">end</span>
+
+<span class="kw">function</span> scheduler.<span class="fn">run</span>()
+    <span class="kw">while</span> #scheduler &gt; <span class="nm">0</span> <span class="kw">do</span>
+        <span class="kw">local</span> co = <span class="fn">table.remove</span>(scheduler, <span class="nm">1</span>)
+        <span class="kw">local</span> success, err = <span class="fn">coroutine.resume</span>(co)
+        <span class="kw">if</span> <span class="kw">not</span> success <span class="kw">then</span>
+            <span class="fn">print</span>(<span class="st">"协程错误:"</span>, err)
+        <span class="kw">end</span>
+        <span class="kw">if</span> <span class="fn">coroutine.status</span>(co) ~= <span class="st">"dead"</span> <span class="kw">then</span>
+            <span class="fn">table.insert</span>(scheduler, co)
+        <span class="kw">end</span>
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="cm">-- 使用调度器</span>
+scheduler.<span class="fn">create</span>(<span class="kw">function</span>()
+    <span class="kw">for</span> i = <span class="nm">1</span>, <span class="nm">3</span> <span class="kw">do</span>
+        <span class="fn">print</span>(<span class="st">"任务A:"</span>, i)
+        <span class="fn">coroutine.yield</span>()
+    <span class="kw">end</span>
+<span class="kw">end</span>)
+
+scheduler.<span class="fn">create</span>(<span class="kw">function</span>()
+    <span class="kw">for</span> i = <span class="nm">1</span>, <span class="nm">3</span> <span class="kw">do</span>
+        <span class="fn">print</span>(<span class="st">"任务B:"</span>, i)
+        <span class="fn">coroutine.yield</span>()
+    <span class="kw">end</span>
+<span class="kw">end</span>)
+
+scheduler.<span class="fn">run</span>()
+<span class="cm">-- 输出: 任务A:1, 任务B:1, 任务A:2, 任务B:2, 任务A:3, 任务B:3</span>
+
+<span class="cm">-- 协程实现异步I/O模式</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">async_read</span>(filename)
+    <span class="fn">print</span>(<span class="st">"开始读取"</span> .. filename)
+    <span class="fn">coroutine.yield</span>()  <span class="cm">-- 模拟异步等待</span>
+    <span class="kw">return</span> <span class="st">"文件内容"</span>
+<span class="kw">end</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第17章：垃圾回收 -->
+        <section id="gc">
+            <h1>17. 垃圾回收</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua垃圾回收器的演进</div>
+                <p>Lua使用<strong>自动垃圾回收</strong>（GC）管理内存，开发者无需手动分配和释放。Lua的GC经历了多次重大改进：</p>
+                
+                <p><strong>Lua 5.0</strong>：使用简单的<strong>标记-清除</strong>（Mark-Sweep）算法。每次GC会遍历整个对象图，暂停时间与对象总数成正比。</p>
+                
+                <p><strong>Lua 5.1</strong>：引入<strong>增量式垃圾回收</strong>（Incremental GC）。将GC工作分散到多个步骤中，每步只处理一小部分对象，大幅减少最长暂停时间。同时引入<strong>分代回收</strong>（Generational GC）的实验性支持。</p>
+                
+                <p><strong>Lua 5.2-5.3</strong>：改进增量GC的参数调优，支持更细粒度的GC控制。</p>
+                
+                <p><strong>Lua 5.4</strong>：引入<strong>分代+增量混合</strong>的GC。分代GC假设"大多数对象是短命的"，将对象分为"年轻代"和"老年代"，对年轻代进行更频繁的回收。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- Lua 5.4 垃圾回收器的增量算法</span>
+<span class="cm">-- 分为两个阶段：</span>
+<span class="cm">-- 1. 标记阶段（Mark Phase）：遍历所有可达对象，标记为"存活"</span>
+<span class="cm">-- 2. 清除阶段（Sweep Phase）：回收未标记的对象</span>
+<span class="cm">-- 增量方式：将标记和清除工作分散到多个小步骤中</span>
+
+<span class="cm">-- GC 控制函数</span>
+<span class="fn">collectgarbage</span>(<span class="st">"collect"</span>)      <span class="cm">-- 强制执行一次完整的GC</span>
+<span class="fn">collectgarbage</span>(<span class="st">"count"</span>)       <span class="cm">-- 返回当前内存使用量（KB）</span>
+<span class="fn">collectgarbage</span>(<span class="st">"countpages"</span>)  <span class="cm">-- 返回内存使用量的页数</span>
+
+<span class="cm">-- 控制GC步长（增量GC）</span>
+<span class="fn">collectgarbage</span>(<span class="st">"setpause"</span>, <span class="nm">100</span>)   <span class="cm">-- 设置GC暂停时间百分比</span>
+<span class="fn">collectgarbage</span>(<span class="st">"setstepmul"</span>, <span class="nm">200</span>) <span class="cm">-- 设置GC步长倍增因子</span>
+
+<span class="cm">-- 查看GC统计信息</span>
+<span class="fn">print</span>(<span class="fn">collectgarbage</span>(<span class="st">"count"</span>))  <span class="cm">-- 当前内存（KB）</span>
+<span class="fn">print</span>(<span class="fn">collectgarbage</span>(<span class="st">"gennum"</span>))  <span class="cm">-- 分代GC的代数（Lua 5.4）</span>
+
+<span class="cm">-- 弱引用表（Weak Tables）</span>
+<span class="cm">-- 元表中的 __mode 字段控制弱引用类型</span>
+<span class="cm">-- "k" — 键为弱引用（键可被GC回收）</span>
+<span class="cm">-- "v" — 值为弱引用（值可被GC回收）</span>
+<span class="cm">-- "kv" — 键和值都是弱引用</span>
+
+<span class="kw">local</span> cache = {}
+<span class="fn">setmetatable</span>(cache, {__mode = <span class="st">"v"</span>})  <span class="cm">-- 值为弱引用</span>
+
+<span class="kw">local</span> key = {name = <span class="st">"临时对象"</span>}
+cache[key] = <span class="st">"数据"</span>
+
+<span class="fn">print</span>(cache[key])   <span class="cm">-- "数据"</span>
+key = <span class="kw">nil</span>           <span class="cm">-- 删除对键的引用</span>
+<span class="fn">collectgarbage</span>(<span class="st">"collect"</span>)
+<span class="fn">print</span>(cache[key])   <span class="cm">-- nil（数据已被GC回收）</span>
+
+<span class="cm">-- GC 的实际使用场景</span>
+<span class="cm">-- 1. 内存监控</span>
+<span class="kw">local</span> function <span class="fn">check_memory</span>()
+    <span class="kw">local</span> before = <span class="fn">collectgarbage</span>(<span class="st">"count"</span>)
+    <span class="fn">collectgarbage</span>(<span class="st">"collect"</span>)
+    <span class="kw">local</span> after = <span class="fn">collectgarbage</span>(<span class="st">"count"</span>)
+    <span class="fn">print</span>(<span class="fn">string.format</span>(<span class="st">"GC回收了 %.2f KB"</span>, before - after))
+<span class="kw">end</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第18章：调试 -->
+        <section id="debug">
+            <h1>18. 调试</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua调试库的功能</div>
+                <p>Lua内置了强大的<strong>调试库</strong>（debug库），可以实现<strong>断点设置</strong>、<strong>栈帧检查</strong>、<strong>变量查看</strong>和<strong>钩子函数</strong>。调试库的核心是<strong>debug.getinfo</strong>（获取函数信息）和<strong>debug.getlocal</strong>（获取局部变量）两个函数。</p>
+                
+                <p>在生产环境中，应<strong>禁用debug库</strong>或限制其访问，因为它允许修改函数的内部状态，存在安全隐患。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 获取函数信息</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">test_func</span>()
+    <span class="kw">local</span> info = <span class="fn">debug.getinfo</span>(<span class="nm">1</span>)
+    <span class="fn">print</span>(<span class="st">"函数名:"</span>, info.name)
+    <span class="fn">print</span>(<span class="st">"源文件:"</span>, info.source)
+    <span class="fn">print</span>(<span class="st">"行号范围:"</span>, info.linedefined, <span class="st">"-"</span>, info.lastlinedefined)
+<span class="kw">end</span>
+
+<span class="fn">test_func</span>()
+
+<span class="cm">-- 查看栈帧</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">outer</span>()
+    <span class="fn">inner</span>()
+<span class="kw">end</span>
+
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">inner</span>()
+    <span class="kw">local</span> level = <span class="nm">1</span>
+    <span class="kw">while</span> <span class="kw">true</span> <span class="kw">do</span>
+        <span class="kw">local</span> info = <span class="fn">debug.getinfo</span>(level, <span class="st">"nS"</span>)
+        <span class="kw">if</span> <span class="kw">not</span> info <span class="kw">then</span> <span class="kw">break</span> <span class="kw">end</span>
+        <span class="fn">print</span>(<span class="fn">string.format</span>(<span class="st">"第%d层: %s (%s:%d)"</span>,
+            level, info.name <span class="kw">or</span> <span class="st">"?"</span>, info.short_src, info.currentline))
+        level = level + <span class="nm">1</span>
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="cm">-- 获取和设置局部变量</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">check_locals</span>()
+    <span class="kw">local</span> x = <span class="nm">10</span>
+    <span class="kw">local</span> y = <span class="nm">20</span>
+    <span class="kw">local</span> i = <span class="nm">1</span>
+    <span class="kw">while</span> <span class="kw">true</span> <span class="kw">do</span>
+        <span class="kw">local</span> name, value = <span class="fn">debug.getlocal</span>(<span class="nm">1</span>, i)
+        <span class="kw">if</span> <span class="kw">not</span> name <span class="kw">then</span> <span class="kw">break</span> <span class="kw">end</span>
+        <span class="fn">print</span>(name, <span class="st">"="</span>, value)
+        i = i + <span class="nm">1</span>
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="fn">check_locals</span>()
+
+<span class="cm">-- 调试钩子（Hook）</span>
+<span class="cm">-- 可以在每次函数调用、返回、行执行时触发</span>
+<span class="kw">local</span> hook_count = <span class="nm">0</span>
+<span class="fn">debug.sethook</span>(<span class="kw">function</span>(event, line)
+    hook_count = hook_count + <span class="nm">1</span>
+    <span class="kw">if</span> event == <span class="st">"line"</span> <span class="kw">then</span>
+        <span class="fn">print</span>(<span class="st">"执行第"</span> .. line .. <span class="st">"行"</span>)
+    <span class="kw">end</span>
+    <span class="kw">if</span> hook_count &gt; <span class="nm">100</span> <span class="kw">then</span>
+        <span class="fn">error</span>(<span class="st">"执行超过限制，强制终止"</span>)
+    <span class="kw">end</span>
+<span class="kw">end</span>, <span class="st">"l"</span>)  <span class="cm">-- "l" 表示监听行事件</span>
+
+<span class="cm">-- 简单的断点调试器</span>
+<span class="kw">function</span> <span class="fn">set_breakpoint</span>(func, line)
+    <span class="fn">debug.sethook</span>(<span class="kw">function</span>(event, line_num)
+        <span class="kw">if</span> event == <span class="st">"line"</span> <span class="kw">and</span> line_num == line <span class="kw">then</span>
+            <span class="fn">print</span>(<span class="fn">string.format</span>(<span class="st">"断点命中: 第%d行"</span>, line))
+            <span class="cm">-- 在这里可以检查变量、单步执行等</span>
+        <span class="kw">end</span>
+    <span class="kw">end</span>, <span class="st">"l"</span>)
+<span class="kw">end</span></code></pre>
+            </div>
+        </section>
+
+        <!-- 第19章：与C交互 -->
+        <section id="capi">
+            <h1>19. 与C交互</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua C API的工作原理</div>
+                <p>Lua与C的交互通过<strong>栈</strong>（stack）实现。所有Lua值的传递都通过一个<strong>虚拟栈</strong>进行：C代码将参数压入栈，调用Lua函数，然后从栈中弹出返回值。这个栈是<strong>类型安全</strong>的——每个槽位存储一个Lua值，C代码可以检查和操作这些值。</p>
+                
+                <p>Lua C API的核心函数分为几类：<strong>栈操作</strong>（push/get/pop）、<strong>类型检查</strong>（is*/check*）、<strong>函数调用</strong>（call/pcall）和<strong>内存管理</strong>（userdata创建）。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">C</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">// mylib.c — 一个简单的Lua C扩展</span>
+<span class="kw">#include</span> <span class="st">"lua.h"</span>
+<span class="kw">#include</span> <span class="st">"lauxlib.h"</span>
+<span class="kw">#include</span> <span class="st">"lualib.h"</span>
+
+<span class="cm">// C函数实现：加法</span>
+<span class="kw">static int</span> <span class="fn">lua_add</span>(lua_State *L) {
+    <span class="cm">// 从栈中获取参数</span>
+    <span class="kw">double</span> a = <span class="fn">luaL_checknumber</span>(L, <span class="nm">1</span>);
+    <span class="kw">double</span> b = <span class="fn">luaL_checknumber</span>(L, <span class="nm">2</span>);
+    
+    <span class="cm">// 将结果压入栈</span>
+    <span class="fn">lua_pushnumber</span>(L, a + b);
+    
+    <span class="cm">// 返回1个值</span>
+    <span class="kw">return</span> <span class="nm">1</span>;
+}
+
+<span class="cm">// 注册函数到Lua</span>
+<span class="kw">static const</span> luaL_Reg mylib[] = {
+    {<span class="st">"add"</span>, lua_add},
+    {<span class="kw">NULL</span>, <span class="kw">NULL</span>}  <span class="cm">// 终止标记</span>
+};
+
+<span class="cm">// 模块入口函数</span>
+<span class="kw">int</span> <span class="fn">luaopen_mylib</span>(lua_State *L) {
+    <span class="fn">luaL_newlib</span>(L, mylib);
+    <span class="kw">return</span> <span class="nm">1</span>;
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Shell</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm"># 编译C扩展</span>
+<span class="cm"># Linux/macOS</span>
+gcc -shared -o mylib.so -fPIC mylib.c \
+    -I/usr/include/lua5.4 \
+    -llua5.4
+
+<span class="cm"># Windows (MinGW)</span>
+gcc -shared -o mylib.dll mylib.c \
+    -I"C:\Lua\include" \
+    -L"C:\Lua" -llua54
+
+<span class="cm"># 使用</span>
+<span class="cm"># Lua 代码</span>
+<span class="kw">local</span> mylib = <span class="kw">require</span>(<span class="st">"mylib"</span>)
+<span class="fn">print</span>(mylib.<span class="fn">add</span>(<span class="nm">3</span>, <span class="nm">4</span>))  <span class="cm">-- 7</span></code></pre>
+            </div>
+
+            <div class="principle">
+                <div class="principle-title">Userdata与Lightuserdata</div>
+                <p><strong>Userdata</strong>是Lua管理的内存块，用于在Lua中存储C数据。创建userdata时，Lua会分配一块内存并返回一个指向它的指针。可以为userdata设置元表，为其添加方法和操作符。</p>
+                
+                <p><strong>Lightuserdata</strong>是存储在Lua值中的C指针。它不被Lua管理（不参与GC），适用于存储C对象的指针。轻量级userdata通常用于与C库交互。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">C</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">// Userdata 示例：自定义Vector</span>
+<span class="kw">typedef struct</span> {
+    <span class="kw">double</span> x, y;
+} Vector;
+
+<span class="kw">static int</span> <span class="fn">lua_vector_new</span>(lua_State *L) {
+    <span class="kw">double</span> x = <span class="fn">luaL_optnumber</span>(L, <span class="nm">1</span>, <span class="nm">0</span>);
+    <span class="kw">double</span> y = <span class="fn">luaL_optnumber</span>(L, <span class="nm">2</span>, <span class="nm">0</span>);
+    
+    <span class="cm">// 创建userdata</span>
+    Vector *v = (<span class="kw">struct</span> Vector *)<span class="fn">lua_newuserdata</span>(L, <span class="kw">sizeof</span>(Vector));
+    v->x = x;
+    v->y = y;
+    
+    <span class="cm">// 设置元表</span>
+    <span class="fn">luaL_setmetatable</span>(L, <span class="st">"VectorMT"</span>);
+    
+    <span class="kw">return</span> <span class="nm">1</span>;  <span class="cm">// 返回userdata</span>
+}
+
+<span class="kw">static int</span> <span class="fn">lua_vector_add</span>(lua_State *L) {
+    Vector *a = (<span class="kw">struct</span> Vector *)<span class="fn">luaL_checkudata</span>(L, <span class="nm">1</span>, <span class="st">"VectorMT"</span>);
+    Vector *b = (<span class="kw">struct</span> Vector *)<span class="fn">luaL_checkudata</span>(L, <span class="nm">2</span>, <span class="st">"VectorMT"</span>);
+    
+    Vector *result = (<span class="kw">struct</span> Vector *)<span class="fn">lua_newuserdata</span>(L, <span class="kw">sizeof</span>(Vector));
+    result->x = a->x + b->x;
+    result->y = a->y + b->y;
+    
+    <span class="fn">luaL_setmetatable</span>(L, <span class="st">"VectorMT"</span>);
+    <span class="kw">return</span> <span class="nm">1</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- 第20章：游戏开发应用 -->
+        <section id="gamedev">
+            <h1>20. 游戏开发应用</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua在游戏开发中的地位</div>
+                <p>Lua是游戏脚本领域的<strong>事实标准</strong>。几乎所有主流游戏引擎都支持Lua作为脚本语言。Lua在游戏开发中的优势包括：</p>
+                <p><strong>嵌入性</strong>：Lua可以轻松嵌入C/C++游戏引擎，不需要修改引擎代码。</p>
+                <p><strong>性能</strong>：LuaJIT提供接近C的执行速度，适合游戏逻辑。</p>
+                <p><strong>安全性</strong>：游戏逻辑运行在Lua沙箱中，即使脚本出错也不会崩溃游戏。</p>
+                <p><strong>热重载</strong>：修改Lua脚本后无需重新编译，可以即时生效。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 游戏实体组件系统（ECS）基础</span>
+<span class="kw">local</span> ECS = {}
+ECS.__index = ECS
+
+<span class="kw">function</span> ECS.<span class="fn">new</span>()
+    <span class="kw">return</span> <span class="fn">setmetatable</span>({
+        entities = {},
+        components = {},
+        systems = {}
+    }, ECS)
+<span class="kw">end</span>
+
+<span class="kw">function</span> ECS:<span class="fn">create_entity</span>()
+    <span class="kw">local</span> id = #self.entities + <span class="nm">1</span>
+    self.entities[id] = {id = id}
+    <span class="kw">return</span> id
+<span class="kw">end</span>
+
+<span class="kw">function</span> ECS:<span class="fn">add_component</span>(entity_id, component_name, data)
+    <span class="kw">if</span> <span class="kw">not</span> self.components[component_name] <span class="kw">then</span>
+        self.components[component_name] = {}
+    <span class="kw">end</span>
+    self.components[component_name][entity_id] = data
+<span class="kw">end</span>
+
+<span class="kw">function</span> ECS:<span class="fn">get_component</span>(entity_id, component_name)
+    <span class="kw">return</span> self.components[component_name] <span class="kw">and</span>
+           self.components[component_name][entity_id]
+<span class="kw">end</span>
+
+<span class="cm">-- 使用ECS</span>
+<span class="kw">local</span> world = ECS.<span class="fn">new</span>()
+
+<span class="cm">-- 创建玩家实体</span>
+<span class="kw">local</span> player = world:<span class="fn">create_entity</span>()
+world:<span class="fn">add_component</span>(player, <span class="st">"position"</span>, {x = <span class="nm">0</span>, y = <span class="nm">0</span>})
+world:<span class="fn">add_component</span>(player, <span class="st">"velocity"</span>, {dx = <span class="nm">100</span>, dy = <span class="nm">0</span>})
+world:<span class="fn">add_component</span>(player, <span class="st">"sprite"</span>, {image = <span class="st">"player.png"</span>})
+
+<span class="cm">-- 移动系统</span>
+<span class="kw">function</span> <span class="fn">movement_system</span>(world, dt)
+    <span class="kw">for</span> id, _ <span class="kw">in</span> <span class="fn">pairs</span>(world.entities) <span class="kw">do</span>
+        <span class="kw">local</span> pos = world:<span class="fn">get_component</span>(id, <span class="st">"position"</span>)
+        <span class="kw">local</span> vel = world:<span class="fn">get_component</span>(id, <span class="st">"velocity"</span>)
+        <span class="kw">if</span> pos <span class="kw">and</span> vel <span class="kw">then</span>
+            pos.x = pos.x + vel.dx * dt
+            pos.y = pos.y + vel.dy * dt
+        <span class="kw">end</span>
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="cm">-- 游戏主循环</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">game_loop</span>()
+    <span class="kw">local</span> dt = <span class="nm">1/60</span>  <span class="cm">-- 60fps</span>
+    <span class="kw">while</span> <span class="kw">true</span> <span class="kw">do</span>
+        <span class="fn">movement_system</span>(world, dt)
+        <span class="cm">-- render_system(world)</span>
+    <span class="kw">end</span>
+<span class="kw">end</span></code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 游戏状态管理（有限状态机）</span>
+<span class="kw">local</span> StateMachine = {}
+StateMachine.__index = StateMachine
+
+<span class="kw">function</span> StateMachine.<span class="fn">new</span>(states)
+    <span class="kw">local</span> self = <span class="fn">setmetatable</span>({
+        states = states,
+        current = <span class="kw">nil</span>,
+        global_state = <span class="kw">nil</span>
+    }, StateMachine)
+    <span class="kw">return</span> self
+<span class="kw">end</span>
+
+<span class="kw">function</span> StateMachine:<span class="fn">change</span>(state_name, enter_data)
+    <span class="kw">if</span> self.current <span class="kw">then</span>
+        self.current.<span class="fn">exit</span>(self.owner, enter_data)
+    <span class="kw">end</span>
+    self.current = self.states[state_name]
+    <span class="kw">if</span> self.current <span class="kw">then</span>
+        self.current.<span class="fn">enter</span>(self.owner, enter_data)
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> StateMachine:<span class="fn">update</span>(dt)
+    <span class="kw">if</span> self.global_state <span class="kw">then</span>
+        self.global_state.<span class="fn">update</span>(self.owner, dt)
+    <span class="kw">end</span>
+    <span class="kw">if</span> self.current <span class="kw">then</span>
+        self.current.<span class="fn">update</span>(self.owner, dt)
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="cm">-- 定义游戏状态</span>
+<span class="kw">local</span> states = {
+    menu = {
+        enter = <span class="kw">function</span>(owner)
+            <span class="fn">print</span>(<span class="st">"进入菜单"</span>)
+        <span class="kw">end</span>,
+        update = <span class="kw">function</span>(owner, dt)
+            <span class="cm">-- 处理菜单输入</span>
+        <span class="kw">end</span>,
+        exit = <span class="kw">function</span>(owner)
+            <span class="fn">print</span>(<span class="st">"退出菜单"</span>)
+        <span class="kw">end</span>
+    },
+    playing = {
+        enter = <span class="kw">function</span>(owner)
+            <span class="fn">print</span>(<span class="st">"开始游戏"</span>)
+        <span class="kw">end</span>,
+        update = <span class="kw">function</span>(owner, dt)
+            <span class="cm">-- 游戏逻辑更新</span>
+        <span class="kw">end</span>,
+        exit = <span class="kw">function</span>(owner)
+            <span class="fn">print</span>(<span class="st">"游戏暂停"</span>)
+        <span class="kw">end</span>
+    },
+    gameover = {
+        enter = <span class="kw">function</span>(owner)
+            <span class="fn">print</span>(<span class="st">"游戏结束"</span>)
+        <span class="kw">end</span>,
+        update = <span class="kw">function</span>(owner, dt) <span class="kw">end</span>,
+        exit = <span class="kw">function</span>(owner) <span class="kw">end</span>
+    }
+}
+
+<span class="kw">local</span> sm = StateMachine.<span class="fn">new</span>(states)
+sm:.<span class="fn">change</span>(<span class="st">"menu"</span>)
+sm:.<span class="fn">change</span>(<span class="st">"playing"</span>)</code></pre>
+            </div>
+        </section>
+
+        <!-- 第21章：最佳实践 -->
+        <section id="best-practices">
+            <h1>21. 最佳实践</h1>
+            
+            <div class="principle">
+                <div class="principle-title">Lua编码规范</div>
+                <p>遵循良好的编码规范是团队协作和代码维护的基础。以下是Lua社区广泛认可的最佳实践。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- ✅ 始终使用 local 声明变量</span>
+<span class="cm">-- 全局变量访问比局部变量慢 30% 以上</span>
+<span class="kw">local</span> x = <span class="nm">10</span>          <span class="cm">-- ✅ 局部变量</span>
+<span class="cm">-- x = 10             -- ❌ 避免全局变量</span>
+
+<span class="cm">-- ✅ 缓存频繁使用的全局函数</span>
+<span class="kw">local</span> <span class="fn">print</span> = <span class="kw">print</span>
+<span class="kw">local</span> <span class="fn">type</span> = <span class="kw">type</span>
+<span class="kw">local</span> <span class="fn">pairs</span> = <span class="kw">pairs</span>
+
+<span class="cm">-- ✅ 使用冒号语法定义方法</span>
+<span class="kw">function</span> MyClass:<span class="fn">method</span>()  <span class="cm">-- ✅ 冒号自动传递 self</span>
+    <span class="cm">-- 等价于: MyClass.method = function(self)</span>
+<span class="kw">end</span>
+
+<span class="cm">-- ✅ 使用表构造器创建对象</span>
+<span class="kw">local</span> obj = {
+    name = <span class="st">"测试"</span>,
+    value = <span class="nm">42</span>,
+}
+<span class="cm">-- 而不是逐个赋值</span>
+
+<span class="cm">-- ✅ 使用 table.concat 拼接大量字符串</span>
+<span class="kw">local</span> parts = {}
+<span class="kw">for</span> i = <span class="nm">1</span>, <span class="nm">1000</span> <span class="kw">do</span>
+    parts[i] = <span class="fn">tostring</span>(i)
+<span class="kw">end</span>
+<span class="kw">local</span> result = <span class="fn">table.concat</span>(parts, <span class="st">", "</span>)  <span class="cm">-- ✅</span>
+<span class="cm">-- local result = ""  ❌ 不要用 .. 在循环中拼接</span>
+
+<span class="cm">-- ✅ 善用 ipairs 和 pairs</span>
+<span class="kw">local</span> arr = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>}
+<span class="kw">for</span> i, v <span class="kw">in</span> <span class="fn">ipairs</span>(arr) <span class="kw">do</span> <span class="cm">-- ✅ 数组用 ipairs（更快）</span>
+    <span class="fn">print</span>(i, v)
+<span class="kw">end</span>
+
+<span class="kw">local</span> dict = {a = <span class="nm">1</span>, b = <span class="nm">2</span>}
+<span class="kw">for</span> k, v <span class="kw">in</span> <span class="fn">pairs</span>(dict) <span class="kw">do</span> <span class="cm">-- ✅ 字典用 pairs</span>
+    <span class="fn">print</span>(k, v)
+<span class="kw">end</span>
+
+<span class="cm">-- ✅ 错误处理使用 pcall/xpcall</span>
+<span class="kw">local</span> ok, result = <span class="fn">pcall</span>(<span class="kw">function</span>()
+    <span class="kw">return</span> <span class="fn">risky_operation</span>()
+<span class="kw">end</span>)
+<span class="kw">if</span> ok <span class="kw">then</span>
+    <span class="fn">print</span>(<span class="st">"成功:"</span>, result)
+<span class="kw">else</span>
+    <span class="fn">print</span>(<span class="st">"错误:"</span>, result)
+<span class="kw">end</span></code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 性能优化技巧</span>
+
+<span class="cm">-- 1. 避免在循环中创建闭包</span>
+<span class="kw">local</span> cached_funcs = {}
+<span class="kw">function</span> <span class="fn">get_func</span>(key)
+    <span class="kw">if</span> <span class="kw">not</span> cached_funcs[key] <span class="kw">then</span>
+        cached_funcs[key] = <span class="kw">function</span>()
+            <span class="cm">-- 复杂逻辑</span>
+        <span class="kw">end</span>
+    <span class="kw">end</span>
+    <span class="kw">return</span> cached_funcs[key]
+<span class="kw">end</span>
+
+<span class="cm">-- 2. 使用数学库替代手动计算</span>
+<span class="kw">local</span> <span class="fn">math_sqrt</span> = <span class="fn">math.sqrt</span>
+<span class="kw">local</span> <span class="fn">math_max</span> = <span class="fn">math.max</span>
+<span class="kw">local</span> <span class="fn">math_min</span> = <span class="fn">math.min</span>
+
+<span class="cm">-- 3. 使用位运算代替算术运算（Lua 5.3+）</span>
+<span class="kw">local</span> x = <span class="nm">256</span>
+<span class="kw">local</span> y = x &gt;&gt; <span class="nm">4</span>    <span class="cm">-- 比 x / 16 更快</span>
+<span class="kw">local</span> z = x &amp; <span class="nm">0xFF</span>   <span class="cm">-- 比 x % 256 更快</span>
+
+<span class="cm">-- 4. 预分配表的容量</span>
+<span class="kw">local</span> big_table = <span class="fn">table.new</span>(<span class="nm">1000</span>, <span class="nm">100</span>)  <span class="cm">-- LuaJIT: 1000数组, 100哈希</span>
+
+<span class="cm">-- 5. 使用字符串缓冲区模式</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">build_string</span>(parts)
+    <span class="kw">local</span> t = {}
+    <span class="kw">for</span> i = <span class="nm">1</span>, #parts <span class="kw">do</span>
+        t[i] = parts[i]
+    <span class="kw">end</span>
+    <span class="kw">return</span> <span class="fn">table.concat</span>(t)
+<span class="kw">end</span>
+
+<span class="cm">-- 6. 使用 weak table 实现缓存</span>
+<span class="kw">local</span> cache = {}
+<span class="fn">setmetatable</span>(cache, {__mode = <span class="st">"v"</span>})
+
+<span class="kw">function</span> <span class="fn">get_or_create</span>(key, factory)
+    <span class="kw">if</span> <span class="kw">not</span> cache[key] <span class="kw">then</span>
+        cache[key] = <span class="fn">factory</span>(key)
+    <span class="kw">end</span>
+    <span class="kw">return</span> cache[key]
+<span class="kw">end</span>
+
+<span class="cm">-- 7. 使用尾调用避免栈溢出</span>
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">trampoline</span>(fn, ...)
+    <span class="kw">return</span> <span class="fn">fn</span>(...)  <span class="cm">-- 尾调用：不占用栈帧</span>
+<span class="kw">end</span>
+
+<span class="cm">-- 8. 使用 select 和 ... 处理可变参数</span>
+<span class="kw">function</span> <span class="fn">first</span>(...)
+    <span class="kw">return</span> ...  <span class="cm">-- 不需要 table.pack</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> <span class="fn">rest</span>(first, ...)
+    <span class="kw">return</span> ...  <span class="cm">-- 返回除第一个外的所有参数</span>
+<span class="kw">end</span></code></pre>
+            </div>
+
+            <div class="principle">
+                <div class="principle-title">项目结构建议</div>
+                <p><strong>模块化</strong>：将功能拆分为独立模块，每个模块职责单一。使用<code>require</code>管理依赖。</p>
+                <p><strong>命名约定</strong>：模块名使用小写下划线（<code>my_module</code>），类名使用大驼峰（<code>MyClass</code>），私有函数以下划线开头（<code>_helper</code>）。</p>
+                <p><strong>测试驱动</strong>：使用Busted等测试框架编写单元测试，确保代码质量。</p>
+                <p><strong>文档</strong>：为公共API编写LuaDoc格式的文档注释。</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Lua</span>
+                    <div class="code-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <pre><code><span class="cm">-- 推荐的项目结构</span>
+<span class="cm">-- myproject/</span>
+<span class="cm">-- ├── main.lua           -- 入口文件</span>
+<span class="cm">-- ├── config.lua         -- 配置</span>
+<span class="cm">-- ├── src/</span>
+<span class="cm">-- │   ├── core.lua       -- 核心逻辑</span>
+<span class="cm">-- │   ├── utils.lua      -- 工具函数</span>
+<span class="cm">-- │   └── models/</span>
+<span class="cm">-- │       ├── player.lua</span>
+<span class="cm">-- │       └── enemy.lua</span>
+<span class="cm">-- ├── tests/</span>
+<span class="cm">-- │   ├── test_core.lua</span>
+<span class="cm">-- │   └── test_utils.lua</span>
+<span class="cm">-- └── lib/               -- 第三方库</span>
+
+<span class="cm">-- main.lua — 入口文件</span>
+<span class="kw">local</span> config = <span class="kw">require</span>(<span class="st">"config"</span>)
+<span class="kw">local</span> core = <span class="kw">require</span>(<span class="st">"src.core"</span>)
+<span class="kw">local</span> Player = <span class="kw">require</span>(<span class="st">"src.models.player"</span>)
+
+<span class="kw">local</span> <span class="kw">function</span> <span class="fn">main</span>()
+    <span class="fn">print</span>(<span class="st">"游戏启动"</span>)
+    <span class="kw">local</span> player = Player.<span class="fn">new</span>(config.start_position)
+    core.<span class="fn">run</span>(player)
+<span class="kw">end</span>
+
+<span class="fn">main</span>()</code></pre>
+            </div>
+
+            <div class="tip">
+                Lua虽然小巧，但通过元表、闭包和协程等机制，可以实现极其复杂的编程模式。掌握这些机制是成为Lua高手的关键。记住：Lua的设计哲学是"提供机制而非策略"——不要试图在Lua中套用其他语言的模式，而是理解Lua的原语，用它们组合出你想要的解决方案。
+            </div>
+        </section>
+    </div>
+</body>
+</html>

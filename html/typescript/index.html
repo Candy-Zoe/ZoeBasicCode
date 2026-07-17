@@ -1,0 +1,2568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript 完整教程 - ZoeBasicCode</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="../assets/editor.css">
+</head>
+<body>
+
+<!-- 固定头部 -->
+<header class="header">
+    <a href="../index.html" class="header-logo">
+        Zoe<span>BasicCode</span>
+    </a>
+    <div class="header-nav">
+        <span class="lang-badge">📘 TypeScript</span>
+    </div>
+</header>
+
+<!-- 侧边栏 -->
+<nav class="sidebar">
+    <div class="sidebar-section">
+        <div class="sidebar-title">入门</div>
+        <a href="#section-1" class="sidebar-link active"><span class="num">01</span>简介与安装</a>
+        <a href="#section-2" class="sidebar-link"><span class="num">02</span>基础类型</a>
+        <a href="#section-3" class="sidebar-link"><span class="num">03</span>类型推断</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">类型系统</div>
+        <a href="#section-4" class="sidebar-link"><span class="num">04</span>接口</a>
+        <a href="#section-5" class="sidebar-link"><span class="num">05</span>类型别名</a>
+        <a href="#section-6" class="sidebar-link"><span class="num">06</span>联合类型</a>
+        <a href="#section-7" class="sidebar-link"><span class="num">07</span>泛型</a>
+        <a href="#section-8" class="sidebar-link"><span class="num">08</span>类型守卫</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">函数</div>
+        <a href="#section-9" class="sidebar-link"><span class="num">09</span>函数类型</a>
+        <a href="#section-10" class="sidebar-link"><span class="num">10</span>重载</a>
+        <a href="#section-11" class="sidebar-link"><span class="num">11</span>可选参数</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">面向对象</div>
+        <a href="#section-12" class="sidebar-link"><span class="num">12</span>类与访问修饰符</a>
+        <a href="#section-13" class="sidebar-link"><span class="num">13</span>抽象类</a>
+        <a href="#section-14" class="sidebar-link"><span class="num">14</span>接口实现</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">进阶</div>
+        <a href="#section-15" class="sidebar-link"><span class="num">15</span>枚举</a>
+        <a href="#section-16" class="sidebar-link"><span class="num">16</span>类型体操</a>
+        <a href="#section-17" class="sidebar-link"><span class="num">17</span>模块与命名空间</a>
+        <a href="#section-18" class="sidebar-link"><span class="num">18</span>声明文件</a>
+        <a href="#section-19" class="sidebar-link"><span class="num">19</span>Mapped Types与条件类型</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">实战</div>
+        <a href="#section-20" class="sidebar-link"><span class="num">20</span>与JavaScript互操作</a>
+        <a href="#section-21" class="sidebar-link"><span class="num">21</span>最佳实践</a>
+    </div>
+</nav>
+
+<!-- 主内容 -->
+<main class="main">
+    <h1>TypeScript 完整教程</h1>
+    <p class="subtitle">从零开始掌握 TypeScript —— JavaScript 的超集，静态类型系统的实践指南，涵盖类型推断、泛型、类型体操、模块系统等核心知识。</p>
+
+    <!-- ==================== 第1节 ==================== -->
+    <h2 id="section-1">1. 简介与安装</h2>
+
+    <p>TypeScript 是由微软开发的开源编程语言，它是 JavaScript 的<strong>超集</strong>，在 JavaScript 的基础上添加了<strong>静态类型系统</strong>和其他高级特性。TypeScript 代码最终会被编译为纯 JavaScript 代码运行。</p>
+
+    <div class="principle">
+        <div class="principle-title">核心理念</div>
+        <p><strong>JavaScript 有的，TypeScript 都有。</strong>TypeScript 在编译后会完全还原为 JavaScript，因此任何合法的 JavaScript 代码都是合法的 TypeScript 代码。TypeScript 的核心价值在于<strong>编译时的类型检查</strong>，帮助开发者在运行之前发现潜在错误。</p>
+    </div>
+
+    <h3>安装 TypeScript</h3>
+
+    <p>可以通过 npm 全局安装 TypeScript 编译器：</p>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+        <pre><code><span class="cm"># 全局安装 TypeScript</span>
+<span class="fn">npm</span> install -g typescript
+
+<span class="cm"># 验证安装</span>
+<span class="fn">tsc</span> --version
+
+<span class="cm"># 在项目中初始化 tsconfig.json</span>
+<span class="fn">tsc</span> --init
+
+<span class="cm"># 编译 TypeScript 文件</span>
+<span class="fn">tsc</span> hello.ts
+
+<span class="cm"># 使用 ts-node 直接运行 .ts 文件（开发常用）</span>
+<span class="fn">npm</span> install -g ts-node
+<span class="fn">ts-node</span> hello.ts</code></pre>
+    </div>
+
+    <h3>第一个 TypeScript 程序</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// hello.ts</span>
+<span class="kw">function</span> <span class="fn">greet</span>(name: <span class="tp">string</span>): <span class="tp">string</span> {
+    <span class="kw">return</span> <span class="st">`你好，${name}！欢迎学习 TypeScript！`</span>;
+}
+
+<span class="kw">const</span> message: <span class="tp">string</span> = <span class="fn">greet</span>(<span class="st">"TypeScript"</span>);
+console.<span class="fn">log</span>(message);
+
+<span class="cm">// 类型错误示例 - 编译时会被捕获</span>
+<span class="cm">// greet(123); // ❌ 错误：类型"number"的参数不能赋值给类型"string"的参数</span></code></pre>
+    </div>
+
+    <div class="tip">
+        <strong>开发建议：</strong>在项目开发中，推荐使用 <code>tsconfig.json</code> 配置编译选项，并配合 IDE（如 VS Code）获得实时类型检查和智能提示。
+    </div>
+
+    <h3>tsconfig.json 配置详解</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">JSON</div>
+        </div>
+        <pre><code>{
+    <span class="st">"compilerOptions"</span>: {
+        <span class="st">"target"</span>: <span class="st">"ES2020"</span>,        <span class="cm">// 编译目标版本</span>
+        <span class="st">"module"</span>: <span class="st">"ESNext"</span>,        <span class="cm">// 模块系统</span>
+        <span class="st">"lib"</span>: [<span class="st">"ES2020"</span>, <span class="st">"DOM"</span>],  <span class="cm">// 包含的类型库</span>
+        <span class="st">"outDir"</span>: <span class="st">"./dist"</span>,        <span class="cm">// 输出目录</span>
+        <span class="st">"rootDir"</span>: <span class="st">"./src"</span>,        <span class="cm">// 源文件目录</span>
+        <span class="st">"strict"</span>: <span class="kw">true</span>,            <span class="cm">// 启用严格模式</span>
+        <span class="st">"esModuleInterop"</span>: <span class="kw">true</span>,  <span class="cm">// 兼容 CommonJS 导入</span>
+        <span class="st">"skipLibCheck"</span>: <span class="kw">true</span>,     <span class="cm">// 跳过库文件类型检查</span>
+        <span class="st">"forceConsistentCasingInFileNames"</span>: <span class="kw">true</span>,
+        <span class="st">"resolveJsonModule"</span>: <span class="kw">true</span>,
+        <span class="st">"declaration"</span>: <span class="kw">true</span>,       <span class="cm">// 生成 .d.ts 声明文件</span>
+        <span class="st">"declarationMap"</span>: <span class="kw">true</span>,    <span class="cm">// 生成声明文件映射</span>
+        <span class="st">"sourceMap"</span>: <span class="kw">true</span>         <span class="cm">// 生成源码映射</span>
+    },
+    <span class="st">"include"</span>: [<span class="st">"src/**/*"</span>],
+    <span class="st">"exclude"</span>: [<span class="st">"node_modules"</span>, <span class="st">"dist"</span>]
+}</code></pre>
+    </div>
+
+    <!-- ==================== 第2节 ==================== -->
+    <h2 id="section-2">2. 基础类型</h2>
+
+    <p>TypeScript 提供了丰富的基础类型，每种类型都有明确的语义和使用场景。掌握基础类型是理解整个类型系统的基石。</p>
+
+    <h3>原始类型</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 字符串类型</span>
+<span class="kw">let</span> name: <span class="tp">string</span> = <span class="st">"张三"</span>;
+<span class="kw">let</span> greeting: <span class="tp">string</span> = <span class="st">`你好，${name}`</span>;
+
+<span class="cm">// 数字类型（不区分整数和浮点数）</span>
+<span class="kw">let</span> age: <span class="tp">number</span> = <span class="nm">25</span>;
+<span class="kw">let</span> price: <span class="tp">number</span> = <span class="nm">99.9</span>;
+<span class="kw">let</span> hex: <span class="tp">number</span> = <span class="nm">0xff</span>;
+<span class="kw">let</span> binary: <span class="tp">number</span> = <span class="nm">0b1010</span>;
+
+<span class="cm">// 布尔类型</span>
+<span class="kw">let</span> isActive: <span class="tp">boolean</span> = <span class="kw">true</span>;
+
+<span class="cm">// null 和 undefined</span>
+<span class="kw">let</span> nothing: <span class="tp">null</span> = <span class="kw">null</span>;
+<span class="kw">let</span> notDefined: <span class="tp">undefined</span> = <span class="kw">undefined</span>;
+
+<span class="cm">// Symbol</span>
+<span class="kw">let</span> sym: <span class="tp">symbol</span> = <span class="fn">Symbol</span>(<span class="st">"key"</span>);
+
+<span class="cm">// BigInt</span>
+<span class="kw">let</span> bigNum: <span class="tp">bigint</span> = <span class="nm">100n</span>;</code></pre>
+    </div>
+
+    <h3>数组与元组</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 数组 - 两种声明方式</span>
+<span class="kw">let</span> numbers: <span class="tp">number</span>[] = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];
+<span class="kw">let</span> names: <span class="tp">Array</span>&lt;<span class="tp">string</span>&gt; = [<span class="st">"张三"</span>, <span class="st">"李四"</span>];
+
+<span class="cm">// 只读数组</span>
+<span class="kw">let</span> readonlyArr: <span class="tp">ReadonlyArray</span>&lt;<span class="tp">number</span>&gt; = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];
+<span class="cm">// readonlyArr.push(4); // ❌ 错误：ReadonlyArray 上不存在 push 方法</span>
+
+<span class="cm">// 元组 - 固定长度和类型的数组</span>
+<span class="kw">let</span> person: [<span class="tp">string</span>, <span class="tp">number</span>] = [<span class="st">"张三"</span>, <span class="nm">25</span>];
+<span class="kw">let</span> coordinate: [<span class="tp">number</span>, <span class="tp">number</span>, <span class="tp">number</span>] = [<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>];
+
+<span class="cm">// 元组解构</span>
+<span class="kw">const</span> [personName, personAge] = person;
+
+<span class="cm">// 具名元组标签（TypeScript 4.0+）</span>
+<span class="kw">type</span> <span class="tp">User</span> = [<span class="tp">name</span>: <span class="tp">string</span>, <span class="tp">age</span>: <span class="tp">number</span>, <span class="tp">email</span>: <span class="tp">string</span>];
+<span class="kw">let</span> user: <span class="tp">User</span> = [<span class="st">"李四"</span>, <span class="nm">30</span>, <span class="st">"lisi@example.com"</span>];</code></pre>
+    </div>
+
+    <h3>特殊类型</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// any - 放弃类型检查（尽量少用）</span>
+<span class="kw">let</span> anything: <span class="tp">any</span> = <span class="st">"字符串"</span>;
+anything = <span class="nm">42</span>;      <span class="cm">// 允许</span>
+anything = <span class="kw">true</span>;   <span class="cm">// 允许</span>
+anything.foo();     <span class="cm">// 允许（但运行时会报错）</span>
+
+<span class="cm">// unknown - 安全的 any，必须先检查类型才能使用</span>
+<span class="kw">let</span> data: <span class="tp">unknown</span> = <span class="st">"这是一些数据"</span>;
+<span class="cm">// console.log(data.length); // ❌ 错误：unknown 上不存在 length 属性</span>
+
+<span class="cm">// 必须进行类型检查</span>
+<span class="kw">if</span> (<span class="kw">typeof</span> data === <span class="st">"string"</span>) {
+    console.<span class="fn">log</span>(data.length); <span class="cm">// ✅ 正确：12</span>
+}
+
+<span class="cm">// never - 不可能出现的类型</span>
+<span class="kw">function</span> <span class="fn">throwError</span>(msg: <span class="tp">string</span>): <span class="tp">never</span> {
+    <span class="kw">throw new</span> <span class="fn">Error</span>(msg);
+}
+
+<span class="cm">// void - 没有返回值</span>
+<span class="kw">function</span> <span class="fn">logMessage</span>(msg: <span class="tp">string</span>): <span class="tp">void</span> {
+    console.<span class="fn">log</span>(msg);
+}
+
+<span class="cm">// 对象类型</span>
+<span class="kw">let</span> obj: <span class="tp">object</span> = { name: <span class="st">"张三"</span> };
+
+<span class="cm">// 更精确的对象类型</span>
+<span class="kw">let</span> personObj: { name: <span class="tp">string</span>; age: <span class="tp">number</span> } = {
+    name: <span class="st">"李四"</span>,
+    age: <span class="nm">30</span>
+};</code></pre>
+    </div>
+
+    <div class="warning">
+        <strong>注意：</strong>应尽量避免使用 <code>any</code> 类型，它会绕过类型检查，失去 TypeScript 的核心优势。优先使用 <code>unknown</code> 代替 <code>any</code>，因为 <code>unknown</code> 强制进行类型检查后才能使用。
+    </div>
+
+    <h3>类型断言</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 类型断言 - 告诉编译器"我知道这个值的类型"</span>
+<span class="kw">let</span> someValue: <span class="tp">unknown</span> = <span class="st">"这是一个字符串"</span>;
+
+<span class="cm">// 尖括号语法</span>
+<span class="kw">let</span> strLength: <span class="tp">number</span> = (&lt;<span class="tp">string</span>&gt;someValue).length;
+
+<span class="cm">// as 语法（推荐，在 JSX 中也能用）</span>
+<span class="kw">let</span> strLength2: <span class="tp">number</span> = (someValue <span class="kw">as</span> <span class="tp">string</span>).length;
+
+<span class="cm">// 非空断言运算符（!）</span>
+<span class="kw">function</span> <span class="fn">getLength</span>(value: <span class="tp">string</span> | <span class="tp">null</span>): <span class="tp">number</span> {
+    <span class="cm">// 非空断言：告诉编译器 value 一定不是 null</span>
+    <span class="kw">return</span> value!.length;
+}</code></pre>
+    </div>
+
+    <div class="danger">
+        <strong>慎用非空断言：</strong>非空断言 <code>!</code> 会绕过空值检查，如果值实际上为 <code>null</code> 或 <code>undefined</code>，运行时会抛出错误。建议优先使用可选链 <code>?.</code> 或空值合并 <code>??</code>。
+    </div>
+
+    <!-- ==================== 第3节 ==================== -->
+    <h2 id="section-3">3. 类型推断</h2>
+
+    <p>TypeScript 的类型推断（Type Inference）是其类型系统最强大的特性之一。编译器能够根据上下文自动推断变量的类型，减少显式类型注解的需要。</p>
+
+    <div class="principle">
+        <div class="principle-title">结构化类型系统</div>
+        <p>TypeScript 采用<strong>结构化类型系统</strong>（Structural Typing），也称为"鸭子类型"。类型的兼容性取决于<strong>结构</strong>而非名称。如果两个类型具有相同的结构（属性和方法），它们就是兼容的。这与 Java、C# 等语言的名义类型系统（Nominal Typing）有本质区别。</p>
+    </div>
+
+    <h3>基础类型推断</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 基础类型推断 - 根据初始值推断</span>
+<span class="kw">let</span> x = <span class="nm">10</span>;           <span class="cm">// 推断为 number</span>
+<span class="kw">let</span> y = <span class="st">"hello"</span>;      <span class="cm">// 推断为 string</span>
+<span class="kw">let</span> z = <span class="kw">true</span>;        <span class="cm">// 推断为 boolean</span>
+<span class="kw">let</span> arr = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];   <span class="cm">// 推断为 number[]</span>
+
+<span class="cm">// 函数返回值推断</span>
+<span class="kw">function</span> <span class="fn">add</span>(a: <span class="tp">number</span>, b: <span class="tp">number</span>) {
+    <span class="kw">return</span> a + b; <span class="cm">// 返回值被推断为 number</span>
+}
+
+<span class="cm">// 上下文类型推断</span>
+<span class="kw">const</span> names = [<span class="st">"张三"</span>, <span class="st">"李四"</span>, <span class="st">"王五"</span>];
+<span class="kw">const</span> upperNames = names.<span class="fn">map</span>(name => name.<span class="fn">toUpperCase</span>());
+<span class="cm">// name 的类型被推断为 string</span></code></pre>
+    </div>
+
+    <h3>最佳通用类型推断</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 当数组中有多种类型时，推断出"最佳通用类型"</span>
+<span class="kw">let</span> mixed = [<span class="nm">1</span>, <span class="st">"hello"</span>, <span class="kw">true</span>];
+<span class="cm">// 推断为 (string | number | boolean)[]</span>
+
+<span class="cm">// 对象类型推断</span>
+<span class="kw">const</span> user = {
+    name: <span class="st">"张三"</span>,
+    age: <span class="nm">25</span>,
+    hobbies: [<span class="st">"编程"</span>, <span class="st">"阅读"</span>]
+};
+<span class="cm">// 推断为 { name: string; age: number; hobbies: string[] }</span>
+
+<span class="cm">// 返回值类型推断</span>
+<span class="kw">function</span> <span class="fn">createUser</span>(name: <span class="tp">string</span>, age: <span class="tp">number</span>) {
+    <span class="kw">return</span> { name, age, createdAt: <span class="kw">new</span> <span class="fn">Date</span>() };
+}
+<span class="cm">// 返回值推断为 { name: string; age: number; createdAt: Date }</span>
+
+<span class="cm">// 使用 ReturnType 获取推断的返回类型</span>
+<span class="kw">type</span> <span class="tp">User</span> = <span class="tp">ReturnType</span>&lt;<span class="kw">typeof</span> createUser&gt;;</code></pre>
+    </div>
+
+    <h3>类型推断的局限</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 空数组无法推断类型</span>
+<span class="kw">let</span> emptyArr = [];   <span class="cm">// 推断为 any[]</span>
+<span class="cm">// 需要显式指定类型</span>
+<span class="kw">let</span> typedArr: <span class="tp">number</span>[] = [];
+
+<span class="cm">// 函数参数需要类型注解</span>
+<span class="kw">function</span> <span class="fn">divide</span>(a, b) {  <span class="cm">// ❌ 参数隐式推断为 any</span>
+    <span class="kw">return</span> a / b;
+}
+
+<span class="cm">// 正确做法</span>
+<span class="kw">function</span> <span class="fn">divideCorrect</span>(a: <span class="tp">number</span>, b: <span class="tp">number</span>): <span class="tp">number</span> {
+    <span class="kw">return</span> a / b;
+}
+
+<span class="cm">// 宽字面量推断 - const 断言</span>
+<span class="kw">let</span> x = <span class="st">"hello"</span>;     <span class="cm">// 类型为 string</span>
+<span class="kw">const</span> y = <span class="st">"hello"</span>;   <span class="cm">// 类型为 "hello"（字面量类型）</span>
+<span class="kw">const</span> z = { a: <span class="nm">1</span> };  <span class="cm">// 类型为 { a: number }</span>
+
+<span class="cm">// as const - 将所有属性变为只读字面量类型</span>
+<span class="kw">const</span> config = {
+    host: <span class="st">"localhost"</span>,
+    port: <span class="nm">3000</span>
+} <span class="kw">as const</span>;
+<span class="cm">// 类型为 { readonly host: "localhost"; readonly port: 3000 }</span></code></pre>
+    </div>
+
+    <div class="tip">
+        <strong>类型推断最佳实践：</strong>在变量声明时有初始值的情况下，不需要显式类型注解。但在函数参数、空数组、对象属性等场景下，应显式指定类型以获得更好的类型安全性和代码可读性。
+    </div>
+
+    <!-- ==================== 第4节 ==================== -->
+    <h2 id="section-4">4. 接口</h2>
+
+    <p>接口（Interface）是 TypeScript 中定义对象结构的核心方式。它描述了对象应该具有的<strong>形状</strong>（shape），包括属性、方法及其类型。</p>
+
+    <div class="principle">
+        <div class="principle-title">接口 vs 类型别名</div>
+        <p>接口和类型别名在许多场景下可以互换使用，但<strong>接口支持声明合并</strong>（Declaration Merging），即多个同名接口会自动合并。接口更适合定义对象的形状和类的契约，而类型别名更适合定义联合类型、元组等复杂类型。</p>
+    </div>
+
+    <h3>基础接口定义</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 定义接口</span>
+<span class="kw">interface</span> <span class="tp">User</span> {
+    name: <span class="tp">string</span>;
+    age: <span class="tp">number</span>;
+    email: <span class="tp">string</span>;
+}
+
+<span class="cm">// 使用接口</span>
+<span class="kw">const</span> user: <span class="tp">User</span> = {
+    name: <span class="st">"张三"</span>,
+    age: <span class="nm">25</span>,
+    email: <span class="st">"zhangsan@example.com"</span>
+};
+
+<span class="cm">// 可选属性</span>
+<span class="kw">interface</span> <span class="tp">UserProfile</span> {
+    name: <span class="tp">string</span>;
+    age: <span class="tp">number</span>;
+    phone?: <span class="tp">string</span>;      <span class="cm">// 可选属性</span>
+    address?: <span class="tp">string</span>;
+}
+
+<span class="cm">// 只读属性</span>
+<span class="kw">interface</span> <span class="tp">Config</span> {
+    <span class="kw">readonly</span> host: <span class="tp">string</span>;
+    <span class="kw">readonly</span> port: <span class="tp">number</span>;
+}
+
+<span class="kw">const</span> config: <span class="tp">Config</span> = { host: <span class="st">"localhost"</span>, port: <span class="nm">3000</span> };
+<span class="cm">// config.port = 3001; // ❌ 错误：无法为 "port" 赋值，因为它是只读属性</span></code></pre>
+    </div>
+
+    <h3>接口继承</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 单接口继承</span>
+<span class="kw">interface</span> <span class="tp">Animal</span> {
+    name: <span class="tp">string</span>;
+    age: <span class="tp">number</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Dog</span> <span class="kw">extends</span> <span class="tp">Animal</span> {
+    breed: <span class="tp">string</span>;
+    bark(): <span class="tp">void</span>;
+}
+
+<span class="cm">// 多接口继承</span>
+<span class="kw">interface</span> <span class="tp">Swimmable</span> {
+    swim(): <span class="tp">void</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Flyable</span> {
+    fly(): <span class="tp">void</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Duck</span> <span class="kw">extends</span> <span class="tp">Animal</span>, <span class="tp">Swimmable</span>, <span class="tp">Flyable</span> {
+    quack(): <span class="tp">void</span>;
+}
+
+<span class="kw">const</span> duck: <span class="tp">Duck</span> = {
+    name: <span class="st">"唐老鸭"</span>,
+    age: <span class="nm">5</span>,
+    <span class="fn">swim</span>() { console.<span class="fn">log</span>(<span class="st">"游泳"</span>); },
+    <span class="fn">fly</span>() { console.<span class="fn">log</span>(<span class="st">"飞行"</span>); },
+    <span class="fn">quack</span>() { console.<span class="fn">log</span>(<span class="st">"嘎嘎叫"</span>); }
+};</code></pre>
+    </div>
+
+    <h3>声明合并（Declaration Merging）</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 同名接口会自动合并</span>
+<span class="kw">interface</span> <span class="tp">Window</span> {
+    myCustomProperty: <span class="tp">string</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Window</span> {
+    anotherProperty: <span class="tp">number</span>;
+}
+
+<span class="cm">// Window 现在同时拥有 myCustomProperty 和 anotherProperty</span>
+
+<span class="cm">// 接口合并时，同名属性类型必须兼容</span>
+<span class="kw">interface</span> <span class="tp">Box</span> {
+    width: <span class="tp">number</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Box</span> {
+    height: <span class="tp">number</span>;
+    <span class="cm">// width: string; // ❌ 错误：width 类型不兼容</span>
+}
+
+<span class="cm">// 函数接口合并</span>
+<span class="kw">interface</span> <span class="tp">Counter</span> {
+    (): <span class="tp">number</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Counter</span> {
+    count: <span class="tp">number</span>;
+}
+
+<span class="cm">// Counter 现在既是函数又是对象</span></code></pre>
+    </div>
+
+    <div class="tip">
+        <strong>声明合并的妙用：</strong>声明合并在扩展第三方库的类型时非常有用。例如，当 Express 请求对象需要添加自定义属性时，可以通过声明合并来扩展 <code>Express.Request</code> 接口。
+    </div>
+
+    <h3>命名空间与接口合并</h3>
+
+    <div class="code-block" data-lang="typescript">
+        <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">TypeScript</span>
+        </div>
+        <pre><code><span class="cm">// 命名空间与类合并 - 添加静态成员类型</span>
+<span class="kw">class</span> <span class="tp">API</span> {
+    <span class="kw">constructor</span>(<span class="kw">public</span> url: <span class="tp">string</span>) {}
+}
+
+<span class="kw">namespace</span> <span class="tp">API</span> {
+    <span class="kw">export interface</span> <span class="tp">Config</span> {
+        timeout: <span class="tp">number</span>;
+        retries: <span class="tp">number</span>;
+    }
+
+    <span class="kw">export function</span> <span class="fn">create</span>(url: <span class="tp">string</span>, config?: <span class="tp">Partial</span>&lt;<span class="tp">Config</span>&gt;): <span class="tp">API</span> {
+        <span class="kw">return new</span> <span class="fn">API</span>(url);
+    }
+
+    <span class="kw">export const</span> DEFAULT_CONFIG: <span class="tp">Config</span> = {
+        timeout: <span class="nm">5000</span>,
+        retries: <span class="nm">3</span>
+    };
+}
+
+<span class="cm">// 现在 API 既有实例成员也有命名空间导出</span>
+<span class="kw">const</span> api = <span class="kw">new</span> <span class="tp">API</span>(<span class="st">"https://api.example.com"</span>);
+<span class="kw">const</span> api2 = <span class="tp">API</span>.<span class="fn">create</span>(<span class="st">"https://api.example.com"</span>, { timeout: <span class="nm">10000</span> });
+
+<span class="cm">// 命名空间与枚举合并 - 扩展枚举功能</span>
+<span class="kw">enum</span> <span class="tp">Color</span> {
+    Red = <span class="st">"RED"</span>,
+    Green = <span class="st">"GREEN"</span>,
+    Blue = <span class="st">"BLUE"</span>
+}
+
+<span class="kw">namespace</span> <span class="tp">Color</span> {
+    <span class="kw">export function</span> <span class="fn">fromString</span>(value: <span class="tp">string</span>): <span class="tp">Color</span> | <span class="tp">undefined</span> {
+        <span class="kw">return</span> Object.<span class="fn">values</span>(<span class="tp">Color</span>).<span class="fn">find</span>(
+            v => <span class="kw">typeof</span> v === <span class="st">"string"</span> &amp;&amp; v.<span class="fn">toLowerCase</span>() === value.<span class="fn">toLowerCase</span>()
+        ) <span class="kw">as</span> <span class="tp">Color</span> | <span class="tp">undefined</span>;
+    }
+
+    <span class="kw">export const</span> ALL: <span class="tp">Color</span>[] = [<span class="tp">Color</span>.Red, <span class="tp">Color</span>.Green, <span class="tp">Color</span>.Blue];
+}
+
+<span class="cm">// 模块增强（Module Augmentation）</span>
+<span class="cm">// 扩展 Express 的 Request 类型</span>
+<span class="kw">declare module</span> <span class="st">"express"</span> {
+    <span class="kw">interface</span> <span class="tp">Request</span> {
+        userId?: <span class="tp">string</span>;
+        role?: <span class="st">"admin"</span> | <span class="st">"user"</span> | <span class="st">"guest"</span>;
+        sessionId?: <span class="tp">string</span>;
+    }
+}
+
+<span class="cm">// 使用时 Express Request 自动带上新属性</span>
+app.<span class="fn">get</span>(<span class="st">"/profile"</span>, (req, res) => {
+    console.<span class="fn">log</span>(req.userId);  <span class="cm">// ✅ string | undefined</span>
+    console.<span class="fn">log</span>(req.role);     <span class="cm">// ✅ "admin" | "user" | "guest"</span>
+});</code></pre>
+    </div>
+
+    <!-- ==================== 第5节 ==================== -->
+    <h2 id="section-5">5. 类型别名</h2>
+
+    <p>类型别名（Type Alias）使用 <code>type</code> 关键字为类型创建一个新名称。它比接口更灵活，可以表示接口无法表达的类型。</p>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 基础类型别名</span>
+<span class="kw">type</span> <span class="tp">StringOrNumber</span> = <span class="tp">string</span> | <span class="tp">number</span>;
+<span class="kw">type</span> <span class="tp">ID</span> = <span class="tp">string</span> | <span class="tp">number</span>;
+<span class="kw">type</span> <span class="tp">Callback</span> = (data: <span class="tp">any</span>) => <span class="tp">void</span>;
+
+<span class="cm">// 对象类型别名</span>
+<span class="kw">type</span> <span class="tp">Point</span> = {
+    x: <span class="tp">number</span>;
+    y: <span class="tp">number</span>;
+};
+
+<span class="cm">// 函数类型别名</span>
+<span class="kw">type</span> <span class="tp">Formatter</span> = (input: <span class="tp">string</span>) => <span class="tp">string</span>;
+
+<span class="cm">// 联合类型</span>
+<span class="kw">type</span> <span class="tp">Status</span> = <span class="st">"active"</span> | <span class="st">"inactive"</span> | <span class="st">"pending"</span>;
+
+<span class="cm">// 映射类型（后面会详细讲解）</span>
+<span class="kw">type</span> <span class="tp">PartialUser</span> = <span class="tp">Partial</span>&lt;<span class="tp">User</span>&gt;;
+
+<span class="cm">// 交叉类型 - 合并多个类型</span>
+<span class="kw">type</span> <span class="tp">Named</span> = { name: <span class="tp">string</span> };
+<span class="kw">type</span> <span class="tp">Aged</span> = { age: <span class="tp">number</span> };
+<span class="kw">type</span> <span class="tp">Person</span> = <span class="tp">Named</span> &amp; <span class="tp">Aged</span>;
+<span class="cm">// Person 等同于 { name: string; age: number }</span>
+
+<span class="cm">// 条件类型</span>
+<span class="kw">type</span> <span class="tp">IsString</span>&lt;T&gt; = T <span class="kw">extends</span> <span class="tp">string</span> ? <span class="tp">true</span> : <span class="tp">false</span>;
+<span class="kw">type</span> <span class="tp">A</span> = <span class="tp">IsString</span>&lt;<span class="st">"hello"</span>&gt;;  <span class="cm">// true</span>
+<span class="kw">type</span> <span class="tp">B</span> = <span class="tp">IsString</span>&lt;<span class="nm">42</span>&gt;;       <span class="cm">// false</span></code></pre>
+    </div>
+
+    <div class="warning">
+        <strong>接口与类型别名的选择：</strong>定义对象形状时优先使用 <code>interface</code>，因为它支持声明合并和错误信息更友好。使用 <code>type</code> 定义联合类型、交叉类型、元组和更复杂的类型操作。
+    </div>
+
+    <!-- ==================== 第6节 ==================== -->
+    <h2 id="section-6">6. 联合类型</h2>
+
+    <p>联合类型（Union Types）允许一个变量可以是多种类型中的一种。使用 <code>|</code> 操作符连接多个类型。</p>
+
+    <h3>基础联合类型</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 基础联合类型</span>
+<span class="kw">let</span> value: <span class="tp">string</span> | <span class="tp">number</span>;
+value = <span class="st">"hello"</span>;  <span class="cm">// ✅</span>
+value = <span class="nm">42</span>;       <span class="cm">// ✅</span>
+<span class="cm">// value = true;  // ❌ 类型不匹配</span>
+
+<span class="cm">// 可辨识联合（Discriminated Unions）</span>
+<span class="kw">interface</span> <span class="tp">Circle</span> {
+    kind: <span class="st">"circle"</span>;
+    radius: <span class="tp">number</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Rectangle</span> {
+    kind: <span class="st">"rectangle"</span>;
+    width: <span class="tp">number</span>;
+    height: <span class="tp">number</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Triangle</span> {
+    kind: <span class="st">"triangle"</span>;
+    base: <span class="tp">number</span>;
+    height: <span class="tp">number</span>;
+}
+
+<span class="kw">type</span> <span class="tp">Shape</span> = <span class="tp">Circle</span> | <span class="tp">Rectangle</span> | <span class="tp">Triangle</span>;
+
+<span class="kw">function</span> <span class="fn">calculateArea</span>(shape: <span class="tp">Shape</span>): <span class="tp">number</span> {
+    <span class="kw">switch</span> (shape.kind) {
+        <span class="kw">case</span> <span class="st">"circle"</span>:
+            <span class="kw">return</span> Math.PI * shape.radius ** <span class="nm">2</span>;
+        <span class="kw">case</span> <span class="st">"rectangle"</span>:
+            <span class="kw">return</span> shape.width * shape.height;
+        <span class="kw">case</span> <span class="st">"triangle"</span>:
+            <span class="kw">return</span> (<span class="nm">1</span> / <span class="nm">2</span>) * shape.base * shape.height;
+    }
+}</code></pre>
+    </div>
+
+    <h3>交叉类型</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 交叉类型 - 合并所有类型的属性</span>
+<span class="kw">type</span> <span class="tp">HasName</span> = { name: <span class="tp">string</span> };
+<span class="kw">type</span> <span class="tp">HasAge</span> = { age: <span class="tp">number</span> };
+<span class="kw">type</span> <span class="tp">HasEmail</span> = { email: <span class="tp">string</span> };
+
+<span class="kw">type</span> <span class="tp">PersonInfo</span> = <span class="tp">HasName</span> &amp; <span class="tp">HasAge</span> &amp; <span class="tp">HasEmail</span>;
+
+<span class="kw">const</span> person: <span class="tp">PersonInfo</span> = {
+    name: <span class="st">"张三"</span>,
+    age: <span class="nm">25</span>,
+    email: <span class="st">"zhangsan@example.com"</span>
+};
+
+<span class="cm">// 交叉类型与接口合并的区别</span>
+<span class="cm">// 交叉类型：直接合并，同名属性必须兼容</span>
+<span class="cm">// 接口合并：方法签名会重载</span></code></pre>
+    </div>
+
+    <h3>模板字面量类型（Template Literal Types）</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 模板字面量类型 - TypeScript 4.1+</span>
+<span class="kw">type</span> <span class="tp">Color</span> = <span class="st">"red"</span> | <span class="st">"green"</span> | <span class="st">"blue"</span>;
+<span class="kw">type</span> <span class="tp">Size</span> = <span class="st">"small"</span> | <span class="st">"medium"</span> | <span class="st">"large"</span>;
+
+<span class="cm">// 自动生成所有组合</span>
+<span class="kw">type</span> <span class="tp">ColorSize</span> = <span class="st">`${Color}-${Size}`</span>;
+<span class="cm">// "red-small" | "red-medium" | "red-large" |
+//  "green-small" | "green-medium" | "green-large" |
+//  "blue-small" | "blue-medium" | "blue-large"</span>
+
+<span class="cm">// 实用场景：事件名称推断</span>
+<span class="kw">type</span> <span class="tp">EventName</span> = <span class="st">"click"</span> | <span class="st">"scroll"</span> | <span class="st">"mouseover"</span>;
+<span class="kw">type</span> <span class="tp">EventHandler</span> = <span class="st">`on${Capitalize&lt;EventName&gt;}`</span>;
+<span class="cm">// "onClick" | "onScroll" | "onMouseover"</span>
+
+<span class="cm">// 内置字符串操作类型</span>
+<span class="kw">type</span> <span class="tp">Upper</span> = <span class="tp">Uppercase</span>&lt;<span class="st">"hello"</span>&gt;;     <span class="cm">// "HELLO"</span>
+<span class="kw">type</span> <span class="tp">Lower</span> = <span class="tp">Lowercase</span>&lt;<span class="st">"HELLO"</span>&gt;;     <span class="cm">// "hello"</span>
+<span class="kw">type</span> <span class="tp">Cap</span> = <span class="tp">Capitalize</span>&lt;<span class="st">"hello"</span>&gt;;      <span class="cm">// "Hello"</span>
+<span class="kw">type</span> <span class="tp">Unc</span> = <span class="tp">Uncapitalize</span>&lt;<span class="st">"Hello"</span>&gt;;   <span class="cm">// "hello"</span></code></pre>
+    </div>
+
+    <h3>字符串操作模式</h3>
+
+    <div class="code-block" data-lang="typescript">
+        <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">TypeScript</span>
+        </div>
+        <pre><code><span class="cm">// 类型安全的 CSS 属性名</span>
+<span class="kw">type</span> <span class="tp">CSSUnit</span> = <span class="st">"px"</span> | <span class="st">"em"</span> | <span class="st">"rem"</span> | <span class="st">"%"</span> | <span class="st">"vh"</span> | <span class="st">"vw"</span>;
+<span class="kw">type</span> <span class="tp">CSSValue</span> = <span class="st">`${number}${CSSUnit}`</span>;
+<span class="cm">// "0px" | "0em" | ... | "42px" | "42em" | ...</span>
+
+<span class="kw">function</span> <span class="fn">setStyle</span>(element: <span class="tp">HTMLElement</span>, prop: <span class="tp">string</span>, value: <span class="tp">CSSValue</span>) {
+    element.style.<span class="fn">setProperty</span>(prop, value);
+}
+
+<span class="cm">// 类型安全的事件系统 - 事件名与处理函数匹配</span>
+<span class="kw">type</span> <span class="tp">HTMLElementEvent</span> = <span class="st">"click"</span> | <span class="st">"focus"</span> | <span class="st">"blur"</span>;
+<span class="kw">type</span> <span class="tp">EventHandlers</span> = {
+    [K <span class="kw">in</span> <span class="tp">HTMLElementEvent</span> <span class="kw">as</span> <span class="st">`on${Capitalize&lt;K&gt;}`</span>]: () => <span class="tp">void</span>;
+};
+<span class="cm">// { onClick: () => void; onFocus: () => void; onBlur: () => void; }</span>
+
+<span class="cm">// 字面量类型提取 - 从路径中解析参数</span>
+<span class="kw">type</span> <span class="tp">ExtractRouteParams</span>&lt;T extends <span class="tp">string</span>&gt; =
+    T <span class="kw">extends</span> <span class="st">`${string}:${infer Param}/${infer Rest}`</span>
+        ? Param | <span class="tp">ExtractRouteParams</span>&lt;<span class="st">`/${Rest}`</span>&gt;
+        : T <span class="kw">extends</span> <span class="st">`${string}:${infer Param}`</span>
+        ? Param
+        : <span class="kw">never</span>;
+
+<span class="kw">type</span> <span class="tp">Params</span> = <span class="tp">ExtractRouteParams</span>&lt;<span class="st">"/users/:id/posts/:postId"</span>&gt;;
+<span class="cm">// "id" | "postId"</span>
+
+<span class="cm">// 模板字面量递归 - 字符串转为 kebab-case</span>
+<span class="kw">type</span> <span class="tp">CamelToKebab</span>&lt;T extends <span class="tp">string</span>&gt; =
+    T <span class="kw">extends</span> <span class="st">`${infer Head}${infer Tail}`</span>
+        ? Head <span class="kw">extends</span> <span class="tp">Uppercase</span>&lt;Head&gt;
+            ? Head <span class="kw">extends</span> <span class="tp">Lowercase</span>&lt;Head&gt;
+                ? <span class="st">`${Head}${CamelToKebab&lt;Tail&gt;}`</span>
+                : <span class="st">`-${Lowercase&lt;Head&gt;}${CamelToKebab&lt;Tail&gt;}`</span>
+            : <span class="st">`${Head}${CamelToKebab&lt;Tail&gt;}`</span>
+        : T;
+
+<span class="kw">type</span> <span class="tp">Kebab</span> = <span class="tp">CamelToKebab</span>&lt;<span class="st">"backgroundColor"</span>&gt;;
+<span class="cm">// "background-color"</span>
+
+<span class="cm">// 类型安全的 JSON Path 访问</span>
+<span class="kw">type</span> <span class="tp">Join</span>&lt;T extends <span class="tp">string</span>[], D extends <span class="tp">string</span>&gt; =
+    T <span class="kw">extends</span> [<span class="kw">infer</span> <span class="tp">First</span> <span class="kw">extends</span> <span class="tp">string</span>, ...<span class="kw">infer</span> <span class="tp">Rest</span> <span class="kw">extends</span> <span class="tp">string</span>[]]
+        ? <span class="tp">Rest</span>[<span class="nm">0</span>] <span class="kw">extends</span> <span class="tp">undefined</span>
+            ? <span class="tp">First</span>
+            : <span class="st">`${First}${D}${Join&lt;Rest, D&gt;}`</span>
+        : <span class="st">""</span>;
+
+<span class="kw">type</span> <span class="tp">Path</span> = <span class="tp">Join</span>&lt;[<span class="st">"users"</span>, <span class="st">"123"</span>, <span class="st">"posts"</span>], <span class="st">"/"</span>&gt;;
+<span class="cm">// "users/123/posts"</span></code></pre>
+    </div>
+
+    <!-- ==================== 第7节 ==================== -->
+    <h2 id="section-7">7. 泛型</h2>
+
+    <p>泛型（Generics）是 TypeScript 中最强大的特性之一。它允许创建<strong>可复用的组件</strong>，这些组件可以支持多种类型而非仅仅一种。泛型类似于类型参数，使用 <code>&lt;T&gt;</code> 语法声明。</p>
+
+    <div class="principle">
+        <div class="principle-title">泛型的本质</div>
+        <p>泛型本质上是<strong>类型的函数</strong>。就像普通函数接收值作为参数一样，泛型函数接收类型作为参数。这使得我们能够编写既类型安全又高度可复用的代码。</p>
+    </div>
+
+    <h3>基础泛型</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 泛型函数</span>
+<span class="kw">function</span> <span class="fn">identity</span>&lt;T&gt;(arg: T): T {
+    <span class="kw">return</span> arg;
+}
+
+<span class="cm">// 显式指定类型参数</span>
+<span class="kw">const</span> output1 = identity&lt;<span class="tp">string</span>&gt;(<span class="st">"hello"</span>);
+
+<span class="cm">// 类型推断（推荐）</span>
+<span class="kw">const</span> output2 = identity(<span class="st">"hello"</span>); <span class="cm">// 自动推断为 string</span>
+
+<span class="cm">// 泛型接口</span>
+<span class="kw">interface</span> <span class="tp">ApiResponse</span>&lt;T&gt; {
+    code: <span class="tp">number</span>;
+    message: <span class="tp">string</span>;
+    data: T;
+}
+
+<span class="cm">// 使用泛型接口</span>
+<span class="kw">interface</span> <span class="tp">User</span> { id: <span class="tp">number</span>; name: <span class="tp">string</span>; }
+<span class="kw">interface</span> <span class="tp">Product</span> { id: <span class="tp">number</span>; title: <span class="tp">string</span>; price: <span class="tp">number</span>; }
+
+<span class="kw">const</span> userResponse: <span class="tp">ApiResponse</span>&lt;<span class="tp">User</span>&gt; = {
+    code: <span class="nm">200</span>,
+    message: <span class="st">"success"</span>,
+    data: { id: <span class="nm">1</span>, name: <span class="st">"张三"</span> }
+};
+
+<span class="kw">const</span> productResponse: <span class="tp">ApiResponse</span>&lt;<span class="tp">Product</span>[]&gt; = {
+    code: <span class="nm">200</span>,
+    message: <span class="st">"success"</span>,
+    data: [{ id: <span class="nm">1</span>, title: <span class="st">"手机"</span>, price: <span class="nm">4999</span> }]
+};</code></pre>
+    </div>
+
+    <h3>泛型约束</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 使用 extends 约束泛型</span>
+<span class="kw">interface</span> <span class="tp">HasLength</span> {
+    length: <span class="tp">number</span>;
+}
+
+<span class="kw">function</span> <span class="fn">logLength</span>&lt;T <span class="kw">extends</span> <span class="tp">HasLength</span>&gt;(arg: T): T {
+    console.<span class="fn">log</span>(<span class="st">`长度: ${arg.length}`</span>);
+    <span class="kw">return</span> arg;
+}
+
+logLength(<span class="st">"hello"</span>);      <span class="cm">// ✅ string 有 length</span>
+logLength([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>]);     <span class="cm">// ✅ array 有 length</span>
+logLength({ length: <span class="nm">10</span> }); <span class="cm">// ✅ 对象有 length</span>
+<span class="cm">// logLength(123);       // ❌ number 没有 length</span>
+
+<span class="cm">// keyof 约束</span>
+<span class="kw">function</span> <span class="fn">getProperty</span>&lt;T, K <span class="kw">extends</span> <span class="kw">keyof</span> T&gt;(obj: T, key: K): T[K] {
+    <span class="kw">return</span> obj[key];
+}
+
+<span class="kw">const</span> user = { name: <span class="st">"张三"</span>, age: <span class="nm">25</span> };
+getProperty(user, <span class="st">"name"</span>);  <span class="cm">// ✅ 返回 string</span>
+getProperty(user, <span class="st">"age"</span>);   <span class="cm">// ✅ 返回 number</span>
+<span class="cm">// getProperty(user, "email"); // ❌ "email" 不是 user 的键</span></code></pre>
+    </div>
+
+    <h3>泛型默认值与多类型参数</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 泛型默认值</span>
+<span class="kw">interface</span> <span class="tp">PageResponse</span>&lt;T, E = <span class="tp">Error</span>&gt; {
+    data: T;
+    error?: E;
+}
+
+<span class="cm">// 使用默认值</span>
+<span class="kw">const</span> res1: <span class="tp">PageResponse</span>&lt;<span class="tp">string</span>[]&gt; = {
+    data: [<span class="st">"a"</span>, <span class="st">"b"</span>]
+};
+
+<span class="cm">// 覆盖默认值</span>
+<span class="kw">const</span> res2: <span class="tp">PageResponse</span>&lt;<span class="tp">User</span>, <span class="tp">ApiError</span>&gt; = {
+    data: { id: <span class="nm">1</span>, name: <span class="st">"张三"</span> },
+    error: { code: <span class="nm">404</span>, message: <span class="st">"未找到"</span> }
+};
+
+<span class="cm">// 多类型参数泛型</span>
+<span class="kw">function</span> <span class="fn">merge</span>&lt;T, U&gt;(obj1: T, obj2: U): T &amp; U {
+    <span class="kw">return</span> { ...obj1, ...obj2 };
+}
+
+<span class="kw">const</span> merged = <span class="fn">merge</span>(
+    { name: <span class="st">"张三"</span> },
+    { age: <span class="nm">25</span> }
+);
+<span class="cm">// 类型为 { name: string } & { age: number }</span>
+
+<span class="cm">// 泛型类</span>
+<span class="kw">class</span> <span class="tp">Stack</span>&lt;T&gt; {
+    <span class="kw">private</span> items: T[] = [];
+
+    <span class="fn">push</span>(item: T): <span class="tp">void</span> {
+        <span class="kw">this</span>.items.<span class="fn">push</span>(item);
+    }
+
+    <span class="fn">pop</span>(): T | <span class="tp">undefined</span> {
+        <span class="kw">return</span> <span class="kw">this</span>.items.<span class="fn">pop</span>();
+    }
+
+    <span class="fn">peek</span>(): T | <span class="tp">undefined</span> {
+        <span class="kw">return</span> <span class="kw">this</span>.items[<span class="kw">this</span>.items.length - <span class="nm">1</span>];
+    }
+
+    <span class="kw">get</span> <span class="fn">size</span>(): <span class="tp">number</span> {
+        <span class="kw">return</span> <span class="kw">this</span>.items.length;
+    }
+}
+
+<span class="kw">const</span> numberStack = <span class="kw">new</span> <span class="tp">Stack</span>&lt;<span class="tp">number</span>&gt;();
+numberStack.<span class="fn">push</span>(<span class="nm">1</span>);
+numberStack.<span class="fn">push</span>(<span class="nm">2</span>);
+<span class="cm">// numberStack.push("hello"); // ❌ 类型不匹配</span></code></pre>
+    </div>
+
+    <h3>泛型约束模式</h3>
+
+    <div class="code-block" data-lang="typescript">
+        <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">TypeScript</span>
+        </div>
+        <pre><code><span class="cm">// 多重约束 - 同时满足多个接口</span>
+<span class="kw">interface</span> <span class="tp">Nameable</span> { name: <span class="tp">string</span>; }
+<span class="kw">interface</span> <span class="tp">Ageable</span> { age: <span class="tp">number</span>; }
+
+<span class="kw">function</span> <span class="fn">createProfile</span>&lt;T <span class="kw">extends</span> <span class="tp">Nameable</span> &amp; <span class="tp">Ageable</span>&gt;(info: T): T {
+    <span class="kw">return</span> { ...info };
+}
+
+<span class="fn">createProfile</span>({ name: <span class="st">"张三"</span>, age: <span class="nm">25</span>, extra: <span class="st">"ok"</span> });
+
+<span class="cm">// 字面量类型约束 - 限制枚举值</span>
+<span class="kw">type</span> <span class="tp">HttpMethod</span> = <span class="st">"GET"</span> | <span class="st">"POST"</span> | <span class="st">"PUT"</span> | <span class="st">"DELETE"</span>;
+
+<span class="kw">function</span> <span class="fn">fetchWithMethod</span>&lt;M <span class="kw">extends</span> <span class="tp">HttpMethod</span>&gt;(
+    method: M,
+    url: <span class="tp">string</span>
+): <span class="tp">Promise</span>&lt;<span class="tp">Response</span>&gt; {
+    <span class="kw">return</span> <span class="fn">fetch</span>(url, { method });
+}
+
+<span class="cm">// 构造函数约束</span>
+<span class="kw">interface</span> <span class="tp">Constructor</span>&lt;T&gt; {
+    <span class="kw">new</span>(...args: <span class="tp">any</span>[]): T;
+}
+
+<span class="kw">function</span> <span class="fn">createInstance</span>&lt;T&gt;(Ctor: <span class="tp">Constructor</span>&lt;T&gt;): T {
+    <span class="kw">return new</span> <span class="fn">Ctor</span>();
+}
+
+<span class="cm">// 属性路径约束 - 安全访问嵌套属性</span>
+<span class="kw">function</span> <span class="fn">getNestedValue</span>&lt;T, K1 <span class="kw">extends</span> <span class="kw">keyof</span> T&gt;(
+    obj: T,
+    key1: K1
+): T[K1];
+<span class="kw">function</span> <span class="fn">getNestedValue</span>&lt;T, K1 <span class="kw">extends</span> <span class="kw">keyof</span> T, K2 <span class="kw">extends</span> <span class="kw">keyof</span> T[K1]&gt;(
+    obj: T,
+    key1: K1,
+    key2: K2
+): T[K1][K2];
+<span class="kw">function</span> <span class="fn">getNestedValue</span>(obj: <span class="tp">any</span>, ...keys: <span class="tp">string</span>[]) {
+    <span class="kw">return</span> keys.<span class="fn">reduce</span>((o, k) => o?.[k], obj);
+}
+
+<span class="kw">const</span> user = { profile: { name: <span class="st">"张三"</span> } };
+<span class="fn">getNestedValue</span>(user, <span class="st">"profile"</span>, <span class="st">"name"</span>); <span class="cm">// ✅ string</span>
+<span class="cm">// getNestedValue(user, "profile", "email"); // ❌ "email" 不存在</span></code></pre>
+    </div>
+
+    <h3>泛型与映射类型结合</h3>
+
+    <div class="code-block" data-lang="typescript">
+        <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">TypeScript</span>
+        </div>
+        <pre><code><span class="cm">// 将对象所有方法变为异步版本</span>
+<span class="kw">type</span> <span class="tp">Asyncify</span>&lt;T&gt; = {
+    [K <span class="kw">in</span> <span class="kw">keyof</span> T]: T[K] <span class="kw">extends</span> (...args: <span class="tp">any</span>[]) => <span class="kw">infer</span> R
+        ? (...args: <span class="tp">Parameters</span>&lt;T[K]&gt;) => <span class="tp">Promise</span>&lt;R&gt;
+        : T[K];
+};
+
+<span class="kw">interface</span> <span class="tp">DataService</span> {
+    <span class="fn">fetchUser</span>(id: <span class="tp">number</span>): <span class="tp">User</span>;
+    <span class="fn">fetchAll</span>(): <span class="tp">User</span>[];
+    version: <span class="tp">string</span>;
+}
+
+<span class="kw">type</span> <span class="tp">AsyncDataService</span> = <span class="tp">Asyncify</span>&lt;<span class="tp">DataService</span>&gt;;
+<span class="cm">// {</span>
+<span class="cm">//   fetchUser: (id: number) => Promise&lt;User&gt;;</span>
+<span class="cm">//   fetchAll: () => Promise&lt;User[]&gt;;</span>
+<span class="cm">//   version: string;  非函数属性保持不变</span>
+<span class="cm">// }</span>
+
+<span class="cm">// 泛型映射 - 创建 getter/setter 对</span>
+<span class="kw">type</span> <span class="tp">GettersAndSetters</span>&lt;T&gt; = {
+    [K <span class="kw">in</span> <span class="kw">keyof</span> T <span class="kw">as</span> <span class="st">`get${Capitalize&lt;string & K&gt;}`</span>]: () => T[K];
+} &amp; {
+    [K <span class="kw">in</span> <span class="kw">keyof</span> T <span class="kw">as</span> <span class="st">`set${Capitalize&lt;string & K&gt;}`</span>]: (value: T[K]) => <span class="tp">void</span>;
+};
+
+<span class="kw">interface</span> <span class="tp">Config</span> { debug: <span class="tp">boolean</span>; port: <span class="tp">number</span>; }
+<span class="kw">type</span> <span class="tp">ConfigAccessors</span> = <span class="tp">GettersAndSetters</span>&lt;<span class="tp">Config</span>&gt;;
+<span class="cm">// {</span>
+<span class="cm">//   getDebug: () => boolean;</span>
+<span class="cm">//   getPort: () => number;</span>
+<span class="cm">//   setDebug: (value: boolean) => void;</span>
+<span class="cm">//   setPort: (value: number) => void;</span>
+<span class="cm">// }</span>
+
+<span class="cm">// 条件泛型 - 根据类型选择不同的默认值</span>
+<span class="kw">type</span> <span class="tp">DefaultValue</span>&lt;T&gt; = T <span class="kw">extends</span> <span class="tp">string</span> ? <span class="st">""</span>
+    : T <span class="kw">extends</span> <span class="tp">number</span> ? <span class="nm">0</span>
+    : T <span class="kw">extends</span> <span class="tp">boolean</span> ? <span class="kw">false</span>
+    : T <span class="kw">extends</span> <span class="tp">Array</span>&lt;<span class="kw">infer</span> E&gt; ? <span class="tp">DefaultValue</span>&lt;E&gt;[]
+    : <span class="kw">never</span>;
+
+<span class="kw">function</span> <span class="fn">withDefault</span>&lt;T&gt;(value: T, defaultValue: <span class="tp">DefaultValue</span>&lt;T&gt;): T {
+    <span class="kw">return</span> value ?? defaultValue <span class="kw">as</span> T;
+}</code></pre>
+    </div>
+
+    <!-- ==================== 第8节 ==================== -->
+    <h2 id="section-8">8. 类型守卫</h2>
+
+    <p>类型守卫（Type Guards）是在运行时检查类型的表达式。TypeScript 能够在特定的控制流分支中<strong>收窄</strong>（narrow）变量的类型。</p>
+
+    <h3>内置类型守卫</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// typeof 类型守卫</span>
+<span class="kw">function</span> <span class="fn">processValue</span>(value: <span class="tp">string</span> | <span class="tp">number</span> | <span class="tp">boolean</span>) {
+    <span class="kw">if</span> (<span class="kw">typeof</span> value === <span class="st">"string"</span>) {
+        <span class="cm">// 这里 value 被收窄为 string</span>
+        <span class="kw">return</span> value.<span class="fn">toUpperCase</span>();
+    }
+    <span class="kw">if</span> (<span class="kw">typeof</span> value === <span class="st">"number"</span>) {
+        <span class="cm">// 这里 value 被收窄为 number</span>
+        <span class="kw">return</span> value.<span class="fn">toFixed</span>(<span class="nm">2</span>);
+    }
+    <span class="cm">// 这里 value 被收窄为 boolean</span>
+    <span class="kw">return</span> value.<span class="fn">toString</span>();
+}
+
+<span class="cm">// instanceof 类型守卫</span>
+<span class="kw">function</span> <span class="fn">handleError</span>(error: <span class="tp">Error</span> | <span class="tp">string</span>) {
+    <span class="kw">if</span> (error <span class="kw">instanceof</span> <span class="tp">Error</span>) {
+        console.<span class="fn">log</span>(error.message);
+        console.<span class="fn">log</span>(error.stack);
+    } <span class="kw">else</span> {
+        console.<span class="fn">log</span>(error);
+    }
+}
+
+<span class="cm">// in 操作符类型守卫</span>
+<span class="kw">interface</span> <span class="tp">Bird</span> { fly(): <span class="tp">void</span>; layEggs(): <span class="tp">void</span>; }
+<span class="kw">interface</span> <span class="tp">Fish</span> { swim(): <span class="tp">void</span>; layEggs(): <span class="tp">void</span>; }
+
+<span class="kw">function</span> <span class="fn">move</span>(animal: <span class="tp">Bird</span> | <span class="tp">Fish</span>) {
+    <span class="kw">if</span> (<span class="st">"fly"</span> <span class="kw">in</span> animal) {
+        animal.<span class="fn">fly</span>();   <span class="cm">// 收窄为 Bird</span>
+    } <span class="kw">else</span> {
+        animal.<span class="fn">swim</span>();  <span class="cm">// 收窄为 Fish</span>
+    }
+}</code></pre>
+    </div>
+
+    <h3>自定义类型守卫</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 自定义类型谓词（Type Predicate）</span>
+<span class="kw">interface</span> <span class="tp">Cat</span> { meow(): <span class="tp">void</span>; }
+<span class="kw">interface</span> <span class="tp">Dog</span> { bark(): <span class="tp">void</span>; }
+
+<span class="cm">// 返回类型为 animal is Cat</span>
+<span class="kw">function</span> <span class="fn">isCat</span>(animal: <span class="tp">Cat</span> | <span class="tp">Dog</span>): animal <span class="kw">is</span> <span class="tp">Cat</span> {
+    <span class="kw">return</span> (<span class="kw">animal</span> <span class="kw">as</span> <span class="tp">Cat</span>).meow !== <span class="kw">undefined</span>;
+}
+
+<span class="kw">function</span> <span class="fn">handleAnimal</span>(animal: <span class="tp">Cat</span> | <span class="tp">Dog</span>) {
+    <span class="kw">if</span> (<span class="fn">isCat</span>(animal)) {
+        animal.<span class="fn">meow</span>();   <span class="cm">// 收窄为 Cat</span>
+    } <span class="kw">else</span> {
+        animal.<span class="fn">bark</span>();   <span class="cm">// 收窄为 Dog</span>
+    }
+}
+
+<span class="cm">// assert 关键字类型守卫</span>
+<span class="kw">function</span> <span class="fn">assertIsString</span>(value: <span class="tp">unknown</span>): <span class="kw">asserts</span> value <span class="kw">is</span> <span class="tp">string</span> {
+    <span class="kw">if</span> (<span class="kw">typeof</span> value !== <span class="st">"string"</span>) {
+        <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="st">"期望字符串类型"</span>);
+    }
+}
+
+<span class="kw">function</span> <span class="fn">processData</span>(data: <span class="tp">unknown</span>) {
+    <span class="fn">assertIsString</span>(data);
+    <span class="cm">// 这里 data 被收窄为 string（无需 if 检查）</span>
+    console.<span class="fn">log</span>(data.<span class="fn">toUpperCase</span>());
+}</code></pre>
+    </div>
+
+    <h3>可辨识联合模式</h3>
+
+    <div class="code-block" data-lang="typescript">
+        <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">TypeScript</span>
+        </div>
+        <pre><code><span class="cm">// API 响应的可辨识联合</span>
+<span class="kw">interface</span> <span class="tp">SuccessResponse</span> {
+    status: <span class="st">"success"</span>;
+    data: <span class="tp">unknown</span>;
+    timestamp: <span class="tp">number</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">ErrorResponse</span> {
+    status: <span class="st">"error"</span>;
+    error: { code: <span class="tp">number</span>; message: <span class="tp">string</span>; };
+}
+
+<span class="kw">interface</span> <span class="tp">LoadingResponse</span> {
+    status: <span class="st">"loading"</span>;
+    progress: <span class="tp">number</span>;
+}
+
+<span class="kw">type</span> <span class="tp">ApiResponse</span> = <span class="tp">SuccessResponse</span> | <span class="tp">ErrorResponse</span> | <span class="tp">LoadingResponse</span>;
+
+<span class="kw">function</span> <span class="fn">handleResponse</span>(res: <span class="tp">ApiResponse</span>) {
+    <span class="kw">switch</span> (res.status) {
+        <span class="kw">case</span> <span class="st">"success"</span>:
+            console.<span class="fn">log</span>(res.data);      <span class="cm">// ✅ data 存在</span>
+            console.<span class="fn">log</span>(res.timestamp);  <span class="cm">// ✅ timestamp 存在</span>
+            <span class="kw">break</span>;
+        <span class="kw">case</span> <span class="st">"error"</span>:
+            console.<span class="fn">log</span>(res.error.code);    <span class="cm">// ✅ error.code 存在</span>
+            console.<span class="fn">log</span>(res.error.message); <span class="cm">// ✅ error.message 存在</span>
+            <span class="kw">break</span>;
+        <span class="kw">case</span> <span class="st">"loading"</span>:
+            console.<span class="fn">log</span>(res.progress);  <span class="cm">// ✅ progress 存在</span>
+            <span class="kw">break</span>;
+    }
+}
+
+<span class="cm">// 穷尽性检查 - 确保处理所有情况</span>
+<span class="kw">function</span> <span class="fn">assertNever</span>(x: <span class="tp">never</span>): <span class="tp">never</span> {
+    <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="st">`意外的值: ${x}`</span>);
+}
+
+<span class="kw">function</span> <span class="fn">getStatusColor</span>(res: <span class="tp">ApiResponse</span>): <span class="tp">string</span> {
+    <span class="kw">switch</span> (res.status) {
+        <span class="kw">case</span> <span class="st">"success"</span>: <span class="kw">return</span> <span class="st">"green"</span>;
+        <span class="kw">case</span> <span class="st">"error"</span>: <span class="kw">return</span> <span class="st">"red"</span>;
+        <span class="kw">case</span> <span class="st">"loading"</span>: <span class="kw">return</span> <span class="st">"blue"</span>;
+        <span class="kw">default</span>: <span class="kw">return</span> <span class="fn">assertNever</span>(res); <span class="cm">// 新增分支时编译器会报错</span>
+    }
+}</code></pre>
+    </div>
+
+    <h3>类型守卫实战</h3>
+
+    <div class="code-block" data-lang="typescript">
+        <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">TypeScript</span>
+        </div>
+        <pre><code><span class="cm">// 使用 in 操作符安全访问属性</span>
+<span class="kw">type</span> <span class="tp">Fish</span> = { swim: () => <span class="tp">void</span>; name: <span class="tp">string</span>; };
+<span class="kw">type</span> <span class="tp">Bird</span> = { fly: () => <span class="tp">void</span>; name: <span class="tp">string</span>; };
+
+<span class="kw">function</span> <span class="fn">move</span>(animal: <span class="tp">Fish</span> | <span class="tp">Bird</span>) {
+    <span class="kw">if</span> (<span class="st">"swim"</span> <span class="kw">in</span> animal) {
+        animal.<span class="fn">swim</span>();  <span class="cm">// 收窄为 Fish</span>
+    } <span class="kw">else</span> {
+        animal.<span class="fn">fly</span>();   <span class="cm">// 收窄为 Bird</span>
+    }
+}
+
+<span class="cm">// 自定义可辨识联合守卫</span>
+<span class="kw">interface</span> <span class="tp">TextMessage</span> { type: <span class="st">"text"</span>; content: <span class="tp">string</span>; }
+<span class="kw">interface</span> <span class="tp">ImageMessage</span> { type: <span class="st">"image"</span>; url: <span class="tp">string</span>; width: <span class="tp">number</span>; height: <span class="tp">number</span>; }
+<span class="kw">interface</span> <span class="tp">AudioMessage</span> { type: <span class="st">"audio"</span>; url: <span class="tp">string</span>; duration: <span class="tp">number</span>; }
+
+<span class="kw">type</span> <span class="tp">Message</span> = <span class="tp">TextMessage</span> | <span class="tp">ImageMessage</span> | <span class="tp">AudioMessage</span>;
+
+<span class="kw">function</span> <span class="fn">isTextMessage</span>(msg: <span class="tp">Message</span>): msg <span class="kw">is</span> <span class="tp">TextMessage</span> {
+    <span class="kw">return</span> msg.type === <span class="st">"text"</span>;
+}
+
+<span class="kw">function</span> <span class="fn">renderMessage</span>(msg: <span class="tp">Message</span>): <span class="tp">string</span> {
+    <span class="kw">if</span> (<span class="fn">isTextMessage</span>(msg)) {
+        <span class="kw">return</span> <span class="st">`&lt;p&gt;${msg.content}&lt;/p&gt;`</span>;
+    }
+    <span class="kw">if</span> (msg.type === <span class="st">"image"</span>) {
+        <span class="kw">return</span> <span class="st">`&lt;img src="${msg.url}" width="${msg.width}" /&gt;`</span>;
+    }
+    <span class="kw">return</span> <span class="st">`&lt;audio src="${msg.url}" /&gt;`</span>;
+}
+
+<span class="cm">// 判空守卫 - 链式收窄</span>
+<span class="kw">function</span> <span class="fn">getLength</span>(value: <span class="tp">string</span> | <span class="tp">null</span> | <span class="tp">undefined</span>): <span class="tp">number</span> {
+    <span class="kw">return</span> value?.length ?? <span class="nm">0</span>;
+}
+
+<span class="cm">// instanceof 守卫用于自定义错误处理</span>
+<span class="kw">class</span> <span class="tp">NotFoundError</span> <span class="kw">extends</span> <span class="tp">Error</span> {
+    <span class="kw">constructor</span>(<span class="kw">public</span> id: <span class="tp">number</span>) { <span class="kw">super</span>(<span class="st">`User ${id} not found`</span>); }
+}
+
+<span class="kw">class</span> <span class="tp">ValidationError</span> <span class="kw">extends</span> <span class="tp">Error</span> {
+    <span class="kw">constructor</span>(<span class="kw">public</span> fields: <span class="tp">string</span>[]) { <span class="kw">super</span>(<span class="st">"Validation failed"</span>); }
+}
+
+<span class="kw">function</span> <span class="fn">handleError</span>(err: <span class="tp">Error</span>) {
+    <span class="kw">if</span> (err <span class="kw">instanceof</span> <span class="tp">NotFoundError</span>) {
+        console.<span class="fn">log</span>(<span class="st">`找不到 ID 为 ${err.id} 的用户`</span>);
+    } <span class="kw">else if</span> (err <span class="kw">instanceof</span> <span class="tp">ValidationError</span>) {
+        console.<span class="fn">log</span>(<span class="st">`验证失败字段: ${err.fields.join(", ")}`</span>);
+    }
+}</code></pre>
+    </div>
+
+    <!-- ==================== 第9节 ==================== -->
+    <h2 id="section-9">9. 函数类型</h2>
+
+    <p>TypeScript 为函数提供了强大的类型系统，包括参数类型、返回值类型、函数重载和高阶函数类型。</p>
+
+    <h3>函数类型定义</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 函数声明的类型注解</span>
+<span class="kw">function</span> <span class="fn">add</span>(a: <span class="tp">number</span>, b: <span class="tp">number</span>): <span class="tp">number</span> {
+    <span class="kw">return</span> a + b;
+}
+
+<span class="cm">// 函数表达式的类型</span>
+<span class="kw">const</span> <span class="fn">multiply</span> = (a: <span class="tp">number</span>, b: <span class="tp">number</span>): <span class="tp">number</span> => a * b;
+
+<span class="cm">// 函数类型别名</span>
+<span class="kw">type</span> <span class="tp">MathOperation</span> = (a: <span class="tp">number</span>, b: <span class="tp">number</span>) => <span class="tp">number</span>;
+
+<span class="kw">const</span> subtract: <span class="tp">MathOperation</span> = (a, b) => a - b;
+<span class="kw">const</span> divide: <span class="tp">MathOperation</span> = (a, b) => a / b;
+
+<span class="cm">// 接口中的函数签名</span>
+<span class="kw">interface</span> <span class="tp">Calculator</span> {
+    (a: <span class="tp">number</span>, b: <span class="tp">number</span>): <span class="tp">number</span>;
+    <span class="fn">precision</span>: <span class="tp">number</span>;
+}
+
+<span class="cm">// this 参数类型</span>
+<span class="kw">interface</span> <span class="tp">Timer</span> {
+    seconds: <span class="tp">number</span>;
+    <span class="fn">start</span>(<span class="kw">this</span>: <span class="tp">Timer</span>): <span class="tp">void</span>;
+}
+
+<span class="kw">const</span> timer: <span class="tp">Timer</span> = {
+    seconds: <span class="nm">0</span>,
+    <span class="fn">start</span>(<span class="kw">this</span>: <span class="tp">Timer</span>) {
+        <span class="cm">// this 指向 Timer 对象</span>
+        console.<span class="fn">log</span>(<span class="st">`开始计时: ${</span><span class="kw">this</span>.seconds<span class="st">}秒`</span>);
+    }
+};</code></pre>
+    </div>
+
+    <h3>剩余参数与解构参数</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 剩余参数（Rest Parameters）</span>
+<span class="kw">function</span> <span class="fn">sum</span>(...numbers: <span class="tp">number</span>[]): <span class="tp">number</span> {
+    <span class="kw">return</span> numbers.<span class="fn">reduce</span>((acc, n) => acc + n, <span class="nm">0</span>);
+}
+
+<span class="fn">sum</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>); <span class="cm">// 15</span>
+
+<span class="cm">// 解构参数</span>
+<span class="kw">function</span> <span class="fn">createUser</span>({ name, age, email }: {
+    name: <span class="tp">string</span>;
+    age: <span class="tp">number</span>;
+    email: <span class="tp">string</span>;
+}) {
+    <span class="kw">return</span> { name, age, email };
+}
+
+<span class="cm">// 使用接口定义解构类型</span>
+<span class="kw">interface</span> <span class="tp">CreateUserParams</span> {
+    name: <span class="tp">string</span>;
+    age: <span class="tp">number</span>;
+    email: <span class="tp">string</span>;
+}
+
+<span class="kw">function</span> <span class="fn">createUserBetter</span>({ name, age, email }: <span class="tp">CreateUserParams</span>) {
+    <span class="kw">return</span> { name, age, email };
+}</code></pre>
+    </div>
+
+    <!-- ==================== 第10节 ==================== -->
+    <h2 id="section-10">10. 重载</h2>
+
+    <p>函数重载（Function Overloading）允许一个函数根据不同的参数类型或数量执行不同的操作。TypeScript 通过<strong>重载签名</strong>和<strong>实现签名</strong>来实现。</p>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 重载签名 - 定义函数的多种调用方式</span>
+<span class="kw">function</span> <span class="fn">format</span>(value: <span class="tp">string</span>): <span class="tp">string</span>;
+<span class="kw">function</span> <span class="fn">format</span>(value: <span class="tp">number</span>): <span class="tp">string</span>;
+<span class="kw">function</span> <span class="fn">format</span>(value: <span class="tp">Date</span>): <span class="tp">string</span>;
+
+<span class="cm">// 实现签名 - 实际的函数体</span>
+<span class="kw">function</span> <span class="fn">format</span>(value: <span class="tp">string</span> | <span class="tp">number</span> | <span class="tp">Date</span>): <span class="tp">string</span> {
+    <span class="kw">if</span> (<span class="kw">typeof</span> value === <span class="st">"string"</span>) {
+        <span class="kw">return</span> value.<span class="fn">trim</span>();
+    }
+    <span class="kw">if</span> (<span class="kw">typeof</span> value === <span class="st">"number"</span>) {
+        <span class="kw">return</span> value.<span class="fn">toFixed</span>(<span class="nm">2</span>);
+    }
+    <span class="kw">return</span> value.<span class="fn">toISOString</span>();
+}
+
+<span class="fn">format</span>(<span class="st">"  hello  "</span>);   <span class="cm">// "hello"</span>
+<span class="fn">format</span>(<span class="nm">3.14159</span>);       <span class="cm">// "3.14"</span>
+<span class="fn">format</span>(<span class="kw">new</span> <span class="fn">Date</span>());     <span class="cm">// "2024-01-15T..."</span>
+
+<span class="cm">// 重载与泛型结合</span>
+<span class="kw">function</span> <span class="fn">createElement</span>(tag: <span class="st">"div"</span>): <span class="tp">HTMLDivElement</span>;
+<span class="kw">function</span> <span class="fn">createElement</span>(tag: <span class="st">"span"</span>): <span class="tp">HTMLSpanElement</span>;
+<span class="kw">function</span> <span class="fn">createElement</span>(tag: <span class="tp">string</span>): <span class="tp">HTMLElement</span>;
+<span class="kw">function</span> <span class="fn">createElement</span>(tag: <span class="tp">string</span>): <span class="tp">HTMLElement</span> {
+    <span class="kw">return</span> document.<span class="fn">createElement</span>(tag);
+}
+
+<span class="kw">const</span> div = <span class="fn">createElement</span>(<span class="st">"div"</span>);   <span class="cm">// HTMLDivElement</span>
+<span class="kw">const</span> span = <span class="fn">createElement</span>(<span class="st">"span"</span>); <span class="cm">// HTMLSpanElement</span></code></pre>
+    </div>
+
+    <!-- ==================== 第11节 ==================== -->
+    <h2 id="section-11">11. 可选参数</h2>
+
+    <p>可选参数、默认参数和剩余参数让函数更加灵活，TypeScript 为这些场景提供了完善的类型支持。</p>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 可选参数 - 使用 ? 标记</span>
+<span class="kw">function</span> <span class="fn">greet</span>(name: <span class="tp">string</span>, title?: <span class="tp">string</span>): <span class="tp">string</span> {
+    <span class="kw">if</span> (title) {
+        <span class="kw">return</span> <span class="st">`${title} ${name}，你好！`</span>;
+    }
+    <span class="kw">return</span> <span class="st">`${name}，你好！`</span>;
+}
+
+<span class="fn">greet</span>(<span class="st">"张三"</span>);           <span class="cm">// "张三，你好！"</span>
+<span class="fn">greet</span>(<span class="st">"张三"</span>, <span class="st">"教授"</span>);  <span class="cm">// "教授 张三，你好！"</span>
+
+<span class="cm">// 默认参数 - 有默认值的参数自动变为可选</span>
+<span class="kw">function</span> <span class="fn">createUser</span>(
+    name: <span class="tp">string</span>,
+    role: <span class="tp">string</span> = <span class="st">"user"</span>,
+    active: <span class="tp">boolean</span> = <span class="kw">true</span>
+) {
+    <span class="kw">return</span> { name, role, active };
+}
+
+<span class="cm">// 所有参数使用默认值</span>
+<span class="fn">createUser</span>(<span class="st">"张三"</span>);
+<span class="cm">// { name: "张三", role: "user", active: true }</span>
+
+<span class="cm">// 跳过中间的默认参数</span>
+<span class="fn">createUser</span>(<span class="st">"李四"</span>, <span class="kw">undefined</span>, <span class="kw">false</span>);
+
+<span class="cm">// 对象参数解构 + 默认值</span>
+<span class="kw">interface</span> <span class="tp">Config</span> {
+    host?: <span class="tp">string</span>;
+    port?: <span class="tp">number</span>;
+    debug?: <span class="tp">boolean</span>;
+}
+
+<span class="kw">function</span> <span class="fn">startServer</span>({
+    host = <span class="st">"localhost"</span>,
+    port = <span class="nm">3000</span>,
+    debug = <span class="kw">false</span>
+}: <span class="tp">Config</span> = {}) {
+    console.<span class="fn">log</span>(<span class="st">`服务器启动: ${host}:${port}`</span>);
+    console.<span class="fn">log</span>(<span class="st">`调试模式: ${debug}`</span>);
+}
+
+<span class="cm">// 使用全部默认值</span>
+<span class="fn">startServer</span>();
+
+<span class="cm">// 覆盖部分默认值</span>
+<span class="fn">startServer</span>({ port: <span class="nm">8080</span>, debug: <span class="kw">true</span> });</code></pre>
+    </div>
+
+    <!-- ==================== 第12节 ==================== -->
+    <h2 id="section-12">12. 类与访问修饰符</h2>
+
+    <p>TypeScript 在 JavaScript 类的基础上增加了<strong>访问修饰符</strong>、<strong>属性声明</strong>和<strong>参数属性</strong>等特性，使面向对象编程更加完善。</p>
+
+    <div class="principle">
+        <div class="principle-title">访问修饰符</div>
+        <p>TypeScript 提供三种访问修饰符：<strong>public</strong>（公有，默认）、<strong>private</strong>（私有）和 <strong>protected</strong>（受保护）。它们控制类成员的可见性，这是编译时的检查，运行时不存在真正的访问控制。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="kw">class</span> <span class="tp">Employee</span> {
+    <span class="cm">// 访问修饰符</span>
+    <span class="kw">public</span> name: <span class="tp">string</span>;           <span class="cm">// 公有（默认）</span>
+    <span class="kw">private</span> salary: <span class="tp">number</span>;         <span class="cm">// 私有 - 仅类内部可访问</span>
+    <span class="kw">protected</span> department: <span class="tp">string</span>;   <span class="cm">// 受保护 - 类内部和子类可访问</span>
+
+    <span class="cm">// readonly - 只读属性</span>
+    <span class="kw">readonly</span> id: <span class="tp">number</span>;
+
+    <span class="cm">// 参数属性 - 同时声明和初始化</span>
+    <span class="kw">constructor</span>(
+        name: <span class="tp">string</span>,
+        salary: <span class="tp">number</span>,
+        department: <span class="tp">string</span>,
+        id: <span class="tp">number</span>
+    ) {
+        <span class="kw">this</span>.name = name;
+        <span class="kw">this</span>.salary = salary;
+        <span class="kw">this</span>.department = department;
+        <span class="kw">this</span>.id = id;
+    }
+
+    <span class="kw">public</span> <span class="fn">getInfo</span>(): <span class="tp">string</span> {
+        <span class="kw">return</span> <span class="st">`${</span><span class="kw">this</span>.name<span class="st">} - ${</span><span class="kw">this</span>.department<span class="st">}`</span>;
+    }
+
+    <span class="kw">private</span> <span class="fn">calculateBonus</span>(): <span class="tp">number</span> {
+        <span class="kw">return</span> <span class="kw">this</span>.salary * <span class="nm">0.1</span>;
+    }
+}
+
+<span class="kw">const</span> emp = <span class="kw">new</span> <span class="tp">Employee</span>(<span class="st">"张三"</span>, <span class="nm">10000</span>, <span class="st">"技术部"</span>, <span class="nm">1</span>);
+console.<span class="fn">log</span>(emp.name);       <span class="cm">// ✅ 公有</span>
+console.<span class="fn">log</span>(emp.getInfo());  <span class="cm">// ✅ 公有方法</span>
+<span class="cm">// console.log(emp.salary);     // ❌ 私有属性</span>
+<span class="cm">// console.log(emp.department); // ❌ 受保护属性（外部不可访问）</span>
+
+<span class="cm">// 使用参数属性简化构造函数</span>
+<span class="kw">class</span> <span class="tp">Point</span> {
+    <span class="kw">constructor</span>(
+        <span class="kw">public</span> x: <span class="tp">number</span>,
+        <span class="kw">public</span> y: <span class="tp">number</span>,
+        <span class="kw">public</span> z: <span class="tp">number</span> = <span class="nm">0</span>
+    ) {}
+}
+
+<span class="kw">const</span> point = <span class="kw">new</span> <span class="tp">Point</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>);
+console.<span class="fn">log</span>(point.x); <span class="cm">// 1</span></code></pre>
+    </div>
+
+    <h3>静态成员</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="kw">class</span> <span class="tp">MathUtils</span> {
+    <span class="cm">// 静态属性</span>
+    <span class="kw">static</span> PI = <span class="nm">3.14159</span>;
+    <span class="kw">static</span> E = <span class="nm">2.71828</span>;
+
+    <span class="cm">// 私有构造函数 - 防止实例化</span>
+    <span class="kw">private</span> <span class="kw">constructor</span>() {}
+
+    <span class="cm">// 静态方法</span>
+    <span class="kw">static</span> <span class="fn">circleArea</span>(radius: <span class="tp">number</span>): <span class="tp">number</span> {
+        <span class="kw">return</span> <span class="kw">this</span>.PI * radius ** <span class="nm">2</span>;
+    }
+
+    <span class="kw">static</span> <span class="fn">clamp</span>(value: <span class="tp">number</span>, min: <span class="tp">number</span>, max: <span class="tp">number</span>): <span class="tp">number</span> {
+        <span class="kw">return</span> Math.<span class="fn">min</span>(Math.<span class="fn">max</span>(value, min), max);
+    }
+}
+
+<span class="cm">// 通过类名直接访问</span>
+console.<span class="fn">log</span>(<span class="tp">MathUtils</span>.PI);           <span class="cm">// 3.14159</span>
+console.<span class="fn">log</span>(<span class="tp">MathUtils</span>.<span class="fn">circleArea</span>(<span class="nm">5</span>)); <span class="cm">// 78.53975</span></code></pre>
+    </div>
+
+    <!-- ==================== 第13节 ==================== -->
+    <h2 id="section-13">13. 抽象类</h2>
+
+    <p>抽象类（Abstract Class）是不能被直接实例化的类，它用作其他类的<strong>基类</strong>。抽象类可以包含抽象方法（没有实现）和具体方法（有实现）。</p>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 抽象类定义</span>
+<span class="kw">abstract class</span> <span class="tp">Shape</span> {
+    <span class="kw">constructor</span>(<span class="kw">public</span> color: <span class="tp">string</span>) {}
+
+    <span class="cm">// 抽象方法 - 子类必须实现</span>
+    <span class="kw">abstract</span> <span class="fn">area</span>(): <span class="tp">number</span>;
+    <span class="kw">abstract</span> <span class="fn">perimeter</span>(): <span class="tp">number</span>;
+
+    <span class="cm">// 具体方法 - 子类可以继承或重写</span>
+    <span class="fn">describe</span>(): <span class="tp">string</span> {
+        <span class="kw">return</span> <span class="st">`${</span><span class="kw">this</span>.color<span class="st">} 的面积是 ${</span><span class="kw">this</span>.<span class="fn">area</span>()<span class="st">}`</span>;
+    }
+}
+
+<span class="kw">class</span> <span class="tp">Circle</span> <span class="kw">extends</span> <span class="tp">Shape</span> {
+    <span class="kw">constructor</span>(color: <span class="tp">string</span>, <span class="kw">public</span> radius: <span class="tp">number</span>) {
+        <span class="kw">super</span>(color);
+    }
+
+    <span class="fn">area</span>(): <span class="tp">number</span> {
+        <span class="kw">return</span> Math.PI * <span class="kw">this</span>.radius ** <span class="nm">2</span>;
+    }
+
+    <span class="fn">perimeter</span>(): <span class="tp">number</span> {
+        <span class="kw">return</span> <span class="nm">2</span> * Math.PI * <span class="kw">this</span>.radius;
+    }
+}
+
+<span class="kw">class</span> <span class="tp">Rectangle</span> <span class="kw">extends</span> <span class="tp">Shape</span> {
+    <span class="kw">constructor</span>(
+        color: <span class="tp">string</span>,
+        <span class="kw">public</span> width: <span class="tp">number</span>,
+        <span class="kw">public</span> height: <span class="tp">number</span>
+    ) {
+        <span class="kw">super</span>(color);
+    }
+
+    <span class="fn">area</span>(): <span class="tp">number</span> {
+        <span class="kw">return</span> <span class="kw">this</span>.width * <span class="kw">this</span>.height;
+    }
+
+    <span class="fn">perimeter</span>(): <span class="tp">number</span> {
+        <span class="kw">return</span> <span class="nm">2</span> * (<span class="kw">this</span>.width + <span class="kw">this</span>.height);
+    }
+}
+
+<span class="cm">// const s = new Shape("red"); // ❌ 不能实例化抽象类</span>
+<span class="kw">const</span> circle = <span class="kw">new</span> <span class="tp">Circle</span>(<span class="st">"红"</span>, <span class="nm">5</span>);
+console.<span class="fn">log</span>(circle.<span class="fn">describe</span>()); <span class="cm">// "红 的面积是 78.53981633974483"</span></code></pre>
+    </div>
+
+    <!-- ==================== 第14节 ==================== -->
+    <h2 id="section-14">14. 接口实现</h2>
+
+    <p>TypeScript 的类可以实现（implements）一个或多个接口，确保类满足接口定义的契约。这是 TypeScript 面向对象编程的核心机制之一。</p>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 定义接口</span>
+<span class="kw">interface</span> <span class="tp">Printable</span> {
+    <span class="fn">print</span>(): <span class="tp">void</span>;
+}
+
+<span class="kw">interface</span> <span class="tp">Serializable</span> {
+    <span class="fn">serialize</span>(): <span class="tp">string</span>;
+    <span class="fn">deserialize</span>(data: <span class="tp">string</span>): <span class="tp">void</span>;
+}
+
+<span class="cm">// 实现多个接口</span>
+<span class="kw">class</span> <span class="tp">Document</span> <span class="kw">implements</span> <span class="tp">Printable</span>, <span class="tp">Serializable</span> {
+    <span class="kw">constructor</span>(
+        <span class="kw">private</span> title: <span class="tp">string</span>,
+        <span class="kw">private</span> content: <span class="tp">string</span>
+    ) {}
+
+    <span class="cm">// 必须实现 Printable 接口</span>
+    <span class="fn">print</span>(): <span class="tp">void</span> {
+        console.<span class="fn">log</span>(<span class="st">`标题: ${</span><span class="kw">this</span>.title<span class="st">}`</span>);
+        console.<span class="fn">log</span>(<span class="st">`内容: ${</span><span class="kw">this</span>.content<span class="st">}`</span>);
+    }
+
+    <span class="cm">// 必须实现 Serializable 接口</span>
+    <span class="fn">serialize</span>(): <span class="tp">string</span> {
+        <span class="kw">return</span> JSON.<span class="fn">stringify</span>({
+            title: <span class="kw">this</span>.title,
+            content: <span class="kw">this</span>.content
+        });
+    }
+
+    <span class="fn">deserialize</span>(data: <span class="tp">string</span>): <span class="tp">void</span> {
+        <span class="kw">const</span> parsed = JSON.<span class="fn">parse</span>(data);
+        <span class="kw">this</span>.title = parsed.title;
+        <span class="kw">this</span>.content = parsed.content;
+    }
+}
+
+<span class="cm">// 使用接口作为类型</span>
+<span class="kw">function</span> <span class="fn">printAll</span>(items: <span class="tp">Printable</span>[]): <span class="tp">void</span> {
+    items.<span class="fn">forEach</span>(item => item.<span class="fn">print</span>());
+}
+
+<span class="cm">// 依赖注入示例</span>
+<span class="kw">interface</span> <span class="tp">Repository</span>&lt;T&gt; {
+    <span class="fn">findById</span>(id: <span class="tp">number</span>): T | <span class="tp">undefined</span>;
+    <span class="fn">findAll</span>(): T[];
+    <span class="fn">save</span>(item: T): <span class="tp">void</span>;
+    <span class="fn">delete</span>(id: <span class="tp">number</span>): <span class="tp">void</span>;
+}
+
+<span class="kw">class</span> <span class="tp">UserRepository</span> <span class="kw">implements</span> <span class="tp">Repository</span>&lt;<span class="tp">User</span>&gt; {
+    <span class="kw">private</span> users: <span class="tp">User</span>[] = [];
+
+    <span class="fn">findById</span>(id: <span class="tp">number</span>): <span class="tp">User</span> | <span class="tp">undefined</span> {
+        <span class="kw">return</span> <span class="kw">this</span>.users.<span class="fn">find</span>(u => u.id === id);
+    }
+
+    <span class="fn">findAll</span>(): <span class="tp">User</span>[] {
+        <span class="kw">return</span> [...<span class="kw">this</span>.users];
+    }
+
+    <span class="fn">save</span>(user: <span class="tp">User</span>): <span class="tp">void</span> {
+        <span class="kw">this</span>.users.<span class="fn">push</span>(user);
+    }
+
+    <span class="fn">delete</span>(id: <span class="tp">number</span>): <span class="tp">void</span> {
+        <span class="kw">this</span>.users = <span class="kw">this</span>.users.<span class="fn">filter</span>(u => u.id !== id);
+    }
+}</code></pre>
+    </div>
+
+    <!-- ==================== 第15节 ==================== -->
+    <h2 id="section-15">15. 枚举</h2>
+
+    <p>枚举（Enum）用于定义一组<strong>命名常量</strong>。TypeScript 提供了数字枚举、字符串枚举和异构枚举。</p>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 数字枚举 - 默认从 0 开始</span>
+<span class="kw">enum</span> <span class="tp">Direction</span> {
+    Up,      <span class="cm">// 0</span>
+    Down,    <span class="cm">// 1</span>
+    Left,    <span class="cm">// 2</span>
+    Right    <span class="cm">// 3</span>
+}
+
+<span class="cm">// 自定义初始值</span>
+<span class="kw">enum</span> <span class="tp">StatusCode</span> {
+    OK = <span class="nm">200</span>,
+    BadRequest = <span class="nm">400</span>,
+    NotFound = <span class="nm">404</span>,
+    ServerError = <span class="nm">500</span>
+}
+
+<span class="cm">// 字符串枚举</span>
+<span class="kw">enum</span> <span class="tp">Color</span> {
+    Red = <span class="st">"RED"</span>,
+    Green = <span class="st">"GREEN"</span>,
+    Blue = <span class="st">"BLUE"</span>
+}
+
+<span class="cm">// 使用枚举</span>
+<span class="kw">let</span> dir: <span class="tp">Direction</span> = <span class="tp">Direction</span>.Up;
+<span class="kw">let</span> status: <span class="tp">StatusCode</span> = <span class="tp">StatusCode</span>.NotFound;
+
+<span class="cm">// const 枚举 - 编译后内联，无运行时开销</span>
+<span class="kw">const enum</span> <span class="tp">HttpStatus</span> {
+    OK = <span class="nm">200</span>,
+    Error = <span class="nm">500</span>
+}
+
+<span class="cm">// 使用 const 枚举</span>
+<span class="kw">const</span> code = <span class="tp">HttpStatus</span>.OK; <span class="cm">// 编译后直接变成 200</span>
+
+<span class="cm">// 枚举的实用场景</span>
+<span class="kw">enum</span> <span class="tp">UserRole</span> {
+    Admin = <span class="st">"admin"</span>,
+    Editor = <span class="st">"editor"</span>,
+    Viewer = <span class="st">"viewer"</span>
+}
+
+<span class="kw">function</span> <span class="fn">getPermissions</span>(role: <span class="tp">UserRole</span>): <span class="tp">string</span>[] {
+    <span class="kw">switch</span> (role) {
+        <span class="kw">case</span> <span class="tp">UserRole</span>.Admin:
+            <span class="kw">return</span> [<span class="st">"read"</span>, <span class="st">"write"</span>, <span class="st">"delete"</span>];
+        <span class="kw">case</span> <span class="tp">UserRole</span>.Editor:
+            <span class="kw">return</span> [<span class="st">"read"</span>, <span class="st">"write"</span>];
+        <span class="kw">case</span> <span class="tp">UserRole</span>.Viewer:
+            <span class="kw">return</span> [<span class="st">"read"</span>];
+    }
+}
+
+<span class="cm">// 枚举反转映射（仅数字枚举）</span>
+<span class="kw">enum</span> <span class="tp">Weekday</span> {
+    Monday = <span class="nm">1</span>,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday
+}
+
+<span class="kw">const</span> dayName = <span class="tp">Weekday</span>[<span class="nm">3</span>]; <span class="cm">// "Wednesday"</span></code></pre>
+    </div>
+
+    <div class="tip">
+        <strong>推荐使用 const 枚举：</strong><code>const enum</code> 在编译时被完全擦除，不会生成额外的 JavaScript 代码，性能更好。但在需要反转映射或运行时访问枚举值时，应使用普通枚举。
+    </div>
+
+    <!-- ==================== 第16节 ==================== -->
+    <h2 id="section-16">16. 类型体操</h2>
+
+    <p>类型体操（Type Gymnastics）是 TypeScript 类型系统的高级应用，通过条件类型、映射类型、递归类型等机制，在类型层面实现复杂的逻辑操作。</p>
+
+    <div class="principle">
+        <div class="principle-title">类型层面的编程</div>
+        <p>类型体操本质上是<strong>在类型层面进行编程</strong>。TypeScript 的类型系统是图灵完备的，可以实现条件判断、递归、模式匹配等操作。掌握类型体操能帮助你理解复杂库的类型定义，编写更精确的类型约束。</p>
+    </div>
+
+    <h3>内置工具类型</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// Partial - 将所有属性变为可选</span>
+<span class="kw">type</span> <span class="tp">User</span> = { name: <span class="tp">string</span>; age: <span class="tp">number</span>; email: <span class="tp">string</span>; };
+<span class="kw">type</span> <span class="tp">PartialUser</span> = <span class="tp">Partial</span>&lt;<span class="tp">User</span>&gt;;
+<span class="cm">// { name?: string; age?: number; email?: string; }</span>
+
+<span class="cm">// Required - 将所有属性变为必填</span>
+<span class="kw">type</span> <span class="tp">OptionalUser</span> = { name?: <span class="tp">string</span>; age?: <span class="tp">number</span>; };
+<span class="kw">type</span> <span class="tp">RequiredUser</span> = <span class="tp">Required</span>&lt;<span class="tp">OptionalUser</span>&gt;;
+<span class="cm">// { name: string; age: number; }</span>
+
+<span class="cm">// Pick - 选取指定属性</span>
+<span class="kw">type</span> <span class="tp">UserName</span> = <span class="tp">Pick</span>&lt;<span class="tp">User</span>, <span class="st">"name"</span> | <span class="st">"email"</span>&gt;;
+<span class="cm">// { name: string; email: string; }</span>
+
+<span class="cm">// Omit - 排除指定属性</span>
+<span class="kw">type</span> <span class="tp">UserWithoutEmail</span> = <span class="tp">Omit</span>&lt;<span class="tp">User</span>, <span class="st">"email"</span>&gt;;
+<span class="cm">// { name: string; age: number; }</span>
+
+<span class="cm">// Record - 构造键值对类型</span>
+<span class="kw">type</span> <span class="tp">UserRoles</span> = <span class="tp">Record</span>&lt;<span class="tp">string</span>, <span class="tp">string</span>[]&gt;;
+<span class="cm">// { [key: string]: string[]; }</span>
+
+<span class="cm">// Exclude - 从联合类型中排除</span>
+<span class="kw">type</span> <span class="tp">T1</span> = <span class="tp">Exclude</span>&lt;<span class="st">"a" | "b" | "c"</span>, <span class="st">"a"</span>&gt;;
+<span class="cm">// "b" | "c"</span>
+
+<span class="cm">// Extract - 从联合类型中提取</span>
+<span class="kw">type</span> <span class="tp">T2</span> = <span class="tp">Extract</span>&lt;<span class="st">"a" | "b" | "c"</span>, <span class="st">"a" | "f"</span>&gt;;
+<span class="cm">// "a"</span>
+
+<span class="cm">// NonNullable - 排除 null 和 undefined</span>
+<span class="kw">type</span> <span class="tp">T3</span> = <span class="tp">NonNullable</span>&lt;<span class="tp">string</span> | <span class="tp">null</span> | <span class="tp">undefined</span>&gt;;
+<span class="cm">// string</span>
+
+<span class="cm">// ReturnType - 获取函数返回类型</span>
+<span class="kw">function</span> <span class="fn">getUser</span>() { <span class="kw">return</span> { name: <span class="st">"张三"</span>, age: <span class="nm">25</span> }; }
+<span class="kw">type</span> <span class="tp">UserType</span> = <span class="tp">ReturnType</span>&lt;<span class="kw">typeof</span> getUser&gt;;
+
+<span class="cm">// Parameters - 获取函数参数类型</span>
+<span class="kw">function</span> <span class="fn">create</span>(name: <span class="tp">string</span>, age: <span class="tp">number</span>) { <span class="cm">/* ... */</span> }
+<span class="kw">type</span> <span class="tp">Params</span> = <span class="tp">Parameters</span>&lt;<span class="kw">typeof</span> create&gt;;
+<span class="cm">// [string, number]</span></code></pre>
+    </div>
+
+    <h3>工具类型实战</h3>
+
+    <div class="code-block" data-lang="typescript">
+        <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">TypeScript</span>
+        </div>
+        <pre><code><span class="cm">// Partial - 实现更新函数</span>
+<span class="kw">interface</span> <span class="tp">User</span> {
+    id: <span class="tp">number</span>;
+    name: <span class="tp">string</span>;
+    email: <span class="tp">string</span>;
+    age: <span class="tp">number</span>;
+}
+
+<span class="kw">function</span> <span class="fn">updateUser</span>(id: <span class="tp">number</span>, updates: <span class="tp">Partial</span>&lt;<span class="tp">Omit</span>&lt;<span class="tp">User</span>, <span class="st">"id"</span>&gt;&gt;): <span class="tp">User</span> {
+    <span class="kw">const</span> user = <span class="fn">findUser</span>(id);
+    <span class="kw">return</span> { ...user, ...updates };
+}
+
+<span class="cm">// 只更新 name</span>
+<span class="fn">updateUser</span>(<span class="nm">1</span>, { name: <span class="st">"新名字"</span> });
+
+<span class="cm">// Pick - API 响应投影</span>
+<span class="kw">interface</span> <span class="tp">FullProduct</span> {
+    id: <span class="tp">number</span>;
+    title: <span class="tp">string</span>;
+    description: <span class="tp">string</span>;
+    price: <span class="tp">number</span>;
+    stock: <span class="tp">number</span>;
+    createdAt: <span class="tp">Date</span>;
+    imageUrl: <span class="tp">string</span>;
+}
+
+<span class="cm">// 列表页只需部分字段</span>
+<span class="kw">type</span> <span class="tp">ProductListItem</span> = <span class="tp">Pick</span>&lt;<span class="tp">FullProduct</span>, <span class="st">"id"</span> | <span class="st">"title"</span> | <span class="st">"price"</span> | <span class="st">"imageUrl"</span>&gt;;
+
+<span class="kw">const</span> item: <span class="tp">ProductListItem</span> = {
+    id: <span class="nm">1</span>,
+    title: <span class="st">"手机"</span>,
+    price: <span class="nm">4999</span>,
+    imageUrl: <span class="st">"/img/phone.jpg"</span>
+};
+
+<span class="cm">// Omit - 创建表单数据类型</span>
+<span class="kw">type</span> <span class="tp">CreateUserDTO</span> = <span class="tp">Omit</span>&lt;<span class="tp">User</span>, <span class="st">"id"</span>&gt;;
+<span class="cm">// { name: string; email: string; age: number; }</span>
+
+<span class="kw">function</span> <span class="fn">createUser</span>(data: <span class="tp">CreateUserDTO</span>): <span class="tp">User</span> {
+    <span class="kw">return</span> { id: <span class="fn">generateId</span>(), ...data };
+}
+
+<span class="cm">// Record - 权限矩阵</span>
+<span class="kw">type</span> <span class="tp">Role</span> = <span class="st">"admin"</span> | <span class="st">"editor"</span> | <span class="st">"viewer"</span>;
+<span class="kw">type</span> <span class="tp">Permission</span> = <span class="st">"read"</span> | <span class="st">"write"</span> | <span class="st">"delete"</span>;
+
+<span class="kw">const</span> permissions: <span class="tp">Record</span>&lt;<span class="tp">Role</span>, <span class="tp">Permission</span>[]&gt; = {
+    admin: [<span class="st">"read"</span>, <span class="st">"write"</span>, <span class="st">"delete"</span>],
+    editor: [<span class="st">"read"</span>, <span class="st">"write"</span>],
+    viewer: [<span class="st">"read"</span>]
+};
+
+<span class="cm">// Record - 状态机映射</span>
+<span class="kw">type</span> <span class="tp">State</span> = <span class="st">"idle"</span> | <span class="st">"loading"</span> | <span class="st">"success"</span> | <span class="st">"error"</span>;
+<span class="kw">type</span> <span class="tp">StateConfig</span> = <span class="tp">Record</span>&lt;<span class="tp">State</span>, {
+    color: <span class="tp">string</span>;
+    message: <span class="tp">string</span>;
+    retryable: <span class="tp">boolean</span>;
+}&gt;;
+
+<span class="kw">const</span> stateConfig: <span class="tp">StateConfig</span> = {
+    idle:    { color: <span class="st">"gray"</span>,  message: <span class="st">"等待中"</span>,  retryable: <span class="kw">false</span> },
+    loading: { color: <span class="st">"blue"</span>,  message: <span class="st">"加载中"</span>,  retryable: <span class="kw">false</span> },
+    success: { color: <span class="st">"green"</span>, message: <span class="st">"完成"</span>,    retryable: <span class="kw">false</span> },
+    error:   { color: <span class="st">"red"</span>,   message: <span class="st">"出错了"</span>,  retryable: <span class="kw">true</span> }
+};</code></pre>
+    </div>
+
+    <h3>自定义类型工具</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 深度 Partial - 递归地将所有属性变为可选</span>
+<span class="kw">type</span> <span class="tp">DeepPartial</span>&lt;T&gt; = {
+    [P <span class="kw">in</span> <span class="kw">keyof</span> T]?: T[P] <span class="kw">extends</span> <span class="tp">object</span>
+        ? <span class="tp">DeepPartial</span>&lt;T[P]&gt;
+        : T[P];
+};
+
+<span class="cm">// 深度 Readonly</span>
+<span class="kw">type</span> <span class="tp">DeepReadonly</span>&lt;T&gt; = {
+    <span class="kw">readonly</span> [P <span class="kw">in</span> <span class="kw">keyof</span> T]: T[P] <span class="kw">extends</span> <span class="tp">object</span>
+        ? <span class="tp">DeepReadonly</span>&lt;T[P]&gt;
+        : T[P];
+};
+
+<span class="cm">// 类型安全的事件系统</span>
+<span class="kw">type</span> <span class="tp">EventMap</span> = {
+    click: { x: <span class="tp">number</span>; y: <span class="tp">number</span> };
+    keydown: { key: <span class="tp">string</span>; code: <span class="tp">number</span> };
+    scroll: { top: <span class="tp">number</span>; left: <span class="tp">number</span> };
+};
+
+<span class="kw">function</span> <span class="fn">on</span>&lt;K <span class="kw">extends</span> <span class="kw">keyof</span> <span class="tp">EventMap</span>&gt;(
+    event: K,
+    handler: (payload: <span class="tp">EventMap</span>[K]) => <span class="tp">void</span>
+) {
+    <span class="cm">// 实现省略</span>
+}
+
+<span class="fn">on</span>(<span class="st">"click"</span>, (payload) => {
+    console.<span class="fn">log</span>(payload.x, payload.y); <span class="cm">// ✅ 类型安全</span>
+});
+
+<span class="cm">// DeepRequired - 递归地将所有属性变为必填</span>
+<span class="kw">type</span> <span class="tp">DeepRequired</span>&lt;T&gt; = {
+    [P <span class="kw">in</span> <span class="kw">keyof</span> T]-?: T[P] <span class="kw">extends</span> <span class="tp">object</span>
+        ? <span class="tp">DeepRequired</span>&lt;T[P]&gt;
+        : T[P];
+};</code></pre>
+    </div>
+
+    <!-- ==================== 第17节 ==================== -->
+    <h2 id="section-17">17. 模块与命名空间</h2>
+
+    <p>TypeScript 支持 ES Module、CommonJS 和命名空间三种模块系统。现代项目推荐使用 ES Module。</p>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// ========== ES Module ==========</span>
+
+<span class="cm">// math.ts - 导出</span>
+<span class="kw">export</span> <span class="kw">function</span> <span class="fn">add</span>(a: <span class="tp">number</span>, b: <span class="tp">number</span>): <span class="tp">number</span> {
+    <span class="kw">return</span> a + b;
+}
+
+<span class="kw">export</span> <span class="kw">const</span> PI = <span class="nm">3.14159</span>;
+
+<span class="kw">export default</span> <span class="kw">class</span> <span class="tp">Calculator</span> {
+    <span class="fn">add</span>(a: <span class="tp">number</span>, b: <span class="tp">number</span>): <span class="tp">number</span> { <span class="kw">return</span> a + b; }
+    <span class="fn">subtract</span>(a: <span class="tp">number</span>, b: <span class="tp">number</span>): <span class="tp">number</span> { <span class="kw">return</span> a - b; }
+}
+
+<span class="cm">// main.ts - 导入</span>
+<span class="kw">import</span> Calculator, { add, PI } <span class="kw">from</span> <span class="st">"./math"</span>;
+<span class="kw">import</span> * <span class="kw">as</span> MathUtils <span class="kw">from</span> <span class="st">"./math"</span>;
+
+console.<span class="fn">log</span>(<span class="fn">add</span>(<span class="nm">1</span>, <span class="nm">2</span>));
+console.<span class="fn">log</span>(PI);
+<span class="kw">const</span> calc = <span class="kw">new</span> <span class="fn">Calculator</span>();
+
+<span class="cm">// ========== 命名空间 ==========</span>
+<span class="kw">namespace</span> Validation {
+    <span class="kw">export interface</span> <span class="tp">Validator</span> {
+        <span class="fn">validate</span>(value: <span class="tp">string</span>): <span class="tp">boolean</span>;
+    }
+
+    <span class="kw">export class</span> <span class="tp">EmailValidator</span> <span class="kw">implements</span> <span class="tp">Validator</span> {
+        <span class="fn">validate</span>(value: <span class="tp">string</span>): <span class="tp">boolean</span> {
+            <span class="kw">return</span> <span class="st">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>.<span class="fn">test</span>(value);
+        }
+    }
+
+    <span class="kw">export class</span> <span class="tp">PhoneValidator</span> <span class="kw">implements</span> <span class="tp">Validator</span> {
+        <span class="fn">validate</span>(value: <span class="tp">string</span>): <span class="tp">boolean</span> {
+            <span class="kw">return</span> <span class="st">/^1[3-9]\d{9}$/</span>.<span class="fn">test</span>(value);
+        }
+    }
+}
+
+<span class="cm">// 使用命名空间</span>
+<span class="kw">const</span> emailValidator = <span class="kw">new</span> Validation.<span class="tp">EmailValidator</span>();
+emailValidator.<span class="fn">validate</span>(<span class="st">"test@example.com"</span>); <span class="cm">// true</span></code></pre>
+    </div>
+
+    <div class="warning">
+        <strong>命名空间 vs 模块：</strong>现代项目应优先使用 ES Module。命名空间主要用于全局声明合并和类型组织，不适合用于运行时代码组织。在 <code>tsconfig.json</code> 中设置 <code>"module": "ESNext"</code> 使用 ES Module。
+    </div>
+
+    <!-- ==================== 第18节 ==================== -->
+    <h2 id="section-18">18. 声明文件</h2>
+
+    <p>声明文件（.d.ts）用于为 JavaScript 库提供类型信息。当使用没有内置类型的第三方库时，需要安装或编写声明文件。</p>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// globals.d.ts - 全局声明</span>
+
+<span class="cm">// 声明全局变量</span>
+<span class="kw">declare const</span> API_URL: <span class="tp">string</span>;
+<span class="kw">declare const</span> VERSION: <span class="tp">string</span>;
+
+<span class="cm">// 声明全局函数</span>
+<span class="kw">declare function</span> <span class="fn">greet</span>(name: <span class="tp">string</span>): <span class="tp">string</span>;
+
+<span class="cm">// 声明模块</span>
+<span class="kw">declare module</span> <span class="st">"my-library"</span> {
+    <span class="kw">export function</span> <span class="fn">doSomething</span>(input: <span class="tp">string</span>): <span class="tp">number</span>;
+    <span class="kw">export interface</span> <span class="tp">Config</span> {
+        debug: <span class="tp">boolean</span>;
+        timeout: <span class="tp">number</span>;
+    }
+    <span class="kw">export default function</span> <span class="fn">init</span>(config: <span class="tp">Config</span>): <span class="tp">void</span>;
+}
+
+<span class="cm">// 声明文件合并 - 扩展现有模块</span>
+<span class="kw">declare module</span> <span class="st">"express"</span> {
+    <span class="kw">interface</span> <span class="tp">Request</span> {
+        userId?: <span class="tp">string</span>;
+        role?: <span class="tp">string</span>;
+    }
+}
+
+<span class="cm">// 自定义类型声明文件示例</span>
+<span class="cm">// utils.d.ts</span>
+<span class="kw">declare namespace</span> Utils {
+    <span class="kw">function</span> <span class="fn">formatDate</span>(date: <span class="tp">Date</span>, format: <span class="tp">string</span>): <span class="tp">string</span>;
+    <span class="kw">function</span> <span class="fn">debounce</span>&lt;T extends (...args: <span class="tp">any</span>[]) => <span class="tp">any</span>&gt;(
+        fn: T,
+        delay: <span class="tp">number</span>
+    ): T;
+    <span class="kw">function</span> <span class="fn">throttle</span>&lt;T extends (...args: <span class="tp">any</span>[]) => <span class="tp">any</span>&gt;(
+        fn: T,
+        limit: <span class="tp">number</span>): T;
+}</code></pre>
+    </div>
+
+    <div class="tip">
+        <strong>安装声明文件：</strong>大多数流行库都有 <code>@types/xxx</code> 包提供类型声明。运行 <code>npm install --save-dev @types/lodash</code> 即可获得 Lodash 的完整类型支持。如果库自带类型定义（通过 <code>types</code> 字段在 package.json 中指定），则无需额外安装。
+    </div>
+
+    <!-- ==================== 第19节 ==================== -->
+    <h2 id="section-19">19. Mapped Types 与条件类型</h2>
+
+    <p>映射类型（Mapped Types）和条件类型（Conditional Types）是 TypeScript 类型系统的两个核心高级特性，它们是实现类型体操的基础。</p>
+
+    <h3>映射类型</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 映射类型的基本语法</span>
+<span class="kw">type</span> <span class="tp">MyPartial</span>&lt;T&gt; = {
+    [K <span class="kw">in</span> <span class="kw">keyof</span> T]?: T[K];
+};
+
+<span class="cm">// 添加 readonly</span>
+<span class="kw">type</span> <span class="tp">MyReadonly</span>&lt;T&gt; = {
+    <span class="kw">readonly</span> [K <span class="kw">in</span> <span class="kw">keyof</span> T]: T[K];
+};
+
+<span class="cm">// 重映射键（Remapping Keys）- TypeScript 4.1+</span>
+<span class="kw">type</span> <span class="tp">Getters</span>&lt;T&gt; = {
+    [K <span class="kw">in</span> <span class="kw">keyof</span> T <span class="kw">as</span> <span class="st">`get${Capitalize&lt;string & K&gt;}`</span>]: () => T[K];
+};
+
+<span class="kw">interface</span> <span class="tp">Person</span> {
+    name: <span class="tp">string</span>;
+    age: <span class="tp">number</span>;
+}
+
+<span class="kw">type</span> <span class="tp">PersonGetters</span> = <span class="tp">Getters</span>&lt;<span class="tp">Person</span>&gt;;
+<span class="cm">// { getName: () => string; getAge: () => number; }</span>
+
+<span class="cm">// 过滤键</span>
+<span class="kw">type</span> <span class="tp">FilterByType</span>&lt;T, U&gt; = {
+    [K <span class="kw">in</span> <span class="kw">keyof</span> T <span class="kw">as</span> T[K] <span class="kw">extends</span> U ? K : <span class="kw">never</span>]: T[K];
+};
+
+<span class="kw">type</span> <span class="tp">StringProps</span> = <span class="tp">FilterByType</span>&lt;<span class="tp">Person</span>, <span class="tp">string</span>&gt;;
+<span class="cm">// { name: string; }</span></code></pre>
+    </div>
+
+    <h3>映射类型进阶</h3>
+
+    <div class="code-block" data-lang="typescript">
+        <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">TypeScript</span>
+        </div>
+        <pre><code><span class="cm">// 递归映射类型 - 深度冻结对象</span>
+<span class="kw">type</span> <span class="tp">DeepFreeze</span>&lt;T&gt; = <span class="tp">Readonly</span>&lt;{
+    [K <span class="kw">in</span> <span class="kw">keyof</span> T]: T[K] <span class="kw">extends</span> <span class="tp">object</span>
+        ? T[K] <span class="kw">extends</span> <span class="tp">Function</span>
+            ? T[K]
+            : <span class="tp">DeepFreeze</span>&lt;T[K]&gt;
+        : T[K];
+}&gt;;
+
+<span class="kw">interface</span> <span class="tp">AppState</span> {
+    user: { name: <span class="tp">string</span>; settings: { theme: <span class="tp">string</span> } };
+    posts: <span class="tp">string</span>[];
+}
+
+<span class="kw">type</span> <span class="tp">FrozenState</span> = <span class="tp">DeepFreeze</span>&lt;<span class="tp">AppState</span>&gt;;
+<span class="cm">// 所有属性和嵌套属性都变为 readonly</span>
+
+<span class="cm">// 键过滤 + 重映射 - 移除指定类型前缀</span>
+<span class="kw">type</span> <span class="tp">RemovePrefix</span>&lt;T, Prefix extends <span class="tp">string</span>&gt; = {
+    [K <span class="kw">in</span> <span class="kw">keyof</span> T <span class="kw">as</span> K <span class="kw">extends</span> <span class="st">`${Prefix}${infer Rest}`</span> ? Rest : K]: T[K]
+};
+
+<span class="kw">interface</span> <span class="tp">RawData</span> {
+    <span class="fn">getUserName</span>: () => <span class="tp">string</span>;
+    <span class="fn">getUserAge</span>: () => <span class="tp">number</span>;
+    <span class="fn">getPostTitle</span>: () => <span class="tp">string</span>;
+    version: <span class="tp">string</span>;
+}
+
+<span class="kw">type</span> <span class="tp">CleanData</span> = <span class="tp">RemovePrefix</span>&lt;<span class="tp">RawData</span>, <span class="st">"get"</span>&gt;;
+<span class="cm">// { UserName: () => string; UserAge: () => number; PostTitle: () => string; version: string; }</span>
+
+<span class="cm">// 联合键映射 - 将每个键映射为可选联合</span>
+<span class="kw">type</span> <span class="tp">Nullable</span>&lt;T&gt; = {
+    [K <span class="kw">in</span> <span class="kw">keyof</span> T]: T[K] | <span class="tp">null</span>;
+};
+
+<span class="cm">// 条件映射 - 按值类型选择性应用修饰符</span>
+<span class="kw">type</span> <span class="tp">ReadonlyStrings</span>&lt;T&gt; = {
+    [K <span class="kw">in</span> <span class="kw">keyof</span> T]: T[K] <span class="kw">extends</span> <span class="tp">string</span>
+        ? <span class="kw">readonly</span> T[K]
+        : T[K];
+};
+
+<span class="kw">interface</span> <span class="tp">Mixed</span> {
+    name: <span class="tp">string</span>;
+    count: <span class="tp">number</span>;
+    label: <span class="tp">string</span>;
+    value: <span class="tp">boolean</span>;
+}
+
+<span class="kw">type</span> <span class="tp">Result</span> = <span class="tp">ReadonlyStrings</span>&lt;<span class="tp">Mixed</span>&gt;;
+<span class="cm">// { readonly name: string; count: number; readonly label: string; value: boolean; }</span>
+
+<span class="cm">// 递归映射 - 将对象中的 Date 转为 string</span>
+<span class="kw">type</span> <span class="tp">SerializeDates</span>&lt;T&gt; = {
+    [K <span class="kw">in</span> <span class="kw">keyof</span> T]: T[K] <span class="kw">extends</span> <span class="tp">Date</span>
+        ? <span class="tp">string</span>
+        : T[K] <span class="kw">extends</span> <span class="tp">object</span>
+            ? <span class="tp">SerializeDates</span>&lt;T[K]&gt;
+            : T[K];
+};
+
+<span class="kw">interface</span> <span class="tp">Event</span> {
+    name: <span class="tp">string</span>;
+    startDate: <span class="tp">Date</span>;
+    meta: { createdAt: <span class="tp">Date</span>; tags: <span class="tp">string</span>[] };
+}
+
+<span class="kw">type</span> <span class="tp">SerializedEvent</span> = <span class="tp">SerializeDates</span>&lt;<span class="tp">Event</span>&gt;;
+<span class="cm">// { name: string; startDate: string; meta: { createdAt: string; tags: string[] } }</span></code></pre>
+    </div>
+
+    <h3>条件类型</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 基础条件类型</span>
+<span class="kw">type</span> <span class="tp">IsString</span>&lt;T&gt; = T <span class="kw">extends</span> <span class="tp">string</span> ? <span class="st">"yes"</span> : <span class="st">"no"</span>;
+<span class="kw">type</span> <span class="tp">A</span> = <span class="tp">IsString</span>&lt;<span class="st">"hello"</span>&gt;;  <span class="cm">// "yes"</span>
+<span class="kw">type</span> <span class="tp">B</span> = <span class="tp">IsString</span>&lt;<span class="nm">42</span>&gt;;       <span class="cm">// "no"</span>
+
+<span class="cm">// 分布式条件类型</span>
+<span class="kw">type</span> <span class="tp">ToArray</span>&lt;T&gt; = T <span class="kw">extends</span> <span class="tp">any</span> ? T[] : <span class="kw">never</span>;
+<span class="kw">type</span> <span class="tp">Result</span> = <span class="tp">ToArray</span>&lt;<span class="tp">string</span> | <span class="tp">number</span>&gt;;
+<span class="cm">// string[] | number[]</span>
+
+<span class="cm">// infer 关键字 - 在条件类型中推断</span>
+<span class="kw">type</span> <span class="tp">ReturnType2</span>&lt;T&gt; = T <span class="kw">extends</span> (...args: <span class="tp">any</span>[]) => <span class="kw">infer</span> R ? R : <span class="kw">never</span>;
+<span class="kw">type</span> <span class="tp">FnReturn</span> = <span class="tp">ReturnType2</span>&lt;() => <span class="tp">string</span>&gt;;  <span class="cm">// string</span>
+
+<span class="cm">// 推断函数参数</span>
+<span class="kw">type</span> <span class="tp">FirstParam</span>&lt;T&gt; = T <span class="kw">extends</span> (<span class="kw">infer</span> P, ...args: <span class="tp">any</span>[]) => <span class="tp">any</span> ? P : <span class="kw">never</span>;
+<span class="kw">type</span> <span class="tp">P1</span> = <span class="tp">FirstParam</span>&lt;(name: <span class="tp">string</span>, age: <span class="tp">number</span>) => <span class="tp">void</span>&gt;;  <span class="cm">// string</span>
+
+<span class="cm">// 推断 Promise 内部类型</span>
+<span class="kw">type</span> <span class="tp">UnwrapPromise</span>&lt;T&gt; = T <span class="kw">extends</span> <span class="tp">Promise</span>&lt;<span class="kw">infer</span> U&gt; ? U : T;
+<span class="kw">type</span> <span class="tp">R1</span> = <span class="tp">UnwrapPromise</span>&lt;<span class="tp">Promise</span>&lt;<span class="tp">string</span>&gt;&gt;;   <span class="cm">// string</span>
+<span class="kw">type</span> <span class="tp">R2</span> = <span class="tp">UnwrapPromise</span>&lt;<span class="tp">Promise</span>&lt;<span class="tp">number</span>&gt;&gt;;   <span class="cm">// number</span>
+
+<span class="cm">// 递归条件类型 - 深度解包 Promise</span>
+<span class="kw">type</span> <span class="tp">DeepUnwrap</span>&lt;T&gt; = T <span class="kw">extends</span> <span class="tp">Promise</span>&lt;<span class="kw">infer</span> U&gt; ? <span class="tp">DeepUnwrap</span>&lt;U&gt; : T;
+<span class="kw">type</span> <span class="tp">R3</span> = <span class="tp">DeepUnwrap</span>&lt;<span class="tp">Promise</span>&lt;<span class="tp">Promise</span>&lt;<span class="tp">string</span>&gt;&gt;&gt;;  <span class="cm">// string</span>
+
+<span class="cm">// 递归条件类型 - 元组反转</span>
+<span class="kw">type</span> <span class="tp">Reverse</span>&lt;T extends <span class="tp">any</span>[]&gt; = T <span class="kw">extends</span> [<span class="kw">infer</span> First, ...<span class="kw">infer</span> Rest]
+    ? [...<span class="tp">Reverse</span>&lt;Rest&gt;, First]
+    : [];
+
+<span class="kw">type</span> <span class="tp">R4</span> = <span class="tp">Reverse</span>&lt;[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>]&gt;;  <span class="cm">// [3, 2, 1]</span></code></pre>
+    </div>
+
+    <h3>条件类型进阶</h3>
+
+    <div class="code-block" data-lang="typescript">
+        <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">TypeScript</span>
+        </div>
+        <pre><code><span class="cm">// infer 推断构造函数参数</span>
+<span class="kw">type</span> <span class="tp">ConstructorArgs</span>&lt;T&gt; = T <span class="kw">extends</span> <span class="kw">new</span> (...args: <span class="kw">infer</span> A) => <span class="tp">any</span> ? A : <span class="kw">never</span>;
+
+<span class="kw">class</span> <span class="tp">Router</span> {
+    <span class="kw">constructor</span>(prefix: <span class="tp">string</span>, port: <span class="tp">number</span>, debug?: <span class="tp">boolean</span>) {}
+}
+
+<span class="kw">type</span> <span class="tp">RouterArgs</span> = <span class="tp">ConstructorArgs</span>&lt;<span class="kw">typeof</span> <span class="tp">Router</span>&gt;;
+<span class="cm">// [string, number, boolean?]</span>
+
+<span class="cm">// infer 在元组操作中 - Flattened 类型</span>
+<span class="kw">type</span> <span class="tp">Flatten</span>&lt;T extends <span class="tp">any</span>[]&gt; = T <span class="kw">extends</span> [<span class="kw">infer</span> <span class="tp">Head</span>, ...<span class="kw">infer</span> <span class="tp">Tail</span>]
+    ? <span class="tp">Head</span> <span class="kw">extends</span> <span class="tp">any</span>[]
+        ? [...<span class="tp">Flatten</span>&lt;<span class="tp">Head</span>&gt;, ...<span class="tp">Flatten</span>&lt;<span class="tp">Tail</span>&gt;]
+        : [<span class="tp">Head</span>, ...<span class="tp">Flatten</span>&lt;<span class="tp">Tail</span>&gt;]
+    : [];
+
+<span class="kw">type</span> <span class="tp">Nested</span> = [<span class="nm">1</span>, [<span class="nm">2</span>, <span class="nm">3</span>], [[<span class="nm">4</span>]]];
+<span class="kw">type</span> <span class="tp">Flat</span> = <span class="tp">Flatten</span>&lt;<span class="tp">Nested</span>&gt;;  <span class="cm">// [1, 2, 3, 4]</span>
+
+<span class="cm">// 分布式条件类型 - 实现 Exclude 的原理</span>
+<span class="kw">type</span> <span class="tp">MyExclude</span>&lt;T, U&gt; = T <span class="kw">extends</span> U ? <span class="kw">never</span> : T;
+<span class="kw">type</span> <span class="tp">Result</span> = <span class="tp">MyExclude</span>&lt;<span class="st">"a" | "b" | "c"</span>, <span class="st">"a"</span>&gt;;
+<span class="cm">// "b" | "c"（分布式逐个匹配）</span>
+
+<span class="cm">// 分布式条件类型 - 非分布式包装</span>
+<span class="kw">type</span> <span class="tp">NonDistributed</span>&lt;T&gt; = [T] <span class="kw">extends</span> [<span class="st">"a"</span>] ? <span class="st">"yes"</span> : <span class="st">"no"</span>;
+<span class="kw">type</span> <span class="tp">D1</span> = <span class="tp">NonDistributed</span>&lt;<span class="st">"a"</span> | <span class="st">"b"</span>&gt;;  <span class="cm">// "no"（整个联合与 "a" 比较）</span>
+
+<span class="cm">// infer 推断 Promise 链的最终返回类型</span>
+<span class="kw">type</span> <span class="tp">DeepAwait</span>&lt;T&gt; = T <span class="kw">extends</span> <span class="tp">Promise</span>&lt;<span class="kw">infer</span> U&gt; ? <span class="tp">DeepAwait</span>&lt;U&gt; : T;
+<span class="kw">type</span> <span class="tp">Final</span> = <span class="tp">DeepAwait</span>&lt;<span class="tp">Promise</span>&lt;<span class="tp">Promise</span>&lt;<span class="tp">Promise</span>&lt;<span class="tp">number</span>&gt;&gt;&gt;&gt;;  <span class="cm">// number</span>
+
+<span class="cm">// 条件类型 + infer 实现函数重载推断</span>
+<span class="kw">type</span> <span class="tp">LastElement</span>&lt;T extends <span class="tp">any</span>[]&gt; =
+    T <span class="kw">extends</span> [...<span class="kw">infer</span> _, <span class="kw">infer</span> <span class="tp">Last</span>] ? <span class="tp">Last</span> : <span class="kw">never</span>;
+
+<span class="kw">type</span> <span class="tp">L1</span> = <span class="tp">LastElement</span>&lt;[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>]&gt;;     <span class="cm">// 3</span>
+<span class="kw">type</span> <span class="tp">L2</span> = <span class="tp">LastElement</span>&lt;[<span class="st">"a"</span>, <span class="st">"b"</span>]&gt;;   <span class="cm">// "b"</span>
+<span class="kw">type</span> <span class="tp">L3</span> = <span class="tp">LastElement</span>&lt;[]&gt;;              <span class="cm">// never</span></code></pre>
+    </div>
+
+    <div class="danger">
+        <strong>复杂度注意：</strong>类型体操虽然强大，但过度使用会降低代码可读性。在实际项目中，优先选择简单直接的类型定义，只在必要时使用高级类型技巧。
+    </div>
+
+    <!-- ==================== 第20节 ==================== -->
+    <h2 id="section-20">20. 与 JavaScript 互操作</h2>
+
+    <p>TypeScript 的核心优势之一是与 JavaScript 的完全兼容。你可以渐进式地将 JavaScript 项目迁移到 TypeScript。</p>
+
+    <h3>从 JavaScript 迁移到 TypeScript</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 在 tsconfig.json 中允许 JavaScript 文件</span>
+<span class="cm">// { "allowJs": true, "checkJs": true }</span>
+
+<span class="cm">// 在 JS 文件中使用 JSDoc 类型注解</span>
+<span class="cm">/**
+ * @param {string} name
+ * @param {number} age
+ * @returns {{ name: string, age: number }}
+ */</span>
+<span class="kw">function</span> <span class="fn">createUser</span>(name, age) {
+    <span class="kw">return</span> { name, age };
+}
+
+<span class="cm">// TypeScript 可以理解 JSDoc 注解</span>
+
+<span class="cm">// 调用 JavaScript 库</span>
+<span class="cm">// 假设 lodash 没有类型声明</span>
+<span class="kw">import</span> _ <span class="kw">from</span> <span class="st">"lodash"</span>;
+
+<span class="cm">// 使用 @types/lodash</span>
+<span class="cm">// npm install --save-dev @types/lodash</span>
+<span class="kw">import</span> _ <span class="kw">from</span> <span class="st">"lodash"</span>;
+<span class="kw">const</span> result = _.<span class="fn">capitalize</span>(<span class="st">"hello"</span>); <span class="cm">// 类型安全</span>
+
+<span class="cm">// 导出为 JavaScript 使用</span>
+<span class="cm">// 在 .ts 文件中导出，JavaScript 可以直接导入使用</span>
+<span class="kw">export function</span> <span class="fn">helper</span>(data: <span class="tp">any</span>): <span class="tp">string</span> {
+    <span class="kw">return</span> JSON.<span class="fn">stringify</span>(data, <span class="kw">null</span>, <span class="nm">2</span>);
+}
+
+<span class="cm">// 生成声明文件供其他 TS 项目使用</span>
+<span class="cm">// tsconfig.json: { "declaration": true }</span></code></pre>
+    </div>
+
+    <h3>类型声明最佳实践</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 为没有类型的第三方库创建声明文件</span>
+<span class="cm">// types/my-lib/index.d.ts</span>
+
+<span class="kw">declare module</span> <span class="st">"my-untyped-lib"</span> {
+    <span class="kw">export interface</span> <span class="tp">Options</span> {
+        timeout?: <span class="tp">number</span>;
+        retries?: <span class="tp">number</span>;
+    }
+
+    <span class="kw">export function</span> <span class="fn">fetch</span>(
+        url: <span class="tp">string</span>,
+        options?: <span class="tp">Options</span>
+    ): <span class="tp">Promise</span>&lt;<span class="tp">Response</span>&gt;;
+
+    <span class="kw">export interface</span> <span class="tp">Response</span> {
+        data: <span class="tp">any</span>;
+        status: <span class="tp">number</span>;
+    }
+}
+
+<span class="cm">// 使用类型断言处理动态数据</span>
+<span class="kw">interface</span> <span class="tp">ApiResponse</span> {
+    id: <span class="tp">number</span>;
+    name: <span class="tp">string</span>;
+}
+
+<span class="kw">async function</span> <span class="fn">fetchUser</span>(id: <span class="tp">number</span>): <span class="tp">Promise</span>&lt;<span class="tp">ApiResponse</span>&gt; {
+    <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="st">`/api/users/${id}`</span>);
+    <span class="kw">const</span> data = <span class="kw">await</span> response.<span class="fn">json</span>();
+
+    <span class="cm">// 类型断言</span>
+    <span class="kw">return</span> data <span class="kw">as</span> <span class="tp">ApiResponse</span>;
+}
+
+<span class="cm">// 更安全的替代方案：运行时验证</span>
+<span class="kw">function</span> <span class="fn">isApiResponse</span>(data: <span class="tp">any</span>): data <span class="kw">is</span> <span class="tp">ApiResponse</span> {
+    <span class="kw">return</span> (
+        <span class="kw">typeof</span> data === <span class="st">"object"</span> &amp;&amp;
+        <span class="kw">typeof</span> data.id === <span class="st">"number"</span> &amp;&amp;
+        <span class="kw">typeof</span> data.name === <span class="st">"string"</span>
+    );
+}
+
+<span class="kw">async function</span> <span class="fn">fetchUserSafe</span>(id: <span class="tp">number</span>): <span class="tp">Promise</span>&lt;<span class="tp">ApiResponse</span>&gt; {
+    <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="st">`/api/users/${id}`</span>);
+    <span class="kw">const</span> data = <span class="kw">await</span> response.<span class="fn">json</span>();
+
+    <span class="kw">if</span> (!<span class="fn">isApiResponse</span>(data)) {
+        <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="st">"无效的 API 响应"</span>);
+    }
+
+    <span class="kw">return</span> data;
+}</code></pre>
+    </div>
+
+    <!-- ==================== 第21节 ==================== -->
+    <h2 id="section-21">21. 最佳实践</h2>
+
+    <p>以下是 TypeScript 开发中推荐的最佳实践，遵循这些原则可以编写出更安全、更可维护的代码。</p>
+
+    <div class="principle">
+        <div class="principle-title">核心原则</div>
+        <p><strong>优先类型安全，其次便利性。</strong>TypeScript 的价值在于编译时捕获错误。当类型安全与便利性冲突时，选择类型安全。宁可多写几行类型定义，也不要在运行时遇到 <code>undefined is not a function</code> 的错误。</p>
+    </div>
+
+    <h3>启用严格模式</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code>{
+    <span class="st">"compilerOptions"</span>: {
+        <span class="st">"strict"</span>: <span class="kw">true</span>,
+        <span class="cm">// 等同于启用以下所有选项：</span>
+        <span class="st">"noImplicitAny"</span>: <span class="kw">true</span>,      <span class="cm">// 禁止隐式 any</span>
+        <span class="st">"strictNullChecks"</span>: <span class="kw">true</span>,   <span class="cm">// 严格空值检查</span>
+        <span class="st">"strictFunctionTypes"</span>: <span class="kw">true</span>, <span class="cm">// 严格函数类型</span>
+        <span class="st">"strictBindCallApply"</span>: <span class="kw">true</span>, <span class="cm">// 严格绑定调用</span>
+        <span class="st">"noImplicitThis"</span>: <span class="kw">true</span>,      <span class="cm">// 禁止隐式 this</span>
+        <span class="st">"alwaysStrict"</span>: <span class="kw">true</span>,        <span class="cm">// 始终输出严格模式</span>
+        <span class="st">"useUnknownInCatchVariables"</span>: <span class="kw">true</span>
+    }
+}</code></pre>
+    </div>
+
+    <h3>避免 any</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// ❌ 不推荐</span>
+<span class="kw">function</span> <span class="fn">process</span>(data: <span class="tp">any</span>): <span class="tp">any</span> {
+    <span class="kw">return</span> data.foo.bar;
+}
+
+<span class="cm">// ✅ 推荐 - 使用 unknown</span>
+<span class="kw">function</span> <span class="fn">process</span>(data: <span class="tp">unknown</span>): <span class="tp">unknown</span> {
+    <span class="kw">if</span> (
+        <span class="kw">typeof</span> data === <span class="st">"object"</span> &amp;&amp;
+        data !== <span class="kw">null</span> &amp;&amp;
+        <span class="st">"foo"</span> <span class="kw">in</span> data
+    ) {
+        <span class="kw">const</span> obj = data <span class="kw">as</span> { foo: { bar: <span class="tp">unknown</span> } };
+        <span class="kw">return</span> obj.foo.bar;
+    }
+    <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="st">"无效数据"</span>);
+}
+
+<span class="cm">// ✅ 推荐 - 使用具体类型</span>
+<span class="kw">interface</span> <span class="tp">ProcessedData</span> {
+    foo: { bar: <span class="tp">string</span> };
+}
+
+<span class="kw">function</span> <span class="fn">processBetter</span>(data: <span class="tp">ProcessedData</span>): <span class="tp">string</span> {
+    <span class="kw">return</span> data.foo.bar;
+}
+
+<span class="cm">// ✅ 推荐 - 使用泛型</span>
+<span class="kw">function</span> <span class="fn">identity</span>&lt;T&gt;(arg: T): T {
+    <span class="kw">return</span> arg;
+}</code></pre>
+    </div>
+
+    <h3>类型安全的 API 设计</h3>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">TypeScript</div>
+        </div>
+        <pre><code><span class="cm">// 使用字面量类型限制参数</span>
+<span class="kw">type</span> <span class="tp">HttpMethod</span> = <span class="st">"GET"</span> | <span class="st">"POST"</span> | <span class="st">"PUT"</span> | <span class="st">"DELETE"</span>;
+
+<span class="kw">function</span> <span class="fn">request</span>(method: <span class="tp">HttpMethod</span>, url: <span class="tp">string</span>) {
+    <span class="cm">// ...</span>
+}
+
+<span class="fn">request</span>(<span class="st">"GET"</span>, <span class="st">"/api/users"</span>);    <span class="cm">// ✅</span>
+<span class="cm">// request("PATCH", "/api/users"); // ❌ 类型错误</span>
+
+<span class="cm">// 使用 Result 模式代替 try-catch</span>
+<span class="kw">type</span> <span class="tp">Result</span>&lt;T, E = <span class="tp">Error</span>&gt; =
+    | { ok: <span class="kw">true</span>; value: T }
+    | { ok: <span class="kw">false</span>; error: E };
+
+<span class="kw">function</span> <span class="fn">parseJSON</span>&lt;T&gt;(json: <span class="tp">string</span>): <span class="tp">Result</span>&lt;T&gt; {
+    <span class="kw">try</span> {
+        <span class="kw">return</span> { ok: <span class="kw">true</span>, value: JSON.<span class="fn">parse</span>(json) };
+    } <span class="kw">catch</span> (e) {
+        <span class="kw">return</span> { ok: <span class="kw">false</span>, error: e <span class="kw">as</span> <span class="tp">Error</span> };
+    }
+}
+
+<span class="kw">const</span> result = <span class="fn">parseJSON</span>&lt;{ name: <span class="tp">string</span> }&gt;(<span class="st">'{"name":"张三"}'</span>);
+<span class="kw">if</span> (result.ok) {
+    console.<span class="fn">log</span>(result.value.name); <span class="cm">// ✅ 类型安全</span>
+} <span class="kw">else</span> {
+    console.<span class="fn">log</span>(result.error.message);
+}
+
+<span class="cm">// 使用 const 断言定义配置</span>
+<span class="kw">const</span> ROUTES = {
+    home: <span class="st">"/"</span>,
+    about: <span class="st">"/about"</span>,
+    contact: <span class="st">"/contact"</span>
+} <span class="kw">as const</span>;
+
+<span class="kw">type</span> <span class="tp">Route</span> = <span class="kw">typeof</span> ROUTES[keyof <span class="kw">typeof</span> ROUTES];
+<span class="cm">// "/" | "/about" | "/contact"</span></code></pre>
+    </div>
+
+    <h3>总结</h3>
+
+    <div class="principle">
+        <div class="principle-title">TypeScript 核心要点回顾</div>
+        <p><strong>1. 类型推断优先：</strong>利用 TypeScript 的类型推断能力，减少不必要的类型注解。</p>
+        <p><strong>2. 严格模式必备：</strong>始终启用 <code>strict: true</code>，获得最全面的类型检查。</p>
+        <p><strong>3. 避免 any：</strong>使用 <code>unknown</code>、具体类型或泛型代替 <code>any</code>。</p>
+        <p><strong>4. 利用结构化类型：</strong>理解 TypeScript 的结构化类型系统，编写更灵活的类型。</p>
+        <p><strong>5. 渐进式迁移：</strong>大型 JavaScript 项目可以逐步迁移到 TypeScript，不需要一次性重写。</p>
+        <p><strong>6. 善用工具类型：</strong>使用 <code>Partial</code>、<code>Pick</code>、<code>Omit</code> 等内置工具类型简化类型定义。</p>
+        <p><strong>7. 类型安全的 API：</strong>使用字面量类型、可辨识联合和 Result 模式设计类型安全的接口。</p>
+    </div>
+
+    <div class="tip">
+        <strong>学习资源推荐：</strong>TypeScript 官方文档（typescriptlang.org）、TypeScript Playground（在线编辑器）、<code>type-challenges</code>（类型体操练习题）。持续练习和阅读优秀的类型定义代码是提高 TypeScript 技能的最佳途径。
+    </div>
+
+</main>
+
+<!-- 侧边栏高亮脚本 -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const links = document.querySelectorAll('.sidebar-link');
+        const sections = [];
+
+        links.forEach(function(link) {
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                const section = document.getElementById(href.substring(1));
+                if (section) sections.push({ el: section, link: link });
+            }
+        });
+
+        function updateActive() {
+            let current = sections[0];
+            for (var i = 0; i < sections.length; i++) {
+                if (sections[i].el.getBoundingClientRect().top <= 100) {
+                    current = sections[i];
+                }
+            }
+            links.forEach(function(l) { l.classList.remove('active'); });
+            if (current) current.link.classList.add('active');
+        }
+
+        window.addEventListener('scroll', updateActive);
+        updateActive();
+    });
+</script>
+
+<script src="../assets/editor.js"></script>
+</body>
+</html>

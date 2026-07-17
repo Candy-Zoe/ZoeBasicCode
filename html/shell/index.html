@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shell/Bash 教程 - ZoeBasicCode</title>
+    <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="header">
+    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+    <a class="header-logo" href="../index.html">ZoeBasicCode <span>Shell/Bash</span></a>
+</header>
+<nav class="sidebar">
+    <div class="sidebar-section">
+        <div class="sidebar-title">入门</div>
+        <a class="sidebar-link" href="#sec1"><span class="num">01</span>简介</a>
+        <a class="sidebar-link" href="#sec2"><span class="num">02</span>环境搭建</a>
+        <a class="sidebar-link" href="#sec3"><span class="num">03</span>基本语法</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">基础</div>
+        <a class="sidebar-link" href="#sec4"><span class="num">04</span>变量</a>
+        <a class="sidebar-link" href="#sec5"><span class="num">05</span>字符串操作</a>
+        <a class="sidebar-link" href="#sec6"><span class="num">06</span>数组</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">流程</div>
+        <a class="sidebar-link" href="#sec7"><span class="num">07</span>条件判断</a>
+        <a class="sidebar-link" href="#sec8"><span class="num">08</span>循环语句</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">函数</div>
+        <a class="sidebar-link" href="#sec9"><span class="num">09</span>函数</a>
+        <a class="sidebar-link" href="#sec10"><span class="num">10</span>返回值</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">文本处理</div>
+        <a class="sidebar-link" href="#sec11"><span class="num">11</span>正则表达式</a>
+        <a class="sidebar-link" href="#sec12"><span class="num">12</span>grep/sed/awk</a>
+        <a class="sidebar-link" href="#sec13"><span class="num">13</span>管道与重定向</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">进阶</div>
+        <a class="sidebar-link" href="#sec14"><span class="num">14</span>进程管理</a>
+        <a class="sidebar-link" href="#sec15"><span class="num">15</span>信号处理</a>
+        <a class="sidebar-link" href="#sec16"><span class="num">16</span>调试技巧</a>
+        <a class="sidebar-link" href="#sec17"><span class="num">17</span>常用工具</a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-title">实战</div>
+        <a class="sidebar-link" href="#sec18"><span class="num">18</span>运维脚本</a>
+        <a class="sidebar-link" href="#sec19"><span class="num">19</span>最佳实践</a>
+    </div>
+</nav>
+<main class="main">
+    <h1>Shell/Bash 教程</h1>
+    <p class="subtitle">从零开始系统学习 Shell/Bash 编程，涵盖语法基础、文本处理、进程管理、信号处理和实战运维脚本。Shell 是 Linux/Unix 系统的核心交互界面，Bash 是最流行的 Shell 实现，掌握 Shell 编程是运维和后端开发的必备技能。</p>
+
+    <!-- ==================== 第1节：简介 ==================== -->
+    <h2 id="sec1">1. Shell/Bash 简介</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Shell 的本质是什么</div>
+        <p>Shell 本质上是一个<strong>命令解释器（Command Interpreter）</strong>，它位于操作系统内核和用户之间，负责将用户输入的命令翻译为内核可以执行的系统调用。当用户在终端输入一条命令时，Shell 会解析命令语法、查找可执行程序、设置运行环境，最终通过 <code>exec</code> 系统调用加载并运行程序。</p>
+        <p><strong>Shell 的执行模型</strong>可以分为三个阶段：<strong>词法分析</strong>（将输入字符串拆分为 token）、<strong>语法分析</strong>（根据语法规则构建命令树）、<strong>执行</strong>（按优先级依次执行命令）。理解这个模型有助于解释很多"奇怪"的 Shell 行为，比如为什么 <code>echo $(echo hello)</code> 会输出 <code>hello</code>——因为 Shell 会先执行内层的命令替换，再执行外层的 echo。</p>
+        <p>Bash（<strong>B</strong>ourne <strong>A</strong>gain <strong>SH</strong>ell）是 GNU 项目对传统 Bourne Shell 的增强实现，1989 年发布第一个版本。它在 POSIX Shell 基础上增加了<strong>命令历史</strong>、<strong>Tab 补全</strong>、<strong>数组</strong>、<strong>算术运算</strong>、<strong>关联数组</strong>等特性。目前大多数 Linux 发行版和 macOS（截止 Catalina）都使用 Bash 作为默认 Shell。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># 查看当前使用的 Shell</span>
+<span class="fn">echo</span> <span class="st">"$SHELL"</span>
+
+<span class="cm"># 查看系统中可用的 Shell</span>
+<span class="fn">cat</span> /etc/shells
+
+<span class="cm"># 查看 Bash 版本</span>
+<span class="fn">bash</span> --version
+
+<span class="cm"># 查看 Bash 的安装路径</span>
+<span class="fn">which</span> bash
+
+<span class="cm"># Shell 的执行流程演示</span>
+<span class="cm"># 1. 用户输入: echo "Hello $NAME"</span>
+<span class="cm"># 2. 词法分析: [echo] ["Hello $NAME"]</span>
+<span class="cm"># 3. 变量展开: [echo] ["Hello World"]  (假设 NAME=World)</span>
+<span class="cm"># 4. 执行 echo 命令输出: Hello World</span>
+
+<span class="cm"># 不同 Shell 的语法差异示例</span>
+<span class="cm"># POSIX sh:  echo ${var:-default}</span>
+<span class="cm"># Bash:      echo ${var,,}     (转小写，Bash 扩展)</span>
+<span class="cm"># Zsh:       echo ${(L)var}    (Zsh 语法)</span></code></pre>
+    </div>
+
+    <div class="tip">编写需要跨平台运行的脚本时，使用 <code>#!/bin/sh</code> 并遵守 POSIX 规范；如果确定只在 Linux 环境运行，可以用 <code>#!/bin/bash</code> 享受更多便利特性。</div>
+
+    <!-- ==================== 第2节：环境搭建 ==================== -->
+    <h2 id="sec2">2. 环境搭建</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Shell 环境配置体系</div>
+        <p>Shell 的环境配置分为<strong>登录 Shell</strong> 和<strong>非登录 Shell</strong>两类，它们加载配置文件的顺序不同。登录 Shell（如通过 SSH 远程登录）会依次读取 <code>/etc/profile</code> → <code>~/.bash_profile</code> → <code>~/.bash_login</code> → <code>~/.profile</code>；非登录 Shell（如打开新的终端窗口）只读取 <code>~/.bashrc</code>。理解这个区别非常重要，否则你会发现某些环境变量在某些场景下"消失"了。</p>
+        <p><strong>PATH 变量</strong>是 Shell 最重要的环境变量之一，它决定了 Shell 在哪些目录中查找可执行文件。当用户输入一条命令（如 <code>ls</code>），Shell 会按 PATH 中目录的顺序依次查找对应的可执行文件。使用 <code>export PATH=$PATH:/new/path</code> 可以向 PATH 追加目录，但要注意<strong>不要覆盖</strong>原有值（不要漏掉 <code>$PATH</code>）。</p>
+        <p><strong>Shell 初始化脚本的执行顺序</strong>：系统启动 → <code>/etc/profile</code>（设置全局变量如 PATH） → <code>~/.bash_profile</code>（用户个人配置） → <code>~/.bashrc</code>（交互式 Shell 的别名、函数）。通常 <code>~/.bash_profile</code> 会主动 source <code>~/.bashrc</code>，以保证登录和非登录 Shell 有统一的配置。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === Windows 安装 Bash ===</span>
+<span class="cm"># 方式一：Git for Windows（推荐，自带 Git Bash）</span>
+<span class="cm"># 下载安装: https://gitforwindows.org/</span>
+<span class="cm"># 安装后可使用 Git Bash 终端</span>
+
+<span class="cm"># 方式二：Windows Subsystem for Linux (WSL)</span>
+<span class="cm"># 在 PowerShell（管理员模式）中执行:</span>
+wsl --install
+<span class="cm"># 重启后从开始菜单启动 Ubuntu</span>
+
+<span class="cm"># 方式三：MSYS2</span>
+<span class="cm"># 下载安装: https://www.msys2.org/</span>
+
+<span class="cm"># === Linux 安装/更新 Bash ===</span>
+<span class="cm"># Debian/Ubuntu</span>
+<span class="fn">sudo</span> <span class="fn">apt</span> update && <span class="fn">sudo</span> <span class="fn">apt</span> install bash
+
+<span class="cm"># CentOS/RHEL</span>
+<span class="fn">sudo</span> <span class="fn">yum</span> install bash
+
+<span class="cm"># macOS（Homebrew，macOS Catalina 之后默认 Shell 改为 zsh）</span>
+<span class="fn">brew</span> install bash
+
+<span class="cm"># === 环境配置文件 ===</span>
+<span class="cm"># ~/.bashrc —— 非登录 Shell 的配置文件</span>
+<span class="cm"># 在这里添加别名、环境变量、自定义函数</span>
+
+<span class="cm"># 编辑 .bashrc</span>
+<span class="fn">nano</span> ~/.bashrc
+
+<span class="cm"># 添加常用配置</span>
+<span class="kw">export</span> EDITOR=vim
+<span class="kw">export</span> PATH=<span class="st">"$HOME/.local/bin:$PATH"</span>
+<span class="kw">alias</span> ll=<span class="st">'ls -la --color=auto'</span>
+<span class="kw">alias</span> gs=<span class="st">'git status'</span>
+
+<span class="cm"># 使配置立即生效</span>
+<span class="fn">source</span> ~/.bashrc
+
+<span class="cm"># === 切换默认 Shell ===</span>
+<span class="cm"># 查看当前 Shell</span>
+<span class="fn">echo</span> <span class="st">$SHELL"</span>
+
+<span class="cm"># 切换为 Bash</span>
+<span class="fn">chsh</span> -s /bin/bash
+
+<span class="cm"># 查看可用 Shell</span>
+<span class="fn">cat</span> /etc/shells</code></pre>
+    </div>
+
+    <div class="warning">macOS Catalina（10.15）起默认 Shell 改为 Zsh。如果想用 Bash，需通过 Homebrew 安装较新版本（Apple 自带的 Bash 仍停留在 3.2 版本，受 GPLv3 许可限制）。</div>
+
+    <!-- ==================== 第3节：基本语法 ==================== -->
+    <h2 id="sec3">3. 基本语法</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Shell 命令的四种类型</div>
+        <p>Shell 中的命令可以分为四种类型：<strong>内建命令</strong>（Built-in，如 <code>cd</code>、<code>export</code>、<code>echo</code>）、<strong>外部命令</strong>（如 <code>ls</code>、<code>grep</code>）、<strong>Shell 函数</strong>（用户自定义的函数）和<strong>Shell 脚本</strong>（包含命令的文件）。内建命令直接在 Shell 进程中执行，速度最快；外部命令需要 fork 一个子进程来执行，会消耗更多资源。</p>
+        <p><strong>命令的执行顺序</strong>：Shell 收到命令后，首先检查是否是内建命令，然后查找 Shell 函数，最后在 PATH 指定的目录中查找外部命令。使用 <code>type</code> 命令可以确定一个命令的类型，比如 <code>type cd</code> 会输出 "cd is a shell builtin"。</p>
+        <p><strong>工作目录与路径</strong>：Shell 有"当前工作目录"的概念，所有相对路径都基于此目录。使用 <code>pwd</code>（Print Working Directory）可以查看当前目录，使用 <code>cd</code>（Change Directory）切换目录。<code>~</code> 代表用户主目录，<code>.</code> 代表当前目录，<code>..</code> 代表父目录。</p>
+        <p><strong>命令的退出状态码</strong>：每个命令执行完毕后都会返回一个退出状态码（Exit Status），0 表示成功，非 0 表示失败。使用 <code>$?</code> 可以获取上一个命令的退出状态码。这在脚本的流程控制中至关重要——<code>if</code> 语句正是根据退出状态码来决定执行哪个分支。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 文件系统操作 ===</span>
+<span class="fn">pwd</span>                         <span class="cm"># 显示当前工作目录</span>
+<span class="fn">ls</span> -la                      <span class="cm"># 列出所有文件（含隐藏文件），详细模式</span>
+<span class="fn">cd</span> /path/to/dir             <span class="cm"># 切换目录</span>
+<span class="fn">cd</span> ..                       <span class="cm"># 返回上级目录</span>
+<span class="fn">cd</span> ~                        <span class="cm"># 回到用户主目录</span>
+<span class="fn">cd</span> -                        <span class="cm"># 回到上一次所在的目录</span>
+<span class="fn">mkdir</span> -p dir1/dir2/dir3     <span class="cm"># 递归创建多级目录</span>
+<span class="fn">touch</span> file.txt              <span class="cm"># 创建空文件或更新时间戳</span>
+<span class="fn">cp</span> -r src/ dest/            <span class="cm"># 递归复制目录</span>
+<span class="fn">mv</span> old.txt new.txt          <span class="cm"># 重命名或移动文件</span>
+<span class="fn">rm</span> -rf dir/                 <span class="cm"># 强制递归删除目录（危险！）</span>
+
+<span class="cm"># === 命令查找与类型判断 ===</span>
+<span class="fn">type</span> ls                     <span class="cm"># ls is /usr/bin/ls (外部命令)</span>
+<span class="fn">type</span> cd                     <span class="cm"># cd is a shell builtin (内建命令)</span>
+<span class="fn">type</span> myfunc                 <span class="cm"># myfunc is a function (Shell 函数)</span>
+<span class="fn">which</span> python3               <span class="cm"># 显示命令的完整路径</span>
+<span class="fn">whereis</span> grep                <span class="cm"># 显示命令的二进制、源码和手册位置</span>
+
+<span class="cm"># === 帮助系统 ===</span>
+<span class="fn">help</span> cd                     <span class="cm"># 内建命令帮助（仅内建命令可用）</span>
+<span class="fn">man</span> ls                      <span class="cm"># 外部命令手册（最详细）</span>
+<span class="fn">info</span> coreutils              <span class="cm"># GNU 文档（格式化更好）</span>
+ls --help                    <span class="cm"># 命令自带的简短帮助</span>
+
+<span class="cm"># === 退出状态码 ===</span>
+<span class="fn">ls</span> /nonexistent             <span class="cm"># 目录不存在，命令失败</span>
+<span class="fn">echo</span> <span class="st">"$?"</span>                   <span class="cm"># 输出退出状态码 2</span>
+<span class="fn">ls</span> /tmp                      <span class="cm"># 成功</span>
+<span class="fn">echo</span> <span class="st">"$?"</span>                   <span class="cm"># 输出退出状态码 0</span>
+
+<span class="cm"># === 行续行与命令分隔 ===</span>
+<span class="cm"># 使用反斜杠换行（续行）</span>
+<span class="fn">echo</span> <span class="st">"这是一个很长的"</span> \
+      <span class="st">"字符串"</span>
+
+<span class="cm"># 使用分号分隔多条命令（依次执行，互不影响）</span>
+<span class="fn">echo</span> <span class="st">"Hello"</span>; <span class="fn">echo</span> <span class="st">"World"</span>
+
+<span class="cm"># 使用 && 连接命令（前一条成功才执行后一条）</span>
+<span class="fn">mkdir</span> mydir && <span class="fn">cd</span> mydir && <span class="fn">touch</span> file.txt
+
+<span class="cm"># 使用 || 连接命令（前一条失败才执行后一条）</span>
+<span class="fn">cd</span> mydir || <span class="fn">echo</span> <span class="st">"目录不存在"</span></code></pre>
+    </div>
+
+    <div class="danger">使用 <code>rm -rf /</code> 会删除系统所有文件，这是最危险的命令之一。在执行删除操作前，务必仔细检查路径，可以先用 <code>echo</code> 或 <code>ls</code> 预览要删除的内容。</div>
+
+    <!-- ==================== 第4节：变量 ==================== -->
+    <h2 id="sec4">4. 变量</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Shell 变量的存储机制</div>
+        <p>Shell 变量本质上是<strong>名称-值的映射关系</strong>，存储在 Shell 进程的内存空间中。与 C/Python 等语言不同，Shell 变量的值<strong>始终以字符串形式存储</strong>，即使你赋值一个数字，Shell 也不会将其转换为数值类型。只有在特定上下文中（如 <code>$(( ))</code> 算术运算、<code>[[ ... -eq ... ]]</code> 数值比较），Shell 才会尝试将字符串解释为数字。</p>
+        <p><strong>局部变量 vs 环境变量</strong>：普通变量只在当前 Shell 进程中可见；使用 <code>export</code> 命令声明的环境变量会被<strong>导出</strong>到子进程中——当 Shell fork 出子进程时，环境变量会被复制到子进程的环境块中。这就是为什么你在终端设置的变量，子进程也能读取。</p>
+        <p><strong>变量的作用域</strong>：Shell 的变量默认是全局的（整个脚本中都可以访问）。使用 <code>local</code> 关键字可以在函数内声明局部变量，其作用域仅限于该函数及其调用的子函数。这是一个非常重要的最佳实践——全局变量容易导致意外的副作用。</p>
+        <p><strong>变量的引用方式</strong>：<code>$var</code>、<code>${var}</code> 和 <code>"$var"</code> 有本质区别。<code>$var</code> 是简单引用，Shell 会对结果进行<strong>词拆分（Word Splitting）</strong>和<strong>通配符展开（Globbing）</strong>；<code>"$var"</code> 用双引号包裹则<strong>只进行变量展开</strong>，不会进行词拆分和通配符展开。这是 Shell 编程中最常见的陷阱来源。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 变量定义 ===</span>
+<span class="cm"># 注意：等号两边不能有空格！</span>
+<span class="kw">name</span>=<span class="st">"Zoe"</span>                <span class="cm"># 字符串变量</span>
+<span class="kw">age</span>=<span class="nm">25</span>                     <span class="cm"># 看似数字，实际仍是字符串</span>
+<span class="kw">greeting</span>=<span class="st">"Hello, $name"</span>     <span class="cm"># 双引号内可以引用其他变量</span>
+<span class="kw">literal</span>=<span class="st">'Hello, $name'</span>      <span class="cm"># 单引号内不做任何展开（原样保留）</span>
+
+<span class="fn">echo</span> <span class="st">"$greeting"</span>            <span class="cm"># 输出: Hello, Zoe</span>
+<span class="fn">echo</span> <span class="st">"$literal"</span>             <span class="cm"># 输出: Hello, $name</span>
+
+<span class="cm"># === 环境变量与局部变量 ===</span>
+<span class="kw">local</span> x=<span class="nm">10</span>                 <span class="cm"># 局部变量（仅在函数内有效）</span>
+<span class="kw">export</span> PATH=<span class="st">"$PATH:/my/bin"</span> <span class="cm"># 环境变量（子进程可继承）</span>
+<span class="kw">export</span> -n MY_VAR            <span class="cm"># 取消导出（变为普通变量）</span>
+
+<span class="cm"># === 变量引用 ===</span>
+<span class="fn">echo</span> <span class="st">"$name"</span>                <span class="cm"># 安全引用（推荐），输出: Zoe</span>
+<span class="fn">echo</span> <span class="st">"${name} is here"</span>      <span class="cm"># 大括号明确变量边界</span>
+
+<span class="cm"># 危险：不加引号的变量引用</span>
+<span class="kw">files</span>=<span class="st">"file1.txt file2.txt"</span>
+<span class="fn">ls</span> $files                   <span class="cm"># 会拆分成 ls file1.txt file2.txt</span>
+<span class="fn">ls</span> <span class="st">"$files"</span>                 <span class="cm"># 会查找名为 "file1.txt file2.txt" 的文件</span>
+<span class="fn">ls</span> <span class="st">"$@"</span>                     <span class="cm"># 正确做法：使用数组展开</span>
+
+<span class="cm"># === 变量长度与截取 ===</span>
+<span class="kw">str</span>=<span class="st">"Hello, World!"</span>
+<span class="fn">echo</span> <span class="st">${#str}</span>                <span class="cm"># 13（字符串长度）</span>
+<span class="fn">echo</span> <span class="st">${str:0:5}</span>             <span class="cm"># Hello（从第0个字符取5个）</span>
+<span class="fn">echo</span> <span class="st">${str:7}</span>               <span class="cm"># World!（从第7个字符到末尾）</span>
+<span class="fn">echo</span> <span class="st">${str#Hello, }</span>         <span class="cm"># World!（从开头删除最短匹配）</span>
+<span class="fn">echo</span> <span class="st">${str##Hello, }</span>        <span class="cm"># World!（从开头删除最长匹配）</span>
+<span class="fn">echo</span> <span class="st">${str/World/Shell}</span>     <span class="cm"># Hello, Shell!（替换第一个匹配）</span>
+
+<span class="cm"># === 变量默认值 ===</span>
+<span class="kw">undefined_var</span>=<span class="st">""</span>
+<span class="fn">echo</span> <span class="st">${undefined_var:-"默认值1"}</span>   <span class="cm"># 空值或未定义时使用默认值</span>
+<span class="fn">echo</span> <span class="st">${undefined_var:="默认值2"}</span>   <span class="cm"># 空值或未定义时赋值并使用</span>
+<span class="fn">echo</span> <span class="st">${undefined_var:+"有值"}</span>      <span class="cm"># 有值时使用替代值</span>
+
+<span class="cm"># === 特殊变量 ===</span>
+<span class="fn">echo</span> <span class="st">"$0"</span>                    <span class="cm"># 脚本名称</span>
+<span class="fn">echo</span> <span class="st">"$1"</span>                    <span class="cm"># 第一个参数</span>
+<span class="fn">echo</span> <span class="st">"$#"</span>                    <span class="cm"># 参数个数</span>
+<span class="fn">echo</span> <span class="st">"$@"</span>                    <span class="cm"># 所有参数（作为独立字符串）</span>
+<span class="fn">echo</span> <span class="st">"$*"</span>                    <span class="cm"># 所有参数（合并为一个字符串）</span>
+<span class="fn">echo</span> <span class="st">"$?"</span>                    <span class="cm"># 上一条命令的退出状态码</span>
+<span class="fn">echo</span> <span class="st">"$$"</span>                    <span class="cm"># 当前 Shell 的进程 ID (PID)</span>
+<span class="fn">echo</span> <span class="st">"$!"</span>                    <span class="cm"># 最近一个后台进程的 PID</span>
+<span class="fn">echo</span> <span class="st">"$RANDOM"</span>                <span class="cm"># 0~32767 之间的随机数</span></code></pre>
+    </div>
+
+    <div class="tip">Shell 编程的第一条黄金法则：<strong>始终用双引号包裹变量引用</strong>（除非你确实需要词拆分）。这样可以避免文件名包含空格时的意外行为。</div>
+
+    <!-- ==================== 第5节：字符串操作 ==================== -->
+    <h2 id="sec5">5. 字符串操作</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：字符串操作的底层原理</div>
+        <p>Bash 的字符串操作全部通过<strong>参数展开（Parameter Expansion）</strong>语法实现，这些操作在 Shell 内部完成，不需要调用外部命令，因此<strong>性能极高</strong>。理解这些操作的含义对于编写高效的 Shell 脚本至关重要。</p>
+        <p><strong>替换操作</strong>：<code>${var/pattern/replacement}</code> 会用正则表达式匹配变量的值并替换。注意这里的 pattern 使用的是 Shell 通配符模式（Glob Pattern），而非正则表达式。模式中的 <code>*</code> 匹配任意字符串，<code>?</code> 匹配单个字符，<code>[...]</code> 匹配字符集。</p>
+        <p><strong>大小写转换</strong>（Bash 4.0+）：<code>${var^^}</code> 转为大写，<code>${var,,}</code> 转为小写，<code>${var^}</code> 首字母大写。这是 Bash 4.0 引入的扩展语法，在旧版本中不可用。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="kw">str</span>=<span class="st">"Hello, World!"</span>
+
+<span class="cm"># === 长度 ===</span>
+<span class="fn">echo</span> <span class="st">${#str}</span>                   <span class="cm"># 13</span>
+
+<span class="cm"># === 子串提取 ===</span>
+<span class="fn">echo</span> <span class="st">${str:0:5}</span>                <span class="cm"># Hello（从位置0取5个字符）</span>
+<span class="fn">echo</span> <span class="st">${str: -6}</span>                <span class="cm"># World!（从末尾取6个字符，注意冒号后有空格）</span>
+
+<span class="cm"># === 子串删除（从头/尾匹配） ===</span>
+<span class="kw">path</span>=<span class="st">"/home/user/docs/file.txt"</span>
+<span class="fn">echo</span> <span class="st">${path#*/}</span>                <span class="cm"># home/user/docs/file.txt（删除最短匹配）</span>
+<span class="fn">echo</span> <span class="st">${path##*/}</span>               <span class="cm"># file.txt（删除最长匹配 = 取文件名）</span>
+<span class="fn">echo</span> <span class="st">${path%/*}</span>                <span class="cm"># /home/user/docs（删除最短后缀匹配）</span>
+<span class="fn">echo</span> <span class="st">${path%%/*}</span>               <span class="cm"># 空（删除最长后缀匹配）</span>
+
+<span class="cm"># 实际用途：提取文件扩展名</span>
+<span class="kw">filename</span>=<span class="st">"archive.tar.gz"</span>
+<span class="fn">echo</span> <span class="st">${filename%.*}</span>            <span class="cm"># archive.tar（去掉最后一个 .）</span>
+<span class="fn">echo</span> <span class="st">${filename%%.*}</span>           <span class="cm"># archive（去掉所有 .）</span>
+<span class="fn">echo</span> <span class="st">${filename##*.}</span>           <span class="cm"># gz（取最后一个 . 后面的部分）</span>
+
+<span class="cm"># === 字符串替换 ===</span>
+<span class="kw">text</span>=<span class="st">"apple banana apple cherry apple"</span>
+<span class="fn">echo</span> <span class="st">${text/apple/orange}</span>       <span class="cm"># orange banana apple cherry apple（替换第一个）</span>
+<span class="fn">echo</span> <span class="st">${text//apple/orange}</span>      <span class="cm"># orange banana orange cherry orange（替换所有）</span>
+<span class="fn">echo</span> <span class="st">${text/#apple/Orange}</span>      <span class="cm"># Orange banana apple cherry apple（仅开头）</span>
+<span class="fn">echo</span> <span class="st">${text/%apple/Orange}</span>      <span class="cm"># apple banana apple cherry Orange（仅结尾）</span>
+
+<span class="cm"># === 大小写转换（Bash 4.0+） ===</span>
+<span class="kw">name</span>=<span class="st">"hello world"</span>
+<span class="fn">echo</span> <span class="st">${name^^}</span>                  <span class="cm"># HELLO WORLD（全部大写）</span>
+<span class="fn">echo</span> <span class="st">${name,,}</span>                  <span class="cm"># hello world（全部小写）</span>
+<span class="fn">echo</span> <span class="st">${name^}</span>                   <span class="cm"># Hello world（首字母大写）</span>
+
+<span class="cm"># === 字符串填充与截断 ===</span>
+<span class="kw">num</span>=<span class="st">"42"</span>
+<span class="fn">echo</span> <span class="st">${num// /0}</span>                <span class="cm"># 042（空格替换为0）</span>
+
+<span class="cm"># 使用 printf 格式化（更强大的方式）</span>
+<span class="fn">printf</span> <span class="st">"%05d\n"</span> <span class="nm">42</span>            <span class="cm"># 00042（零填充到5位）</span>
+<span class="fn">printf</span> <span class="st">"%-10s|\n"</span> <span class="st">"hello"</span>   <span class="cm"># hello      |（左对齐，宽度10）</span>
+
+<span class="cm"># === Here Document（多行字符串） ===</span>
+<span class="fn">cat</span> << <span class="st">'EOF'</span>
+这是一个多行字符串
+变量 <span class="nm">$name</span> 不会被展开（因为用单引号包裹 EOF）
+<span class="st">EOF</span>
+
+<span class="fn">cat</span> << EOF
+这是一个多行字符串
+变量 <span class="nm">$name</span> 会被展开为: <span class="nm">$name</span>
+<span class="st">EOF</span></code></pre>
+    </div>
+
+    <div class="tip"><code>${var##*/}</code> 等价于 <code>basename</code>，<code>${var%/*}</code> 等价于 <code>dirname</code>，但纯参数展开不fork子进程，性能更好。在频繁调用的循环中优先使用参数展开。</div>
+
+    <!-- ==================== 第6节：数组 ==================== -->
+    <h2 id="sec6">6. 数组</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Bash 数组的存储结构</div>
+        <p>Bash 支持<strong>索引数组</strong>（Index Array）和<strong>关联数组</strong>（Associative Array，Bash 4.0+）两种数组。索引数组使用整数索引（从0开始），关联数组使用字符串键。数组的元素可以是任意字符串，且<strong>不同元素可以有不同的"类型"</strong>（因为 Bash 不区分数据类型）。</p>
+        <p><strong>稀疏数组</strong>：Bash 数组是稀疏的——你可以只设置索引 0 和 100 的元素，中间的索引 1~99 是未定义的。这与 C 语言的数组不同。使用 <code>${#arr[@]}</code> 获取的是已设置元素的个数，而不是最大索引。</p>
+        <p><strong>数组的引用方式</strong>：<code>${arr[@]}</code> 展开为所有元素，每个元素是独立的字符串；<code>${arr[*]}</code> 展开为一个字符串，元素之间用第一个字符（通常是空格）分隔。在双引号中使用 <code>"${arr[@]}"</code> 可以保持每个元素的独立性——这是处理含空格文件名的正确方式。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 索引数组 ===</span>
+<span class="cm"># 声明数组（三种方式等价）</span>
+<span class="kw">fruits</span>=(<span class="st">"apple"</span> <span class="st">"banana"</span> <span class="st">"cherry"</span>)
+<span class="kw">fruits</span>[<span class="nm">0</span>]=<span class="st">"apple"</span>
+<span class="kw">fruits</span>[<span class="nm">1</span>]=<span class="st">"banana"</span>
+<span class="kw">fruits</span>[<span class="nm">2</span>]=<span class="st">"cherry"</span>
+
+<span class="cm"># 访问元素</span>
+<span class="fn">echo</span> <span class="st">${fruits[0]}</span>            <span class="cm"># apple</span>
+<span class="fn">echo</span> <span class="st">${fruits[@]}</span>            <span class="cm"># apple banana cherry（所有元素）</span>
+<span class="fn">echo</span> <span class="st">${#fruits[@]}</span>           <span class="cm"># 3（元素个数）</span>
+
+<span class="cm"># 遍历数组</span>
+<span class="kw">for</span> <span class="nm">fruit</span> <span class="kw">in</span> <span class="st">"${fruits[@]}"</span>; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"$fruit"</span>
+<span class="kw">done</span>
+
+<span class="cm"># 数组切片</span>
+<span class="fn">echo</span> <span class="st">${fruits[@]:1:2}</span>       <span class="cm"># banana cherry（从索引1取2个）</span>
+
+<span class="cm"># 添加元素</span>
+<span class="kw">fruits</span>+=(<span class="st">"date"</span> <span class="st">"elderberry"</span>)
+<span class="fn">echo</span> <span class="st">${fruits[@]}</span>            <span class="cm"># apple banana cherry date elderberry</span>
+
+<span class="cm"># 删除元素</span>
+<span class="kw">unset</span> fruits[<span class="nm">1</span>]               <span class="cm"># 删除索引1的元素</span>
+<span class="fn">echo</span> <span class="st">${fruits[@]}</span>            <span class="cm"># apple cherry date elderberry</span>
+
+<span class="cm"># === 关联数组（Bash 4.0+） ===</span>
+<span class="kw">declare</span> -A <span class="kw">person</span>             <span class="cm"># 必须先用 declare -A 声明</span>
+<span class="kw">person</span>[<span class="st">"name"</span>]=<span class="st">"Zoe"</span>
+<span class="kw">person</span>[<span class="st">"age"</span>]=<span class="nm">25</span>
+<span class="kw">person</span>[<span class="st">"city"</span>]=<span class="st">"Beijing"</span>
+
+<span class="fn">echo</span> <span class="st">${person["name"]}</span>      <span class="cm"># Zoe</span>
+<span class="fn">echo</span> <span class="st">${!person[@]}</span>            <span class="cm"># name age city（所有键）</span>
+<span class="fn">echo</span> <span class="st">${person[@]}</span>             <span class="cm"># Zoe 25 Beijing（所有值）</span>
+
+<span class="cm"># 遍历关联数组</span>
+<span class="kw">for</span> <span class="nm">key</span> <span class="kw">in</span> <span class="st">"${!person[@]}"</span>; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"$key = ${person[$key]}"</span>
+<span class="kw">done</span>
+
+<span class="cm"># === 数组的实际应用：文件批量处理 ===</span>
+<span class="kw">files</span>=(<span class="nm">*.txt</span>)                <span class="cm"># glob 展开为数组</span>
+<span class="fn">echo</span> <span class="st">"找到 ${#files[@]} 个文本文件"</span>
+<span class="kw">for</span> <span class="nm">file</span> <span class="kw">in</span> <span class="st">"${files[@]}"</span>; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"$file: $(wc -l < "$file") 行"</span>
+<span class="kw">done</span></code></pre>
+    </div>
+
+    <div class="warning">关联数组必须使用 <code>declare -A</code> 声明。如果直接赋值而不声明，Bash 会将其视为索引数组并尝试使用字符串作为索引，导致不可预期的行为。</div>
+
+    <!-- ==================== 第7节：条件判断 ==================== -->
+    <h2 id="sec7">7. 条件判断</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：[、[[ 和 (( 的区别</div>
+        <p>Shell 中有三种条件判断语法，它们在内部实现上有本质区别：</p>
+        <p><strong><code>[ ... ]</code></strong> 等价于 <code>test</code> 命令，是一个<strong>外部命令</strong>（实际上是 Shell 内建命令），使用 POSIX 标准的条件表达式。它的语法严格且容易出错，比如变量必须加引号（<code>[ -n "$var" ]</code>），否则空变量会导致语法错误。注意 <code>[</code> 和 <code>]</code> 之间必须有空格。</p>
+        <p><strong><code>[[ ... ]]</code></strong> 是 Bash 的<strong>关键字</strong>（不是命令），提供更强大和安全的条件判断。它支持正则匹配（<code>=~</code>）、模式匹配（<code>==</code> 支持通配符）、逻辑运算符（<code>&&</code>、<code>||</code>），最重要的是<strong>变量展开不会进行词拆分和通配符展开</strong>，因此不需要给变量加引号。</p>
+        <p><strong><code>(( ... ))</code></strong> 是 Bash 的<strong>算术上下文</strong>，专门用于数值运算和比较。它支持 C 语言风格的运算符（<code>++</code>、<code>--</code>、<code>+=</code> 等），变量不需要加 <code>$</code> 前缀。退出状态码为 0 表示表达式结果非零（真），非 0 表示结果为零（假）——这与其他命令相反。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === [ ... ] 测试（POSIX 兼容） ===</span>
+<span class="kw">file</span>=<span class="st">"/etc/passwd"</span>
+<span class="kw">name</span>=<span class="st">""</span>
+
+<span class="cm"># 字符串比较</span>
+[ <span class="st">"$name"</span> = <span class="st">""</span> ]         <span class="cm"># 真（字符串相等）</span>
+[ <span class="st">"$name"</span> != <span class="st">"hello"</span> ]   <span class="cm"># 真（字符串不等）</span>
+[ -z <span class="st">"$name"</span> ]           <span class="cm"># 真（字符串为空）</span>
+[ -n <span class="st">"$name"</span> ]           <span class="cm"># 假（字符串非空）</span>
+
+<span class="cm"># 文件测试</span>
+[ -f <span class="st">"$file"</span> ]            <span class="cm"># 真（文件存在且是普通文件）</span>
+[ -d <span class="st">"/tmp"</span> ]            <span class="cm"># 真（目录存在）</span>
+[ -r <span class="st">"$file"</span> ]            <span class="cm"># 真（文件可读）</span>
+[ -w <span class="st">"$file"</span> ]            <span class="cm"># 真（文件可写）</span>
+[ -x <span class="st">"/usr/bin/ls"</span> ]     <span class="cm"># 真（文件可执行）</span>
+[ -s <span class="st">"$file"</span> ]            <span class="cm"># 真（文件非空）</span>
+
+<span class="cm"># 数值比较</span>
+[ <span class="nm">5</span> -eq <span class="nm">5</span> ]              <span class="cm"># 真（等于）</span>
+[ <span class="nm">5</span> -ne <span class="nm">3</span> ]              <span class="cm"># 真（不等于）</span>
+[ <span class="nm">5</span> -gt <span class="nm">3</span> ]              <span class="cm"># 真（大于）</span>
+[ <span class="nm">5</span> -ge <span class="nm">5</span> ]              <span class="cm"># 真（大于等于）</span>
+[ <span class="nm">5</span> -lt <span class="nm">10</span> ]             <span class="cm"># 真（小于）</span>
+[ <span class="nm">5</span> -le <span class="nm">5</span> ]              <span class="cm"># 真（小于等于）</span>
+
+<span class="cm"># === [[ ... ]] 测试（Bash 扩展，更安全） ===</span>
+<span class="cm"># 正则匹配</span>
+<span class="kw">email</span>=<span class="st">"user@example.com"</span>
+[[ <span class="st">"$email"</span> =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{<span class="nm">2</span>}$ ]] && <span class="fn">echo</span> <span class="st">"有效邮箱"</span>
+
+<span class="cm"># 模式匹配</span>
+<span class="kw">filename</span>=<span class="st">"image.png"</span>
+[[ <span class="st">"$filename"</span> == *.png ]] && <span class="fn">echo</span> <span class="st">"PNG 文件"</span>
+[[ <span class="st">"$filename"</span> == *.{png,jpg,gif} ]] && <span class="fn">echo</span> <span class="st">"图片文件"</span>
+
+<span class="cm"># 逻辑组合（不需要 -a 和 -o）</span>
+[[ <span class="nm">5</span> -gt <span class="nm">3</span> && <span class="nm">10</span> -gt <span class="nm">8</span> ]] && <span class="fn">echo</span> <span class="st">"两个条件都满足"</span>
+[[ <span class="nm">5</span> -lt <span class="nm">3</span> || <span class="nm">10</span> -gt <span class="nm">8</span> ]] && <span class="fn">echo</span> <span class="st">"至少一个条件满足"</span>
+
+<span class="cm"># === (( ... )) 算术比较 ===</span>
+<span class="kw">count</span>=<span class="nm">10</span>
+(( count > <span class="nm">5</span> )) && <span class="fn">echo</span> <span class="st">"count 大于 5"</span>
+(( count == <span class="nm">10</span> )) && <span class="fn">echo</span> <span class="st">"count 等于 10"</span>
+(( count++ ))         <span class="cm"># 后置自增</span>
+<span class="fn">echo</span> <span class="st">"$count"</span>        <span class="cm"># 11</span>
+
+<span class="cm"># === if-elif-else ===</span>
+<span class="kw">score</span>=<span class="nm">85</span>
+<span class="kw">if</span> (( score >= <span class="nm">90</span> )); <span class="kw">then</span>
+    <span class="fn">echo</span> <span class="st">"优秀"</span>
+<span class="kw">elif</span> (( score >= <span class="nm">80</span> )); <span class="kw">then</span>
+    <span class="fn">echo</span> <span class="st">"良好"</span>
+<span class="kw">elif</span> (( score >= <span class="nm">60</span> )); <span class="kw">then</span>
+    <span class="fn">echo</span> <span class="st">"及格"</span>
+<span class="kw">else</span>
+    <span class="fn">echo</span> <span class="st">"不及格"</span>
+<span class="kw">fi</span>
+
+<span class="cm"># === case 语句 ===</span>
+<span class="kw">case</span> <span class="st">"$1"</span> <span class="kw">in</span>
+    start|begin)
+        <span class="fn">echo</span> <span class="st">"启动服务"</span>
+        ;;
+    stop|end)
+        <span class="fn">echo</span> <span class="st">"停止服务"</span>
+        ;;
+    restart)
+        <span class="fn">echo</span> <span class="st">"重启服务"</span>
+        ;;
+    *)
+        <span class="fn">echo</span> <span class="st">"用法: $0 {start|stop|restart}"</span>
+        <span class="kw">exit</span> <span class="nm">1</span>
+        ;;
+<span class="kw">esac</span></code></pre>
+    </div>
+
+    <div class="danger">在 <code>[ ... ]</code> 中，如果变量为空，<code>[ $name = "hello" ]</code> 会变成 <code>[ = "hello" ]</code> 导致语法错误。所以使用 <code>[ ... ]</code> 时必须给变量加引号。而 <code>[[ ... ]]</code> 不需要，因为它是关键字不是命令。</div>
+
+    <!-- ==================== 第8节：循环语句 ==================== -->
+    <h2 id="sec8">8. 循环语句</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Shell 循环的执行机制</div>
+        <p>Shell 提供三种循环结构：<code>for</code>、<code>while</code> 和 <code>until</code>。与 C/Python 不同，Shell 的循环有一个重要特性——<strong>循环体在子 Shell 中执行</strong>（对于管道的每一部分）。这意味着在循环体中修改的变量，在循环结束后可能看不到。这个陷阱与"管道"的子 Shell 机制密切相关。</p>
+        <p><strong>for 循环的展开机制</strong>：<code>for i in list</code> 中的 list 在循环开始前就已经完全展开了。如果 list 是一个命令替换（如 <code>$(find ...)</code>），它会在循环开始前一次性执行完毕，然后 Shell 逐个遍历结果。这在处理大量文件时效率很高，但也会消耗大量内存。</p>
+        <p><strong>while 循环与文件读取</strong>：<code>while read line; do ...; done &lt; file</code> 是 Shell 中逐行读取文件的标准模式。<code>read</code> 从标准输入读取一行，去掉末尾的换行符，将内容存入变量。当文件读取完毕时，<code>read</code> 返回非零退出状态码，循环终止。</p>
+        <p><strong>进程替换</strong>：<code>&lt;(command)</code> 和 <code>&gt;(command)</code> 是 Bash 的进程替换语法，它将命令的输出（或输入）包装为一个文件描述符，可以像文件一样使用。这在需要同时比较两个命令的输出时特别有用。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === for 循环 ===</span>
+<span class="cm"># 基本形式</span>
+<span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> <span class="nm">1</span> <span class="nm">2</span> <span class="nm">3</span> <span class="nm">4</span> <span class="nm">5</span>; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"$i"</span>
+<span class="kw">done</span>
+
+<span class="cm"># C 风格 for 循环</span>
+<span class="kw">for</span> (( i=<span class="nm">0</span>; i&lt;<span class="nm">10</span>; i++ )); <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"$i"</span>
+<span class="kw">done</span>
+
+<span class="cm"># 遍历命令输出</span>
+<span class="kw">for</span> <span class="nm">file</span> <span class="kw">in</span> /etc/*.conf; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"$file"</span>
+<span class="kw">done</span>
+
+<span class="cm"># 遍历数组</span>
+<span class="kw">colors</span>=(<span class="st">"red"</span> <span class="st">"green"</span> <span class="st">"blue"</span>)
+<span class="kw">for</span> <span class="nm">color</span> <span class="kw">in</span> <span class="st">"${colors[@]}"</span>; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"$color"</span>
+<span class="kw">done</span>
+
+<span class="cm"># 范围序列（Bash 4.0+）</span>
+<span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> {<span class="nm">1</span>..<span class="nm">100</span>}; <span class="kw">do</span>
+    <span class="fn">printf</span> <span class="st">"%3d "</span> <span class="nm">$i</span>
+<span class="kw">done</span>
+
+<span class="cm"># 带步长的序列</span>
+<span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> {<span class="nm">0</span>..<span class="nm">100</span>..<span class="nm">5</span>}; <span class="kw">do</span>  <span class="cm"># 0, 5, 10, ..., 100</span>
+    <span class="fn">printf</span> <span class="st">"%d "</span> <span class="nm">$i</span>
+<span class="kw">done</span>
+
+<span class="cm"># === while 循环 ===</span>
+<span class="cm"># 基本 while 循环</span>
+<span class="kw">count</span>=<span class="nm">0</span>
+<span class="kw">while</span> (( count &lt; <span class="nm">10</span> )); <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"$count"</span>
+    (( count++ ))
+<span class="kw">done</span>
+
+<span class="cm"># 逐行读取文件</span>
+<span class="kw">while</span> <span class="fn">read</span> -r line; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"读取: $line"</span>
+<span class="kw">done</span> &lt; /etc/passwd
+
+<span class="cm"># 逐行读取并处理（带列分隔）</span>
+<span class="kw">while</span> IFS=: <span class="fn">read</span> -r user _ uid _; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"$user (UID=$uid)"</span>
+<span class="kw">done</span> &lt; /etc/passwd
+
+<span class="cm"># === until 循环（条件为假时执行） ===</span>
+<span class="kw">until</span> ping -c1 google.com &amp;&gt; /dev/null; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"网络不通，等待中..."</span>
+    <span class="fn">sleep</span> <span class="nm">5</span>
+<span class="kw">done</span>
+<span class="fn">echo</span> <span class="st">"网络已通！"</span>
+
+<span class="cm"># === 循环控制 ===</span>
+<span class="cm"># break —— 跳出循环</span>
+<span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> {<span class="nm">1</span>..<span class="nm">100</span>}; <span class="kw">do</span>
+    (( i == <span class="nm">50</span> )) && <span class="kw">break</span>
+    <span class="fn">printf</span> <span class="st">"%d "</span> <span class="nm">$i</span>
+<span class="kw">done</span>
+<span class="fn">echo</span> <span class="cm"># 输出: 1 2 3 ... 49</span>
+
+<span class="cm"># continue —— 跳过当前迭代</span>
+<span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> {<span class="nm">1</span>..<span class="nm">20</span>}; <span class="kw">do</span>
+    (( i % <span class="nm">2</span> == <span class="nm">0</span> )) && <span class="kw">continue</span>  <span class="cm"># 跳过偶数</span>
+    <span class="fn">printf</span> <span class="st">"%d "</span> <span class="nm">$i</span>
+<span class="kw">done</span>
+<span class="fn">echo</span> <span class="cm"># 输出: 1 3 5 7 9 11 13 15 17 19</span>
+
+<span class="cm"># === 进程替换（同时比较两个命令的输出） ===</span>
+<span class="fn">diff</span> &lt;(sort file1.txt) &lt;(sort file2.txt)</code></pre>
+    </div>
+
+    <div class="tip"><code>while IFS=: read -r user _ uid _</code> 中的 <code>-r</code> 参数防止反斜杠被解释为转义字符，<code>IFS=:</code> 设置分隔符为冒号。这是读取结构化文件的标准模式。</div>
+
+    <!-- ==================== 第9节：函数 ==================== -->
+    <h2 id="sec9">9. 函数</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Shell 函数的执行模型</div>
+        <p>Shell 函数与脚本文件中的代码块在执行方式上有本质区别：<strong>函数在当前 Shell 进程中执行</strong>，而<strong>脚本文件通过 source 执行</strong>也在当前进程，但<strong>脚本直接执行</strong>（<code>./script.sh</code>）则会 fork 一个子进程。这就是为什么在函数中设置的变量会影响当前 Shell，而直接执行的脚本中设置的变量不会影响当前 Shell。</p>
+        <p><strong>函数的参数</strong>：Shell 函数没有正式的参数列表，参数通过位置参数（<code>$1</code>、<code>$2</code> 等）传递，与脚本的参数传递机制完全相同。函数可以接收任意数量的参数，没有参数个数检查——这是 Shell 函数的"灵活性"，也是"危险性"的来源。</p>
+        <p><strong>函数的返回值</strong>：Shell 函数有两种"返回"机制：<code>return</code> 命令返回退出状态码（0~255），<code>echo</code> 或其他输出方式返回数据。这是 Shell 与其他语言最大的不同——函数不能直接"返回"一个值，而是通过输出到标准输出来传递结果，调用者使用命令替换 <code>$(function_name)</code> 捕获输出。</p>
+        <p><strong>递归函数</strong>：Shell 支持递归，但性能较差（每次递归调用都会 fork 子进程）。对于简单的递归任务（如目录遍历），递归 Shell 函数是可以接受的；但对于计算密集型递归（如斐波那契数列），应该考虑使用其他语言。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 函数定义（两种语法等价） ===</span>
+<span class="kw">function</span> <span class="fn">greet</span>() {
+    <span class="kw">local</span> name=<span class="st">"$1"</span>           <span class="cm"># local 声明局部变量</span>
+    <span class="fn">echo</span> <span class="st">"Hello, $name!"</span>
+}
+
+<span class="fn">say_hello</span>() {
+    <span class="fn">echo</span> <span class="st">"Hello, $1!"</span>         <span class="cm"># $1 是第一个参数</span>
+}
+
+<span class="cm"># 调用函数</span>
+<span class="fn">greet</span> <span class="st">"World"</span>                 <span class="cm"># 输出: Hello, World!</span>
+<span class="fn">say_hello</span> <span class="st">"Bash"</span>              <span class="cm"># 输出: Hello, Bash!</span>
+
+<span class="cm"># === 函数参数 ===</span>
+<span class="fn">print_info</span>() {
+    <span class="fn">echo</span> <span class="st">"函数名: $0"</span>
+    <span class="fn">echo</span> <span class="st">"参数个数: $#"</span>
+    <span class="fn">echo</span> <span class="st">"所有参数: $@"</span>
+    <span class="fn">echo</span> <span class="st">"第一个参数: $1"</span>
+    <span class="fn">echo</span> <span class="st">"第二个参数: $2"</span>
+}
+
+<span class="fn">print_info</span> <span class="st">"hello"</span> <span class="st">"world"</span>
+
+<span class="cm"># === 函数返回值 ===</span>
+<span class="cm"># 方式一：通过 echo 返回（推荐）</span>
+<span class="fn">add</span>() {
+    <span class="kw">local</span> result=$(( <span class="nm">$1</span> + <span class="nm">$2</span> ))
+    <span class="fn">echo</span> <span class="st">"$result"</span>             <span class="cm"># 通过输出传递结果</span>
+}
+
+<span class="kw">sum</span>=$(<span class="fn">add</span> <span class="nm">3</span> <span class="nm">5</span>)
+<span class="fn">echo</span> <span class="st">"3 + 5 = $sum"</span>         <span class="cm"># 3 + 5 = 8</span>
+
+<span class="cm"># 方式二：通过 return 返回退出状态码（0~255）</span>
+<span class="fn">is_valid</span>() {
+    <span class="kw">if</span> [[ <span class="st">"$1"</span> =~ ^[0-9]+$ ]]; <span class="kw">then</span>
+        <span class="kw">return</span> <span class="nm">0</span>                <span class="cm"># 0 表示真（成功）</span>
+    <span class="kw">else</span>
+        <span class="kw">return</span> <span class="nm">1</span>                <span class="cm"># 非 0 表示假（失败）</span>
+    <span class="kw">fi</span>
+}
+
+<span class="kw">if</span> <span class="fn">is_valid</span> <span class="st">"123"</span>; <span class="kw">then</span>
+    <span class="fn">echo</span> <span class="st">"是有效数字"</span>
+<span class="kw">else</span>
+    <span class="fn">echo</span> <span class="st">"不是有效数字"</span>
+<span class="kw">fi</span>
+
+<span class="cm"># 方式三：通过全局变量传递（不推荐）</span>
+<span class="fn">compute</span>() {
+    RESULT=<span class="nm">$((</span> <span class="nm">$1</span> * <span class="nm">$2</span> <span class="nm">))</span>       <span class="cm"># 全局变量</span>
+}
+<span class="fn">compute</span> <span class="nm">4</span> <span class="nm">5</span>
+<span class="fn">echo</span> <span class="st">"$RESULT"</span>                <span class="cm"># 20</span>
+
+<span class="cm"># === 递归函数 ===</span>
+<span class="fn">factorial</span>() {
+    <span class="kw">local</span> n=<span class="nm">$1</span>
+    <span class="kw">if</span> (( n &lt;= <span class="nm">1</span> )); <span class="kw">then</span>
+        <span class="fn">echo</span> <span class="nm">1</span>
+    <span class="kw">else</span>
+        <span class="kw">local</span> prev=$(<span class="fn">factorial</span> <span class="nm">$((n-1))</span>)
+        <span class="fn">echo</span> <span class="nm">$((n * prev))</span>
+    <span class="kw">fi</span>
+}
+
+<span class="fn">echo</span> <span class="st">"5! = $(factorial 5)"</span>    <span class="cm"># 5! = 120</span>
+
+<span class="cm"># === 高阶用法：作为参数传递函数名 ===</span>
+<span class="fn">map</span>() {
+    <span class="kw">local</span> func=<span class="nm">$1</span>
+    <span class="kw">shift</span>
+    <span class="kw">for</span> <span class="nm">item</span> <span class="kw">in</span> <span class="st">"$@"</span>; <span class="kw">do</span>
+        <span class="fn">$func</span> <span class="st">"$item"</span>
+    <span class="kw">done</span>
+}
+
+<span class="fn">double</span>() { <span class="fn">echo</span> <span class="nm">$((</span> <span class="nm">$1</span> * <span class="nm">2</span> <span class="nm">))</span>; }
+<span class="fn">map</span> double <span class="nm">1</span> <span class="nm">2</span> <span class="nm">3</span> <span class="nm">4</span>         <span class="cm"># 输出: 2 4 6 8</span></code></pre>
+    </div>
+
+    <div class="tip">在函数内部始终使用 <code>local</code> 声明变量。这可以防止变量泄漏到全局作用域，是编写可靠 Shell 脚本的关键习惯。</div>
+
+    <!-- ==================== 第10节：返回值 ==================== -->
+    <h2 id="sec10">10. 返回值</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Shell 返回值的两种机制</div>
+        <p>Shell 的"返回值"实际上有两种含义，初学者常常混淆：<strong>退出状态码</strong>（Exit Status）和<strong>函数输出</strong>（Function Output）。退出状态码只能是 0~255 的整数，通过 <code>return</code> 命令设置，可以使用 <code>$?</code> 获取。函数输出则是通过 <code>echo</code> 打印到标准输出的内容，通过命令替换 <code>$(function)</code> 捕获。</p>
+        <p><strong>管道的返回值陷阱</strong>：管道 <code>cmd1 | cmd2</code> 的退出状态码是<strong>最后一个命令</strong>（<code>cmd2</code>）的退出状态码，而非所有命令的组合。这意味着即使 <code>cmd1</code> 失败了，只要 <code>cmd2</code> 成功，整个管道的退出状态码就是 0。使用 <code>set -o pipefail</code> 可以改变这个行为，使管道的退出状态码为<strong>最后一个失败命令</strong>的退出状态码。</p>
+        <p><strong>错误处理模式</strong>：在脚本开头添加 <code>set -euo pipefail</code> 是业界推荐的最佳实践。<code>-e</code> 使脚本在任何命令失败时立即退出；<code>-u</code> 使未定义变量报错；<code>-o pipefail</code> 确保管道中任何命令失败都会导致整个管道失败。这可以避免大量隐蔽的 bug。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 退出状态码 ===</span>
+<span class="fn">ls</span> /tmp                      <span class="cm"># 成功</span>
+<span class="fn">echo</span> <span class="st">"$?"</span>                   <span class="cm"># 0</span>
+
+<span class="fn">ls</span> /nonexistent              <span class="cm"># 失败</span>
+<span class="fn">echo</span> <span class="st">"$?"</span>                   <span class="cm"># 2</span>
+
+<span class="cm"># === 函数返回值的三种方式 ===</span>
+
+<span class="cm"># 方式一：echo + 命令替换（最灵活，推荐）</span>
+<span class="fn">get_max</span>() {
+    <span class="kw">local</span> a=<span class="nm">$1</span> b=<span class="nm">$2</span>
+    <span class="kw">if</span> (( a > b )); <span class="kw">then</span>
+        <span class="fn">echo</span> <span class="nm">$a</span>
+    <span class="kw">else</span>
+        <span class="fn">echo</span> <span class="nm">$b</span>
+    <span class="kw">fi</span>
+}
+
+<span class="kw">max</span>=$(<span class="fn">get_max</span> <span class="nm">10</span> <span class="nm">20</span>)
+<span class="fn">echo</span> <span class="st">"最大值: $max"</span>          <span class="cm"># 最大值: 20</span>
+
+<span class="cm"># 方式二：通过 nameref（Bash 4.3+，推荐）</span>
+<span class="fn">set_max</span>() {
+    <span class="kw">local</span> -n result_ref=<span class="nm">$1</span>    <span class="cm"># nameref：引用变量</span>
+    <span class="kw">local</span> a=<span class="nm">$2</span> b=<span class="nm">$3</span>
+    <span class="kw">if</span> (( a > b )); <span class="kw">then</span>
+        result_ref=<span class="nm">$a</span>
+    <span class="kw">else</span>
+        result_ref=<span class="nm">$b</span>
+    <span class="kw">fi</span>
+}
+
+<span class="kw">my_max</span>=<span class="nm">0</span>
+<span class="fn">set_max</span> my_max <span class="nm">10</span> <span class="nm">20</span>
+<span class="fn">echo</span> <span class="st">"最大值: $my_max"</span>       <span class="cm"># 最大值: 20</span>
+
+<span class="cm"># 方式三：return 退出状态码（仅限 0~255）</span>
+<span class="fn">is_even</span>() {
+    (( <span class="nm">$1</span> % <span class="nm">2</span> == <span class="nm">0</span> ))
+}
+
+<span class="kw">if</span> <span class="fn">is_even</span> <span class="nm">42</span>; <span class="kw">then</span>
+    <span class="fn">echo</span> <span class="st">"42 是偶数"</span>
+<span class="kw">fi</span>
+
+<span class="cm"># === 管道与错误处理 ===</span>
+<span class="cm"># 默认情况下，管道返回最后一个命令的退出状态码</span>
+<span class="fn">echo</span> <span class="st">"hello"</span> | <span class="fn">grep</span> <span class="st">"world"</span>   <span class="cm"># grep 失败，退出状态码 1</span>
+<span class="fn">echo</span> <span class="st">"$?"</span>                     <span class="cm"># 1</span>
+
+<span class="cm"># set -o pipefail：管道中任何命令失败都会导致失败</span>
+<span class="kw">set</span> -o pipefail
+<span class="fn">echo</span> <span class="st">"hello"</span> | <span class="fn">grep</span> <span class="st">"hello"</span> | <span class="fn">wc</span> -l
+<span class="fn">echo</span> <span class="st">"$?"</span>                     <span class="cm"># 管道中所有命令都成功才返回 0</span>
+
+<span class="cm"># === 脚本级错误处理（推荐在脚本开头添加） ===</span>
+<span class="kw">set</span> -euo pipefail
+<span class="cm"># -e: 任何命令失败立即退出</span>
+<span class="cm"># -u: 使用未定义变量时报错</span>
+<span class="cm"># -o pipefail: 管道中任何命令失败都返回失败</span>
+
+<span class="cm"># trap 捕获错误</span>
+<span class="fn">trap</span> <span class="st">'echo "脚本在第 $LINENO 行出错"; exit 1'</span> ERR
+
+<span class="cm"># === 调试输出 ===</span>
+<span class="cm"># 使用 set -x 开启调试模式（打印每条命令及其展开结果）</span>
+<span class="kw">set</span> -x
+<span class="kw">name</span>=<span class="st">"Zoe"</span>
+<span class="fn">echo</span> <span class="st">"$name"</span>
+<span class="kw">set</span> +x                      <span class="cm"># 关闭调试模式</span></code></pre>
+    </div>
+
+    <div class="warning">使用 <code>set -e</code> 时要注意：<code>if</code> 语句中的命令失败不会触发退出，因为 <code>if</code> 本身就会处理失败情况。但 <code>||</code> 和 <code>&&</code> 也不会触发退出。</div>
+
+    <!-- ==================== 第11节：正则表达式 ==================== -->
+    <h2 id="sec11">11. 正则表达式</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Shell 正则的两大流派</div>
+        <p>Shell 中使用正则表达式有两个主要场景，它们使用<strong>不同类型的正则</strong>：<code>[[ ... =~ ... ]]</code> 使用 <strong>ERE（扩展正则表达式）</strong>，而 <code>grep -E</code> 和 <code>sed -E</code> 也使用 ERE。早期的 <code>grep</code>（不加 <code>-E</code>）和 <code>sed</code> 使用 <strong>BRE（基本正则表达式）</strong>，语法与 ERE 略有不同——BRE 中 <code>(</code>、<code>)</code>、<code>+</code>、<code>?</code>、<code>|</code> 需要用反斜杠转义（<code>\(</code>、<code>\)</code>、<code>\+</code> 等），而 ERE 中直接使用即可。</p>
+        <p><strong>正则 vs 通配符</strong>：Shell 的参数展开（如 <code>${var/pattern/replacement}</code>）和 <code>[[ ... == pattern ]]</code> 使用的是<strong>通配符模式（Glob Pattern）</strong>，与正则表达式不同。通配符中 <code>*</code> 匹配任意字符串，<code>?</code> 匹配单个字符，而正则中 <code>*</code> 表示"前一个字符出现 0 次或多次"，<code>.</code> 表示"任意单个字符"。这是最常见的混淆来源。</p>
+        <p><strong>正则表达式的贪婪匹配</strong>：ERE 默认是贪婪的（Greedy），即尽可能多地匹配。例如 <code>.*</code> 会匹配到行末（尽可能多的字符）。使用 <code>?</code> 可以使其变为非贪婪：.*? 匹配尽可能少的字符。但在 Bash 的 <code>[[ =~ ]]</code> 中，非贪婪匹配的语法可能不被支持，需要使用外部工具（如 <code>grep -P</code>）。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 在 [[ =~ ]] 中使用正则（ERE） ===</span>
+<span class="kw">email</span>=<span class="st">"user@example.com"</span>
+
+<span class="cm"># 验证邮箱格式</span>
+[[ <span class="st">"$email"</span> =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{<span class="nm">2</span>}$ ]] && <span class="fn">echo</span> <span class="st">"有效"</span>
+
+<span class="cm"># 提取匹配结果（使用 BASH_REMATCH）</span>
+<span class="kw">date_str</span>=<span class="st">"2024-01-15"</span>
+[[ <span class="st">"$date_str"</span> =~ ^([<span class="nm">0-9]</span>{<span class="nm">4</span>})-([<span class="nm">0-9]</span>{<span class="nm">2</span>})-([<span class="nm">0-9]</span>{<span class="nm">2</span>})$ ]]
+<span class="kw">if</span> [[ $? -eq <span class="nm">0</span> ]]; <span class="kw">then</span>
+    <span class="fn">echo</span> <span class="st">"年: ${BASH_REMATCH[1]}"</span>    <span class="cm"># 2024</span>
+    <span class="fn">echo</span> <span class="st">"月: ${BASH_REMATCH[2]}"</span>    <span class="cm"># 01</span>
+    <span class="fn">echo</span> <span class="st">"日: ${BASH_REMATCH[3]}"</span>    <span class="cm"># 15</span>
+<span class="kw">fi</span>
+
+<span class="cm"># === 常用正则模式 ===</span>
+<span class="cm"># ^     行首</span>
+<span class="cm"># $     行尾</span>
+<span class="cm"># .     任意单个字符</span>
+<span class="cm"># *     前一个字符出现 0 次或多次</span>
+<span class="cm"># +     前一个字符出现 1 次或多次</span>
+<span class="cm"># ?     前一个字符出现 0 次或 1 次</span>
+<span class="cm"># {n}   前一个字符恰好出现 n 次</span>
+<span class="cm"># {n,m} 前一个字符出现 n 到 m 次</span>
+<span class="cm"># [...] 字符集</span>
+<span class="cm"># [^...] 排除字符集</span>
+<span class="cm"># (...) 分组</span>
+<span class="cm"># |     或</span>
+<span class="cm"># \b    单词边界</span>
+
+<span class="cm"># === grep 中的正则 ===</span>
+<span class="cm"># 基本正则（BRE，grep 默认）</span>
+<span class="fn">grep</span> <span class="st">'hello world'</span> file.txt
+<span class="fn">grep</span> <span class="st">'^[A-Z]'</span> file.txt          <span class="cm"># 以大写字母开头</span>
+<span class="fn">grep</span> <span class="st">'[0-9]\{3\}'</span> file.txt      <span class="cm"># 连续 3 个数字（BRE）</span>
+
+<span class="cm"># 扩展正则（ERE，-E 或 egrep）</span>
+<span class="fn">grep</span> -E <span class="st">'[0-9]{3}'</span> file.txt      <span class="cm"># 连续 3 个数字（ERE）</span>
+<span class="fn">grep</span> -E <span class="st">'cat|dog'</span> file.txt       <span class="cm"># 匹配 cat 或 dog</span>
+<span class="fn">grep</span> -E <span class="st">'(go)+le'</span> file.txt       <span class="cm"># google, goggle, ...</span>
+
+<span class="cm"># Perl 正则（-P，功能最强大）</span>
+<span class="fn">grep</span> -P <span class="st">'\d{3}-\d{4}'</span> file.txt   <span class="cm"># 匹配电话号码格式</span>
+<span class="fn">grep</span> -Po <span class="st">'(?&lt;=name=)[^&]*'</span> url  <span class="cm"># 正向后顾</span>
+
+<span class="cm"># === 实用正则示例 ===</span>
+<span class="cm"># 匹配 IP 地址</span>
+<span class="fn">grep</span> -E <span class="st">'\b([0-9]{1,3}\.){3}[0-9]{1,3}\b'</span> file.txt
+
+<span class="cm"># 匹配日期格式 (YYYY-MM-DD)</span>
+<span class="fn">grep</span> -E <span class="st">'[0-9]{4}-[0-9]{2}-[0-9]{2}'</span> file.txt
+
+<span class="cm"># 匹配 URL</span>
+<span class="fn">grep</span> -E <span class="st">'https?://[a-zA-Z0-9./?=&_-]+'</span> file.txt
+
+<span class="cm"># 在 [[ =~ ]] 中提取日期</span>
+<span class="kw">input</span>=<span class="st">"日期是 2024-01-15，明天是 2024-01-16"</span>
+<span class="kw">while</span> [[ <span class="nm">$input</span> =~ ([<span class="nm">0-9]</span>{<span class="nm">4</span>})-([<span class="nm">0-9]</span>{<span class="nm">2</span>})-([<span class="nm">0-9]</span>{<span class="nm">2</span>}) ]]; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"找到日期: ${BASH_REMATCH[0]}"</span>
+    input=<span class="st">"${input#*${BASH_REMATCH[0]}}"</span>
+<span class="kw">done</span></code></pre>
+    </div>
+
+    <div class="tip">在 <code>[[ =~ ]]</code> 中，正则表达式不需要引号包裹（如果加了引号，会被当作字面字符串）。但变量中的正则表达式需要引号，如 <code>[[ "$var" =~ "$regex" ]]</code>。</div>
+
+    <!-- ==================== 第12节：grep/sed/awk ==================== -->
+    <h2 id="sec12">12. grep/sed/awk</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：文本处理三剑客的设计哲学</div>
+        <p><strong>grep</strong>、<strong>sed</strong> 和 <strong>awk</strong> 被称为 Unix/Linux 的"文本处理三剑客"，它们各自有不同的设计哲学：</p>
+        <p><strong>grep</strong>（Global Regular Expression Print）是最简单的工具，它的职责是<strong>搜索并打印匹配的行</strong>。grep 采用"行过滤"模型：读入一行 → 判断是否匹配 → 匹配则打印。它不做修改，不做复杂的文本分析，只做搜索。</p>
+        <p><strong>sed</strong>（Stream Editor）是<strong>流编辑器</strong>，它的职责是<strong>对每一行执行编辑操作</strong>。sed 采用"行编辑"模型：读入一行 → 按顺序执行编辑命令 → 输出处理后的行。sed 的核心操作是替换（<code>s/old/new/</code>），但它也支持删除、插入、追加等操作。</p>
+        <p><strong>awk</strong> 是最强大的文本处理工具，它的职责是<strong>按字段和记录处理结构化文本</strong>。awk 采用"模式-动作"模型：将每一行拆分为字段（默认按空格分隔），然后对匹配模式的行执行动作。awk 本质上是一门完整的编程语言，支持变量、数组、函数、循环和条件判断。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === grep：行过滤工具 ===</span>
+<span class="cm"># 基本搜索</span>
+<span class="fn">grep</span> <span class="st">"error"</span> logfile.txt                <span class="cm"># 搜索包含 "error" 的行</span>
+<span class="fn">grep</span> -i <span class="st">"error"</span> logfile.txt             <span class="cm"># 忽略大小写</span>
+<span class="fn">grep</span> -r <span class="st">"TODO"</span> ./src/                    <span class="cm"># 递归搜索目录</span>
+<span class="fn">grep</span> -n <span class="st">"function"</span> script.sh             <span class="cm"># 显示行号</span>
+<span class="fn">grep</span> -c <span class="st">"error"</span> logfile.txt             <span class="cm"># 统计匹配行数</span>
+<span class="fn">grep</span> -l <span class="st">"pattern"</span> *.txt                  <span class="cm"># 只显示文件名</span>
+<span class="fn">grep</span> -v <span class="st">"debug"</span> logfile.txt             <span class="cm"># 反向匹配（排除）</span>
+<span class="fn">grep</span> -A <span class="nm">3</span> <span class="st">"error"</span> logfile.txt           <span class="cm"># 显示匹配行后3行</span>
+<span class="fn">grep</span> -B <span class="nm">2</span> <span class="st">"error"</span> logfile.txt           <span class="cm"># 显示匹配行前2行</span>
+<span class="fn">grep</span> -E <span class="st">'err|warn|crit'</span> logfile.txt     <span class="cm"># 扩展正则（多个模式）</span>
+<span class="fn">grep</span> -w <span class="st">"is"</span> file.txt                   <span class="cm"># 全词匹配</span>
+
+<span class="cm"># === sed：流编辑器 ===</span>
+<span class="cm"># 替换（s 命令）</span>
+<span class="fn">sed</span> <span class="st">'s/old/new/'</span> file.txt              <span class="cm"># 替换每行第一个匹配</span>
+<span class="fn">sed</span> <span class="st">'s/old/new/g'</span> file.txt             <span class="cm"># 替换所有匹配（全局）</span>
+<span class="fn">sed</span> -i <span class="st">'s/old/new/g'</span> file.txt          <span class="cm"># 原地修改文件（危险！先备份）</span>
+<span class="fn">sed</span> -i.bak <span class="st">'s/old/new/g'</span> file.txt      <span class="cm"># 原地修改并创建 .bak 备份</span>
+
+<span class="cm"># 删除行</span>
+<span class="fn">sed</span> <span class="st">'/pattern/d'</span> file.txt              <span class="cm"># 删除匹配的行</span>
+<span class="fn">sed</span> <span class="st">'3d'</span> file.txt                       <span class="cm"># 删除第3行</span>
+<span class="fn">sed</span> <span class="st">'2,5d'</span> file.txt                    <span class="cm"># 删除第2到5行</span>
+<span class="fn">sed</span> <span class="st">'$d'</span> file.txt                       <span class="cm"># 删除最后一行</span>
+
+<span class="cm"># 插入和追加</span>
+<span class="fn">sed</span> <span class="st">'3i\新插入的行'</span> file.txt            <span class="cm"># 在第3行前插入</span>
+<span class="fn">sed</span> <span class="st">'3a\新追加的行'</span> file.txt            <span class="cm"># 在第3行后追加</span>
+
+<span class="cm"># 提取指定范围</span>
+<span class="fn">sed</span> -n <span class="st">'5,10p'</span> file.txt                <span class="cm"># 打印第5到10行</span>
+<span class="fn">sed</span> -n <span class="st">'/^begin/,/^end/p'</span> file.txt     <span class="cm"># 打印两个模式之间的内容</span>
+
+<span class="cm"># === awk：结构化文本处理 ===</span>
+<span class="cm"># 基本结构：awk 'pattern { action }' file</span>
+
+<span class="cm"># 打印特定字段</span>
+<span class="fn">awk</span> <span class="st">'{ print $1, $3 }'</span> file.txt        <span class="cm"># 打印第1和第3个字段</span>
+<span class="fn">awk</span> <span class="st">'{ print NR, $0 }'</span> file.txt       <span class="cm"># 打印行号和整行</span>
+
+<span class="cm"># 条件过滤</span>
+<span class="fn">awk</span> <span class="st">'$3 > 100 { print $1, $3 }'</span> file.txt   <span class="cm"># 第3字段大于100的行</span>
+<span class="fn">awk</span> <span class="st">'/error/ { print NR, $0 }'</span> logfile.txt  <span class="cm"># 包含 error 的行</span>
+
+<span class="cm"># 内置变量</span>
+<span class="cm"># NR  当前行号</span>
+<span class="cm"># NF  当前行的字段数</span>
+<span class="cm"># $0  整行内容</span>
+<span class="cm"># $1..$n  第n个字段</span>
+<span class="cm"># FS  输入字段分隔符（默认空格）</span>
+<span class="cm"># OFS 输出字段分隔符</span>
+<span class="cm"># RS  输入记录分隔符（默认换行）</span>
+
+<span class="cm"># 处理 /etc/passwd</span>
+<span class="fn">awk</span> -F: <span class="st">'{ print $1, "UID="$3 }'</span> /etc/passwd
+
+<span class="cm"># 统计功能</span>
+<span class="fn">awk</span> <span class="st">'{ sum += $1 } END { print "Total:", sum }'</span> numbers.txt
+<span class="fn">awk</span> <span class="st">'{ count++ } END { print "Lines:", count }'</span> file.txt
+
+<span class="cm"># 格式化输出</span>
+<span class="fn">awk</span> <span class="st">'{ printf "%-20s %10d\n", $1, $2 }'</span> data.txt
+
+<span class="cm"># === 组合使用（管道链） ===</span>
+<span class="cm"># 查找最大的日志文件</span>
+<span class="fn">ls</span> -lS /var/log/ | <span class="fn">head</span> -<span class="nm">5</span>
+
+<span class="cm"># 统计访问次数最多的 IP</span>
+<span class="fn">awk</span> <span class="st">'{ print $1 }'</span> access.log | <span class="fn">sort</span> | <span class="fn">uniq</span> -c | <span class="fn">sort</span> -rn | <span class="fn">head</span> -<span class="nm">10</span>
+
+<span class="cm"># 分析日志中的错误</span>
+<span class="fn">grep</span> -E <span class="st">'error|Error|ERROR'</span> app.log | <span class="fn">awk</span> <span class="st">'{ print $1, $2 }'</span> | <span class="fn">sort</span> | <span class="fn">uniq</span> -c</code></pre>
+    </div>
+
+    <div class="warning">使用 <code>sed -i</code> 或 <code>awk</code> 重定向时，务必先在小文件或复制的文件上测试。原地修改可能导致数据丢失。</div>
+
+    <!-- ==================== 第13节：管道与重定向 ==================== -->
+    <h2 id="sec13">13. 管道与重定向</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：文件描述符与管道机制</div>
+        <p>在 Unix/Linux 中，<strong>"一切皆文件"</strong>是核心设计哲学。每个进程默认打开三个<strong>文件描述符（File Descriptor）</strong>：<strong>0</strong>（stdin，标准输入）、<strong>1</strong>（stdout，标准输出）和 <strong>2</strong>（stderr，标准错误）。所有 I/O 操作都通过文件描述符完成，重定向就是改变这些描述符的指向。</p>
+        <p><strong>管道（Pipe）</strong>的实现机制：当执行 <code>cmd1 | cmd2</code> 时，Shell 会创建一个<strong>内核管道</strong>（一个内核缓冲区），然后 fork 出两个子进程——<code>cmd1</code> 的 stdout 连接到管道的写端，<code>cmd2</code> 的 stdin 连接到管道的读端。数据从 cmd1 流向 cmd2，就像一条数据流水线。</p>
+        <p><strong>管道的子 Shell 问题</strong>：管道中的每个命令都在独立的子进程中运行（最后一个命令可能在当前 Shell 中运行）。这意味着在管道中修改的变量或执行的 cd 命令不会影响当前 Shell。解决方案是使用<strong>进程替换</strong> <code>&lt;(cmd)</code> 或 <strong>lastpipe</strong> 选项（<code>shopt -s lastpipe</code>，Bash 4.2+）。</p>
+        <p><strong>文件描述符的高级用法</strong>：可以使用 <code>exec</code> 命令创建自定义文件描述符（3~9），用于在脚本中存储中间状态。例如 <code>exec 3&gt;file.txt</code> 创建描述符 3 指向 file.txt，之后可以用 <code>echo "data" &gt;&amp;3</code> 写入，最后用 <code>exec 3&gt;&amp;-</code> 关闭。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 输出重定向 ===</span>
+<span class="fn">echo</span> <span class="st">"hello"</span> > file.txt         <span class="cm"># 覆盖写入（stdout → 文件）</span>
+<span class="fn">echo</span> <span class="st">"world"</span> >> file.txt        <span class="cm"># 追加写入</span>
+<span class="fn">echo</span> <span class="st">"error"</span> > /dev/null        <span class="cm"># 丢弃输出（/dev/null 是黑洞设备）</span>
+
+<span class="cm"># === 错误重定向 ===</span>
+<span class="fn">ls</span> /nonexistent 2> error.log     <span class="cm"># stderr 重定向到文件</span>
+<span class="fn">ls</span> /nonexistent 2> /dev/null     <span class="cm"># 丢弃错误输出</span>
+<span class="fn">ls</span> /nonexistent 2>&amp;1            <span class="cm"># stderr 重定向到 stdout</span>
+<span class="fn">ls</span> /tmp > output.log 2>&amp;1       <span class="cm"># stdout 和 stderr 都重定向到文件</span>
+<span class="fn">ls</span> /tmp &amp;> output.log           <span class="cm"># Bash 简写（等价于上面）</span>
+
+<span class="cm"># === 输入重定向 ===</span>
+<span class="fn">wc</span> -l < file.txt                 <span class="cm"># file.txt 作为 wc 的输入</span>
+<span class="fn">sort</span> < file.txt                  <span class="cm"># 对文件内容排序</span>
+
+<span class="cm"># === Here Document ===</span>
+<span class="fn">cat</span> << <span class="st">'EOF'</span>
+这是一个多行文本
+变量 <span class="nm">$HOME</span> 不会被展开
+<span class="st">EOF</span>
+
+<span class="fn">cat</span> << EOF
+变量 <span class="nm">$HOME</span> 会被展开为: <span class="nm">$HOME</span>
+<span class="st">EOF</span>
+
+<span class="cm"># Here String（单行）</span>
+<span class="fn">grep</span> <span class="st">"pattern"</span> <<< <span class="st">"要搜索的文本"</span>
+
+<span class="cm"># === 管道 ===</span>
+<span class="cm"># 管道将前一个命令的 stdout 连接到后一个命令的 stdin</span>
+<span class="fn">cat</span> /etc/passwd | <span class="fn">grep</span> <span class="st">"root"</span> | <span class="fn">cut</span> -d: -f1,3
+<span class="cm"># 输出: root:0</span>
+
+<span class="cm"># 管道中的子 Shell 问题</span>
+<span class="cm"># 错误示例：变量修改不会保留</span>
+<span class="kw">count</span>=<span class="nm">0</span>
+<span class="fn">echo</span> -e <span class="st">"a\nb\nc"</span> | <span class="kw">while</span> <span class="fn">read</span> line; <span class="kw">do</span>
+    (( count++ ))    <span class="cm"># 这个 count 是子 Shell 中的！</span>
+<span class="kw">done</span>
+<span class="fn">echo</span> <span class="st">"$count"</span>      <span class="cm"># 仍然是 0</span>
+
+<span class="cm"># 正确示例：使用进程替换</span>
+<span class="kw">count</span>=<span class="nm">0</span>
+<span class="kw">while</span> <span class="fn">read</span> line; <span class="kw">do</span>
+    (( count++ ))
+<span class="kw">done</span> < &lt;(<span class="fn">echo</span> -e <span class="st">"a\nb\nc"</span>)
+<span class="fn">echo</span> <span class="st">"$count"</span>      <span class="cm"># 3</span>
+
+<span class="cm"># === 文件描述符操作 ===</span>
+<span class="cm"># 打开文件描述符进行读写</span>
+<span class="kw">exec</span> <span class="nm">3</span>> output.log        <span class="cm"># 描述符 3 指向 output.log（写入）</span>
+<span class="fn">echo</span> <span class="st">"写入日志"</span> >&amp;<span class="nm">3</span>        <span class="cm"># 通过描述符 3 写入</span>
+<span class="kw">exec</span> <span class="nm">3</span>>&amp;-                  <span class="cm"># 关闭描述符 3</span>
+
+<span class="cm"># 读取文件描述符</span>
+<span class="kw">exec</span> <span class="nm">3</span>< file.txt            <span class="cm"># 描述符 3 指向 file.txt（读取）</span>
+<span class="fn">read</span> -r line >&amp;<span class="nm">3</span>           <span class="cm"># 通过描述符 3 读取一行</span>
+<span class="fn">echo</span> <span class="st">"$line"</span>
+<span class="kw">exec</span> <span class="nm">3</span>>&amp;-                  <span class="cm"># 关闭描述符 3</span>
+
+<span class="cm"># === tee 命令：同时输出到屏幕和文件 ===</span>
+<span class="fn">ls</span> -la | <span class="fn">tee</span> output.txt     <span class="cm"># 屏幕显示 + 写入文件</span>
+<span class="fn">ls</span> -la | <span class="fn">tee</span> -a output.txt  <span class="cm"># 追加模式</span>
+
+<span class="cm"># === /dev/null 的妙用 ===</span>
+<span class="cm"># 丢弃不需要的输出</span>
+<span class="fn">command</span> > /dev/null 2>&amp;1     <span class="cm"># 完全静默</span>
+
+<span class="cm"># 清空文件</span>
+<span class="fn">truncate</span> -s <span class="nm">0</span> file.txt       <span class="cm"># 推荐方式</span>
+> file.txt                     <span class="cm"># 简写（利用重定向创建空文件）</span></code></pre>
+    </div>
+
+    <div class="tip">推荐在脚本开头使用 <code>set -euo pipefail</code>，配合 <code>2>&amp;1</code> 将错误和标准输出一起重定向。这样可以确保不会遗漏任何错误信息。</div>
+
+    <!-- ==================== 第14节：进程管理 ==================== -->
+    <h2 id="sec14">14. 进程管理</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Linux 进程模型与 Shell 的关系</div>
+        <p>Linux 系统中的每个运行实例都是一个<strong>进程（Process）</strong>，每个进程都有唯一的<strong>PID（Process ID）</strong>。进程之间形成<strong>父子关系</strong>——Shell 本身是一个进程，当用户执行命令时，Shell 会 <code>fork()</code> 一个子进程，然后在子进程中 <code>exec()</code> 加载并运行命令。这就是 Shell 脚本中变量修改不会影响当前 Shell 的根本原因。</p>
+        <p><strong>进程状态</strong>：Linux 进程有多种状态：<strong>R</strong>（Running，运行中）、<strong>S</strong>（Sleeping，可中断睡眠）、<strong>D</strong>（Disk Sleep，不可中断睡眠，通常在等待 I/O）、<strong>Z</strong>（Zombie，僵尸进程，已终止但父进程未回收）、<strong>T</strong>（Stopped，已停止）。使用 <code>ps</code> 可以查看进程状态。</p>
+        <p><strong>作业控制（Job Control）</strong>是 Shell 提供的进程管理能力：<strong>前台作业</strong>占据终端，用户可以与其交互；<strong>后台作业</strong>在后台运行，不阻塞终端。使用 <code>&amp;</code> 将命令放入后台，<code>Ctrl+Z</code> 暂停当前作业，<code>jobs</code> 查看作业列表，<code>fg</code> 将作业调回前台，<code>bg</code> 让暂停的作业继续在后台运行。</p>
+        <p><strong>进程优先级</strong>：Linux 使用 <strong>nice 值</strong>控制进程优先级（-20 到 19，-20 最高优先级）。使用 <code>nice -n 10 command</code> 以较低优先级运行命令，<code>renice -n -5 -p PID</code> 修改运行中进程的优先级。在 Shell 脚本中，后台任务通常应该使用较低的 nice 值，以避免影响交互式 Shell 的响应速度。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 查看进程 ===</span>
+<span class="fn">ps</span> aux                       <span class="cm"># 显示所有进程（BSD 风格）</span>
+<span class="fn">ps</span> -ef                       <span class="cm"># 显示所有进程（Unix 风格）</span>
+<span class="fn">ps</span> aux | <span class="fn">grep</span> nginx           <span class="cm"># 查找 nginx 进程</span>
+<span class="fn">top</span>                          <span class="cm"># 实时进程监控</span>
+<span class="fn">htop</span>                         <span class="cm"># 更好的交互式进程监控</span>
+<span class="fn">pgrep</span> nginx                  <span class="cm"># 只返回进程 ID</span>
+<span class="fn">pstree</span>                       <span class="cm"># 显示进程树</span>
+
+<span class="cm"># === 作业控制 ===</span>
+<span class="cm"># 后台运行</span>
+<span class="fn">sleep</span> <span class="nm">100</span> &amp;                  <span class="cm"># 后台运行 sleep</span>
+<span class="fn">jobs</span>                         <span class="cm"># 查看后台作业列表</span>
+<span class="fn">jobs</span> -l                      <span class="cm"># 显示 PID</span>
+
+<span class="cm"># 将后台作业调回前台</span>
+<span class="fn">fg</span> %<span class="nm">1</span>                        <span class="cm"># 将作业 1 调回前台</span>
+<span class="fn">fg</span>                           <span class="cm"># 将最近的作业调回前台</span>
+
+<span class="cm"># 暂停并放入后台</span>
+<span class="cm"># 按 Ctrl+Z 暂停当前前台作业</span>
+<span class="fn">bg</span> %<span class="nm">1</span>                        <span class="cm"># 让作业 1 在后台继续运行</span>
+
+<span class="cm"># 终止作业</span>
+<span class="fn">kill</span> %<span class="nm">1</span>                      <span class="cm"># 终止作业 1</span>
+<span class="fn">kill</span> <span class="nm">$!</span>                      <span class="cm"># 终止最近的后台进程</span>
+
+<span class="cm"># === 进程终止 ===</span>
+<span class="fn">kill</span> <span class="nm">1234</span>                    <span class="cm"># 发送 SIGTERM（优雅终止）</span>
+<span class="fn">kill</span> -<span class="nm">9</span> <span class="nm">1234</span>                 <span class="cm"># 发送 SIGKILL（强制终止）</span>
+<span class="fn">killall</span> nginx                <span class="cm"># 按名称终止进程</span>
+<span class="fn">pkill</span> -f <span class="st">"python.*server"</span>    <span class="cm"># 按命令行模式终止</span>
+
+<span class="cm"># === 进程替换与并发 ===</span>
+<span class="cm"># 并发执行多个命令</span>
+<span class="fn">sleep</span> <span class="nm">5</span> &amp;
+<span class="fn">sleep</span> <span class="nm">3</span> &amp;
+<span class="fn">sleep</span> <span class="nm">2</span> &amp;
+<span class="fn">wait</span>                         <span class="cm"># 等待所有后台进程完成</span>
+<span class="fn">echo</span> <span class="st">"所有任务完成"</span>
+
+<span class="cm"># 使用 wait 获取后台进程的退出状态</span>
+<span class="fn">command1</span> &amp;
+<span class="kw">pid1</span>=$!
+<span class="fn">command2</span> &amp;
+<span class="kw">pid2</span>=$!
+<span class="fn">wait</span> <span class="nm">$pid1</span>
+<span class="kw">exit1</span>=$?
+<span class="fn">wait</span> <span class="nm">$pid2</span>
+<span class="kw">exit2</span>=$?
+<span class="fn">echo</span> <span class="st">"Command1 exit: $exit1, Command2 exit: $exit2"</span>
+
+<span class="cm"># === nohup 与 disown ===</span>
+<span class="cm"># nohup：忽略 SIGHUP，关闭终端后继续运行</span>
+<span class="fn">nohup</span> <span class="fn">python3</span> server.py &amp;
+
+<span class="cm"># disown：从 Shell 的作业表中移除</span>
+<span class="fn">python3</span> server.py &amp;
+<span class="fn">disown</span>                       <span class="cm"># 移除最近的后台作业</span>
+<span class="fn">disown</span> %<span class="nm">1</span>                    <span class="cm"># 移除指定作业</span>
+
+<span class="cm"># === xargs：将输入转换为命令参数 ===</span>
+<span class="fn">find</span> . -name <span class="st">"*.tmp"</span> | <span class="fn">xargs</span> <span class="fn">rm</span> -f
+<span class="fn">find</span> . -name <span class="st">"*.log"</span> | <span class="fn">xargs</span> -I {} <span class="fn">mv</span> {} /backup/
+<span class="fn">cat</span> urls.txt | <span class="fn">xargs</span> -P <span class="nm">4</span> -I {} <span class="fn">curl</span> -sO {}  <span class="cm"># 4 并发下载</span></code></pre>
+    </div>
+
+    <div class="danger"><code>kill -9</code>（SIGKILL）是最后手段，它会立即终止进程而不允许清理。优先使用 <code>kill</code>（SIGTERM），让进程有机会保存数据和释放资源。</div>
+
+    <!-- ==================== 第15节：信号处理 ==================== -->
+    <h2 id="sec15">15. 信号处理</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：信号的本质与 trap 机制</div>
+        <p>信号（Signal）是 Linux 系统中<strong>进程间通信（IPC）</strong>的最简单形式。信号是异步的——发送信号的进程不需要等待接收进程的响应。当信号到达目标进程时，进程会中断当前执行流，跳转到<strong>信号处理函数</strong>（如果注册了的话），处理完毕后返回被中断的位置继续执行。</p>
+        <p><strong>常见信号</strong>：<code>SIGHUP</code>（1，终端关闭）、<code>SIGINT</code>（2，Ctrl+C）、<code>SIGQUIT</code>（3，Ctrl+\）、<code>SIGKILL</code>（9，强制终止，不可捕获）、<code>SIGTERM</code>（15，优雅终止）、<code>SIGSTOP</code>（19，暂停，不可捕获）、<code>SIGCONT</code>（18，继续执行）、<code>SIGUSR1</code>（10，用户自定义）、<code>SIGUSR2</code>（12，用户自定义）。</p>
+        <p><strong>Shell 的 trap 命令</strong>允许用户注册信号处理函数。当指定的信号到达时，Shell 会执行注册的命令而非默认行为。这在编写健壮的 Shell 脚本时非常重要——你可以在脚本退出前清理临时文件、关闭连接、记录日志等。使用 <code>trap '' SIGNAL</code> 可以忽略信号，<code>trap - SIGNAL</code> 可以恢复默认行为。</p>
+        <p><strong>信号的传递方向</strong>：<code>kill</code> 命令只是发送信号的工具，任何进程都可以用 <code>kill</code> 向其他进程发送信号（前提是权限允许）。Shell 脚本中的 <code>$!</code> 变量存储最近一个后台进程的 PID，可以用 <code>kill -USR1 $!</code> 向其发送自定义信号。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 信号列表 ===</span>
+<span class="cm"># kill -l  列出所有信号</span>
+<span class="cm"># 常用信号：</span>
+<span class="cm">#  1  SIGHUP     终端关闭</span>
+<span class="cm">#  2  SIGINT     中断（Ctrl+C）</span>
+<span class="cm">#  3  SIGQUIT    退出（Ctrl+\）</span>
+<span class="cm">#  9  SIGKILL    强制终止（不可捕获）</span>
+<span class="cm"># 15  SIGTERM    优雅终止（默认信号）</span>
+<span class="cm"># 18  SIGCONT    继续执行</span>
+<span class="cm"># 19  SIGSTOP    暂停（不可捕获）</span>
+<span class="cm"># 20  SIGTSTP    暂停（Ctrl+Z）</span>
+
+<span class="cm"># === trap 命令 ===</span>
+<span class="cm"># 语法：trap '命令' 信号</span>
+
+<span class="cm"># 捕获 Ctrl+C（SIGINT）</span>
+<span class="fn">trap</span> <span class="st">'echo "收到 Ctrl+C，正在清理..."; exit 1'</span> SIGINT
+
+<span class="cm"># 捕获脚本退出（任何原因退出都会执行）</span>
+<span class="fn">trap</span> <span class="st">'rm -f /tmp/my_temp_file_*'</span> EXIT
+
+<span class="cm"># 忽略信号</span>
+<span class="fn">trap</span> <span class="st">''</span> SIGINT SIGTERM        <span class="cm"># 忽略 Ctrl+C 和终止信号</span>
+
+<span class="cm"># 恢复默认行为</span>
+<span class="fn">trap</span> - SIGINT                 <span class="cm"># 恢复 SIGINT 的默认处理</span>
+
+<span class="cm"># === 完整的信号处理示例 ===</span>
+<span class="cm">#!/bin/bash</span>
+<span class="kw">set</span> -euo pipefail
+
+<span class="cm"># 创建临时文件</span>
+<span class="kw">TEMP_FILE</span>=<span class="st">$(mktemp)</span>
+
+<span class="cm"># 定义清理函数</span>
+<span class="fn">cleanup</span>() {
+    <span class="fn">echo</span> <span class="st">"清理临时文件: $TEMP_FILE"</span>
+    <span class="fn">rm</span> -f <span class="st">"$TEMP_FILE"</span>
+    <span class="fn">echo</span> <span class="st">"脚本已安全退出"</span>
+}
+
+<span class="cm"># 注册清理函数（在任何退出时执行）</span>
+<span class="fn">trap</span> cleanup EXIT
+
+<span class="cm"># 优雅终止处理</span>
+<span class="fn">on_term</span>() {
+    <span class="fn">echo</span> <span class="st">"收到终止信号，正在停止..."</span>
+    <span class="cm"># 做一些清理工作</span>
+    <span class="kw">exit</span> <span class="nm">0</span>
+}
+<span class="fn">trap</span> on_term SIGTERM SIGINT
+
+<span class="cm"># === 使用 USR1/USR2 信号进行进程间通信 ===</span>
+
+<span class="cm"># 后台进程：等待 USR1 信号</span>
+<span class="fn">receiver</span>() {
+    <span class="fn">trap</span> <span class="st">'echo "收到USR1信号，执行更新操作"; touch /tmp/updated.flag'</span> USR1
+    <span class="kw">while</span> true; <span class="kw">do</span>
+        <span class="fn">sleep</span> <span class="nm">1</span>
+    <span class="kw">done</span>
+}
+
+<span class="cm"># 发送信号</span>
+<span class="fn">receiver</span> &amp;
+<span class="kw">receiver_pid</span>=$!
+<span class="fn">sleep</span> <span class="nm">2</span>
+<span class="fn">kill</span> -USR1 <span class="nm">$receiver_pid</span>     <span class="cm"># 向接收者发送 USR1</span>
+<span class="fn">kill</span> <span class="nm">$receiver_pid</span>
+
+<span class="cm"># === 信号与子进程 ===</span>
+<span class="cm"># 向后台进程组发送信号</span>
+<span class="fn">sleep</span> <span class="nm">100</span> &amp;
+<span class="fn">sleep</span> <span class="nm">200</span> &amp;
+<span class="fn">kill</span> -- -<span class="nm">$$</span>                   <span class="cm"># 终止当前 Shell 的所有子进程</span></code></pre>
+    </div>
+
+    <div class="tip">编写长期运行的守护脚本时，务必注册 <code>trap EXIT</code> 来清理资源。这是编写生产级 Shell 脚本的基本要求。</div>
+
+    <!-- ==================== 第16节：调试技巧 ==================== -->
+    <h2 id="sec16">16. 调试技巧</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Shell 调试的独特挑战</div>
+        <p>Shell 脚本的调试比编译型语言困难得多，主要原因有三：<strong>1）动态类型</strong>——变量没有类型信息，错误在运行时才会暴露；<strong>2）隐式展开</strong>——变量展开、命令替换、通配符展开都是隐式的，展开结果可能与预期不同；<strong>3）子 Shell 隔离</strong>——管道中的每个命令都在子进程中运行，调试器无法像 GDB 那样跟踪整个执行流。</p>
+        <p><strong>调试 Shell 脚本的核心思路</strong>：使用 <code>set -x</code> 开启<strong>执行跟踪（Execution Trace）</strong>，Shell 会在执行每条命令之前打印该命令（经过变量展开后）的内容。这是 Shell 调试最有效的方法。还可以使用 <code>PS4</code> 变量自定义调试输出的前缀，使其包含行号和函数名。</p>
+        <p><strong>shellcheck</strong> 是一个静态分析工具，可以在不运行脚本的情况下发现潜在问题：未引用的变量、不安全的命令替换、POSIX 兼容性问题等。建议在编辑器中集成 shellcheck，每次保存时自动检查。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 调试选项 ===</span>
+<span class="kw">set</span> -x                      <span class="cm"># 开启执行跟踪</span>
+<span class="kw">set</span> +x                      <span class="cm"># 关闭执行跟踪</span>
+
+<span class="cm"># 使用 PS4 自定义调试输出</span>
+<span class="kw">export</span> PS4=<span class="st">'+${BASH_SOURCE}:${LINENO}:${FUNCNAME[0]:+${FUNCNAME[0]}(): } '</span>
+<span class="kw">set</span> -x
+<span class="cm"># 输出示例: +script.sh:5:myfunc(): echo "hello"</span>
+
+<span class="cm"># 部分调试（只调试特定行）</span>
+<span class="kw">set</span> -x                      <span class="cm"># 开启调试</span>
+<span class="fn">problematic_command</span>         <span class="cm"># 这行会被调试输出</span>
+<span class="kw">set</span> +x                      <span class="cm"># 关闭调试</span>
+
+<span class="cm"># === 语法检查（不执行） ===</span>
+<span class="fn">bash</span> -n script.sh            <span class="cm"># 检查语法错误</span>
+<span class="fn">bash</span> -nv script.sh           <span class="cm"># 检查语法并显示读取的行</span>
+
+<span class="cm"># === shellcheck 静态分析 ===</span>
+<span class="cm"># 安装</span>
+<span class="fn">sudo</span> <span class="fn">apt</span> install shellcheck   <span class="cm"># Debian/Ubuntu</span>
+<span class="fn">brew</span> install shellcheck       <span class="cm"># macOS</span>
+
+<span class="cm"># 使用</span>
+<span class="fn">shellcheck</span> script.sh
+<span class="fn">shellcheck</span> -s bash script.sh  <span class="cm"># 指定 shell 类型</span>
+<span class="fn">shellcheck</span> -S warning script.sh  <span class="cm"># 只显示警告及以上</span>
+
+<span class="cm"># === 调试技巧 ===</span>
+<span class="cm"># 打印变量值</span>
+<span class="fn">echo</span> <span class="st">"DEBUG: var=$var"</span>
+
+<span class="cm"># 打印数组内容</span>
+<span class="fn">printf</span> <span class="st">"%s\n"</span> <span class="st">"${array[@]}"</span>
+
+<span class="cm"># 验证命令替换结果</span>
+<span class="kw">result</span>=$(<span class="fn">some_command</span>)
+<span class="fn">echo</span> <span class="st">"result: [$result]"</span>      <span class="cm"># 用方括号查看是否有额外空格</span>
+
+<span class="cm"># 检查命令是否存在</span>
+<span class="fn">command</span> -v <span class="fn">python3</span> &amp;&gt; /dev/null && <span class="fn">echo</span> <span class="st">"python3 已安装"</span>
+<span class="fn">type</span> <span class="fn">git</span> &amp;&gt; /dev/null && <span class="fn">echo</span> <span class="st">"git 已安装"</span>
+
+<span class="cm"># === 常见错误示例 ===</span>
+<span class="cm"># 错误 1：变量未加引号</span>
+<span class="kw">name</span>=<span class="st">""</span>
+[ <span class="nm">$name</span> = <span class="st">"hello"</span> ]          <span class="cm"># 错误！等价于 [ = "hello" ]</span>
+[ <span class="st">"$name"</span> = <span class="st">"hello"</span> ]        <span class="cm"># 正确</span>
+
+<span class="cm"># 错误 2：比较字符串和数字</span>
+[ <span class="nm">5</span> = <span class="nm">5</span> ]                    <span class="cm"># 可能有问题（取决于实现）</span>
+[ <span class="nm">5</span> -eq <span class="nm">5</span> ]                  <span class="cm"># 正确（数值比较）</span>
+[ <span class="st">"5"</span> = <span class="st">"5"</span> ]                <span class="cm"># 正确（字符串比较）</span>
+
+<span class="cm"># 错误 3：管道中的子 Shell</span>
+<span class="kw">count</span>=<span class="nm">0</span>
+<span class="fn">echo</span> <span class="st">"a b c"</span> | <span class="kw">while</span> <span class="fn">read</span> x; <span class="kw">do</span> (( count++ )); <span class="kw">done</span>
+<span class="fn">echo</span> <span class="st">"$count"</span>                <span class="cm"># 0（count 在子 Shell 中修改）</span>
+
+<span class="cm"># === 性能调试 ===</span>
+<span class="kw">time</span> <span class="fn">script.sh</span>              <span class="cm"># 测量脚本执行时间</span>
+<span class="kw">time</span> { <span class="fn">command1</span>; <span class="fn">command2</span>; }  <span class="cm"># 测量代码块执行时间</span>
+
+<span class="cm"># 使用 date 测量耗时</span>
+<span class="kw">start</span>=$(<span class="fn">date</span> +%s.%N)
+<span class="cm"># 要测量的命令</span>
+<span class="kw">end</span>=$(<span class="fn">date</span> +%s.%N)
+<span class="fn">echo</span> <span class="st">"耗时: $(echo "$end - $start" | bc) 秒"</span></code></pre>
+    </div>
+
+    <div class="tip">养成使用 <code>shellcheck</code> 的习惯，它可以自动发现 70% 以上的 Shell 脚本常见错误。推荐在 VS Code 中安装 shellcheck 扩展。</div>
+
+    <!-- ==================== 第17节：常用工具 ==================== -->
+    <h2 id="sec17">17. 常用工具</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Unix 工具的设计理念</div>
+        <p>Unix 哲学的核心是<strong>"做好一件事"</strong>：每个工具只负责一个明确的功能，通过<strong>管道</strong>组合完成复杂任务。例如 <code>ps aux | grep nginx | awk '{print $2}' | xargs kill</code> 这条管道链中，每个工具各司其职：ps 列出进程、grep 过滤、awk 提取 PID、xargs 传递给 kill。这种组合方式比编写一个包含所有功能的"大"程序更灵活、更可靠。</p>
+        <p><strong>find 命令</strong>是文件搜索的核心工具，它支持按名称、大小、时间、权限等条件搜索，并可以对搜索结果执行操作（<code>-exec</code>）。find 的 <code>-exec</code> 参数可以对每个搜索结果执行一个命令，<code>{}</code> 是占位符，<code>\;</code> 表示命令结束。使用 <code>+</code> 代替 <code>\;</code> 可以批量传递参数，提高效率。</p>
+        <p><strong>sort/uniq/wc</strong> 是文本统计的三件套：<code>sort</code> 排序，<code>uniq</code> 去重（要求输入已排序），<code>wc</code> 统计行数/单词数/字节数。组合使用可以实现频率统计：<code>sort | uniq -c | sort -rn</code>。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === find：文件搜索 ===</span>
+<span class="cm"># 按名称搜索</span>
+<span class="fn">find</span> / -name <span class="st">"*.conf"</span> -type f
+<span class="fn">find</span> . -iname <span class="st">"readme*"</span>       <span class="cm"># 忽略大小写</span>
+
+<span class="cm"># 按大小搜索</span>
+<span class="fn">find</span> /var/log -size +100M      <span class="cm"># 大于 100MB 的文件</span>
+<span class="fn">find</span> . -empty                  <span class="cm"># 空文件或空目录</span>
+
+<span class="cm"># 按时间搜索</span>
+<span class="fn">find</span> . -mtime -7               <span class="cm"># 最近7天修改过的文件</span>
+<span class="fn">find</span> . -atime -1               <span class="cm"># 最近1天访问过的文件</span>
+<span class="fn">find</span> . -mmin -60               <span class="cm"># 最近60分钟修改过的文件</span>
+
+<span class="cm"># 执行操作</span>
+<span class="fn">find</span> . -name <span class="st">"*.tmp"</span> -exec <span class="fn">rm</span> -f {} \;
+<span class="fn">find</span> . -name <span class="st">"*.log"</span> -exec <span class="fn">gzip</span> {} +
+<span class="fn">find</span> . -name <span class="st">"*.bak"</span> -delete
+
+<span class="cm"># === sort/uniq/wc：文本统计 ===</span>
+<span class="cm"># 排序</span>
+<span class="fn">sort</span> file.txt                 <span class="cm"># 字母排序</span>
+<span class="fn">sort</span> -n file.txt              <span class="cm"># 数值排序</span>
+<span class="fn">sort</span> -r file.txt              <span class="cm"># 反向排序</span>
+<span class="fn">sort</span> -k2,2n file.txt          <span class="cm"># 按第2列数值排序</span>
+<span class="fn">sort</span> -t: -k3,3n /etc/passwd   <span class="cm"># 以冒号分隔，按第3列排序</span>
+
+<span class="cm"># 去重（要求输入已排序）</span>
+<span class="fn">sort</span> file.txt | <span class="fn">uniq</span>          <span class="cm"># 去重</span>
+<span class="fn">sort</span> file.txt | <span class="fn">uniq</span> -c       <span class="cm"># 去重并计数</span>
+<span class="fn">sort</span> file.txt | <span class="fn">uniq</span> -d       <span class="cm"># 只显示重复行</span>
+
+<span class="cm"># 统计</span>
+<span class="fn">wc</span> -l file.txt                <span class="cm"># 行数</span>
+<span class="fn">wc</span> -w file.txt                <span class="cm"># 单词数</span>
+<span class="fn">wc</span> -c file.txt                <span class="cm"># 字节数</span>
+
+<span class="cm"># === cut/tr：列处理与字符转换 ===</span>
+<span class="fn">cut</span> -d: -f1 /etc/passwd        <span class="cm"># 以冒号分隔，取第1列</span>
+<span class="fn">cut</span> -c1-10 file.txt            <span class="cm"># 取前10个字符</span>
+<span class="fn">tr</span> <span class="st">'a-z'</span> <span class="st">'A-Z'</span> < file.txt       <span class="cm"># 转大写</span>
+<span class="fn">tr</span> -d <span class="st">'\r'</span> < file.txt            <span class="cm"># 删除回车符（Windows→Linux）</span>
+<span class="fn">tr</span> -s <span class="st">' '</span> < file.txt            <span class="cm"># 压缩连续空格</span>
+
+<span class="cm"># === xargs：参数传递 ===</span>
+<span class="fn">find</span> . -name <span class="st">"*.jpg"</span> | <span class="fn">xargs</span> <span class="fn">convert</span> -resize <span class="st">800x600</span> {}
+<span class="fn">cat</span> urls.txt | <span class="fn">xargs</span> -P <span class="nm">8</span> -I {} <span class="fn">curl</span> -sO {}  <span class="cm"># 8并发下载</span>
+<span class="fn">echo</span> <span class="st">"  hello   world  "</span> | <span class="fn">xargs</span>            <span class="cm"># 去除多余空格</span>
+
+<span class="cm"># === date：日期时间处理 ===</span>
+<span class="fn">date</span>                         <span class="cm"># 当前时间</span>
+<span class="fn">date</span> +%Y-%m-%d               <span class="cm"># 2024-01-15</span>
+<span class="fn">date</span> +%H:%M:%S               <span class="cm"># 14:30:00</span>
+<span class="fn">date</span> -d <span class="st">"2 days ago"</span> +%Y-%m-%d  <span class="cm"># 2天前的日期</span>
+<span class="fn">date</span> -d <span class="st">"+1 month"</span> +%Y-%m-%d   <span class="cm"># 1个月后的日期</span>
+
+<span class="cm"># === 磁盘与系统信息 ===</span>
+<span class="fn">df</span> -h                         <span class="cm"># 磁盘使用情况</span>
+<span class="fn">du</span> -sh /var/log               <span class="cm"># 目录大小</span>
+<span class="fn">free</span> -h                       <span class="cm"># 内存使用情况</span>
+<span class="fn">uptime</span>                        <span class="cm"># 系统运行时间</span>
+<span class="fn">uname</span> -a                      <span class="cm"># 系统信息</span></code></pre>
+    </div>
+
+    <div class="tip">管道链是从左到右执行的，但每个命令可能在子进程中运行。如果需要在管道中修改变量，使用 <code>lastpipe</code>（<code>shopt -s lastpipe</code>）或进程替换。</div>
+
+    <!-- ==================== 第18节：运维脚本 ==================== -->
+    <h2 id="sec18">18. 运维脚本</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：生产级脚本的设计原则</div>
+        <p>生产环境中的 Shell 脚本需要满足几个关键要求：<strong>1）健壮性</strong>——能够处理各种异常情况（文件不存在、网络不通、权限不足等）；<strong>2）可观察性</strong>——有清晰的日志输出，方便排查问题；<strong>3）可恢复性</strong>——出错后能清理临时资源，不会留下"半成品"；<strong>4）幂等性</strong>——重复执行不会产生副作用。</p>
+        <p><strong>日志系统</strong>是运维脚本的核心组件。推荐的日志格式包含时间戳、日志级别和消息内容。使用 <code>tee</code> 可以同时输出到终端和日志文件。日志级别通常分为 DEBUG、INFO、WARN、ERROR、FATAL 五个等级。</p>
+        <p><strong>配置管理</strong>：运维脚本应该将配置信息（路径、阈值、密码等）集中在脚本顶部或单独的配置文件中，避免在代码中硬编码。使用环境变量和命令行参数可以灵活地覆盖默认配置。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm">#!/bin/bash</span>
+<span class="cm"># === 服务器监控脚本示例 ===</span>
+<span class="kw">set</span> -euo pipefail
+
+<span class="cm"># ---------- 配置区 ----------</span>
+<span class="kw">LOG_FILE</span>=<span class="st">"/var/log/server_monitor.log"</span>
+<span class="kw">ALERT_EMAIL</span>=<span class="st">"admin@example.com"</span>
+<span class="kw">CPU_THRESHOLD</span>=<span class="nm">80</span>
+<span class="kw">MEM_THRESHOLD</span>=<span class="nm">90</span>
+<span class="kw">DISK_THRESHOLD</span>=<span class="nm">85</span>
+
+<span class="cm"># ---------- 日志函数 ----------</span>
+<span class="fn">log</span>() {
+    <span class="kw">local</span> level=<span class="st">"$1"</span>; <span class="kw">shift</span>
+    <span class="kw">local</span> msg=<span class="st">"$*"</span>
+    <span class="fn">printf</span> <span class="st">"[%s] [%-5s] %s\n"</span> <span class="st">"$(date '+%Y-%m-%d %H:%M:%S')"</span> <span class="st">"$level"</span> <span class="st">"$msg"</span> | <span class="fn">tee</span> -a <span class="st">"$LOG_FILE"</span>
+}
+
+<span class="cm"># ---------- 告警函数 ----------</span>
+<span class="fn">alert</span>() {
+    <span class="fn">log</span> <span class="st">"ERROR"</span> <span class="st">"$1"</span>
+    <span class="fn">echo</span> <span class="st">"$1"</span> | <span class="fn">mail</span> -s <span class="st">"服务器告警"</span> <span class="st">"$ALERT_EMAIL"</span> 2>/dev/null || <span class="fn">true</span>
+}
+
+<span class="cm"># ---------- CPU 检查 ----------</span>
+<span class="fn">check_cpu</span>() {
+    <span class="kw">local</span> cpu_usage
+    cpu_usage=$(<span class="fn">top</span> -bn1 | <span class="fn">grep</span> <span class="st">"Cpu(s)"</span> | <span class="fn">awk</span> <span class="st">'{print $2}'</span> | <span class="fn">cut</span> -d. -f1)
+    <span class="fn">log</span> <span class="st">"INFO"</span> <span class="st">"CPU 使用率: ${cpu_usage}%"</span>
+    <span class="kw">if</span> (( cpu_usage >= CPU_THRESHOLD )); <span class="kw">then</span>
+        <span class="fn">alert</span> <span class="st">"CPU 使用率过高: ${cpu_usage}% (阈值: ${CPU_THRESHOLD}%)"</span>
+    <span class="kw">fi</span>
+}
+
+<span class="cm"># ---------- 内存检查 ----------</span>
+<span class="fn">check_memory</span>() {
+    <span class="kw">local</span> mem_usage
+    mem_usage=$(<span class="fn">free</span> | <span class="fn">awk</span> <span class="st">'/Mem:/ {printf "%.0f", $3/$2*100}'</span>)
+    <span class="fn">log</span> <span class="st">"INFO"</span> <span class="st">"内存使用率: ${mem_usage}%"</span>
+    <span class="kw">if</span> (( mem_usage >= MEM_THRESHOLD )); <span class="kw">then</span>
+        <span class="fn">alert</span> <span class="st">"内存使用率过高: ${mem_usage}% (阈值: ${MEM_THRESHOLD}%)"</span>
+    <span class="kw">fi</span>
+}
+
+<span class="cm"># ---------- 磁盘检查 ----------</span>
+<span class="fn">check_disk</span>() {
+    <span class="kw">while</span> <span class="fn">read</span> -r mount usage; <span class="kw">do</span>
+        <span class="kw">local</span> pct=<span class="st">"${usage%\%}"</span>
+        <span class="fn">log</span> <span class="st">"INFO"</span> <span class="st">"磁盘 $mount 使用率: ${pct}%"</span>
+        <span class="kw">if</span> (( pct >= DISK_THRESHOLD )); <span class="kw">then</span>
+            <span class="fn">alert</span> <span class="st">"磁盘 $mount 使用率过高: ${pct}% (阈值: ${DISK_THRESHOLD}%)"</span>
+        <span class="kw">fi</span>
+    <span class="kw">done</span> < &lt;(<span class="fn">df</span> -h --output=target,pcent | <span class="fn">tail</span> -n+2 | <span class="fn">grep</span> -vE <span class="st">'^/(dev|proc|sys)'</span>)
+}
+
+<span class="cm"># ---------- 主逻辑 ----------</span>
+<span class="fn">main</span>() {
+    <span class="fn">log</span> <span class="st">"INFO"</span> <span class="st">"=== 开始服务器监控 ==="</span>
+    <span class="fn">check_cpu</span>
+    <span class="fn">check_memory</span>
+    <span class="fn">check_disk</span>
+    <span class="fn">log</span> <span class="st">"INFO"</span> <span class="st">"=== 监控完成 ==="</span>
+}
+
+<span class="cm"># 使用方式：</span>
+<span class="cm"># ./monitor.sh              # 直接运行</span>
+<span class="cm"># ./monitor.sh &amp;           # 后台运行</span>
+<span class="cm"># crontab: */5 * * * * /path/to/monitor.sh  # 每5分钟执行</span></code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm">#!/bin/bash</span>
+<span class="cm"># === 日志轮转脚本示例 ===</span>
+<span class="kw">set</span> -euo pipefail
+
+<span class="cm"># 配置</span>
+<span class="kw">LOG_DIR</span>=<span class="st">"/var/log/myapp"</span>
+<span class="kw">KEEP_DAYS</span>=<span class="nm">30</span>
+<span class="kw">COMPRESS_DAYS</span>=<span class="nm">7</span>
+
+<span class="fn">rotate_logs</span>() {
+    <span class="fn">echo</span> <span class="st">"开始日志轮转..."</span>
+
+    <span class="cm"># 压缩 7 天前的日志</span>
+    <span class="fn">find</span> <span class="st">"$LOG_DIR"</span> -name <span class="st">"*.log"</span> -mtime +<span class="nm">$COMPRESS_DAYS</span> -not -name <span class="st">"*.gz"</span> | <span class="kw">while</span> <span class="fn">read</span> -r f; <span class="kw">do</span>
+        <span class="fn">gzip</span> <span class="st">"$f"</span>
+        <span class="fn">echo</span> <span class="st">"已压缩: $f"</span>
+    <span class="kw">done</span>
+
+    <span class="cm"># 删除 30 天前的日志</span>
+    <span class="fn">find</span> <span class="st">"$LOG_DIR"</span> -name <span class="st">"*.log.gz"</span> -mtime +<span class="nm">$KEEP_DAYS</span> -delete
+    <span class="fn">find</span> <span class="st">"$LOG_DIR"</span> -name <span class="st">"*.log"</span> -mtime +<span class="nm">$KEEP_DAYS</span> -delete
+
+    <span class="fn">echo</span> <span class="st">"日志轮转完成"</span>
+}
+
+<span class="fn">rotate_logs</span></code></pre>
+    </div>
+
+    <div class="warning">生产环境的脚本务必添加 <code>set -euo pipefail</code>，这可以防止大量隐蔽的 bug。同时使用 <code>trap</code> 确保出错时能清理临时文件和资源。</div>
+
+    <!-- ==================== 第19节：最佳实践 ==================== -->
+    <h2 id="sec19">19. 最佳实践</h2>
+
+    <div class="principle">
+        <div class="principle-title">原理讲解：Shell 编程的常见陷阱与最佳实践</div>
+        <p>Shell 编程的灵活性是一把双刃剑——它可以让代码非常简洁，也可能导致非常隐蔽的 bug。以下是经过实践验证的最佳实践，遵循这些原则可以大幅减少脚本中的 bug。</p>
+        <p><strong>防御性编程</strong>：始终假设输入是恶意的、文件可能不存在、网络可能不通。在脚本开头添加 <code>set -euo pipefail</code>，对所有外部输入进行验证，对所有可能失败的命令添加错误处理。</p>
+        <p><strong>可移植性</strong>：如果需要在多个 Linux 发行版或 macOS 上运行，尽量使用 POSIX 兼容语法。Bash 特性（如关联数组、<code>[[ ... ]]</code>、进程替换）在旧版系统上可能不可用。使用 <code>#!/bin/sh</code> 并避免 Bash 特有语法可以提高可移植性。</p>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 脚本模板（推荐在每个脚本开头使用） ===</span>
+<span class="cm">#!/bin/bash</span>
+<span class="kw">set</span> -euo pipefail
+<span class="cm"># IFS=$'\n\t'  # 可选：将 IFS 设置为换行和制表符</span>
+
+<span class="cm"># ---------- 常量定义 ----------</span>
+<span class="kw">readonly</span> SCRIPT_DIR=<span class="st">"$(cd "$(dirname "${BASH_SOURCE[0]}")" &amp;&amp; pwd)"</span>
+<span class="kw">readonly</span> SCRIPT_NAME=<span class="st">"$(basename "$0")"</span>
+<span class="kw">readonly</span> VERSION=<span class="st">"1.0.0"</span>
+
+<span class="cm"># ---------- 工具函数 ----------</span>
+<span class="fn">info</span>()  { <span class="fn">echo</span> <span class="st">"[INFO]  $*"</span>; }
+<span class="fn">warn</span>()  { <span class="fn">echo</span> <span class="st">"[WARN]  $*" >&amp;2</span>; }
+<span class="fn">error</span>() { <span class="fn">echo</span> <span class="st">"[ERROR] $*" >&amp;2</span>; }
+<span class="fn">die</span>()   { <span class="fn">error</span> <span class="st">"$*"</span>; <span class="kw">exit</span> <span class="nm">1</span>; }
+
+<span class="cm"># ---------- 参数解析 ----------</span>
+<span class="fn">usage</span>() {
+    <span class="fn">cat</span> &lt;&lt;EOF
+用法: $SCRIPT_NAME [选项] &lt;参数&gt;
+版本: $VERSION
+
+选项:
+    -h, --help      显示帮助
+    -v, --verbose   详细输出
+    -q, --quiet     静默模式
+    -V, --version   显示版本
+
+示例:
+    $SCRIPT_NAME -v /path/to/file
+EOF
+}
+
+<span class="kw">VERBOSE</span>=<span class="nm">0</span>
+<span class="kw">QUIET</span>=<span class="nm">0</span>
+
+<span class="kw">while</span> [[ $# -gt <span class="nm">0</span> ]]; <span class="kw">do</span>
+    <span class="kw">case</span> <span class="st">"$1"</span> <span class="kw">in</span>
+        -h|--help)     <span class="fn">usage</span>; <span class="kw">exit</span> <span class="nm">0</span> ;;
+        -v|--verbose)  VERBOSE=<span class="nm">1</span>; <span class="kw">shift</span> ;;
+        -q|--quiet)    QUIET=<span class="nm">1</span>; <span class="kw">shift</span> ;;
+        -V|--version)  <span class="fn">echo</span> <span class="st">"$VERSION"</span>; <span class="kw">exit</span> <span class="nm">0</span> ;;
+        -*)            <span class="fn">die</span> <span class="st">"未知选项: $1"</span> ;;
+        *)             <span class="kw">break</span> ;;
+    <span class="kw">esac</span>
+<span class="kw">done</span>
+
+<span class="cm"># ---------- 清理函数 ----------</span>
+<span class="fn">cleanup</span>() {
+    <span class="kw">local</span> exit_code=$?
+    <span class="cm"># 清理临时文件</span>
+    <span class="fn">rm</span> -f /tmp/myapp_temp_* 2>/dev/null
+    <span class="kw">exit</span> <span class="nm">$exit_code</span>
+}
+<span class="fn">trap</span> cleanup EXIT
+
+<span class="cm"># ---------- 主逻辑 ----------</span>
+<span class="fn">main</span>() {
+    <span class="fn">info</span> <span class="st">"脚本启动: $SCRIPT_NAME v$VERSION"</span>
+    <span class="cm"># 你的业务逻辑</span>
+    <span class="fn">info</span> <span class="st">"脚本完成"</span>
+}
+
+<span class="fn">main</span> <span class="st">"$@"</span></code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 10 条 Shell 编程黄金法则 ===</span>
+
+<span class="cm"># 1. 始终使用 set -euo pipefail</span>
+<span class="kw">set</span> -euo pipefail
+
+<span class="cm"># 2. 变量引用始终加双引号</span>
+<span class="fn">echo</span> <span class="st">"$variable"</span>          <span class="cm"># 正确</span>
+<span class="fn">echo</span> <span class="nm">$variable</span>             <span class="cm"># 危险（词拆分 + 通配符展开）</span>
+
+<span class="cm"># 3. 使用 [[ ]] 代替 [ ]（Bash 环境下）</span>
+<span class="kw">if</span> [[ <span class="st">"$var"</span> == <span class="st">"hello"</span> ]]; <span class="kw">then</span>  <span class="cm"># 安全</span>
+    <span class="fn">echo</span> <span class="st">"match"</span>
+<span class="kw">fi</span>
+
+<span class="cm"># 4. 函数内使用 local 声明变量</span>
+<span class="fn">my_func</span>() {
+    <span class="kw">local</span> result=<span class="st">"value"</span>    <span class="cm"># 避免污染全局作用域</span>
+}
+
+<span class="cm"># 5. 使用 shellcheck 检查脚本</span>
+<span class="fn">shellcheck</span> my_script.sh
+
+<span class="cm"># 6. 不要在循环中使用管道（会产生子 Shell）</span>
+<span class="cm"># 错误：</span>
+<span class="fn">cat</span> file | <span class="kw">while</span> <span class="fn">read</span> line; <span class="kw">do</span> ...; <span class="kw">done</span>
+
+<span class="cm"># 正确：</span>
+<span class="kw">while</span> <span class="fn">read</span> -r line; <span class="kw">do</span> ...; <span class="kw">done</span> < file
+
+<span class="cm"># 7. 使用函数组织代码</span>
+<span class="fn">parse_config</span>() { ... }
+<span class="fn">validate_input</span>() { ... }
+<span class="fn">main</span>() { ... }
+
+<span class="cm"># 8. 使用 mktemp 创建临时文件</span>
+<span class="kw">tmpfile</span>=$(<span class="fn">mktemp</span>)        <span class="cm"># 安全的临时文件创建</span>
+
+<span class="cm"># 9. 使用 readlink -f 获取脚本真实路径</span>
+<span class="kw">SCRIPT_DIR</span>=$(<span class="fn">dirname</span> <span class="st">"$(readlink -f "$0")"</span>)
+
+<span class="cm"># 10. 为脚本编写帮助文档和用法说明</span>
+<span class="fn">usage</span>() {
+    <span class="fn">cat</span> &lt;&lt;EOF
+用法: $(<span class="fn">basename</span> <span class="st">"$0"</span>) [选项] [参数]
+描述: 这个脚本的用途说明
+选项:
+    -h, --help    显示帮助
+    -v, --verbose 详细输出
+EOF
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <div class="code-lang">Bash</div>
+        </div>
+<pre><code><span class="cm"># === 常见陷阱与解决方案 ===</span>
+
+<span class="cm"># 陷阱1：变量展开导致的问题</span>
+<span class="kw">files</span>=<span class="st">"file with spaces.txt"</span>
+<span class="fn">rm</span> <span class="nm">$files</span>                   <span class="cm"># 错误！会尝试删除 "file" "with" "spaces.txt"</span>
+<span class="fn">rm</span> <span class="st">"$files"</span>                  <span class="cm"># 正确</span>
+
+<span class="cm"># 陷阱2：命令替换中的错误</span>
+<span class="kw">result</span>=$(<span class="fn">grep</span> <span class="st">"pattern"</span> file.txt)
+<span class="cm"># 如果 grep 没有匹配，result 为空，但脚本不会退出</span>
+<span class="cm"># 解决：使用 set -o pipefail</span>
+
+<span class="cm"># 陷阱3：for 循环处理含空格的文件名</span>
+<span class="cm"># 错误：</span>
+<span class="kw">for</span> <span class="nm">file</span> <span class="kw">in</span> $(<span class="fn">find</span> . -name <span class="st">"*.txt"</span>); <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"$file"</span>
+<span class="kw">done</span>
+
+<span class="cm"># 正确：</span>
+<span class="fn">find</span> . -name <span class="st">"*.txt"</span> -print0 | <span class="kw">while</span> IFS= <span class="fn">read</span> -r -d <span class="st">''</span> file; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"$file"</span>
+<span class="kw">done</span>
+
+<span class="cm"># 陷阱4：比较字符串和数字</span>
+[ <span class="nm">5</span> = <span class="nm">5</span> ]                    <span class="cm"># 可能有问题</span>
+[ <span class="nm">5</span> -eq <span class="nm">5</span> ]                  <span class="cm"># 数值比较（推荐）</span>
+[ <span class="st">"5"</span> = <span class="st">"5"</span> ]                <span class="cm"># 字符串比较（推荐）</span>
+
+<span class="cm"># 陷阱5：未初始化的变量</span>
+<span class="fn">echo</span> <span class="st">"$undefined_var"</span>        <span class="cm"># 空输出</span>
+[ -z <span class="st">"$undefined_var"</span> ] && <span class="fn">echo</span> <span class="st">"变量未定义"</span>
+<span class="cm"># 使用 ${var:-default} 设置默认值</span></code></pre>
+    </div>
+
+    <div class="tip">Shell 编程的黄金法则：<strong>先用 shellcheck 检查，再用 set -euo pipefail 保护，最后用双引号包裹所有变量</strong>。遵循这三条原则，可以避免 90% 的 Shell 脚本 bug。</div>
+
+    <div class="danger">永远不要在生产环境中使用 <code>rm -rf /</code>、<code>dd if=/dev/zero of=/dev/sda</code> 等破坏性命令。在执行任何不可逆操作前，务必三重确认路径和参数。考虑使用 <code>--dry-run</code> 参数或先在测试环境中验证。</div>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,205 @@
+/* ============================================
+   在线代码编辑器样式
+   ============================================ */
+
+.editor-wrapper {
+    position: relative;
+    margin: 16px 0 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-code);
+}
+
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: rgba(30, 41, 59, 0.9);
+    border-bottom: 1px solid var(--border);
+}
+
+.editor-toolbar .code-lang {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: auto;
+}
+
+.editor-toolbar .dots {
+    display: flex;
+    gap: 6px;
+    margin-right: 12px;
+}
+
+.editor-toolbar .dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.editor-toolbar .dots span:nth-child(1) { background: #ef4444; }
+.editor-toolbar .dots span:nth-child(2) { background: #f59e0b; }
+.editor-toolbar .dots span:nth-child(3) { background: #22c55e; }
+
+.editor-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+}
+
+.editor-btn:hover {
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--primary-light);
+    border-color: var(--primary);
+}
+
+.editor-btn.run-btn {
+    background: rgba(34, 197, 94, 0.12);
+    color: var(--success);
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.editor-btn.run-btn:hover {
+    background: rgba(34, 197, 94, 0.25);
+}
+
+.editor-btn.run-online-btn {
+    background: rgba(59, 130, 246, 0.12);
+    color: var(--info);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.editor-btn.run-online-btn:hover {
+    background: rgba(59, 130, 246, 0.25);
+}
+
+.editor-btn.copied {
+    background: rgba(34, 197, 94, 0.2);
+    color: var(--success);
+    border-color: var(--success);
+}
+
+.editor-textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 20px;
+    background: var(--bg-code);
+    color: var(--text);
+    border: none;
+    outline: none;
+    resize: vertical;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    tab-size: 4;
+    -moz-tab-size: 4;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+.editor-textarea:focus {
+    background: rgba(13, 17, 23, 0.95);
+}
+
+.editor-output {
+    border-top: 1px solid var(--border);
+    background: #0a0e14;
+}
+
+.editor-output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background: rgba(20, 25, 35, 0.8);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.editor-output-header .close-output {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 4px;
+}
+
+.editor-output-header .close-output:hover {
+    color: var(--text);
+}
+
+.editor-output-content {
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+    max-height: 300px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.editor-output-content.error {
+    color: var(--danger);
+}
+
+.editor-output-content .output-line {
+    display: block;
+    padding: 1px 0;
+}
+
+.editor-output-content .output-error {
+    color: var(--danger);
+}
+
+.editor-output-content .output-log {
+    color: var(--text-muted);
+}
+
+.editor-output-content .output-result {
+    color: var(--success);
+}
+
+/* Copy notification */
+.copy-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg-card);
+    color: var(--success);
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--success);
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.copy-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
