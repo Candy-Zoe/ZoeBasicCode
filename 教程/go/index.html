@@ -1992,6 +1992,94 @@ EOF
                 <p>2. defer的参数在声明时求值，不是执行时</p>
                 <p>3. defer的性能开销在极端情况下可能成为瓶颈</p>
             </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// defer栈顺序演示：后进先出（LIFO）</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">stackOrder</span>() {
+    <span class="kw">for</span> i := <span class="nm">0</span>; i < <span class="nm">4</span>; i++ {
+        <span class="kw">defer</span> fmt.<span class="fn">Printf</span>(<span class="st">"defer %d\n"</span>, i)
+    }
+    <span class="cm">// 输出顺序: defer 3, defer 2, defer 1, defer 0</span>
+    <span class="cm">// defer的参数在声明时求值，所以值是当时的值</span>
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// defer修改命名返回值</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+
+<span class="cm">// defer可以修改命名返回值，用于错误处理</span>
+<span class="kw">func</span> <span class="fn">mustOpen</span>(path <span class="tp">string</span>) (f *os.File, err <span class="tp">error</span>) {
+    f, err = os.<span class="fn">Open</span>(path)
+    <span class="kw">if</span> err != <span class="kw">nil</span> {
+        <span class="kw">return</span>
+    }
+    <span class="kw">defer</span> <span class="kw">func</span>() {
+        <span class="kw">if</span> err != <span class="kw">nil</span> {
+            f.<span class="fn">Close</span>()
+        }
+    }()
+    <span class="cm">// 如果后续代码返回error，defer会自动关闭文件</span>
+    <span class="kw">return</span>
+}
+
+<span class="cm">// defer + 命名返回值实现panic恢复</span>
+<span class="kw">func</span> <span class="fn">safeFunc</span>() (result <span class="tp">int</span>, err <span class="tp">error</span>) {
+    <span class="kw">defer</span> <span class="kw">func</span>() {
+        <span class="kw">if</span> r := <span class="fn">recover</span>(); r != <span class="kw">nil</span> {
+            result = -<span class="nm">1</span>
+            err = fmt.<span class="fn">Errorf</span>(<span class="st">"recovered: %v"</span>, r)
+        }
+    }()
+    <span class="fn">panic</span>(<span class="st">"something went wrong"</span>)
+    <span class="kw">return</span>
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// defer在方法链中的使用</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+<span class="kw">import</span> <span class="st">"sync"</span>
+
+<span class="cm">// 确保锁一定被释放</span>
+<span class="kw">type</span> SafeMap <span class="kw">struct</span> {
+    mu   sync.RWMutex
+    data <span class="tp">map</span>[<span class="tp">string</span>]<span class="tp">string</span>
+}
+
+<span class="kw">func</span> (m *SafeMap) <span class="fn">Get</span>(key <span class="tp">string</span>) (<span class="tp">string</span>, <span class="tp">bool</span>) {
+    m.mu.<span class="fn">RLock</span>()
+    <span class="kw">defer</span> m.mu.<span class="fn">RUnlock</span>() <span class="cm">// 读锁在函数返回时释放</span>
+    val, ok := m.data[key]
+    <span class="kw">return</span> val, ok
+}
+
+<span class="kw">func</span> (m *SafeMap) <span class="fn">Set</span>(key, value <span class="tp">string</span>) {
+    m.mu.<span class="fn">Lock</span>()
+    <span class="kw">defer</span> m.mu.<span class="fn">Unlock</span>() <span class="cm">// 写锁在函数返回时释放</span>
+    m.data[key] = value
+}</code></pre>
+            </div>
         </section>
 
         <!-- 第15章：结构体 -->
@@ -2530,6 +2618,172 @@ EOF
                 <p>2. 指针接收者的方法只能通过指针调用满足接口</p>
                 <p>3. 接口断言失败会panic，使用comma-ok模式检查</p>
             </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// 隐式实现接口：无需声明implements</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+
+<span class="cm">// 定义接口</span>
+<span class="kw">type</span> Writer <span class="kw">interface</span> {
+    <span class="fn">Write</span>(p []<span class="tp">byte</span>) (<span class="tp">int</span>, <span class="tp">error</span>)
+}
+
+<span class="cm">// 定义另一个接口</span>
+<span class="kw">type</span> Closer <span class="kw">interface</span> {
+    <span class="fn">Close</span>() <span class="tp">error</span>
+}
+
+<span class="cm">// io.ReadWriter由Reader和Writer组合而成</span>
+<span class="kw">type</span> ReadWriter <span class="kw">interface</span> {
+    Reader
+    Writer
+}
+
+<span class="cm">// 定义具体类型——不需要显式声明实现了哪个接口</span>
+<span class="kw">type</span> Buffer <span class="kw">struct</span> {
+    data []<span class="tp">byte</span>
+}
+
+<span class="cm">// Buffer隐式实现了Writer接口</span>
+<span class="kw">func</span> (b *Buffer) <span class="fn">Write</span>(p []<span class="tp">byte</span>) (<span class="tp">int</span>, <span class="tp">error</span>) {
+    b.data = <span class="fn">append</span>(b.data, p...)
+    <span class="kw">return</span> <span class="fn">len</span>(p), <span class="kw">nil</span>
+}
+
+<span class="cm">// Buffer也隐式实现了Closer接口</span>
+<span class="kw">func</span> (b *Buffer) <span class="fn">Close</span>() <span class="tp">error</span> {
+    b.data = <span class="kw">nil</span>
+    <span class="kw">return</span> <span class="kw">nil</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    buf := &Buffer{}
+    
+    <span class="cm">// 编译器在编译时检查Buffer是否实现了Writer</span>
+    <span class="kw">var</span> w Writer = buf <span class="cm">// 隐式赋值，无需声明</span>
+    w.<span class="fn">Write</span>([]<span class="tp">byte</span>(<span class="st">"hello"</span>))
+    
+    <span class="cm">// Buffer同时实现了Writer和Closer</span>
+    <span class="kw">var</span> c Closer = buf
+    c.<span class="fn">Close</span>()
+    
+    fmt.<span class="fn">Println</span>(<span class="st">"Buffer隐式实现了多个接口"</span>)
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// 接口组合：构建更大的接口</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+
+<span class="cm">// 小接口组合成大接口（Go标准库风格）</span>
+<span class="kw">type</span> Stringer <span class="kw">interface</span> {
+    <span class="fn">String</span>() <span class="tp">string</span>
+}
+
+<span class="kw">type</span> Errorer <span class="kw">interface</span> {
+    <span class="fn">Error</span>() <span class="tp">string</span>
+}
+
+<span class="cm">// 组合接口</span>
+<span class="kw">type</span> StringError <span class="kw">interface</span> {
+    Stringer
+    Errorer
+}
+
+<span class="cm">// 自定义类型同时满足组合接口</span>
+<span class="kw">type</span> AppError <span class="kw">struct</span> {
+    Code    <span class="tp">int</span>
+    Message <span class="tp">string</span>
+}
+
+<span class="kw">func</span> (e *AppError) <span class="fn">String</span>() <span class="tp">string</span> {
+    <span class="kw">return</span> fmt.<span class="fn">Sprintf</span>(<span class="st">"[%d] %s"</span>, e.Code, e.Message)
+}
+
+<span class="kw">func</span> (e *AppError) <span class="fn">Error</span>() <span class="tp">string</span> {
+    <span class="kw">return</span> e.<span class="fn">String</span>()
+}
+
+<span class="cm">// 函数接受组合接口</span>
+<span class="kw">func</span> <span class="fn">logError</span>(e StringError) {
+    fmt.<span class="fn">Printf</span>(<span class="st">"Error: %s\n"</span>, e.<span class="fn">Error</span>())
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    err := &AppError{Code: <span class="nm">404</span>, Message: <span class="st">"not found"</span>}
+    <span class="fn">logError</span>(err)
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// 使用接口实现多态和依赖注入</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+
+<span class="cm">// 数据存储接口</span>
+<span class="kw">type</span> Store <span class="kw">interface</span> {
+    <span class="fn">Save</span>(key <span class="tp">string</span>, value <span class="kw">interface</span>{}) <span class="tp">error</span>
+    <span class="fn">Load</span>(key <span class="tp">string</span>) (<span class="kw">interface</span>{}, <span class="tp">error</span>)
+}
+
+<span class="cm">// 内存实现</span>
+<span class="kw">type</span> MemStore <span class="kw">struct</span> {
+    data <span class="tp">map</span>[<span class="tp">string</span>]<span class="kw">interface</span>{}
+}
+
+<span class="kw">func</span> <span class="fn">NewMemStore</span>() *MemStore {
+    <span class="kw">return</span> &MemStore{data: <span class="fn">make</span>(<span class="tp">map</span>[<span class="tp">string</span>]<span class="kw">interface</span>{})}
+}
+
+<span class="kw">func</span> (m *MemStore) <span class="fn">Save</span>(key <span class="tp">string</span>, value <span class="kw">interface</span>{}) <span class="tp">error</span> {
+    m.data[key] = value
+    <span class="kw">return</span> <span class="kw">nil</span>
+}
+
+<span class="kw">func</span> (m *MemStore) <span class="fn">Load</span>(key <span class="tp">string</span>) (<span class="kw">interface</span>{}, <span class="tp">error</span>) {
+    v, ok := m.data[key]
+    <span class="kw">if</span> !ok {
+        <span class="kw">return</span> <span class="kw">nil</span>, fmt.<span class="fn">Errorf</span>(<span class="st">"key %s not found"</span>, key)
+    }
+    <span class="kw">return</span> v, <span class="kw">nil</span>
+}
+
+<span class="cm">// Service依赖Store接口，不关心具体实现</span>
+<span class="kw">type</span> Service <span class="kw">struct</span> {
+    store Store
+}
+
+<span class="kw">func</span> <span class="fn">NewService</span>(s Store) *Service {
+    <span class="kw">return</span> &Service{store: s}
+}
+
+<span class="kw">func</span> (s *Service) <span class="fn">SaveUser</span>(id <span class="tp">string</span>, name <span class="tp">string</span>) <span class="tp">error</span> {
+    <span class="kw">return</span> s.store.<span class="fn">Save</span>(id, name)
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    svc := <span class="fn">NewService</span>(<span class="fn">NewMemStore</span>())
+    svc.<span class="fn">SaveUser</span>(<span class="st">"1"</span>, <span class="st">"Alice"</span>)
+    fmt.<span class="fn">Println</span>(<span class="st">"通过接口实现依赖注入"</span>)
+}</code></pre>
+            </div>
         </section>
 
         <!-- 第18章：Goroutine -->
@@ -2716,6 +2970,140 @@ EOF
                 <p>1. Goroutine创建成本极低（约0.3μs），可以大量创建</p>
                 <p>2. 不要使用<code>time.Sleep</code>同步goroutine，使用WaitGroup或Channel</p>
                 <p>3. 注意goroutine泄漏：确保goroutine有退出路径</p>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// errgroup：优雅处理多个goroutine的错误</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"context"</span>
+    <span class="st">"fmt"</span>
+    <span class="st">"golang.org/x/sync/errgroup"</span>
+)
+
+<span class="kw">func</span> <span class="fn">fetchURLs</span>(urls []<span class="tp">string</span>) <span class="tp">error</span> {
+    g, ctx := errgroup.<span class="fn">WithContext</span>(context.<span class="fn">Background</span>())
+    
+    <span class="kw">for</span> _, url := <span class="kw">range</span> urls {
+        url := url <span class="cm">// 捕获循环变量</span>
+        g.<span class="fn">Go</span>(<span class="kw">func</span>() <span class="tp">error</span> {
+            <span class="cm">// 检查context是否已取消</span>
+            <span class="kw">select</span> {
+            <span class="kw">case</span> <-ctx.<span class="fn">Done</span>():
+                <span class="kw">return</span> ctx.<span class="fn">Err</span>()
+            <span class="kw">default</span>:
+            }
+            
+            <span class="cm">// 模拟HTTP请求</span>
+            fmt.<span class="fn">Printf</span>(<span class="st">"Fetching %s...\n"</span>, url)
+            <span class="kw">return</span> <span class="kw">nil</span>
+        })
+    }
+    
+    <span class="cm">// 等待所有goroutine完成，任一错误会取消其他goroutine</span>
+    <span class="kw">return</span> g.<span class="fn">Wait</span>()
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    urls := []<span class="tp">string</span>{<span class="st">"https://a.com"</span>, <span class="st">"https://b.com"</span>, <span class="st">"https://c.com"</span>}
+    <span class="kw">if</span> err := <span class="fn">fetchURLs</span>(urls); err != <span class="kw">nil</span> {
+        fmt.<span class="fn">Printf</span>(<span class="st">"Error: %v\n"</span>, err)
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// Worker Pool：固定数量的goroutine处理任务</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"fmt"</span>
+    <span class="st">"sync"</span>
+)
+
+<span class="kw">func</span> <span class="fn">workerPool</span>(numWorkers <span class="tp">int</span>, jobs <-<span class="tp">chan</span> <span class="tp">int</span>, results <span class="tp">chan</span><- <span class="tp">int</span>) {
+    <span class="kw">var</span> wg sync.WaitGroup
+    
+    <span class="kw">for</span> i := <span class="nm">0</span>; i < numWorkers; i++ {
+        wg.<span class="fn">Add</span>(<span class="nm">1</span>)
+        <span class="kw">go</span> <span class="kw">func</span>(id <span class="tp">int</span>) {
+            <span class="kw">defer</span> wg.<span class="fn">Done</span>()
+            <span class="kw">for</span> job := <span class="kw">range</span> jobs {
+                results <- job * job <span class="cm">// 处理任务</span>
+            }
+        }(i)
+    }
+    
+    <span class="cm">// 等待所有worker完成后关闭results channel</span>
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        wg.<span class="fn">Wait</span>()
+        <span class="fn">close</span>(results)
+    }()
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    jobs := <span class="fn">make</span>(<span class="tp">chan</span> <span class="tp">int</span>, <span class="nm">100</span>)
+    results := <span class="fn">make</span>(<span class="tp">chan</span> <span class="tp">int</span>, <span class="nm">100</span>)
+    
+    <span class="fn">workerPool</span>(<span class="nm">3</span>, jobs, results)
+    
+    <span class="cm">// 发送任务</span>
+    <span class="kw">for</span> i := <span class="nm">0</span>; i < <span class="nm">9</span>; i++ {
+        jobs <- i
+    }
+    <span class="fn">close</span>(jobs)
+    
+    <span class="cm">// 收集结果</span>
+    <span class="kw">for</span> r := <span class="kw">range</span> results {
+        fmt.<span class="fn">Printf</span>(<span class="st">"结果: %d\n"</span>, r)
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// 使用WaitGroup等待goroutine完成</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"fmt"</span>
+    <span class="st">"sync"</span>
+    <span class="st">"time"</span>
+)
+
+<span class="kw">func</span> <span class="fn">processItems</span>(items []<span class="tp">string</span>) {
+    <span class="kw">var</span> wg sync.WaitGroup
+    
+    <span class="kw">for</span> _, item := <span class="kw">range</span> items {
+        wg.<span class="fn">Add</span>(<span class="nm">1</span>)
+        <span class="kw">go</span> <span class="kw">func</span>(item <span class="tp">string</span>) {
+            <span class="kw">defer</span> wg.<span class="fn">Done</span>()
+            
+            <span class="cm">// 模拟处理</span>
+            time.<span class="fn">Sleep</span>(<span class="nm">100</span> * time.Millisecond)
+            fmt.<span class="fn">Printf</span>(<span class="st">"处理完成: %s\n"</span>, item)
+        }(item)
+    }
+    
+    wg.<span class="fn">Wait</span>() <span class="cm">// 阻塞直到所有goroutine完成</span>
+    fmt.<span class="fn">Println</span>(<span class="st">"所有任务完成"</span>)
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="fn">processItems</span>([]<span class="tp">string</span>{<span class="st">"task1"</span>, <span class="st">"task2"</span>, <span class="st">"task3"</span>})
+}</code></pre>
             </div>
         </section>
 
@@ -2956,6 +3344,196 @@ EOF
                 <p>2. 重复关闭channel会panic</p>
                 <p>3. 无缓冲channel的发送和接收必须在不同goroutine中，否则会死锁</p>
             </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// Fan-in/Fan-out：并行处理并合并结果</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"fmt"</span>
+    <span class="st">"sync"</span>
+)
+
+<span class="cm">// Fan-out: 启动多个worker处理</span>
+<span class="kw">func</span> <span class="fn">fanOut</span>(input <-<span class="tp">chan</span> <span class="tp">int</span>, workers <span class="tp">int</span>) []<-<span class="tp">chan</span> <span class="tp">int</span> {
+    channels := <span class="fn">make</span>([]<-<span class="tp">chan</span> <span class="tp">int</span>, workers)
+    <span class="kw">for</span> i := <span class="nm">0</span>; i < workers; i++ {
+        channels[i] = <span class="fn">process</span>(input)
+    }
+    <span class="kw">return</span> channels
+}
+
+<span class="kw">func</span> <span class="fn">process</span>(input <-<span class="tp">chan</span> <span class="tp">int</span>) <-<span class="tp">chan</span> <span class="tp">int</span> {
+    out := <span class="fn">make</span>(<span class="tp">chan</span> <span class="tp">int</span>)
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        <span class="kw">for</span> v := <span class="kw">range</span> input {
+            out <- v * v <span class="cm">// 平方处理</span>
+        }
+        <span class="fn">close</span>(out)
+    }()
+    <span class="kw">return</span> out
+}
+
+<span class="cm">// Fan-in: 合并多个channel到一个channel</span>
+<span class="kw">func</span> <span class="fn">fanIn</span>(channels ...<-<span class="tp">chan</span> <span class="tp">int</span>) <-<span class="tp">chan</span> <span class="tp">int</span> {
+    <span class="kw">var</span> wg sync.WaitGroup
+    merged := <span class="fn">make</span>(<span class="tp">chan</span> <span class="tp">int</span>)
+    
+    <span class="kw">for</span> _, ch := <span class="kw">range</span> channels {
+        wg.<span class="fn">Add</span>(<span class="nm">1</span>)
+        <span class="kw">go</span> <span class="kw">func</span>(c <-<span class="tp">chan</span> <span class="tp">int</span>) {
+            <span class="kw">defer</span> wg.<span class="fn">Done</span>()
+            <span class="kw">for</span> v := <span class="kw">range</span> c {
+                merged <- v
+            }
+        }(ch)
+    }
+    
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        wg.<span class="fn">Wait</span>()
+        <span class="fn">close</span>(merged)
+    }()
+    
+    <span class="kw">return</span> merged
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    input := <span class="fn">make</span>(<span class="tp">chan</span> <span class="tp">int</span>)
+    
+    <span class="cm">// 生产者</span>
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        <span class="kw">for</span> i := <span class="nm">1</span>; i <= <span class="nm">5</span>; i++ {
+            input <- i
+        }
+        <span class="fn">close</span>(input)
+    }()
+    
+    <span class="cm">// Fan-out到3个worker，然后Fan-in合并</span>
+    channels := <span class="fn">fanOut</span>(input, <span class="nm">3</span>)
+    <span class="kw">for</span> v := <span class="kw">range</span> <span class="fn">fanIn</span>(channels...) {
+        fmt.<span class="fn">Printf</span>(<span class="st">"%d "</span>, v)
+    }
+    fmt.<span class="fn">Println</span>()
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// Pipeline：数据流水线处理</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+
+<span class="cm">// 第一阶段：生成数字</span>
+<span class="kw">func</span> <span class="fn">generate</span>(nums ...<span class="tp">int</span>) <-<span class="tp">chan</span> <span class="tp">int</span> {
+    out := <span class="fn">make</span>(<span class="tp">chan</span> <span class="tp">int</span>)
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        <span class="kw">for</span> _, n := <span class="kw">range</span> nums {
+            out <- n
+        }
+        <span class="fn">close</span>(out)
+    }()
+    <span class="kw">return</span> out
+}
+
+<span class="cm">// 第二阶段：平方</span>
+<span class="kw">func</span> <span class="fn">square</span>(in <-<span class="tp">chan</span> <span class="tp">int</span>) <-<span class="tp">chan</span> <span class="tp">int</span> {
+    out := <span class="fn">make</span>(<span class="tp">chan</span> <span class="tp">int</span>)
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        <span class="kw">for</span> n := <span class="kw">range</span> in {
+            out <- n * n
+        }
+        <span class="fn">close</span>(out)
+    }()
+    <span class="kw">return</span> out
+}
+
+<span class="cm">// 第三阶段：过滤偶数</span>
+<span class="kw">func</span> <span class="fn">filterEven</span>(in <-<span class="tp">chan</span> <span class="tp">int</span>) <-<span class="tp">chan</span> <span class="tp">int</span> {
+    out := <span class="fn">make</span>(<span class="tp">chan</span> <span class="tp">int</span>)
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        <span class="kw">for</span> n := <span class="kw">range</span> in {
+            <span class="kw">if</span> n%<span class="nm">2</span> == <span class="nm">0</span> {
+                out <- n
+            }
+        }
+        <span class="fn">close</span>(out)
+    }()
+    <span class="kw">return</span> out
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cm">// 组合流水线: generate -> square -> filterEven</span>
+    <span class="kw">for</span> v := <span class="kw">range</span> <span class="fn">filterEven</span>(<span class="fn">square</span>(<span class="fn">generate</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>))) {
+        fmt.<span class="fn">Printf</span>(<span class="st">"%d "</span>, v)
+    }
+    <span class="cm">// 输出: 4 16 (2²=4, 4²=16)</span>
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// 超时控制：使用time.After或context</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"context"</span>
+    <span class="st">"fmt"</span>
+    <span class="st">"time"</span>
+)
+
+<span class="cm">// 方式1: time.After实现超时</span>
+<span class="kw">func</span> <span class="fn">fetchWithTimeout</span>() <span class="tp">string</span> {
+    ch := <span class="fn">make</span>(<span class="tp">chan</span> <span class="tp">string</span>, <span class="nm">1</span>)
+    
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        time.<span class="fn">Sleep</span>(<span class="nm">200</span> * time.Millisecond) <span class="cm">// 模拟慢操作</span>
+        ch <- <span class="st">"data"</span>
+    }()
+    
+    <span class="kw">select</span> {
+    <span class="kw">case</span> result := <-ch:
+        <span class="kw">return</span> result
+    <span class="kw">case</span> <-time.<span class="fn">After</span>(<span class="nm">100</span> * time.Millisecond):
+        <span class="kw">return</span> <span class="st">"timeout"</span>
+    }
+}
+
+<span class="cm">// 方式2: context.WithTimeout（推荐）</span>
+<span class="kw">func</span> <span class="fn">fetchWithContext</span>(ctx context.Context) <span class="tp">string</span> {
+    ch := <span class="fn">make</span>(<span class="tp">chan</span> <span class="tp">string</span>, <span class="nm">1</span>)
+    
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        time.<span class="fn">Sleep</span>(<span class="nm">200</span> * time.Millisecond)
+        ch <- <span class="st">"data"</span>
+    }()
+    
+    <span class="kw">select</span> {
+    <span class="kw">case</span> result := <-ch:
+        <span class="kw">return</span> result
+    <span class="kw">case</span> <-ctx.<span class="fn">Done</span>():
+        <span class="kw">return</span> <span class="st">"timeout"</span>
+    }
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    fmt.<span class="fn">Println</span>(<span class="fn">fetchWithTimeout</span>())
+    
+    ctx, cancel := context.<span class="fn">WithTimeout</span>(context.<span class="fn">Background</span>(), <span class="nm">100</span>*time.Millisecond)
+    <span class="kw">defer</span> <span class="fn">cancel</span>()
+    fmt.<span class="fn">Println</span>(<span class="fn">fetchWithContext</span>(ctx))
+}</code></pre>
+            </div>
         </section>
 
         <!-- 第20章：Select -->
@@ -3137,6 +3715,123 @@ EOF
     
     fmt.<span class="fn">Println</span>(<span class="st">"\n=== 负载均衡 ==="</span>)
     <span class="fn">loadBalancing</span>()
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// 非阻塞操作：使用default case实现</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">trySend</span>(ch <span class="tp">chan</span> <span class="tp">int</span>, value <span class="tp">int</span>) <span class="tp">bool</span> {
+    <span class="kw">select</span> {
+    <span class="kw">case</span> ch <- value:
+        <span class="kw">return</span> <span class="kw">true</span> <span class="cm">// 发送成功</span>
+    <span class="kw">default</span>:
+        <span class="kw">return</span> <span class="kw">false</span> <span class="cm">// channel已满，非阻塞</span>
+    }
+}
+
+<span class="kw">func</span> <span class="fn">tryReceive</span>(ch <span class="tp">chan</span> <span class="tp">int</span>) (<span class="tp">int</span>, <span class="tp">bool</span>) {
+    <span class="kw">select</span> {
+    <span class="kw">case</span> v := <-ch:
+        <span class="kw">return</span> v, <span class="kw">true</span> <span class="cm">// 接收成功</span>
+    <span class="kw">default</span>:
+        <span class="kw">return</span> <span class="nm">0</span>, <span class="kw">false</span> <span class="cm">// channel为空，非阻塞</span>
+    }
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    ch := <span class="fn">make</span>(<span class="tp">chan</span> <span class="tp">int</span>, <span class="nm">2</span>)
+    ch <- <span class="nm">1</span>
+    ch <- <span class="nm">2</span>
+    
+    <span class="cm">// 尝试发送（会失败，channel已满）</span>
+    <span class="kw">if</span> !<span class="fn">trySend</span>(ch, <span class="nm">3</span>) {
+        fmt.<span class="fn">Println</span>(<span class="st">"发送失败：channel已满"</span>)
+    }
+    
+    <span class="cm">// 尝试接收</span>
+    <span class="kw">if</span> v, ok := <span class="fn">tryReceive</span>(ch); ok {
+        fmt.<span class="fn">Printf</span>(<span class="st">"接收到: %d\n"</span>, v)
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// Done channel模式：优雅关闭goroutine</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"fmt"</span>
+    <span class="st">"time"</span>
+)
+
+<span class="kw">func</span> <span class="fn">worker</span>(done <span class="tp">chan</span> <span class="kw">struct</span>{}) {
+    <span class="kw">for</span> {
+        <span class="kw">select</span> {
+        <span class="kw">case</span> <-done:
+            fmt.<span class="fn">Println</span>(<span class="st">"Worker收到退出信号"</span>)
+            <span class="kw">return</span>
+        <span class="kw">default</span>:
+            fmt.<span class="fn">Println</span>(<span class="st">"Worker工作中..."</span>)
+            time.<span class="fn">Sleep</span>(<span class="nm">100</span> * time.Millisecond)
+        }
+    }
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    done := <span class="fn">make</span>(<span class="tp">chan</span> <span class="kw">struct</span>{})
+    
+    <span class="kw">go</span> <span class="fn">worker</span>(done)
+    
+    time.<span class="fn">Sleep</span>(<span class="nm">350</span> * time.Millisecond)
+    <span class="fn">close</span>(done) <span class="cm">// 发送退出信号（关闭channel）</span>
+    
+    time.<span class="fn">Sleep</span>(<span class="nm">50</span> * time.Millisecond) <span class="cm">// 等待worker退出</span>
+    fmt.<span class="fn">Println</span>(<span class="st">"主程序退出"</span>)
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// select与ticker实现定期任务</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"fmt"</span>
+    <span class="st">"time"</span>
+)
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    ticker := time.<span class="fn">NewTicker</span>(<span class="nm">200</span> * time.Millisecond)
+    <span class="kw">defer</span> ticker.<span class="fn">Stop</span>()
+    
+    timeout := time.<span class="fn">After</span>(<span class="nm">700</span> * time.Millisecond)
+    count := <span class="nm">0</span>
+    
+    <span class="kw">for</span> {
+        <span class="kw">select</span> {
+        <span class="kw">case</span> <-ticker.C:
+            count++
+            fmt.<span class="fn">Printf</span>(<span class="st">"Tick %d at %v\n"</span>, count, time.<span class="fn">Now</span>().<span class="fn">Format</span>(<span class="st">"15:04:05.000"</span>))
+        <span class="kw">case</span> <-timeout:
+            fmt.<span class="fn">Println</span>(<span class="st">"超时退出"</span>)
+            <span class="kw">return</span>
+        }
+    }
 }</code></pre>
             </div>
         </section>
@@ -3326,6 +4021,182 @@ EOF
             </div>
         </section>
 
+        <div class="code-block" data-lang="go">
+            <div class="code-header">
+                <div class="dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">Go</span>
+            </div>
+            <pre><code><span class="cm">// Context：取消、截止时间、值传递</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"context"</span>
+    <span class="st">"fmt"</span>
+    <span class="st">"time"</span>
+)
+
+<span class="cm">// 1. Context取消：手动取消goroutine</span>
+<span class="kw">func</span> <span class="fn">withCancel</span>() {
+    ctx, cancel := context.<span class="fn">WithCancel</span>(context.<span class="fn">Background</span>())
+    
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        <span class="kw">for</span> {
+            <span class="kw">select</span> {
+            <span class="kw">case</span> <-ctx.<span class="fn">Done</span>():
+                fmt.<span class="fn">Printf</span>(<span class="st">"取消: %v\n"</span>, ctx.<span class="fn">Err</span>())
+                <span class="kw">return</span>
+            <span class="kw">default</span>:
+                fmt.<span class="fn">Println</span>(<span class="st">"工作中..."</span>)
+                time.<span class="fn">Sleep</span>(<span class="nm">100</span> * time.Millisecond)
+            }
+        }
+    }()
+    
+    time.<span class="fn">Sleep</span>(<span class="nm">350</span> * time.Millisecond)
+    <span class="fn">cancel</span>() <span class="cm">// 手动触发取消</span>
+    time.<span class="fn">Sleep</span>(<span class="nm">50</span> * time.Millisecond)
+}
+
+<span class="cm">// 2. Context截止时间：自动超时</span>
+<span class="kw">func</span> <span class="fn">withDeadline</span>() {
+    deadline := time.<span class="fn">Now</span>().<span class="fn">Add</span>(<span class="nm">300</span> * time.Millisecond)
+    ctx, cancel := context.<span class="fn">WithDeadline</span>(context.<span class="fn">Background</span>(), deadline)
+    <span class="kw">defer</span> <span class="fn">cancel</span>()
+    
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        <span class="kw">for</span> {
+            <span class="kw">select</span> {
+            <span class="kw">case</span> <-ctx.<span class="fn">Done</span>():
+                fmt.<span class="fn">Printf</span>(<span class="st">"截止时间到达: %v\n"</span>, ctx.<span class="fn">Err</span>())
+                <span class="kw">return</span>
+            <span class="kw">default</span>:
+                time.<span class="fn">Sleep</span>(<span class="nm">50</span> * time.Millisecond)
+            }
+        }
+    }()
+    
+    time.<span class="fn">Sleep</span>(<span class="nm">400</span> * time.Millisecond)
+}
+
+<span class="cm">// 3. Context值传递：传递请求级元数据</span>
+<span class="kw">type</span> contextKey <span class="tp">string</span>
+
+<span class="kw">const</span> requestIDKey contextKey = <span class="st">"requestID"</span>
+
+<span class="kw">func</span> <span class="fn">withValue</span>() {
+    ctx := context.<span class="fn">WithValue</span>(context.<span class="fn">Background</span>(), requestIDKey, <span class="st">"req-123"</span>)
+    ctx = context.<span class="fn">WithValue</span>(ctx, <span class="st">"userID"</span>, <span class="nm">42</span>)
+    
+    <span class="cm">// 从context中提取值</span>
+    reqID := ctx.<span class="fn">Value</span>(requestIDKey).( <span class="tp">string</span>)
+    userID := ctx.<span class="fn">Value</span>(<span class="st">"userID"</span>).(<span class="tp">int</span>)
+    
+    fmt.<span class="fn">Printf</span>(<span class="st">"RequestID: %s, UserID: %d\n"</span>, reqID, userID)
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    fmt.<span class="fn">Println</span>(<span class="st">"=== Cancel ==="</span>)
+    <span class="fn">withCancel</span>()
+    
+    fmt.<span class="fn">Println</span>(<span class="st">"\n=== Deadline ==="</span>)
+    <span class="fn">withDeadline</span>()
+    
+    fmt.<span class="fn">Println</span>(<span class="st">"\n=== Value ==="</span>)
+    <span class="fn">withValue</span>()
+}</code></pre>
+        </div>
+
+        <div class="code-block" data-lang="go">
+            <div class="code-header">
+                <div class="dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">Go</span>
+            </div>
+            <pre><code><span class="cm">// Context在HTTP请求中的实际应用</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"context"</span>
+    <span class="st">"fmt"</span>
+    <span class="st">"net/http"</span>
+    <span class="st">"time"</span>
+)
+
+<span class="cm">// 为每个HTTP请求创建带超时的context</span>
+<span class="kw">func</span> <span class="fn">handler</span>(w http.ResponseWriter, r *http.Request) {
+    <span class="cm">// 从请求中获取context（已绑定客户端超时）</span>
+    ctx := r.<span class="fn">Context</span>()
+    
+    <span class="cm">// 添加自定义值到context</span>
+    ctx = context.<span class="fn">WithValue</span>(ctx, <span class="st">"requestID"</span>, <span class="st">"abc-123"</span>)
+    
+    <span class="cm">// 调用下游服务时传递context</span>
+    result, err := <span class="fn">fetchFromDB</span>(ctx)
+    <span class="kw">if</span> err != <span class="kw">nil</span> {
+        http.<span class="fn">Error</span>(w, err.<span class="fn">Error</span>(), <span class="nm">500</span>)
+        <span class="kw">return</span>
+    }
+    
+    fmt.<span class="fn">Fprint</span>(w, result)
+}
+
+<span class="kw">func</span> <span class="fn">fetchFromDB</span>(ctx context.Context) (<span class="tp">string</span>, <span class="tp">error</span>) {
+    <span class="cm">// 检查context是否已取消</span>
+    <span class="kw">select</span> {
+    <span class="kw">case</span> <-ctx.<span class="fn">Done</span>():
+        <span class="kw">return</span> <span class="st">""</span>, ctx.<span class="fn">Err</span>()
+    <span class="kw">default</span>:
+    }
+    
+    <span class="cm">// 模拟数据库查询</span>
+    <span class="kw">return</span> <span class="st">"result"</span>, <span class="kw">nil</span>
+}
+
+<span class="cm">// 使用WithTimeout包装context</span>
+<span class="kw">func</span> <span class="fn">fetchWithTimeout</span>(ctx context.Context) (<span class="tp">string</span>, <span class="tp">error</span>) {
+    ctx, cancel := context.<span class="fn">WithTimeout</span>(ctx, <span class="nm">5</span>*time.Second)
+    <span class="kw">defer</span> <span class="fn">cancel</span>()
+    
+    <span class="kw">return</span> <span class="fn">fetchFromDB</span>(ctx)
+}</code></pre>
+        </div>
+
+        <div class="code-block" data-lang="go">
+            <div class="code-header">
+                <div class="dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">Go</span>
+            </div>
+            <pre><code><span class="cm">// Context级联取消：父子context关系</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"context"</span>
+    <span class="st">"fmt"</span>
+    <span class="st">"time"</span>
+)
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cm">// 父context取消时，所有子context也会被取消</span>
+    parentCtx, parentCancel := context.<span class="fn">WithCancel</span>(context.<span class="fn">Background</span>())
+    
+    <span class="cm">// 子context有自己的截止时间</span>
+    childCtx, childCancel := context.<span class="fn">WithTimeout</span>(parentCtx, <span class="nm">2</span>*time.Second)
+    <span class="kw">defer</span> <span class="fn">childCancel</span>()
+    
+    <span class="cm">// 启动goroutine监听子context</span>
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        <-childCtx.<span class="fn">Done</span>()
+        fmt.<span class="fn">Printf</span>(<span class="st">"子context: %v\n"</span>, childCtx.<span class="fn">Err</span>())
+    }()
+    
+    <span class="cm">// 500ms后取消父context</span>
+    time.<span class="fn">Sleep</span>(<span class="nm">500</span> * time.Millisecond)
+    <span class="fn">parentCancel</span>()
+    
+    <span class="cm">// 子context也会被取消（即使还没到2秒截止时间）</span>
+    time.<span class="fn">Sleep</span>(<span class="nm">100</span> * time.Millisecond)
+}</code></pre>
+        </div>
+
         <!-- 第22章：错误处理 -->
         <section id="errors">
             <h1>22. 错误处理</h1>
@@ -3506,6 +4377,181 @@ EOF
                 <p>4. <strong>使用errors.Is和errors.As</strong>：避免直接比较错误值</p>
                 <p>5. <strong>不要滥用panic</strong>：panic应该只用于不可恢复的错误</p>
             </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// 错误包装与errors.Is链式检查</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"errors"</span>
+    <span class="st">"fmt"</span>
+    <span class="st">"os"</span>
+)
+
+<span class="cm">// 自定义哨兵错误</span>
+<span class="kw">var</span> ErrNotFound = errors.<span class="fn">New</span>(<span class="st">"record not found"</span>)
+
+<span class="cm">// 自定义错误类型</span>
+<span class="kw">type</span> PathError <span class="kw">struct</span> {
+    Op   <span class="tp">string</span>
+    Path <span class="tp">string</span>
+    Err  <span class="tp">error</span>
+}
+
+<span class="kw">func</span> (e *PathError) <span class="fn">Error</span>() <span class="tp">string</span> {
+    <span class="kw">return</span> fmt.<span class="fn">Sprintf</span>(<span class="st">"%s %s: %v"</span>, e.Op, e.Path, e.Err)
+}
+
+<span class="kw">func</span> (e *PathError) <span class="fn">Unwrap</span>() <span class="tp">error</span> {
+    <span class="kw">return</span> e.Err <span class="cm">// 暴露内部错误供errors.Is/As检查</span>
+}
+
+<span class="cm">// 错误包装：添加上下文</span>
+<span class="kw">func</span> <span class="fn">readFile</span>(path <span class="tp">string</span>) ([]<span class="tp">byte</span>, <span class="tp">error</span>) {
+    data, err := os.<span class="fn">ReadFile</span>(path)
+    <span class="kw">if</span> err != <span class="kw">nil</span> {
+        <span class="kw">return</span> <span class="kw">nil</span>, &PathError{Op: <span class="st">"read"</span>, Path: path, Err: err}
+    }
+    <span class="kw">return</span> data, <span class="kw">nil</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    _, err := <span class="fn">readFile</span>(<span class="st">"/nonexistent"</span>)
+    
+    <span class="cm">// errors.Is可以检查错误链中的任意错误</span>
+    <span class="kw">if</span> errors.<span class="fn">Is</span>(err, os.ErrNotExist) {
+        fmt.<span class="fn">Println</span>(<span class="st">"文件不存在"</span>) <span class="cm">// 会匹配到</span>
+    }
+    
+    <span class="cm">// errors.As可以提取特定类型的错误</span>
+    <span class="kw">var</span> pathErr *PathError
+    <span class="kw">if</span> errors.<span class="fn">As</span>(err, &pathErr) {
+        fmt.<span class="fn">Printf</span>(<span class="st">"操作: %s, 路径: %s\n"</span>, pathErr.Op, pathErr.Path)
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// 自定义错误类型与错误组合</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"errors"</span>
+    <span class="st">"fmt"</span>
+)
+
+<span class="cm">// 业务错误：包含错误码和消息</span>
+<span class="kw">type</span> BizError <span class="kw">struct</span> {
+    Code    <span class="tp">int</span>
+    Message <span class="tp">string</span>
+    Cause   <span class="tp">error</span>
+}
+
+<span class="kw">func</span> (e *BizError) <span class="fn">Error</span>() <span class="tp">string</span> {
+    <span class="kw">return</span> fmt.<span class="fn">Sprintf</span>(<span class="st">"[%d] %s"</span>, e.Code, e.Message)
+}
+
+<span class="kw">func</span> (e *BizError) <span class="fn">Unwrap</span>() <span class="tp">error</span> { <span class="kw">return</span> e.Cause }
+
+<span class="cm">// 创建业务错误的辅助函数</span>
+<span class="kw">func</span> <span class="fn">newBizError</span>(code <span class="tp">int</span>, msg <span class="tp">string</span>, cause <span class="tp">error</span>) *BizError {
+    <span class="kw">return</span> &BizError{Code: code, Message: msg, Cause: cause}
+}
+
+<span class="cm">// 预定义错误码</span>
+<span class="kw">const</span> (
+    ErrCodeNotFound = <span class="nm">1001</span>
+    ErrCodeAuth     = <span class="nm">2001</span>
+    ErrCodeInternal = <span class="nm">5001</span>
+)
+
+<span class="kw">func</span> <span class="fn">findUser</span>(id <span class="tp">int</span>) (<span class="tp">string</span>, <span class="tp">error</span>) {
+    <span class="kw">if</span> id != <span class="nm">1</span> {
+        <span class="kw">return</span> <span class="st">""</span>, <span class="fn">newBizError</span>(ErrCodeNotFound, <span class="st">"user not found"</span>, <span class="kw">nil</span>)
+    }
+    <span class="kw">return</span> <span class="st">"Alice"</span>, <span class="kw">nil</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    _, err := <span class="fn">findUser</span>(<span class="nm">999</span>)
+    
+    <span class="cm">// 使用errors.As提取BizError</span>
+    <span class="kw">var</span> bizErr *BizError
+    <span class="kw">if</span> errors.<span class="fn">As</span>(err, &bizErr) {
+        fmt.<span class="fn">Printf</span>(<span class="st">"业务错误 %d: %s\n"</span>, bizErr.Code, bizErr.Message)
+    }
+    
+    <span class="cm">// 包装错误时保留错误链</span>
+    wrapped := fmt.<span class="fn">Errorf</span>(<span class="st">"findUser failed: %w"</span>, err)
+    <span class="kw">if</span> errors.<span class="fn">As</span>(wrapped, &bizErr) {
+        fmt.<span class="fn">Printf</span>(<span class="st">"包装后仍可提取: %d\n"</span>, bizErr.Code)
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// errors.Is多层错误匹配</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"errors"</span>
+    <span class="st">"fmt"</span>
+    <span class="st">"os"</span>
+)
+
+<span class="cm">// 哨兵错误</span>
+<span class="kw">var</span> (
+    ErrPerm    = errors.<span class="fn">New</span>(<span class="st">"permission denied"</span>)
+    ErrTimeout = errors.<span class="fn">New</span>(<span class="st">"operation timeout"</span>)
+)
+
+<span class="cm">// 模拟多层包装的错误</span>
+<span class="kw">func</span> <span class="fn">innerFunc</span>() <span class="tp">error</span> {
+    <span class="kw">return</span> fmt.<span class="fn">Errorf</span>(<span class="st">"inner: %w"</span>, ErrPerm)
+}
+
+<span class="kw">func</span> <span class="fn">middleFunc</span>() <span class="tp">error</span> {
+    <span class="kw">if</span> err := <span class="fn">innerFunc</span>(); err != <span class="kw">nil</span> {
+        <span class="kw">return</span> fmt.<span class="fn">Errorf</span>(<span class="st">"middle: %w"</span>, err)
+    }
+    <span class="kw">return</span> <span class="kw">nil</span>
+}
+
+<span class="kw">func</span> <span class="fn">outerFunc</span>() <span class="tp">error</span> {
+    <span class="kw">if</span> err := <span class="fn">middleFunc</span>(); err != <span class="kw">nil</span> {
+        <span class="kw">return</span> fmt.<span class="fn">Errorf</span>(<span class="st">"outer: %w"</span>, err)
+    }
+    <span class="kw">return</span> <span class="kw">nil</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    err := <span class="fn">outerFunc</span>()
+    fmt.<span class="fn">Printf</span>(<span class="st">"完整错误链: %v\n"</span>, err)
+    
+    <span class="cm">// errors.Is会遍历整个错误链</span>
+    <span class="kw">if</span> errors.<span class="fn">Is</span>(err, ErrPerm) {
+        fmt.<span class="fn">Println</span>(<span class="st">"匹配到权限错误"</span>)
+    }
+    
+    <span class="cm">// 也匹配标准库错误</span>
+    err2 := fmt.<span class="fn">Errorf</span>(<span class="st">"config: %w"</span>, fmt.<span class="fn">Errorf</span>(<span class="st">"db: %w"</span>, os.ErrNotExist))
+    <span class="kw">if</span> errors.<span class="fn">Is</span>(err2, os.ErrNotExist) {
+        fmt.<span class="fn">Println</span>(<span class="st">"多层包装后仍匹配"</span>)
+    }
+}</code></pre>
+            </div>
         </section>
 
         <!-- 第23章：泛型 -->
@@ -3670,6 +4716,178 @@ EOF
                 <p>2. <strong>优先使用标准库</strong>：Go标准库的slices、maps包提供了常用泛型函数</p>
                 <p>3. <strong>约束要精确</strong>：不要使用<code>any</code>约束，除非真的需要</p>
                 <p>4. <strong>性能考虑</strong>：泛型在编译时会进行类型特化，可能增加二进制大小</p>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// 类型约束：使用comparable和自定义约束</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+
+<span class="cm">// comparable约束：支持==和!=的类型</span>
+<span class="kw">func</span> <span class="fn">Index</span>[T <span class="tp">comparable</span>](s []T, v T) <span class="tp">int</span> {
+    <span class="kw">for</span> i, item := <span class="kw">range</span> s {
+        <span class="kw">if</span> item == v {
+            <span class="kw">return</span> i
+        }
+    }
+    <span class="kw">return</span> -<span class="nm">1</span>
+}
+
+<span class="cm">// 自定义约束：有序类型</span>
+<span class="kw">type</span> Ordered <span class="kw">interface</span> {
+    ~<span class="tp">int</span> | ~<span class="tp">int8</span> | ~<span class="tp">int16</span> | ~<span class="tp">int32</span> | ~<span class="tp">int64</span> |
+    ~<span class="tp">uint</span> | ~<span class="tp">uint8</span> | ~<span class="tp">uint16</span> | ~<span class="tp">uint32</span> | ~<span class="tp">uint64</span> |
+    ~<span class="tp">float32</span> | ~<span class="tp">float64</span> | <span class="tp">string</span>
+}
+
+<span class="cm">// 泛型排序（冒泡排序）</span>
+<span class="kw">func</span> <span class="fn">Sort</span>[T Ordered](s []T) {
+    n := <span class="fn">len</span>(s)
+    <span class="kw">for</span> i := <span class="nm">0</span>; i < n-<span class="nm">1</span>; i++ {
+        <span class="kw">for</span> j := <span class="nm">0</span>; j < n-i-<span class="nm">1</span>; j++ {
+            <span class="kw">if</span> s[j] > s[j+<span class="nm">1</span>] {
+                s[j], s[j+<span class="nm">1</span>] = s[j+<span class="nm">1</span>], s[j]
+            }
+        }
+    }
+}
+
+<span class="cm">// ~运算符：匹配底层类型</span>
+<span class="kw">type</span> MyInt <span class="tp">int</span>
+
+<span class="kw">func</span> <span class="fn">Double</span>[T ~<span class="tp">int</span>](n T) T {
+    <span class="kw">return</span> n * <span class="nm">2</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    nums := []<span class="tp">int</span>{<span class="nm">3</span>, <span class="nm">1</span>, <span class="nm">4</span>, <span class="nm">1</span>, <span class="nm">5</span>}
+    <span class="fn">Sort</span>(nums)
+    fmt.<span class="fn">Printf</span>(<span class="st">"排序: %v\n"</span>, nums)
+    
+    strs := []<span class="tp">string</span>{<span class="st">"banana"</span>, <span class="st">"apple"</span>, <span class="st">"cherry"</span>}
+    <span class="fn">Sort</span>(strs)
+    fmt.<span class="fn">Printf</span>(<span class="st">"排序: %v\n"</span>, strs)
+    
+    <span class="cm">// ~int匹配MyInt底层类型</span>
+    <span class="kw">var</span> myNum MyInt = <span class="nm">21</span>
+    fmt.<span class="fn">Printf</span>(<span class="st">"Double: %d\n"</span>, <span class="fn">Double</span>(myNum))
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// 泛型约束的高级用法</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+
+<span class="cm">// 约束：必须有String方法</span>
+<span class="kw">type</span> HasString <span class="kw">interface</span> {
+    <span class="fn">String</span>() <span class="tp">string</span>
+}
+
+<span class="cm">// 泛型函数要求类型实现特定方法</span>
+<span class="kw">func</span> <span class="fn">PrintItems</span>[T HasString](items []T) {
+    <span class="kw">for</span> _, item := <span class="kw">range</span> items {
+        fmt.<span class="fn">Println</span>(item.<span class="fn">String</span>())
+    }
+}
+
+<span class="cm">// 自定义类型实现HasString</span>
+<span class="kw">type</span> Product <span class="kw">struct</span> {
+    Name  <span class="tp">string</span>
+    Price <span class="tp">float64</span>
+}
+
+<span class="kw">func</span> (p Product) <span class="fn">String</span>() <span class="tp">string</span> {
+    <span class="kw">return</span> fmt.<span class="fn">Sprintf</span>(<span class="st">"%s ($%.2f)"</span>, p.Name, p.Price)
+}
+
+<span class="cm">// 泛型约束与接口组合</span>
+<span class="kw">type</span> Number <span class="kw">interface</span> {
+    ~<span class="tp">int</span> | ~<span class="tp">float64</span>
+}
+
+<span class="cm">// 约束：既是Number又有String方法</span>
+<span class="kw">type</span> PrintableNumber <span class="kw">interface</span> {
+    Number
+    <span class="fn">String</span>() <span class="tp">string</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    products := []Product{
+        {<span class="st">"Widget"</span>, <span class="nm">9.99</span>},
+        {<span class="st">"Gadget"</span>, <span class="nm">19.99</span>},
+    }
+    <span class="fn">PrintItems</span>(products)
+}</code></pre>
+            </div>
+
+            <div class="code-block" data-lang="go">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Go</span>
+                </div>
+                <pre><code><span class="cm">// 泛型Map/Set数据结构</span>
+<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+
+<span class="cm">// 泛型Set</span>
+<span class="kw">type</span> Set[T <span class="tp">comparable</span>] <span class="kw">struct</span> {
+    items <span class="tp">map</span>[T]<span class="kw">struct</span>{}
+}
+
+<span class="kw">func</span> <span class="fn">NewSet</span>[T <span class="tp">comparable</span>](items ...T) *Set[T] {
+    s := &Set[T]{items: <span class="fn">make</span>(<span class="tp">map</span>[T]<span class="kw">struct</span>{})}
+    <span class="kw">for</span> _, item := <span class="kw">range</span> items {
+        s.items[item] = <span class="kw">struct</span>{}{}
+    }
+    <span class="kw">return</span> s
+}
+
+<span class="kw">func</span> (s *Set[T]) <span class="fn">Add</span>(item T) {
+    s.items[item] = <span class="kw">struct</span>{}{}
+}
+
+<span class="kw">func</span> (s *Set[T]) <span class="fn">Contains</span>(item T) <span class="tp">bool</span> {
+    _, ok := s.items[item]
+    <span class="kw">return</span> ok
+}
+
+<span class="kw">func</span> (s *Set[T]) <span class="fn">Len</span>() <span class="tp">int</span> {
+    <span class="kw">return</span> <span class="fn">len</span>(s.items)
+}
+
+<span class="cm">// 泛型Pair</span>
+<span class="kw">type</span> Pair[A, B <span class="tp">any</span>] <span class="kw">struct</span> {
+    First  A
+    Second B
+}
+
+<span class="kw">func</span> <span class="fn">NewPair</span>[A, B <span class="tp">any</span>](a A, b B) Pair[A, B] {
+    <span class="kw">return</span> Pair[A, B]{First: a, Second: b}
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    intSet := <span class="fn">NewSet</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>)
+    intSet.<span class="fn">Add</span>(<span class="nm">4</span>)
+    fmt.<span class="fn">Printf</span>(<span class="st">"Set大小: %d, 包含3: %t\n"</span>, intSet.<span class="fn">Len</span>(), intSet.<span class="fn">Contains</span>(<span class="nm">3</span>))
+    
+    strSet := <span class="fn">NewSet</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>)
+    fmt.<span class="fn">Printf</span>(<span class="st">"String Set: %d\n"</span>, strSet.<span class="fn">Len</span>())
+    
+    pair := <span class="fn">NewPair</span>(<span class="nm">42</span>, <span class="st">"hello"</span>)
+    fmt.<span class="fn">Printf</span>(<span class="st">"Pair: (%v, %v)\n"</span>, pair.First, pair.Second)
+}</code></pre>
             </div>
         </section>
 
@@ -4399,5 +5617,6 @@ result, err := <span class="fn">doSomething</span>()
             <p style="color: #888;">继续学习和实践，成为Go语言专家</p>
         </div>
     </div>
+    <script src="../assets/editor.js"></script>
 </body>
 </html>

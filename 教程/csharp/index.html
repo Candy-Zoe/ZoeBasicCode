@@ -305,6 +305,70 @@ p2.Name = <span class="st">"Bob"</span>;
 list ??= <span class="kw">new</span> <span class="tp">List</span>&lt;<span class="tp">string</span>&gt;();</code></pre>
 </div>
 
+<h3>可空类型高级用法</h3>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 空条件运算符链式调用</span>
+<span class="kw">class</span> <span class="tp">Company</span> { <span class="kw">public</span> <span class="tp">Person</span>? CEO { <span class="kw">get</span>; <span class="kw">set</span>; } }
+<span class="kw">class</span> <span class="tp">Person</span> { <span class="kw">public</span> <span class="tp">Address</span>? Address { <span class="kw">get</span>; <span class="kw">set</span>; } }
+<span class="kw">class</span> <span class="tp">Address</span> { <span class="kw">public</span> <span class="tp">string</span>? City { <span class="kw">get</span>; <span class="kw">set</span>; } }
+
+<span class="cm">// 安全链式访问：任一环节为 null 则返回 null</span>
+<span class="tp">string</span>? city = company?.CEO?.Address?.City;
+
+<span class="cm">// 空条件 + 空合并组合</span>
+<span class="tp">string</span> displayCity = company?.CEO?.Address?.City ?? <span class="st">"未知城市"</span>;</code></pre>
+</div>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// null 合并赋值：简化初始化逻辑</span>
+<span class="tp">List</span>&lt;<span class="tp">string</span>&gt;? items = <span class="kw">null</span>;
+
+<span class="cm">// 传统写法</span>
+<span class="kw">if</span> (items == <span class="kw">null</span>)
+    items = <span class="kw">new</span> <span class="tp">List</span>&lt;<span class="tp">string</span>&gt;();
+
+<span class="cm">// 简洁写法（??=）</span>
+items ??= <span class="kw">new</span> <span class="tp">List</span>&lt;<span class="tp">string</span>&gt;();
+
+<span class="cm">// 链式空合并赋值</span>
+<span class="tp">Dictionary</span>&lt;<span class="tp">string</span>, <span class="tp">List</span>&lt;<span class="tp">int</span>&gt;&gt;? dict = <span class="kw">null</span>;
+dict ??= <span class="kw">new</span>();
+dict.<span class="fn">TryGetValue</span>(<span class="st">"key"</span>, <span class="kw">out var</span> list);
+list ??= <span class="kw">new</span>();
+list.<span class="fn">Add</span>(<span class="nm">42</span>);</code></pre>
+</div>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// nullable 引用类型（C# 8+）：编译器级别的 null 检查</span>
+#nullable enable
+
+<span class="kw">public class</span> <span class="tp">UserService</span>
+{
+    <span class="cm">// string 非空，string? 可空</span>
+    <span class="kw">public</span> <span class="tp">string</span> <span class="fn">GetName</span>(<span class="tp">Person</span> person)
+        => person.Name ?? <span class="st">"匿名"</span>;
+
+    <span class="kw">public</span> <span class="tp">string</span>? <span class="fn">FindName</span>(<span class="tp">int</span> id)
+    {
+        <span class="tp">Person</span>? p = _repo.<span class="fn">FindById</span>(id);
+        <span class="kw">return</span> p?.Name;  <span class="cm">// 返回 string?（可能为 null）</span>
+    }
+}</code></pre>
+</div>
+
 <!-- ==================== Section 5 ==================== -->
 <h2 id="operators">5. 运算符</h2>
 
@@ -1056,6 +1120,69 @@ account.<span class="fn">Withdraw</span>(<span class="nm">200</span>);
 <span class="tp">Console</span>.<span class="fn">WriteLine</span>(p3);  <span class="cm">// Person { Name = Alice, Age = 31 }</span></code></pre>
 </div>
 
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// with 表达式：不可变修改的优雅方式</span>
+<span class="kw">public record</span> <span class="tp">Order</span>(
+    <span class="tp">int</span> Id,
+    <span class="tp">string</span> Product,
+    <span class="tp">decimal</span> Price,
+    <span class="tp">int</span> Quantity);
+
+<span class="kw">var</span> original = <span class="kw">new</span> <span class="tp">Order</span>(<span class="nm">1</span>, <span class="st">"手机"</span>, <span class="nm">5000m</span>, <span class="nm">1</span>);
+
+<span class="cm">// 修改单个属性</span>
+<span class="kw">var</span> updated = original <span class="kw">with</span> { Quantity = <span class="nm">2</span> };
+
+<span class="cm">// 修改多个属性</span>
+<span class="kw">var</span> discounted = original <span class="kw">with</span> { Price = <span class="nm">4500m</span>, Quantity = <span class="nm">3</span> };
+
+<span class="tp">Console</span>.<span class="fn">WriteLine</span>(original);   <span class="cm">// Order { Id = 1, Product = 手机, Price = 5000, Quantity = 1 }</span>
+<span class="tp">Console</span>.<span class="fn">WriteLine</span>(updated);    <span class="cm">// Order { Id = 1, Product = 手机, Price = 5000, Quantity = 2 }</span>
+<span class="tp">Console</span>.<span class="fn">WriteLine</span>(original == updated);  <span class="cm">// false（值不同）</span></code></pre>
+</div>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// record 的值相等性 vs 引用相等性</span>
+<span class="kw">var</span> a = <span class="kw">new</span> <span class="tp">Person</span>(<span class="st">"Alice"</span>, <span class="nm">30</span>);
+<span class="kw">var</span> b = <span class="kw">new</span> <span class="tp">Person</span>(<span class="st">"Alice"</span>, <span class="nm">30</span>);
+<span class="kw">var</span> c = a;  <span class="cm">// 引用同一对象</span>
+
+<span class="tp">Console</span>.<span class="fn">WriteLine</span>(a == b);  <span class="cm">// true（值相等）</span>
+<span class="tp">Console</span>.<span class="fn">WriteLine</span>(a == c);  <span class="cm">// true（同一对象）</span>
+
+<span class="cm">// 非 record 类：默认是引用相等</span>
+<span class="kw">class</span> <span class="tp">Point</span> { <span class="kw">public int</span> X, Y; }
+<span class="kw">var</span> p1 = <span class="kw">new</span> <span class="tp">Point</span> { X = <span class="nm">1</span>, Y = <span class="nm">2</span> };
+<span class="kw">var</span> p2 = <span class="kw">new</span> <span class="tp">Point</span> { X = <span class="nm">1</span>, Y = <span class="nm">2</span> };
+<span class="tp">Console</span>.<span class="fn">WriteLine</span>(p1 == p2);  <span class="cm">// false（引用不同）</span></code></pre>
+</div>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// record struct（值类型的 record）</span>
+<span class="kw">public readonly record struct</span> <span class="tp">Vector</span>(<span class="tp">double</span> X, <span class="tp">double</span> Y)
+{
+    <span class="kw">public double</span> <span class="fn">Length</span>() => <span class="tp">Math</span>.<span class="fn">Sqrt</span>(X * X + Y * Y);
+}
+
+<span class="kw">var</span> v1 = <span class="kw">new</span> <span class="tp">Vector</span>(<span class="nm">3</span>, <span class="nm">4</span>);
+<span class="kw">var</span> v2 = v1 <span class="kw">with</span> { X = <span class="nm">6</span> };  <span class="cm">// 值类型也支持 with</span>
+
+<span class="tp">Console</span>.<span class="fn">WriteLine</span>(v1);  <span class="cm">// Vector { X = 3, Y = 4 }</span>
+<span class="tp">Console</span>.<span class="fn">WriteLine</span>(v2);  <span class="cm">// Vector { X = 6, Y = 4 }</span></code></pre>
+</div>
+
 <!-- ==================== Section 14 ==================== -->
 <h2 id="inheritance">14. 继承</h2>
 
@@ -1409,6 +1536,104 @@ btn.<span class="fn">OnClick</span>();
 <div class="principle">
     <div class="principle-title">Func、Action 与 Lambda</div>
     <p>.NET 内置了通用委托类型，无需手动声明：<code>Action</code>（无返回值）、<code>Action&lt;T&gt;</code>（带参数无返回值）、<code>Func&lt;TResult&gt;</code>（有返回值）、<code>Func&lt;T, TResult&gt;</code>（带参数有返回值）。Lambda 表达式 <code>(x) => x * 2</code> 是创建委托实例的简洁方式，编译器会生成一个实现了委托签名的方法。</p>
+</div>
+
+<h3>委托高级用法</h3>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 多播委托：组合多个方法</span>
+<span class="kw">public delegate void</span> <span class="tp">LogHandler</span>(<span class="tp">string</span> msg);
+
+<span class="tp">LogHandler</span> logger = <span class="kw">null</span>;
+logger += msg => <span class="tp">Console</span>.<span class="fn">WriteLine</span>(<span class="st">$"[控制台] {msg}"</span>);
+logger += msg => <span class="tp">File</span>.<span class="fn">AppendAllText</span>(<span class="st">"log.txt"</span>, msg + <span class="st">"\n"</span>);
+logger += msg => <span class="tp">Console</span>.<span class="fn">WriteLine</span>(<span class="st">$"[邮件] 已发送: {msg}"</span>);
+
+<span class="cm">// 一次调用，三个方法依次执行</span>
+logger?.<span class="fn">Invoke</span>(<span class="st">"用户登录成功"</span>);
+
+<span class="cm">// 查看委托列表</span>
+<span class="tp">Delegate</span>[] handlers = logger?.<span class="fn">GetInvocationList</span>() ?? [];
+<span class="tp">Console</span>.<span class="fn">WriteLine</span>(<span class="st">$"注册了 {handlers.Length} 个处理器"</span>);
+
+<span class="cm">// 移除特定方法</span>
+logger -= msg => <span class="tp">Console</span>.<span class="fn">WriteLine</span>(<span class="st">$"[邮件] 已发送: {msg}"</span>);</code></pre>
+</div>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 事件模式：标准的 .NET 事件实现</span>
+<span class="kw">public class</span> <span class="tp">Stock</span>
+{
+    <span class="kw">private decimal</span> _price;
+
+    <span class="cm">// 事件声明</span>
+    <span class="kw">public event</span> <span class="tp">EventHandler</span>&lt;<span class="tp">PriceChangedEventArgs</span>&gt;? PriceChanged;
+
+    <span class="kw">public decimal</span> Price
+    {
+        <span class="kw">get</span> => _price;
+        <span class="kw">set</span>
+        {
+            <span class="kw">if</span> (_price != value)
+            {
+                <span class="kw">var</span> old = _price;
+                _price = value;
+                <span class="cm">// 触发事件</span>
+                PriceChanged?.<span class="fn">Invoke</span>(<span class="kw">this</span>,
+                    <span class="kw">new</span> <span class="tp">PriceChangedEventArgs</span>(old, value));
+            }
+        }
+    }
+}
+
+<span class="kw">public class</span> <span class="tp">PriceChangedEventArgs</span> : <span class="tp">EventArgs</span>
+{
+    <span class="kw">public decimal</span> OldPrice { <span class="kw">get</span>; }
+    <span class="kw">public decimal</span> NewPrice { <span class="kw">get</span>; }
+    <span class="kw">public</span> <span class="fn">PriceChangedEventArgs</span>(<span class="tp">decimal</span> oldP, <span class="tp">decimal</span> newP)
+        => (OldPrice, NewPrice) = (oldP, newP);
+}
+
+<span class="cm">// 使用</span>
+<span class="kw">var</span> stock = <span class="kw">new</span> <span class="tp">Stock</span>();
+stock.PriceChanged += (s, e) =>
+    <span class="tp">Console</span>.<span class="fn">WriteLine</span>(<span class="st">$"价格变化: {e.OldPrice} → {e.NewPrice}"</span>);
+stock.Price = <span class="nm">100</span>;</code></pre>
+</div>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// 委托作为策略模式</span>
+<span class="kw">public static</span> <span class="tp">T</span> <span class="fn">ApplyStrategy</span>&lt;<span class="tp">T</span>&gt;(
+    <span class="tp">T</span> value, <span class="tp">Func</span>&lt;<span class="tp">T</span>, <span class="tp">T</span>&gt; strategy)
+{
+    <span class="kw">return</span> <span class="fn">strategy</span>(value);
+}
+
+<span class="cm">// 不同的策略用 Lambda 表达</span>
+<span class="tp">int</span> result = <span class="fn">ApplyStrategy</span>(<span class="nm">5</span>, x => x * x);  <span class="cm">// 25</span>
+<span class="tp">int</span> result2 = <span class="fn">ApplyStrategy</span>(<span class="nm">5</span>, x => x + <span class="nm">10</span>); <span class="cm">// 15</span>
+
+<span class="cm">// 高阶函数：接受函数参数并返回函数</span>
+<span class="kw">public static</span> <span class="tp">Func</span>&lt;<span class="tp">int</span>, <span class="tp">int</span>&gt; <span class="fn">Compose</span>(
+    <span class="tp">Func</span>&lt;<span class="tp">int</span>, <span class="tp">int</span>&gt; f, <span class="tp">Func</span>&lt;<span class="tp">int</span>, <span class="tp">int</span>&gt; g)
+{
+    <span class="kw">return</span> x => <span class="fn">f</span>(<span class="fn">g</span>(x));
+}
+
+<span class="kw">var</span> doubleThenAddOne = <span class="fn">Compose</span>(x => x + <span class="nm">1</span>, x => x * <span class="nm">2</span>);
+<span class="tp">Console</span>.<span class="fn">WriteLine</span>(doubleThenAddOne(<span class="nm">3</span>));  <span class="cm">// 7</span></code></pre>
 </div>
 
 <div class="code-block">
@@ -2324,6 +2549,84 @@ nameProp?.<span class="fn">SetValue</span>(obj, <span class="st">"Alice"</span>)
 <span class="cm">// 4. 使用 StringBuilder 的 AppendSpan（.NET 6+）</span>
 <span class="kw">var</span> sb = <span class="kw">new</span> <span class="tp">StringBuilder</span>();
 sb.<span class="fn">Append</span>(<span class="st">"Hello"</span>.<span class="fn">AsSpan</span>());  <span class="cm">// 零分配追加</span></code></pre>
+</div>
+
+<h3>Span/Memory 高级用法</h3>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// stackalloc：在栈上分配数组，避免堆分配</span>
+<span class="kw">static int</span> <span class="fn">SumOnStack</span>(<span class="tp">ReadOnlySpan</span>&lt;<span class="tp">int</span>&gt; numbers)
+{
+    <span class="cm">// 栈上分配临时数组（最大限制约 1KB）</span>
+    <span class="tp">Span</span>&lt;<span class="tp">int</span>&gt; buffer = <span class="kw">stackalloc</span> <span class="tp">int</span>[<span class="nm">64</span>];
+
+    <span class="tp">int</span> sum = <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="tp">int</span> i = <span class="nm">0</span>; i &lt; numbers.Length; i++)
+    {
+        buffer[i] = numbers[i] * <span class="nm">2</span>;
+        sum += buffer[i];
+    }
+    <span class="kw">return</span> sum;
+}
+
+<span class="cm">// 调用时零堆分配</span>
+<span class="tp">int</span> result = <span class="fn">SumOnStack</span>([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>]);</code></pre>
+</div>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// Memory&lt;T&gt;：可用于异步操作的堆上内存段</span>
+<span class="kw">public async</span> <span class="tp">ValueTask</span> <span class="fn">ProcessAsync</span>(<span class="tp">Memory</span>&lt;<span class="tp">byte</span>&gt; data)
+{
+    <span class="cm">// Memory 可以跨 await 使用（Span 不行）</span>
+    <span class="kw">await</span> <span class="tp">Task</span>.<span class="fn">Yield</span>();
+
+    <span class="cm">// 切片操作（零拷贝）</span>
+    <span class="tp">Memory</span>&lt;<span class="tp">byte</span>&gt; header = data[..<span class="nm">4</span>];
+    <span class="tp">Memory</span>&lt;<span class="tp">byte</span>&gt; payload = data[<span class="nm">4</span>..];
+
+    <span class="cm">// 使用 Span 进行同步处理</span>
+    <span class="tp">ProcessSpan</span>(header.<span class="fn">Span</span>);
+    <span class="tp">ProcessSpan</span>(payload.<span class="fn">Span</span>);
+}
+
+<span class="kw">static void</span> <span class="fn">ProcessSpan</span>(<span class="tp">ReadOnlySpan</span>&lt;<span class="tp">byte</span>&gt; span)
+{
+    <span class="kw">foreach</span> (<span class="tp">byte</span> b <span class="kw">in</span> span)
+    {
+        <span class="tp">Console</span>.<span class="fn">Write</span>(<span class="st">$"{b:X2} "</span>);
+    }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="csharp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C#</span>
+    </div>
+    <pre><code><span class="cm">// Span 切片与操作</span>
+<span class="tp">string</span> text = <span class="st">"Hello, World!"</span>;
+
+<span class="cm">// AsSpan 零拷贝切片</span>
+<span class="tp">ReadOnlySpan</span>&lt;<span class="tp">char</span>&gt; span = text.<span class="fn">AsSpan</span>(<span class="nm">7</span>, <span class="nm">5</span>); <span class="cm">// "World"</span>
+
+<span class="cm">// 使用 stackalloc 构建 Span</span>
+<span class="tp">Span</span>&lt;<span class="tp">char</span>&gt; buffer = <span class="kw">stackalloc</span> <span class="tp">char</span>[<span class="nm">100</span>];
+text.<span class="fn">AsSpan</span>().<span class="fn">CopyTo</span>(buffer);
+
+<span class="cm">// BinaryPrimitives 高效解析</span>
+<span class="kw">using</span> System.Buffers.Binary;
+
+<span class="tp">byte</span>[] data = [<span class="nm">0x00</span>, <span class="nm">0x01</span>, <span class="nm">0x00</span>, <span class="nm">0x02</span>];
+<span class="tp">int</span> value = <span class="tp">BinaryPrimitives</span>.<span class="fn">ReadInt32BigEndian</span>(data);
+<span class="cm">// 零拷贝读取，无需中间数组分配</span></code></pre>
 </div>
 
 <h3>项目架构原则</h3>

@@ -976,6 +976,147 @@ java -jar hello.jar</code></pre>
 }</code></pre>
 </div>
 
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 作用域函数：run, with, apply, also, let 详解</span>
+<span class="kw">data class</span> <span class="tp">Config</span>(
+    <span class="kw">var</span> host: <span class="tp">String</span> = <span class="st">""</span>,
+    <span class="kw">var</span> port: <span class="tp">Int</span> = <span class="nm">80</span>,
+    <span class="kw">var</span> ssl: <span class="tp">Boolean</span> = <span class="kw">false</span>
+)
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="cm">// apply：配置对象（this -> 返回 this）</span>
+    <span class="kw">val</span> config = <span class="tp">Config</span>().<span class="fn">apply</span> {
+        host = <span class="st">"localhost"</span>
+        port = <span class="nm">8080</span>
+        ssl = <span class="kw">true</span>
+    }
+    <span class="fn">println</span>(config)  <span class="cm">// Config(host=localhost, port=8080, ssl=true)</span>
+
+    <span class="cm">// let：转换或过滤可空值（it -> 结果）</span>
+    <span class="kw">val</span> name: <span class="tp">String</span>? = <span class="st">"Kotlin"</span>
+    <span class="kw">val</span> length = name?.<span class="fn">let</span> {
+        <span class="fn">println</span>(<span class="st">"Processing: </span><span class="op">$</span><span class="nm">it</span><span class="st">"</span>)
+        it.<span class="fn">length</span>  <span class="cm">// 返回最后一行</span>
+    } ?: <span class="nm">0</span>
+    <span class="fn">println</span>(length)  <span class="cm">// 6</span>
+
+    <span class="cm">// run：在对象上执行代码块并返回结果</span>
+    <span class="kw">val</span> greeting = <span class="tp">String</span>.<span class="fn">run</span> {
+        <span class="fn">println</span>(<span class="st">"Building greeting..."</span>)
+        <span class="st">"Hello, World!"</span>  <span class="cm">// 返回结果</span>
+    }
+    <span class="fn">println</span>(greeting)
+
+    <span class="cm">// run 扩展函数：执行计算并返回结果</span>
+    <span class="kw">val</span> area = config.<span class="fn">run</span> {
+        <span class="st">"</span><span class="op">$</span><span class="nm">host</span><span class="st">:</span><span class="op">$</span><span class="nm">port</span><span class="st"> (SSL=</span><span class="op">$</span><span class="nm">ssl</span><span class="st">)"</span>
+    }
+    <span class="fn">println</span>(area)
+
+    <span class="cm">// also：副作用操作（this -> 返回 this）</span>
+    <span class="kw">val</span> numbers = <span class="fn">mutableListOf</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>)
+        .<span class="fn">also</span> { <span class="fn">println</span>(<span class="st">"Original: </span><span class="op">$</span><span class="nm">it</span><span class="st">"</span>) }
+        .<span class="fn">apply</span> { <span class="fn">add</span>(<span class="nm">4</span>) }
+        .<span class="fn">also</span> { <span class="fn">println</span>(<span class="st">"After add: </span><span class="op">$</span><span class="nm">it</span><span class="st">"</span>) }
+    <span class="fn">println</span>(numbers)  <span class="cm">// [1, 2, 3, 4]</span>
+
+    <span class="cm">// with：对已有对象执行多个操作（非扩展函数）</span>
+    <span class="kw">val</span> sb = <span class="tp">StringBuilder</span>()
+    <span class="fn">with</span>(sb) {
+        <span class="fn">append</span>(<span class="st">"Line 1\n"</span>)
+        <span class="fn">append</span>(<span class="st">"Line 2\n"</span>)
+        <span class="fn">append</span>(<span class="st">"Line 3"</span>)
+    }
+    <span class="fn">println</span>(sb.<span class="fn">toString</span>())
+
+    <span class="cm">// 嵌套作用域函数</span>
+    <span class="kw">val</span> result = <span class="tp">Config</span>()
+        .<span class="fn">apply</span> { host = <span class="st">"example.com"</span> }
+        .<span class="fn">let</span> { <span class="tp">String</span>.<span class="fn">run</span> { <span class="st">"</span><span class="op">${</span>it.host<span class="op">}</span><span class="st">:</span><span class="op">${</span>it.port<span class="op">}</span><span class="st">"</span> } }
+    <span class="fn">println</span>(result)
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 内联函数：reified, crossinline, noinline 详解</span>
+<span class="kw">import</span> kotlin.reflect.<span class="tp">KClass</span>
+
+<span class="cm">// 1. reified：运行时访问泛型类型（只能用于 inline 函数）</span>
+<span class="kw">inline fun</span> &lt;<span class="kw">reified</span> <span class="tp">T</span>&gt; <span class="fn">isInstance</span>(value: <span class="tp">Any</span>): <span class="tp">Boolean</span> {
+    <span class="kw">return value</span> <span class="kw">is</span> <span class="tp">T</span>  <span class="cm">// 可以使用 is 检查泛型类型</span>
+}
+
+<span class="kw">inline fun</span> &lt;<span class="kw">reified</span> <span class="tp">T</span>&gt; <span class="fn">filterByType</span>(list: <span class="tp">List</span>&lt;<span class="tp">Any</span>&gt;): <span class="tp">List</span>&lt;<span class="tp">T</span>&gt; {
+    <span class="kw">return</span> list.<span class="fn">filterIsInstance</span>&lt;<span class="tp">T</span>&gt;()  <span class="cm">// 运行时类型过滤</span>
+}
+
+<span class="cm">// 2. crossinline：内联但 Lambda 内部不允许非局部返回</span>
+<span class="kw">inline fun</span> <span class="fn">runOnThread</span>(crossinline action: () <span class="kw">-></span> <span class="tp">Unit</span>) {
+    <span class="tp">Thread</span> {
+        <span class="fn">action</span>()  <span class="cm">// action 中不能使用 return@runOnThread</span>
+    }.<span class="fn">start</span>()
+}
+
+<span class="cm">// 3. noinline：不内联特定 Lambda</span>
+<span class="kw">inline fun</span> <span class="fn">runSafely</span>(
+    noinline onError: (<span class="tp">Throwable</span>) <span class="kw">-></span> <span class="tp">Unit</span>,
+    block: () <span class="kw">-></span> <span class="tp">Unit</span>
+) {
+    <span class="kw">try</span> {
+        <span class="fn">block</span>()
+    } <span class="kw">catch</span> (e: <span class="tp">Throwable</span>) {
+        <span class="fn">onError</span>(e)
+    }
+}
+
+<span class="cm">// 4. inline 性能优势：消除 Lambda 对象分配</span>
+<span class="kw">inline fun</span> &lt;<span class="tp">T</span>&gt; <span class="fn">measureAndLog</span>(tag: <span class="tp">String</span>, block: () <span class="kw">-></span> <span class="tp">T</span>): <span class="tp">T</span> {
+    <span class="kw">val</span> start = <span class="tp">System</span>.<span class="fn">nanoTime</span>()
+    <span class="kw">val</span> result = <span class="fn">block</span>()
+    <span class="kw">val</span> elapsed = (<span class="tp">System</span>.<span class="fn">nanoTime</span>() - start) / <span class="nm">1_000_000</span>
+    <span class="fn">println</span>(<span class="st">"[</span><span class="op">$</span><span class="nm">tag</span><span class="st">] </span><span class="op">$</span><span class="nm">elapsed</span><span class="st">ms"</span>)
+    <span class="kw">return</span> result
+}
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="cm">// reified 使用</span>
+    <span class="fn">println</span>(<span class="fn">isInstance</span>&lt;<span class="tp">String</span>&gt;(<span class="st">"hello"</span>))  <span class="cm">// true</span>
+    <span class="fn">println</span>(<span class="fn">isInstance</span>&lt;<span class="tp">Int</span>&gt;(<span class="st">"hello"</span>))     <span class="cm">// false</span>
+
+    <span class="kw">val</span> mixed = <span class="fn">listOf</span>(<span class="nm">1</span>, <span class="st">"two"</span>, <span class="nm">3.0</span>, <span class="st">"four"</span>)
+    <span class="kw">val</span> strings = <span class="fn">filterByType</span>&lt;<span class="tp">String</span>&gt;(mixed)
+    <span class="fn">println</span>(strings)  <span class="cm">// [two, four]</span>
+
+    <span class="cm">// crossinline 使用</span>
+    <span class="fn">runOnThread</span> {
+        <span class="fn">println</span>(<span class="st">"Running in thread"</span>)
+        <span class="cm">// return@runOnThread  // 编译错误：不允许非局部返回</span>
+    }
+    <span class="tp">Thread</span>.<span class="fn">sleep</span>(<span class="nm">100</span>)
+
+    <span class="cm">// noinline 使用</span>
+    <span class="fn">runSafely</span>(
+        onError = { e <span class="kw">-></span> <span class="fn">println</span>(<span class="st">"Error: </span><span class="op">${</span>e.message<span class="op">}</span><span class="st">"</span>) },
+        block = { <span class="fn">println</span>(<span class="st">"Running safely"</span>) }
+    )
+
+    <span class="cm">// inline 测量</span>
+    <span class="kw">val</span> result = <span class="fn">measureAndLog</span>(<span class="st">"sum"</span>) {
+        (<span class="nm">1</span>..<span class="nm">1_000_000</span>).<span class="fn">sum</span>()
+    }
+    <span class="fn">println</span>(<span class="st">"Result: </span><span class="op">$</span><span class="nm">result</span><span class="st">"</span>)
+}</code></pre>
+</div>
+
 <!-- ==================== 13. 类与构造器 ==================== -->
 <h2 id="sec13">13. 类与构造器</h2>
 
@@ -1256,6 +1397,123 @@ java -jar hello.jar</code></pre>
 }</code></pre>
 </div>
 
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 数据类：copy() 高级用法与 equals/hashCode</span>
+<span class="kw">data class</span> <span class="tp">Product</span>(
+    <span class="kw">val</span> id: <span class="tp">Int</span>,
+    <span class="kw">val</span> name: <span class="tp">String</span>,
+    <span class="kw">val</span> price: <span class="tp">Double</span>,
+    <span class="kw">val</span> tags: <span class="tp">List</span>&lt;<span class="tp">String</span>&gt; = <span class="fn">emptyList</span>()
+)
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="kw">val</span> product = <span class="tp">Product</span>(<span class="nm">1</span>, <span class="st">"Laptop"</span>, <span class="nm">999.99</span>, <span class="fn">listOf</span>(<span class="st">"electronics"</span>))
+
+    <span class="cm">// copy() 只修改指定字段，其余保持不变</span>
+    <span class="kw">val</span> discounted = product.<span class="fn">copy</span>(price = <span class="nm">899.99</span>)
+    <span class="fn">println</span>(discounted)
+    <span class="cm">// Product(id=1, name=Laptop, price=899.99, tags=[electronics])</span>
+
+    <span class="cm">// copy() 链式调用</span>
+    <span class="kw">val</span> updated = product.<span class="fn">copy</span>(name = <span class="st">"Gaming Laptop"</span>, price = <span class="nm">1299.99</span>)
+    <span class="fn">println</span>(updated)
+
+    <span class="cm">// equals() 基于属性值比较</span>
+    <span class="kw">val</span> same = <span class="tp">Product</span>(<span class="nm">1</span>, <span class="st">"Laptop"</span>, <span class="nm">999.99</span>, <span class="fn">listOf</span>(<span class="st">"electronics"</span>))
+    <span class="fn">println</span>(product == same)   <span class="cm">// true（值相等）</span>
+    <span class="fn">println</span>(product === same)  <span class="cm">// false（不同对象）</span>
+
+    <span class="cm">// hashCode() 用于 Set/Map 的键</span>
+    <span class="kw">val</span> productSet = <span class="fn">setOf</span>(product, same)
+    <span class="fn">println</span>(productSet.<span class="fn">size</span>)   <span class="cm">// 1（去重）</span>
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 数据类：解构声明与 componentN 函数</span>
+<span class="kw">data class</span> <span class="tp">Employee</span>(
+    <span class="kw">val</span> name: <span class="tp">String</span>,
+    <span class="kw">val</span> department: <span class="tp">String</span>,
+    <span class="kw">val</span> salary: <span class="tp">Double</span>
+)
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="kw">val</span> emp = <span class="tp">Employee</span>(<span class="st">"Alice"</span>, <span class="st">"Engineering"</span>, <span class="nm">85000.0</span>)
+
+    <span class="cm">// 解构声明：自动调用 component1(), component2(), component3()</span>
+    <span class="kw">val</span> (name, dept, salary) = emp
+    <span class="fn">println</span>(<span class="st">"</span><span class="op">$</span><span class="nm">name</span><span class="st"> works in </span><span class="op">$</span><span class="nm">dept</span><span class="st"> earning </span><span class="op">$</span><span class="nm">salary</span><span class="st">"</span>)
+
+    <span class="cm">// 部分解构（忽略不需要的字段）</span>
+    <span class="kw">val</span> (empName, _, empSalary) = emp
+    <span class="fn">println</span>(<span class="st">"</span><span class="op">$</span><span class="nm">empName</span><span class="st">: </span><span class="op">$</span><span class="nm">empSalary</span><span class="st">"</span>)
+
+    <span class="cm">// 在 for 循环中解构</span>
+    <span class="kw">val</span> employees = <span class="fn">listOf</span>(
+        <span class="tp">Employee</span>(<span class="st">"Bob"</span>, <span class="st">"Design"</span>, <span class="nm">75000.0</span>),
+        <span class="tp">Employee</span>(<span class="st">"Charlie"</span>, <span class="st">"Engineering"</span>, <span class="nm">95000.0</span>)
+    )
+    <span class="kw">for</span> ((eName, eDept) <span class="kw">in</span> employees) {
+        <span class="fn">println</span>(<span class="st">"</span><span class="op">$</span><span class="nm">eName</span><span class="st"> -> </span><span class="op">$</span><span class="nm">eDept</span><span class="st">"</span>)
+    }
+
+    <span class="cm">// 在 Lambda 中解构</span>
+    employees.<span class="fn">forEach</span> { (n, d, s) <span class="kw">-></span>
+        <span class="fn">println</span>(<span class="st">"</span><span class="op">$</span><span class="nm">n</span><span class="st"> earns </span><span class="op">$</span><span class="nm">s</span><span class="st"> in </span><span class="op">$</span><span class="nm">d</span><span class="st">"</span>)
+    }
+
+    <span class="cm">// 直接调用 componentN() 函数</span>
+    <span class="fn">println</span>(emp.<span class="fn">component1</span>())  <span class="cm">// Alice</span>
+    <span class="fn">println</span>(emp.<span class="fn">component2</span>())  <span class="cm">// Engineering</span>
+    <span class="fn">println</span>(emp.<span class="fn">component3</span>())  <span class="cm">// 85000.0</span>
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 数据类：Pair/Triple 解构与自定义 componentN</span>
+<span class="kw">data class</span> <span class="tp">Config</span>(<span class="kw">val</span> key: <span class="tp">String</span>, <span class="kw">val</span> value: <span class="tp">String</span>)
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="cm">// map 中使用数据类解构</span>
+    <span class="kw">val</span> configs = <span class="fn">mapOf</span>(
+        <span class="st">"host"</span> <span class="kw">to</span> <span class="tp">Config</span>(<span class="st">"host"</span>, <span class="st">"localhost"</span>),
+        <span class="st">"port"</span> <span class="kw">to</span> <span class="tp">Config</span>(<span class="st">"port"</span>, <span class="st">"8080"</span>)
+    )
+    <span class="kw">for</span> ((_, config) <span class="kw">in</span> configs) {
+        <span class="fn">println</span>(<span class="st">"</span><span class="op">${</span>config.key<span class="op">}</span><span class="st"> = </span><span class="op">${</span>config.value<span class="op">}</span><span class="st">"</span>)
+    }
+
+    <span class="cm">// Pair 和 Triple 也是数据类</span>
+    <span class="kw">val</span> (width, height) = <span class="nm">Pair</span>(<span class="nm">100</span>, <span class="nm">200</span>)
+    <span class="fn">println</span>(<span class="st">"Dimensions: </span><span class="op">$</span><span class="nm">width</span><span class="st"> x </span><span class="op">$</span><span class="nm">height</span><span class="st">"</span>)
+
+    <span class="kw">val</span> (r, g, b) = <span class="nm">Triple</span>(<span class="nm">255</span>, <span class="nm">128</span>, <span class="nm">0</span>)
+    <span class="fn">println</span>(<span class="st">"RGB: </span><span class="op">$</span><span class="nm">r</span><span class="st">, </span><span class="op">$</span><span class="nm">g</span><span class="st">, </span><span class="op">$</span><span class="nm">b</span><span class="st">"</span>)
+
+    <span class="cm">// 自定义 componentN：为非数据类添加解构支持</span>
+    <span class="kw">class</span> <span class="tp">Color</span>(<span class="kw">val</span> r: <span class="tp">Int</span>, <span class="kw">val</span> g: <span class="tp">Int</span>, <span class="kw">val</span> b: <span class="tp">Int</span>) {
+        <span class="kw">operator fun</span> <span class="fn">component1</span>() = r
+        <span class="kw">operator fun</span> <span class="fn">component2</span>() = g
+        <span class="kw">operator fun</span> <span class="fn">component3</span>() = b
+    }
+
+    <span class="kw">val</span> (red, green, blue) = <span class="tp">Color</span>(<span class="nm">255</span>, <span class="nm">200</span>, <span class="nm">100</span>)
+    <span class="fn">println</span>(<span class="st">"Color: </span><span class="op">$</span><span class="nm">red</span><span class="st">, </span><span class="op">$</span><span class="nm">green</span><span class="st">, </span><span class="op">$</span><span class="nm">blue</span><span class="st">"</span>)
+}</code></pre>
+</div>
+
 <!-- ==================== 17. 密封类 ==================== -->
 <h2 id="sec17">17. 密封类</h2>
 
@@ -1329,6 +1587,87 @@ java -jar hello.jar</code></pre>
     <span class="kw">for</span> (shape <span class="kw">in</span> shapes) {
         <span class="fn">println</span>(<span class="st">"</span><span class="op">${</span>shape.<span class="fn">javaClass</span>.simpleName<span class="op">}</span><span class="st"> area = </span><span class="op">${</span>shape.<span class="fn">area</span>()<span class="op">}</span><span class="st">"</span>)
     }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 密封类：when 穷举检查详解</span>
+<span class="kw">sealed class</span> <span class="tp">Permission</span> {
+    <span class="kw">data object</span> <span class="tp">Read</span> : <span class="tp">Permission</span>()
+    <span class="kw">data object</span> <span class="tp">Write</span> : <span class="tp">Permission</span>()
+    <span class="kw">data object</span> <span class="tp">Admin</span> : <span class="tp">Permission</span>()
+    <span class="kw">data class</span> <span class="tp">Custom</span>(<span class="kw">val</span> name: <span class="tp">String</span>) : <span class="tp">Permission</span>()
+}
+
+<span class="cm">// when 作为表达式：必须穷举所有分支</span>
+<span class="kw">fun</span> <span class="fn">describePermission</span>(perm: <span class="tp">Permission</span>): <span class="tp">String</span> = <span class="kw">when</span> (perm) {
+    <span class="tp">Permission</span>.<span class="tp">Read</span> <span class="kw">-></span> <span class="st">"Can read"</span>
+    <span class="tp">Permission</span>.<span class="tp">Write</span> <span class="kw">-></span> <span class="st">"Can write"</span>
+    <span class="tp">Permission</span>.<span class="tp">Admin</span> <span class="kw">-></span> <span class="st">"Full access"</span>
+    <span class="kw">is</span> <span class="tp">Permission</span>.<span class="tp">Custom</span> <span class="kw">-></span> <span class="st">"Custom: </span><span class="op">${</span>perm.name<span class="op">}</span><span class="st">"</span>
+    <span class="cm">// 无需 else——编译器知道这四个覆盖了所有情况</span>
+}
+
+<span class="cm">// when 作为语句：可以不返回值</span>
+<span class="kw">fun</span> <span class="fn">logPermission</span>(perm: <span class="tp">Permission</span>) {
+    <span class="kw">when</span> (perm) {
+        <span class="tp">Permission</span>.<span class="tp">Admin</span> <span class="kw">-></span> <span class="fn">println</span>(<span class="st">"Admin access granted"</span>)
+        <span class="kw">is</span> <span class="tp">Permission</span>.<span class="tp">Custom</span> <span class="kw">-></span> <span class="fn">println</span>(<span class="st">"Custom permission: </span><span class="op">${</span>perm.name<span class="op">}</span><span class="st">"</span>)
+        <span class="kw">else</span> <span class="kw">-></span> <span class="fn">println</span>(<span class="st">"Standard permission"</span>)
+    }
+}
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="fn">println</span>(<span class="fn">describePermission</span>(<span class="tp">Permission</span>.<span class="tp">Read</span>))
+    <span class="fn">println</span>(<span class="fn">describePermission</span>(<span class="tp">Permission</span>.<span class="tp">Custom</span>(<span class="st">"deploy"</span>)))
+    <span class="fn">logPermission</span>(<span class="tp">Permission</span>.<span class="tp">Admin</span>)
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 密封接口：更灵活的层次设计</span>
+<span class="kw">sealed interface</span> <span class="tp">Shape</span> {
+    <span class="kw">fun</span> <span class="fn">area</span>(): <span class="tp">Double</span>
+    <span class="kw">fun</span> <span class="fn">describe</span>(): <span class="tp">String</span>
+}
+
+<span class="kw">data class</span> <span class="tp">Circle</span>(<span class="kw">val</span> radius: <span class="tp">Double</span>) : <span class="tp">Shape</span> {
+    <span class="kw">override fun</span> <span class="fn">area</span>() = <span class="tp">Math</span>.<span class="fn">PI</span> * radius * radius
+    <span class="kw">override fun</span> <span class="fn">describe</span>() = <span class="st">"Circle(r=</span><span class="op">$</span><span class="nm">radius</span><span class="st">)"</span>
+}
+
+<span class="kw">data class</span> <span class="tp">Rectangle</span>(<span class="kw">val</span> w: <span class="tp">Double</span>, <span class="kw">val</span> h: <span class="tp">Double</span>) : <span class="tp">Shape</span> {
+    <span class="kw">override fun</span> <span class="fn">area</span>() = w * h
+    <span class="kw">override fun</span> <span class="fn">describe</span>() = <span class="st">"Rect(</span><span class="op">$</span><span class="nm">w</span><span class="st">x</span><span class="op">$</span><span class="nm">h</span><span class="st">)"</span>
+}
+
+<span class="kw">data class</span> <span class="tp">Triangle</span>(<span class="kw">val</span> base: <span class="tp">Double</span>, <span class="kw">val</span> height: <span class="tp">Double</span>) : <span class="tp">Shape</span> {
+    <span class="kw">override fun</span> <span class="fn">area</span>() = <span class="nm">0.5</span> * base * height
+    <span class="kw">override fun</span> <span class="fn">describe</span>() = <span class="st">"Triangle(b=</span><span class="op">$</span><span class="nm">base</span><span class="st">,h=</span><span class="op">$</span><span class="nm">height</span><span class="st">)"</span>
+}
+
+<span class="kw">fun</span> <span class="fn">totalArea</span>(shapes: <span class="tp">List</span>&lt;<span class="tp">Shape</span>&gt;): <span class="tp">Double</span> {
+    <span class="kw">return</span> shapes.<span class="fn">sumOf</span> { it.<span class="fn">area</span>() }
+}
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="kw">val</span> shapes: <span class="tp">List</span>&lt;<span class="tp">Shape</span>&gt; = <span class="fn">listOf</span>(
+        <span class="tp">Circle</span>(<span class="nm">5.0</span>),
+        <span class="tp">Rectangle</span>(<span class="nm">4.0</span>, <span class="nm">6.0</span>),
+        <span class="tp">Triangle</span>(<span class="nm">3.0</span>, <span class="nm">8.0</span>)
+    )
+    <span class="kw">for</span> (s <span class="kw">in</span> shapes) {
+        <span class="fn">println</span>(<span class="st">"</span><span class="op">${</span>s.<span class="fn">describe</span>()<span class="op">}</span><span class="st"> area=</span><span class="op">${</span>s.<span class="fn">area</span>()<span class="op">}</span><span class="st">"</span>)
+    }
+    <span class="fn">println</span>(<span class="st">"Total: </span><span class="op">${</span><span class="fn">totalArea</span>(shapes)<span class="op">}</span><span class="st">"</span>)
 }</code></pre>
 </div>
 
@@ -1438,6 +1777,132 @@ java -jar hello.jar</code></pre>
 }</code></pre>
 </div>
 
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 空安全：链式安全调用与 let 组合</span>
+<span class="kw">data class</span> <span class="tp">Company</span>(<span class="kw">val</span> name: <span class="tp">String</span>, <span class="kw">val</span> ceo: <span class="tp">Person</span>?)
+<span class="kw">data class</span> <span class="tp">Person</span>(<span class="kw">val</span> name: <span class="tp">String</span>, <span class="kw">val</span> address: <span class="tp">Address</span>?)
+<span class="kw">data class</span> <span class="tp">Address</span>(<span class="kw">val</span> city: <span class="tp">String</span>, <span class="kw">val</span> street: <span class="tp">String</span>?)
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="kw">val</span> company: <span class="tp">Company</span>? = <span class="tp">Company</span>(<span class="st">"TechCorp"</span>, <span class="tp">Person</span>(<span class="st">"Alice"</span>, <span class="tp">Address</span>(<span class="st">"Beijing"</span>, <span class="st">"Main St"</span>)))
+
+    <span class="cm">// 链式安全调用：中间任一为 null 整体返回 null</span>
+    <span class="kw">val</span> street = company?.ceo?.address?.street
+    <span class="fn">println</span>(street)  <span class="cm">// Main St</span>
+
+    <span class="cm">// let 与安全调用：不为 null 时执行代码块</span>
+    company?.ceo?.let { ceo <span class="kw">-></span>
+        <span class="fn">println</span>(<span class="st">"CEO: </span><span class="op">${</span>ceo.name<span class="op">}</span><span class="st">"</span>)
+        <span class="fn">println</span>(<span class="st">"City: </span><span class="op">${</span>ceo.address?.city<span class="op">}</span><span class="st">"</span>)
+    }
+
+    <span class="cm">// let 用于转换非空值</span>
+    <span class="kw">val</span> nameLength = company?.ceo?.name?.<span class="fn">let</span> {
+        <span class="fn">println</span>(<span class="st">"Processing: </span><span class="op">$</span><span class="nm">it</span><span class="st">"</span>)
+        it.<span class="fn">uppercase</span>()  <span class="cm">// let 返回最后一行</span>
+    } ?: <span class="st">"UNKNOWN"</span>
+    <span class="fn">println</span>(nameLength)  <span class="cm">// ALICE</span>
+
+    <span class="cm">// 多层安全调用 + let + Elvis</span>
+    <span class="kw">val</span> result = company?.ceo?.address?.<span class="fn">let</span> { addr <span class="kw">-></span>
+        <span class="st">"</span><span class="op">${</span>addr.city<span class="op">}</span><span class="st">, </span><span class="op">${</span>addr.street ?: <span class="st">"N/A"</span><span class="op">}</span><span class="st">"</span>
+    } ?: <span class="st">"Address not available"</span>
+    <span class="fn">println</span>(result)  <span class="cm">// Beijing, Main St</span>
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 空安全：!! 非空断言与平台类型</span>
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="cm">// !! 非空断言：强制转换，为 null 时抛 NullPointerException</span>
+    <span class="kw">val</span> nullable: <span class="tp">String</span>? = <span class="st">"Hello"</span>
+    <span class="kw">val</span> forced: <span class="tp">String</span> = nullable!!  <span class="cm">// 安全，因为值不为 null</span>
+    <span class="fn">println</span>(forced.<span class="fn">length</span>)
+
+    <span class="cm">// !! 的危险场景</span>
+    <span class="kw">val</span> maybeNull: <span class="tp">String</span>? = <span class="kw">null</span>
+    <span class="cm">// val crash = maybeNull!!  // 抛出 KotlinNullPointerException</span>
+
+    <span class="cm">// 推荐替代方案：安全调用 + let / Elvis</span>
+    <span class="kw">val</span> safe = maybeNull?.<span class="fn">length</span> ?: <span class="nm">0</span>       <span class="cm">// 0</span>
+    <span class="kw">val</span> safe2 = maybeNull.<span class="fn">let</span> { it?.<span class="fn">length</span> }  <span class="cm">// null</span>
+
+    <span class="cm">// checkNotNull / requireNotNull：带消息的断言</span>
+    <span class="kw">val</span> input: <span class="tp">String</span>? = <span class="st">"data"</span>
+    <span class="kw">val</span> checked = <span class="fn">checkNotNull</span>(input) { <span class="st">"Input must not be null"</span> }
+    <span class="fn">println</span>(checked.<span class="fn">length</span>)
+
+    <span class="cm">// 平台类型（Platform Types）：Java 互操作</span>
+    <span class="cm">// Java 方法返回值在 Kotlin 中为 T!（平台类型）</span>
+    <span class="cm">// 编译器不会强制你处理 null，但运行时可能抛 NPE</span>
+    <span class="cm">//</span>
+    <span class="cm">// 解决方案：</span>
+    <span class="cm">// 1. 显式声明为可空类型：val s: String? = javaMethod()</span>
+    <span class="cm">// 2. 显式声明为非空类型：val s: String = javaMethod()  // 如为 null 会 NPE</span>
+    <span class="cm">// 3. 使用安全调用：val len = javaMethod()?.length</span>
+
+    <span class="cm">// lateinit var：延迟初始化（避免 nullable）</span>
+    <span class="kw">lateinit var</span> config: <span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">String</span>&gt;
+
+    <span class="kw">if</span> (<span class="op">::</span>config.<span class="fn">isInitialized</span>) {
+        <span class="fn">println</span>(config)
+    } <span class="kw">else</span> {
+        config = <span class="fn">mapOf</span>(<span class="st">"env"</span> <span class="kw">to</span> <span class="st">"prod"</span>)
+        <span class="fn">println</span>(<span class="st">"Config initialized"</span>)
+    }
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 空安全：可空集合与过滤</span>
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="cm">// 可空元素集合</span>
+    <span class="kw">val</span> nullableList: <span class="tp">List</span>&lt;<span class="tp">Int</span>?&gt; = <span class="fn">listOf</span>(<span class="nm">1</span>, <span class="kw">null</span>, <span class="nm">3</span>, <span class="kw">null</span>, <span class="nm">5</span>)
+
+    <span class="cm">// filterNotNull：移除 null 元素</span>
+    <span class="kw">val</span> nonNullList = nullableList.<span class="fn">filterNotNull</span>()
+    <span class="fn">println</span>(nonNullList)  <span class="cm">// [1, 3, 5]</span>
+
+    <span class="cm">// filterIsInstance：按类型过滤</span>
+    <span class="kw">val</span> mixed: <span class="tp">List</span>&lt;<span class="tp">Any</span>?&gt; = <span class="fn">listOf</span>(<span class="nm">1</span>, <span class="st">"hello"</span>, <span class="kw">null</span>, <span class="nm">3.14</span>, <span class="st">"world"</span>)
+    <span class="kw">val</span> strings = mixed.<span class="fn">filterIsInstance</span>&lt;<span class="tp">String</span>&gt;()
+    <span class="fn">println</span>(strings)  <span class="cm">// [hello, world]</span>
+
+    <span class="cm">// Map 的空安全扩展</span>
+    <span class="kw">val</span> map: <span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">Int</span>?&gt; = <span class="fn">mapOf</span>(<span class="st">"a"</span> <span class="kw">to</span> <span class="nm">1</span>, <span class="st">"b"</span> <span class="kw">to</span> <span class="kw">null</span>)
+
+    <span class="cm">// getOrElse：key 不存在时用默认值</span>
+    <span class="kw">val</span> a = map.<span class="fn">getOrElse</span>(<span class="st">"a"</span>) { <span class="nm">0</span> }   <span class="cm">// 1</span>
+    <span class="kw">val</span> c = map.<span class="fn">getOrElse</span>(<span class="st">"c"</span>) { <span class="nm">0</span> }   <span class="cm">// 0</span>
+
+    <span class="cm">// getOrDefault：key 不存在时返回默认值</span>
+    <span class="kw">val</span> b = map.<span class="fn">getOrDefault</span>(<span class="st">"b"</span>, <span class="nm">0</span>)  <span class="cm">// null（key 存在但值为 null）</span>
+    <span class="kw">val</span> d = map.<span class="fn">getOrDefault</span>(<span class="st">"d"</span>, <span class="nm">0</span>)  <span class="cm">// 0（key 不存在）</span>
+
+    <span class="fn">println</span>(<span class="st">"</span><span class="op">$</span><span class="nm">a</span><span class="st">, </span><span class="op">$</span><span class="nm">b</span><span class="st">, </span><span class="op">$</span><span class="nm">c</span><span class="st">, </span><span class="op">$</span><span class="nm">d</span><span class="st">"</span>)
+
+    <span class="cm">// filterValues / filterKeys：过滤 Map</span>
+    <span class="kw">val</span> filtered = map.<span class="fn">filterValues</span> { it != <span class="kw">null</span> }
+    <span class="fn">println</span>(filtered)  <span class="cm">// {a=1}</span>
+
+    <span class="cm">// mapValues：转换值（可处理 null）</span>
+    <span class="kw">val</span> mapped = map.<span class="fn">mapValues</span> { (_, v) <span class="kw">-></span> v ?: <span class="nm">0</span> }
+    <span class="fn">println</span>(mapped)  <span class="cm">// {a=1, b=0}</span>
+}</code></pre>
+</div>
+
 <!-- ==================== 19. 扩展函数 ==================== -->
 <h2 id="sec19">19. 扩展函数</h2>
 
@@ -1505,6 +1970,110 @@ java -jar hello.jar</code></pre>
 
     <span class="kw">val</span> list = <span class="fn">listOf</span>(<span class="nm">3</span>, <span class="nm">1</span>, <span class="nm">4</span>, <span class="nm">1</span>, <span class="nm">5</span>)
     <span class="fn">println</span>(list.<span class="fn">secondLargest</span>())  <span class="cm">// 3</span>
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 扩展属性：为类添加计算属性</span>
+
+<span class="cm">// 1. String 扩展属性</span>
+<span class="kw">val</span> <span class="tp">String</span>.<span class="fn">isNumeric</span>: <span class="tp">Boolean</span>
+    <span class="kw">get</span>() = <span class="fn">all</span> { it.<span class="fn">isDigit</span>() }
+
+<span class="kw">val</span> <span class="tp">String</span>.<span class="fn">lastChar</span>: <span class="tp">Char</span>
+    <span class="kw">get</span>() = <span class="fn">last</span>()
+
+<span class="kw">val</span> <span class="tp">String</span>.<span class="fn">wordCount</span>: <span class="tp">Int</span>
+    <span class="kw">get</span>() = <span class="fn">split</span>(<span class="st">"""\\s+"""</span>.<span class="fn">toRegex</span>()).<span class="fn">filter</span> { it.<span class="fn">isNotEmpty</span>() }.<span class="fn">size</span>
+
+<span class="cm">// 2. List 扩展属性</span>
+<span class="kw">val</span> &lt;<span class="tp">T</span>&gt; <span class="tp">List</span>&lt;<span class="tp">T</span>&gt;.<span class="fn">secondOrNull</span>: <span class="tp">T</span>?
+    <span class="kw">get</span>() = <span class="kw">if</span> (size >= <span class="nm">2</span>) <span class="kw">this</span>[<span class="nm">1</span>] <span class="kw">else null</span>
+
+<span class="kw">val</span> &lt;<span class="tp">T</span>&gt; <span class="tp">Collection</span>&lt;<span class="tp">T</span>&gt;.<span class="fn">randomOrNull</span>: <span class="tp">T</span>?
+    <span class="kw">get</span>() = <span class="kw">if</span> (<span class="fn">isEmpty</span>()) <span class="kw">null</span> <span class="kw">else</span> <span class="fn">toMutableList</span>().<span class="fn">random</span>()
+
+<span class="cm">// 3. 可空类型的扩展属性</span>
+<span class="kw">val</span> <span class="tp">String</span>?.<span class="fn">orEmpty</span>: <span class="tp">String</span>
+    <span class="kw">get</span>() = <span class="kw">this</span> ?: <span class="st">""</span>
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="fn">println</span>(<span class="st">"12345"</span>.<span class="fn">isNumeric</span>)     <span class="cm">// true</span>
+    <span class="fn">println</span>(<span class="st">"Hello"</span>.<span class="fn">lastChar</span>)       <span class="cm">// o</span>
+    <span class="fn">println</span>(<span class="st">"one two three"</span>.<span class="fn">wordCount</span>)  <span class="cm">// 3</span>
+
+    <span class="kw">val</span> nums = <span class="fn">listOf</span>(<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>)
+    <span class="fn">println</span>(nums.<span class="fn">secondOrNull</span>)  <span class="cm">// 20</span>
+    <span class="fn">println</span>(<span class="fn">emptyList</span>&lt;<span class="tp">Int</span>&gt;().<span class="fn">secondOrNull</span>)  <span class="cm">// null</span>
+
+    <span class="kw">val</span> nullable: <span class="tp">String</span>? = <span class="kw">null</span>
+    <span class="fn">println</span>(nullable.<span class="fn">orEmpty</span>.<span class="fn">length</span>)  <span class="cm">// 0</span>
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 接收者函数类型（Function Literals with Receiver）</span>
+
+<span class="cm">// 1. 基本接收者函数类型</span>
+<span class="kw">fun</span> <span class="fn">buildString</span>(builderAction: <span class="tp">StringBuilder</span>.() <span class="kw">-></span> <span class="tp">Unit</span>): <span class="tp">String</span> {
+    <span class="kw">val</span> sb = <span class="tp">StringBuilder</span>()
+    sb.<span class="fn">builderAction</span>()
+    <span class="kw">return</span> sb.<span class="fn">toString</span>()
+}
+
+<span class="cm">// 2. DSL 风格的配置构建</span>
+<span class="kw">class</span> <span class="tp">HtmlBuilder</span> {
+    <span class="kw">private val</span> elements = <span class="fn">mutableListOf</span>&lt;<span class="tp">String</span>&gt;()
+
+    <span class="kw">fun</span> <span class="fn">p</span>(text: <span class="tp">String</span>) { elements.<span class="fn">add</span>(<span class="st">"&lt;p&gt;</span><span class="op">$</span><span class="nm">text</span><span class="st">&lt;/p&gt;"</span>) }
+    <span class="kw">fun</span> <span class="fn">h1</span>(text: <span class="tp">String</span>) { elements.<span class="fn">add</span>(<span class="st">"&lt;h1&gt;</span><span class="op">$</span><span class="nm">text</span><span class="st">&lt;/h1&gt;"</span>) }
+
+    <span class="kw">override fun</span> <span class="fn">toString</span>() = elements.<span class="fn">joinToString</span>(<span class="st">"\n"</span>)
+}
+
+<span class="kw">fun</span> <span class="fn">html</span>(init: <span class="tp">HtmlBuilder</span>.() <span class="kw">-></span> <span class="tp">Unit</span>): <span class="tp">HtmlBuilder</span> {
+    <span class="kw">return</span> <span class="tp">HtmlBuilder</span>().<span class="fn">apply</span>(init)
+}
+
+<span class="cm">// 3. 带接收者的 Lambda 扩展函数</span>
+<span class="kw">inline fun</span> &lt;<span class="tp">T</span>&gt; <span class="tp">T</span>.<span class="fn">apply</span>(block: <span class="tp">T</span>.() <span class="kw">-></span> <span class="tp">Unit</span>): <span class="tp">T</span> {
+    <span class="fn">block</span>()
+    <span class="kw">return this</span>
+}
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="cm">// buildString 使用接收者函数</span>
+    <span class="kw">val</span> greeting = <span class="fn">buildString</span> {
+        <span class="fn">append</span>(<span class="st">"Hello, "</span>)
+        <span class="fn">append</span>(<span class="st">"World!"</span>)
+    }
+    <span class="fn">println</span>(greeting)  <span class="cm">// Hello, World!</span>
+
+    <span class="cm">// DSL 风格构建</span>
+    <span class="kw">val</span> page = <span class="fn">html</span> {
+        <span class="fn">h1</span>(<span class="st">"Welcome"</span>)
+        <span class="fn">p</span>(<span class="st">"This is a paragraph"</span>)
+        <span class="fn">p</span>(<span class="st">"Another paragraph"</span>)
+    }
+    <span class="fn">println</span>(page)
+
+    <span class="cm">// with 函数：对对象执行多个操作</span>
+    <span class="kw">val</span> sb = <span class="tp">StringBuilder</span>()
+    <span class="fn">with</span>(sb) {
+        <span class="fn">append</span>(<span class="st">"Name: "</span>)
+        <span class="fn">append</span>(<span class="st">"Alice"</span>)
+        <span class="fn">append</span>(<span class="st">"\n"</span>)
+        <span class="fn">append</span>(<span class="st">"Age: 25"</span>)
+    }
+    <span class="fn">println</span>(sb.<span class="fn">toString</span>())
 }</code></pre>
 </div>
 
@@ -1639,6 +2208,183 @@ java -jar hello.jar</code></pre>
     }
 
     <span class="fn">scope</span>.<span class="fn">cancel</span>()
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 协程：launch vs async 详解</span>
+<span class="kw">import</span> kotlinx.coroutines.*
+
+<span class="kw">fun</span> <span class="fn">main</span>() = <span class="fn">runBlocking</span> {
+    <span class="cm">// launch：Fire-and-forget，不返回结果</span>
+    <span class="kw">val</span> job = <span class="fn">launch</span>(<span class="tp">Dispatchers</span>.<span class="tp">Default</span>) {
+        <span class="fn">delay</span>(<span class="nm">500</span>)
+        <span class="fn">println</span>(<span class="st">"Task completed"</span>)
+    }
+    <span class="fn">println</span>(<span class="st">"Job started: </span><span class="op">${</span>job.isActive<span class="op">}</span><span class="st">"</span>)
+
+    <span class="cm">// async：返回 Deferred，可 await 获取结果</span>
+    <span class="kw">val</span> deferred1 = <span class="fn">async</span> {
+        <span class="fn">delay</span>(<span class="nm">1000</span>)
+        <span class="st">"Result A"</span>
+    }
+    <span class="kw">val</span> deferred2 = <span class="fn">async</span> {
+        <span class="fn">delay</span>(<span class="nm">500</span>)
+        <span class="st">"Result B"</span>
+    }
+
+    <span class="cm">// 并行执行，两个 async 同时运行</span>
+    <span class="fn">println</span>(<span class="st">"</span><span class="op">${</span>deferred1.<span class="fn">await</span>()<span class="op">}</span><span class="st"> + </span><span class="op">${</span>deferred2.<span class="fn">await</span>()<span class="op">}</span><span class="st">"</span>)
+    <span class="cm">// ~1000ms 后输出: Result A + Result B</span>
+
+    <span class="cm">// async + awaitAll：批量并行</span>
+    <span class="kw">val</span> urls = <span class="fn">listOf</span>(<span class="st">"url1"</span>, <span class="st">"url2"</span>, <span class="st">"url3"</span>)
+    <span class="kw">val</span> results = urls.<span class="fn">map</span> { url <span class="kw">-></span>
+        <span class="fn">async</span> { <span class="fn">fetchUrl</span>(url) }
+    }.<span class="fn">awaitAll</span>()
+    <span class="fn">println</span>(results)
+
+    <span class="cm">// Deferred 的异常处理</span>
+    <span class="kw">val</span> deferred = <span class="fn">async</span> {
+        <span class="fn">delay</span>(<span class="nm">100</span>)
+        <span class="kw">throw</span> <span class="tp">RuntimeException</span>(<span class="st">"Oops"</span>)
+    }
+    <span class="kw">try</span> {
+        deferred.<span class="fn">await</span>()
+    } <span class="kw">catch</span> (e: <span class="tp">Exception</span>) {
+        <span class="fn">println</span>(<span class="st">"Caught: </span><span class="op">${</span>e.message<span class="op">}</span><span class="st">"</span>)
+    }
+
+    job.<span class="fn">join</span>()
+}
+
+<span class="kw">suspend fun</span> <span class="fn">fetchUrl</span>(url: <span class="tp">String</span>): <span class="tp">String</span> {
+    <span class="fn">delay</span>(<span class="nm">500</span>)
+    <span class="kw">return</span> <span class="st">"Data from </span><span class="op">$</span><span class="nm">url</span><span class="st">"</span>
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// Flow 基础：响应式数据流</span>
+<span class="kw">import</span> kotlinx.coroutines.*
+<span class="kw">import</span> kotlinx.coroutines.flow.*
+
+<span class="cm">// 1. 创建 Flow</span>
+<span class="kw">fun</span> <span class="fn">numberFlow</span>(): <span class="tp">Flow</span>&lt;<span class="tp">Int</span>&gt; = <span class="fn">flow</span> {
+    <span class="kw">for</span> (i <span class="kw">in</span> <span class="nm">1</span>..<span class="nm">5</span>) {
+        <span class="fn">delay</span>(<span class="nm">200</span>)
+        <span class="fn">emit</span>(i)  <span class="cm">// 发射值</span>
+    }
+}
+
+<span class="cm">// 2. Flow 操作符</span>
+<span class="kw">fun</span> <span class="fn">main</span>() = <span class="fn">runBlocking</span> {
+    <span class="cm">// 基本操作符</span>
+    <span class="fn">numberFlow</span>()
+        .<span class="fn">filter</span> { it % <span class="nm">2</span> == <span class="nm">0</span> }    <span class="cm">// 只保留偶数</span>
+        .<span class="fn">map</span> { it * <span class="nm">10</span> }              <span class="cm">// 转换</span>
+        .<span class="fn">collect</span> { <span class="fn">println</span>(it) }     <span class="cm">// 收集：20, 40</span>
+
+    <span class="cm">// take：只取前 N 个</span>
+    <span class="fn">numberFlow</span>().<span class="fn">take</span>(<span class="nm">3</span>).<span class="fn">toList</span>().<span class="fn">let</span> { <span class="fn">println</span>(it) }
+
+    <span class="cm">// toList / toSet：收集为集合</span>
+    <span class="kw">val</span> list = <span class="fn">numberFlow</span>().<span class="fn">toList</span>()
+    <span class="fn">println</span>(list)  <span class="cm">// [1, 2, 3, 4, 5]</span>
+
+    <span class="cm">// onEach / onCompletion：中间操作</span>
+    <span class="fn">numberFlow</span>()
+        .<span class="fn">onEach</span> { <span class="fn">println</span>(<span class="st">"Emitting: </span><span class="op">$</span><span class="nm">it</span><span class="st">"</span>) }
+        .<span class="fn">onCompletion</span> { cause <span class="kw">-></span>
+            cause?.<span class="fn">let</span> { <span class="fn">println</span>(<span class="st">"Error: </span><span class="op">$</span><span class="nm">it</span><span class="st">"</span>) } ?: <span class="fn">println</span>(<span class="st">"Done"</span>)
+        }
+        .<span class="fn">collect</span>()
+
+    <span class="cm">// flowOn：切换上下文</span>
+    <span class="fn">numberFlow</span>()
+        .<span class="fn">flowOn</span>(<span class="tp">Dispatchers</span>.<span class="tp">IO</span>)  <span class="cm">// 发射操作在 IO 线程</span>
+        .<span class="fn">collect</span> { <span class="cm">/* 收集在主线程 */</span> }
+
+    <span class="cm">// combine：合并多个 Flow</span>
+    <span class="kw">val</span> names = <span class="fn">flow</span> { <span class="fn">emit</span>(<span class="st">"Alice"</span>); <span class="fn">delay</span>(<span class="nm">100</span>); <span class="fn">emit</span>(<span class="st">"Bob"</span>) }
+    <span class="kw">val</span> ages = <span class="fn">flow</span> { <span class="fn">emit</span>(<span class="nm">25</span>); <span class="fn">delay</span>(<span class="nm">150</span>); <span class="fn">emit</span>(<span class="nm">30</span>) }
+
+    names.<span class="fn">combine</span>(ages) { name, age <span class="kw">-></span>
+        <span class="st">"</span><span class="op">$</span><span class="nm">name</span><span class="st"> is </span><span class="op">$</span><span class="nm">age</span><span class="st">"</span>
+    }.<span class="fn">collect</span> { <span class="fn">println</span>(it) }
+    <span class="cm">// Alice is 25, Bob is 25, Bob is 30</span>
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// StateFlow 与 SharedFlow：可观察状态</span>
+<span class="kw">import</span> kotlinx.coroutines.*
+<span class="kw">import</span> kotlinx.coroutines.flow.*
+
+<span class="cm">// 1. StateFlow：有初始值的状态流（类似 LiveData）</span>
+<span class="kw">class</span> <span class="tp">CounterViewModel</span> {
+    <span class="kw">private val</span> _count = <span class="tp">MutableStateFlow</span>(<span class="nm">0</span>)
+    <span class="kw">val</span> count: <span class="tp">StateFlow</span>&lt;<span class="tp">Int</span>&gt; = _count.<span class="fn">asStateFlow</span>()
+
+    <span class="kw">fun</span> <span class="fn">increment</span>() { _count.<span class="fn">value</span>++ }
+    <span class="kw">fun</span> <span class="fn">decrement</span>() { _count.<span class="fn">value</span>-- }
+    <span class="kw">fun</span> <span class="fn">reset</span>() { _count.<span class="fn">value</span> = <span class="nm">0</span> }
+}
+
+<span class="cm">// 2. SharedFlow：无初始值的事件流</span>
+<span class="kw">class</span> <span class="tp">EventBus</span> {
+    <span class="kw">private val</span> _events = <span class="tp">MutableSharedFlow</span>&lt;<span class="tp">String</span>&gt;()
+    <span class="kw">val</span> events: <span class="tp">SharedFlow</span>&lt;<span class="tp">String</span>&gt; = _events.<span class="fn">asSharedFlow</span>()
+
+    <span class="kw">suspend fun</span> <span class="fn">emit</span>(event: <span class="tp">String</span>) {
+        _events.<span class="fn">emit</span>(event)
+    }
+}
+
+<span class="kw">fun</span> <span class="fn">main</span>() = <span class="fn">runBlocking</span> {
+    <span class="cm">// StateFlow 使用</span>
+    <span class="kw">val</span> vm = <span class="tp">CounterViewModel</span>()
+
+    <span class="cm">// 收集状态</span>
+    <span class="kw">val</span> job = <span class="fn">launch</span> {
+        vm.count.<span class="fn">collect</span> { value <span class="kw">-></span>
+            <span class="fn">println</span>(<span class="st">"Count: </span><span class="op">$</span><span class="nm">value</span><span class="st">"</span>)
+        }
+    }
+
+    vm.<span class="fn">increment</span>()  <span class="cm">// Count: 1</span>
+    vm.<span class="fn">increment</span>()  <span class="cm">// Count: 2</span>
+    vm.<span class="fn">decrement</span>()  <span class="cm">// Count: 1</span>
+    vm.<span class="fn">reset</span>()      <span class="cm">// Count: 0</span>
+
+    job.<span class="fn">cancel</span>()
+
+    <span class="cm">// StateFlow 的 distinctUntilChanged</span>
+    <span class="kw">val</span> state = <span class="tp">MutableStateFlow</span>(<span class="nm">0</span>)
+    state.<span class="fn">distinctUntilChanged</span>().<span class="fn">collect</span> { <span class="fn">println</span>(<span class="st">"Changed to </span><span class="op">$</span><span class="nm">it</span><span class="st">"</span>) }
+    state.<span class="fn">value</span> = <span class="nm">0</span>  <span class="cm">// 不触发（值相同）</span>
+    state.<span class="fn">value</span> = <span class="nm">1</span>  <span class="cm">// 触发：Changed to 1</span>
+
+    <span class="cm">// SharedFlow：事件广播</span>
+    <span class="kw">val</span> bus = <span class="tp">EventBus</span>()
+    <span class="fn">launch</span> {
+        bus.events.<span class="fn">collect</span> { <span class="fn">println</span>(<span class="st">"Received: </span><span class="op">$</span><span class="nm">it</span><span class="st">"</span>) }
+    }
+    bus.<span class="fn">emit</span>(<span class="st">"User clicked"</span>)
+    bus.<span class="fn">emit</span>(<span class="st">"Page loaded"</span>)
+    <span class="fn">delay</span>(<span class="nm">100</span>)
 }</code></pre>
 </div>
 
@@ -1828,6 +2574,152 @@ java -jar hello.jar</code></pre>
     <span class="kw">val</span> app = <span class="tp">App</span>()
     app.<span class="fn">print</span>(<span class="st">"Hello via delegation"</span>)
     <span class="cm">// [Console] Hello via delegation</span>
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 委托：lazy 的高级用法</span>
+<span class="kw">import</span> kotlin.properties.Delegates
+<span class="kw">import</span> kotlin.reflect.KProperty
+
+<span class="cm">// 1. lazy 的不同线程安全模式</span>
+<span class="kw">val</span> syncLazy: <span class="tp">String</span> <span class="kw">by</span> <span class="fn">lazy</span>(<span class="tp">LazyThreadSafetyMode</span>.<span class="tp">SYNCHRONIZED</span>) {
+    <span class="fn">println</span>(<span class="st">"Computed (synchronized)"</span>)
+    <span class="st">"Sync Data"</span>
+}
+
+<span class="kw">val</span> publicationLazy: <span class="tp">String</span> <span class="kw">by</span> <span class="fn">lazy</span>(<span class="tp">LazyThreadSafetyMode</span>.<span class="tp">PUBLICATION</span>) {
+    <span class="fn">println</span>(<span class="st">"Computed (publication)"</span>)
+    <span class="st">"Publication Data"</span>
+}
+
+<span class="cm">// 2. lazy 链式依赖</span>
+<span class="kw">class</span> <span class="tp">Database</span> {
+    <span class="kw">val</span> connection: <span class="tp">String</span> <span class="kw">by</span> <span class="fn">lazy</span> {
+        <span class="fn">println</span>(<span class="st">"Creating connection..."</span>)
+        <span class="st">"jdbc:mysql://localhost:3306/db"</span>
+    }
+
+    <span class="kw">val</span> repository: <span class="tp">String</span> <span class="kw">by</span> <span class="fn">lazy</span> {
+        <span class="fn">println</span>(<span class="st">"Creating repo with: </span><span class="op">$</span><span class="nm">connection</span><span class="st">"</span>)
+        <span class="st">"Repository"</span>
+    }
+}
+
+<span class="cm">// 3. 可观察属性：值变化时触发回调</span>
+<span class="kw">class</span> <span class="tp">UserProfile</span> {
+    <span class="kw">var</span> name: <span class="tp">String</span> <span class="kw">by</span> <span class="tp">Delegates</span>.<span class="fn">observable</span>(<span class="st">""</span>) { _, old, new <span class="kw">-></span>
+        <span class="fn">println</span>(<span class="st">"Name: </span><span class="op">$</span><span class="nm">old</span><span class="st"> -> </span><span class="op">$</span><span class="nm">new</span><span class="st">"</span>)
+    }
+
+    <span class="kw">var</span> age: <span class="tp">Int</span> <span class="kw">by</span> <span class="tp">Delegates</span>.<span class="fn">observable</span>(<span class="nm">0</span>) { _, old, new <span class="kw">-></span>
+        <span class="fn">println</span>(<span class="st">"Age: </span><span class="op">$</span><span class="nm">old</span><span class="st"> -> </span><span class="op">$</span><span class="nm">new</span><span class="st">"</span>)
+    }
+}
+
+<span class="cm">// 4. Vetoable：条件验证（返回 false 拒绝赋值）</span>
+<span class="kw">class</span> <span class="tp">Settings</span> {
+    <span class="kw">var</span> volume: <span class="tp">Int</span> <span class="kw">by</span> <span class="tp">Delegates</span>.<span class="fn">vetoable</span>(<span class="nm">50</span>) { _, _, new <span class="kw">-></span>
+        new <span class="kw">in</span> <span class="nm">0</span>..<span class="nm">100</span>  <span class="cm">// 只允许 0-100</span>
+    }
+
+    <span class="kw">var</span> brightness: <span class="tp">Int</span> <span class="kw">by</span> <span class="tp">Delegates</span>.<span class="fn">vetoable</span>(<span class="nm">80</span>) { _, _, new <span class="kw">-></span>
+        new <span class="kw">in</span> <span class="nm">10</span>..<span class="nm">100</span>
+    }
+}
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="cm">// lazy 链式依赖</span>
+    <span class="kw">val</span> db = <span class="tp">Database</span>()
+    <span class="fn">println</span>(<span class="st">"DB created"</span>)
+    <span class="fn">println</span>(db.repository)  <span class="cm">// 触发两个 lazy</span>
+
+    <span class="cm">// 可观察属性</span>
+    <span class="kw">val</span> profile = <span class="tp">UserProfile</span>()
+    profile.name = <span class="st">"Alice"</span>   <span class="cm">// Name:  -> Alice</span>
+    profile.name = <span class="st">"Bob"</span>     <span class="cm">// Name: Alice -> Bob</span>
+    profile.age = <span class="nm">25</span>         <span class="cm">// Age: 0 -> 25</span>
+
+    <span class="cm">// Vetoable 验证</span>
+    <span class="kw">val</span> settings = <span class="tp">Settings</span>()
+    settings.volume = <span class="nm">75</span>    <span class="cm">// OK</span>
+    <span class="fn">println</span>(settings.volume)  <span class="cm">// 75</span>
+    settings.volume = <span class="nm">150</span>   <span class="cm">// 被拒绝（超出范围）</span>
+    <span class="fn">println</span>(settings.volume)  <span class="cm">// 仍然是 75</span>
+
+    settings.brightness = <span class="nm">5</span>  <span class="cm">// 被拒绝（低于 10）</span>
+    <span class="fn">println</span>(settings.brightness)  <span class="cm">// 仍然是 80</span>
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="kotlin">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Kotlin</span>
+    </div>
+    <pre><code><span class="cm">// 委托：自定义属性委托与接口委托进阶</span>
+<span class="kw">import</span> kotlin.reflect.KProperty
+
+<span class="cm">// 1. 自定义时间戳委托</span>
+<span class="kw">class</span> <span class="tp">TimestampDelegate</span>(<span class="kw">private var</span> value: <span class="tp">Long</span> = <span class="nm">0</span>) {
+    <span class="kw">operator fun</span> <span class="fn">getValue</span>(thisRef: <span class="tp">Any</span>?, property: <span class="tp">KProperty</span>&lt;*&gt;): <span class="tp">Long</span> {
+        <span class="fn">println</span>(<span class="st">"[</span><span class="op">${</span>property.name<span class="op">}</span><span class="st">] Read at </span><span class="op">${</span><span class="tp">System</span>.<span class="fn">currentTimeMillis</span>()<span class="op">}</span><span class="st">"</span>)
+        <span class="kw">return</span> value
+    }
+
+    <span class="kw">operator fun</span> <span class="fn">setValue</span>(thisRef: <span class="tp">Any</span>?, property: <span class="tp">KProperty</span>&lt;*&gt;, value: <span class="tp">Long</span>) {
+        <span class="fn">println</span>(<span class="st">"[</span><span class="op">${</span>property.name<span class="op">}</span><span class="st">] Updated from </span><span class="op">$</span><span class="nm">this</span>.<span class="fn">value</span><span class="st"> to </span><span class="op">$</span><span class="nm">value</span><span class="st">"</span>)
+        <span class="kw">this</span>.value = value
+    }
+}
+
+<span class="cm">// 2. Map 委托：从 Map 中读取属性</span>
+<span class="kw">class</span> <span class="tp">User</span>(map: <span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">Any</span>&gt;) {
+    <span class="kw">val</span> name: <span class="tp">String</span> <span class="kw">by</span> map
+    <span class="kw">val</span> age: <span class="tp">Int</span> <span class="kw">by</span> map
+    <span class="kw">val</span> email: <span class="tp">String</span> <span class="kw">by</span> map
+}
+
+<span class="cm">// 3. 接口委托：组合多个行为</span>
+<span class="kw">interface</span> <span class="tp">Logger</span> {
+    <span class="kw">fun</span> <span class="fn">log</span>(msg: <span class="tp">String</span>)
+}
+
+<span class="kw">interface</span> <span class="tp">Cache</span> {
+    <span class="kw">fun</span> <span class="fn">get</span>(key: <span class="tp">String</span>): <span class="tp">String</span>?
+    <span class="kw">fun</span> <span class="fn">put</span>(key: <span class="tp">String</span>, value: <span class="tp">String</span>)
+}
+
+<span class="kw">class</span> <span class="tp">ConsoleLogger</span> : <span class="tp">Logger</span> {
+    <span class="kw">override fun</span> <span class="fn">log</span>(msg: <span class="tp">String</span>) = <span class="fn">println</span>(<span class="st">"[LOG] </span><span class="op">$</span><span class="nm">msg</span><span class="st">"</span>)
+}
+
+<span class="kw">class</span> <span class="tp">MemoryCache</span> : <span class="tp">Cache</span> {
+    <span class="kw">private val</span> store = <span class="fn">mutableMapOf</span>&lt;<span class="tp">String</span>, <span class="tp">String</span>&gt;()
+    <span class="kw">override fun</span> <span class="fn">get</span>(key: <span class="tp">String</span>) = store[key]
+    <span class="kw">override fun</span> <span class="fn">put</span>(key: <span class="tp">String</span>, value: <span class="tp">String</span>) { store[key] = value }
+}
+
+<span class="cm">// 组合委托：同时拥有 Logger 和 Cache 的能力</span>
+<span class="kw">class</span> <span class="tp">AppService</span>(
+    logger: <span class="tp">Logger</span> = <span class="tp">ConsoleLogger</span>(),
+    cache: <span class="tp">Cache</span> = <span class="tp">MemoryCache</span>()
+) : <span class="tp">Logger</span> <span class="kw">by</span> logger, <span class="tp">Cache</span> <span class="kw">by</span> cache
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="cm">// Map 委托</span>
+    <span class="kw">val</span> user = <span class="tp">User</span>(<span class="fn">mapOf</span>(<span class="st">"name"</span> <span class="kw">to</span> <span class="st">"Alice"</span>, <span class="st">"age"</span> <span class="kw">to</span> <span class="nm">25</span>, <span class="st">"email"</span> <span class="kw">to</span> <span class="st">"a@b.com"</span>))
+    <span class="fn">println</span>(<span class="st">"</span><span class="op">${</span>user.name<span class="op">}</span><span class="st">, </span><span class="op">${</span>user.age<span class="op">}</span><span class="st">"</span>)
+
+    <span class="cm">// 接口组合委托</span>
+    <span class="kw">val</span> service = <span class="tp">AppService</span>()
+    service.<span class="fn">log</span>(<span class="st">"Starting"</span>)     <span class="cm">// [LOG] Starting</span>
+    service.<span class="fn">put</span>(<span class="st">"key"</span>, <span class="st">"value"</span>)
+    <span class="fn">println</span>(service.<span class="fn">get</span>(<span class="st">"key"</span>))  <span class="cm">// value</span>
 }</code></pre>
 </div>
 

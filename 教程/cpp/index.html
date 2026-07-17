@@ -249,6 +249,44 @@ std::vector&lt;<span class="tp">int</span>&gt; nums = {<span class="nm">1</span>
 }</code></pre>
 </div>
 
+<div class="code-block" data-lang="cpp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C++</span>
+    </div>
+    <pre><code><span class="cm">// 结构化绑定（C++17）—— 优雅解构</span>
+<span class="cm">// 绑定 pair / tuple</span>
+std::map&lt;std::<span class="tp">string</span>, <span class="tp">int</span>&gt; ages = {<span class="st">"Alice"</span>, <span class="nm">30</span>};
+<span class="kw">for</span> (<span class="kw">const auto</span>&amp; [name, age] : ages) {
+    std::cout &lt;&lt; name &lt;&lt; <span class="st">": "</span> &lt;&lt; age &lt;&lt; std::endl;
+}
+
+<span class="cm">// 绑定数组</span>
+<span class="tp">int</span> arr[] = {<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>};
+<span class="kw">auto</span> [a, b, c] = arr;  <span class="cm">// a=10, b=20, c=30</span>
+
+<span class="cm">// 绑定 struct（C++20）</span>
+<span class="kw">struct</span> <span class="tp">Point</span> { <span class="tp">double</span> x, y, z; };
+<span class="kw">auto</span> [x, y, z] = <span class="tp">Point</span>{<span class="nm">1.0</span>, <span class="nm">2.0</span>, <span class="nm">3.0</span>};
+
+<span class="cm">// C++20: 范围 for 的初始化语句</span>
+std::vector&lt;<span class="tp">int</span>&gt; v = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>};
+<span class="kw">for</span> (<span class="kw">const auto</span>&amp; [begin, end] = std::ranges::<span class="fn">equal_range</span>(v, <span class="nm">3</span>);
+     <span class="kw">const auto</span>&amp; it : v) {
+    <span class="cm">// 初始化语句限定作用域</span>
+}
+
+<span class="cm">// range-based for 与 initializer_list</span>
+<span class="kw">for</span> (<span class="tp">int</span> n : {<span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">5</span>, <span class="nm">7</span>, <span class="nm">11</span>}) {
+    std::cout &lt;&lt; n &lt;&lt; <span class="st">" "</span>;
+}
+
+<span class="cm">// 反向范围 for（C++20 ranges）</span>
+<span class="kw">for</span> (<span class="tp">int</span> n : v | std::views::<span class="fn">reverse</span>) {
+    std::cout &lt;&lt; n &lt;&lt; <span class="st">" "</span>;
+}</code></pre>
+</div>
+
 <h3>函数基础</h3>
 <div class="code-block">
     <div class="code-header">
@@ -1042,6 +1080,100 @@ intStack.<span class="fn">push</span>(<span class="nm">42</span>);
 <span class="cm">// safe_abs(<span class="st">"hello"</span>);  // ❌ 编译错误：不满足 Numeric 约束</span></code></pre>
 </div>
 
+<div class="code-block" data-lang="cpp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C++</span>
+    </div>
+    <pre><code><span class="cm">// SFINAE —— Substitution Failure Is Not An Error</span>
+<span class="kw">#include</span> <span class="st">&lt;type_traits&gt;</span>
+
+<span class="cm">// 仅在类型有 size() 成员函数时启用</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>&gt;
+<span class="kw">auto</span> <span class="fn">get_size</span>(<span class="kw">const</span> <span class="tp">T</span>&amp; c) -&gt; <span class="kw">decltype</span>(c.<span class="fn">size</span>()) {
+    <span class="kw">return</span> c.<span class="fn">size</span>();
+}
+
+<span class="cm">// C++17: 用 enable_if 替代 SFINAE</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>,
+    <span class="kw">typename</span> = std::<span class="fn">enable_if_t</span>&lt;std::<span class="fn">is_integral_v</span>&lt;<span class="tp">T</span>&gt;&gt;&gt;
+<span class="tp">T</span> <span class="fn">safe_div</span>(<span class="tp">T</span> a, <span class="tp">T</span> b) {
+    <span class="kw">if</span> (b == <span class="nm">0</span>) <span class="kw">throw</span> std::<span class="runtime_error</span>(<span class="st">"division by zero"</span>);
+    <span class="kw">return</span> a / b;
+}
+
+<span class="cm">// C++20: 用 concept 替代 SFINAE（更清晰）</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>&gt;
+<span class="kw">concept</span> <span class="tp">Container</span> = <span class="kw">requires</span>(<span class="tp">T</span> c) {
+    c.<span class="fn">size</span>();
+    c.<span class="fn">begin</span>();
+    c.<span class="fn">end</span>();
+};
+
+<span class="kw">template</span>&lt;<span class="tp">Container</span> <span class="tp">C</span>&gt;
+<span class="tp">size_t</span> <span class="fn">count_elements</span>(<span class="kw">const</span> <span class="tp">C</span>&amp; c) { <span class="kw">return</span> c.<span class="fn">size</span>(); }</code></pre>
+</div>
+
+<div class="code-block" data-lang="cpp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C++</span>
+    </div>
+    <pre><code><span class="cm">// 可变参数模板（Variadic Templates）—— 接受任意数量参数</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>&gt;
+<span class="tp">T</span> <span class="fn">sum</span>(<span class="tp">T</span> value) { <span class="kw">return</span> value; }
+
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>, <span class="kw">typename</span>... <span class="tp">Args</span>&gt;
+<span class="tp">T</span> <span class="fn">sum</span>(<span class="tp">T</span> first, <span class="tp">Args</span>... rest) {
+    <span class="kw">return</span> first + <span class="fn">sum</span>(rest...);
+}
+
+std::cout &lt;&lt; <span class="fn">sum</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>);  <span class="cm">// 15</span>
+
+<span class="cm">// 折叠表达式（C++17）—— 更简洁的递归展开</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span>... <span class="tp">Args</span>&gt;
+<span class="kw">auto</span> <span class="fn">sum_fold</span>(<span class="tp">Args</span>... args) { <span class="kw">return</span> (args + ...); }
+
+<span class="kw">template</span>&lt;<span class="kw">typename</span>... <span class="tp">Args</span>&gt;
+<span class="tp">void</span> <span class="fn">print_all</span>(<span class="tp">Args</span>... args) {
+    ((std::cout &lt;&lt; args &lt;&lt; <span class="st">" "</span>), ...);  <span class="cm">// 逗号折叠</span>
+}
+
+<span class="cm">// 编译期字符串拼接</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span>... <span class="tp">Chars</span>&gt;
+<span class="kw">constexpr</span> <span class="kw">auto</span> <span class="fn">operator</span><span class="st">""_s</span>(<span class="tp">Chars</span>... chars) {
+    <span class="kw">return</span> std::<span class="tp">string</span>{chars...};
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="cpp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C++</span>
+    </div>
+    <pre><code><span class="cm">// C++20 Concepts —— 约束模板参数，错误信息更友好</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>&gt;
+<span class="kw">concept</span> <span class="tp">Addable</span> = <span class="kw">requires</span>(<span class="tp">T</span> a, <span class="tp">T</span> b) {
+    { a + b } -&gt; std::<span class="fn">convertible_to</span>&lt;<span class="tp">T</span>&gt;;
+};
+
+<span class="kw">template</span>&lt;<span class="tp">Addable</span> <span class="tp">T</span>&gt;
+<span class="tp">T</span> <span class="fn">safe_add</span>(<span class="tp">T</span> a, <span class="tp">T</span> b) { <span class="kw">return</span> a + b; }
+
+<span class="cm">// 用 requires 表达式替代 enable_if</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>&gt;
+<span class="kw">concept</span> <span class="tp">Hashable</span> = <span class="kw">requires</span>(<span class="tp">T</span> a) {
+    { std::<span class="fn">hash</span>&lt;<span class="tp">T</span>&gt;{}(a) } -&gt; std::<span class="fn">convertible_to</span>&lt;std::<span class="tp">size_t</span>&gt;;
+};
+
+<span class="cm">// requires 子句</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>&gt;
+    <span class="kw">requires</span> std::<span class="fn">is_pointer_v</span>&lt;<span class="tp">T</span>&gt;
+<span class="kw">void</span> <span class="fn">print_ptr</span>(<span class="tp">T</span> p) {
+    std::cout &lt;&lt; *p &lt;&lt; std::endl;
+}</code></pre>
+</div>
+
 <!-- ==================== 16. 容器 ==================== -->
 <h2 id="containers">16. 容器</h2>
 
@@ -1119,6 +1251,86 @@ std::<span class="tp">optional</span>&lt;<span class="tp">int</span>&gt; <span c
 
 <span class="kw">if</span> (<span class="kw">auto</span> val = <span class="fn">find_value</span>(data, <span class="nm">42</span>); val.<span class="fn">has_value</span>()) {
     std::cout &lt;&lt; *val &lt;&lt; std::endl;
+}</code></pre>
+</div>
+
+<div class="code-block" data-lang="cpp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C++</span>
+    </div>
+    <pre><code><span class="cm">// 自定义分配器 —— 控制容器的内存分配策略</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="tp">T</span>&gt;
+<span class="kw">class</span> <span class="tp">ArenaAllocator</span> {
+    <span class="kw">struct</span> <span class="tp">Block</span> { <span class="tp">char</span>* ptr; <span class="tp">size_t</span> size; };
+    std::vector&lt;<span class="tp">Block</span>&gt; blocks_;
+    <span class="tp">char</span>* ptr_ = <span class="kw">nullptr</span>;
+    <span class="tp">size_t</span> remaining_ = <span class="nm">0</span>;
+
+<span class="kw">public</span>:
+    <span class="kw">using</span> value_type = <span class="tp">T</span>;
+
+    <span class="fn">ArenaAllocator</span>(<span class="tp">size_t</span> block_size = <span class="nm">4096</span>)
+        : <span class="fn">remaining_</span>(block_size) {
+        blocks_.<span class="fn">push_back</span>({<span class="kw">new</span> <span class="tp">char</span>[block_size], block_size});
+        ptr_ = blocks_.<span class="fn">back</span>().ptr;
+    }
+
+    <span class="tp">T</span>* <span class="fn">allocate</span>(<span class="tp">size_t</span> n) {
+        <span class="tp">size_t</span> bytes = n * <span class="kw">sizeof</span>(<span class="tp">T</span>);
+        <span class="kw">if</span> (bytes &gt; remaining_) <span class="kw">throw</span> std::<span class="runtime_error</span>(<span class="st">"out of memory"</span>);
+        <span class="tp">T</span>* result = <span class="kw">reinterpret_cast</span>&lt;<span class="tp">T</span>*&gt;(ptr_);
+        ptr_ += bytes;
+        remaining_ -= bytes;
+        <span class="kw">return</span> result;
+    }
+
+    <span class="kw">void</span> <span class="fn">deallocate</span>(<span class="tp">T</span>*, <span class="tp">size_t</span>) {}  <span class="cm">// 释放由析构统一处理</span>
+};
+
+<span class="cm">// 使用自定义分配器</span>
+<span class="tp">ArenaAllocator</span>&lt;<span class="tp">int</span>&gt; alloc;
+std::vector&lt;<span class="tp">int</span>, <span class="tp">ArenaAllocator</span>&lt;<span class="tp">int</span>&gt;&gt; vec(alloc);
+vec.<span class="fn">push_back</span>(<span class="nm">42</span>);</code></pre>
+</div>
+
+<div class="code-block" data-lang="cpp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C++</span>
+    </div>
+    <pre><code><span class="cm">// 迭代器类别与容器对应关系</span>
+<span class="cm">// InputIterator:     输入流迭代器 (istream_iterator)</span>
+<span class="cm">// ForwardIterator:   单向链表 (forward_list), 哈希容器</span>
+<span class="cm">// BidirectionalIterator: 双向链表 (list), 红黑树 (set/map)</span>
+<span class="cm">// RandomAccessIterator:  动态数组 (vector), 双端队列 (deque)</span>
+
+<span class="cm">// 自定义迭代器 —— 实现前向迭代器</span>
+<span class="kw">class</span> <span class="tp">Range</span> {
+    <span class="tp">int</span> start_, end_, step_;
+<span class="kw">public</span>:
+    <span class="kw">struct</span> <span class="tp">iterator</span> {
+        <span class="kw">using</span> iterator_category = std::forward_iterator_tag;
+        <span class="kw">using</span> value_type = <span class="tp">int</span>;
+        <span class="kw">using</span> difference_type = <span class="tp">int</span>;
+        <span class="kw">using</span> pointer = <span class="kw">const</span> <span class="tp">int</span>*;
+        <span class="kw">using</span> reference = <span class="tp">int</span>;
+
+        <span class="tp">int</span> value, step;
+        <span class="tp">iterator</span>(<span class="tp">int</span> v, <span class="tp">int</span> s) : <span class="fn">value</span>(v), <span class="fn">step</span>(s) {}
+        <span class="tp">int</span> <span class="kw">operator</span>*() <span class="kw">const</span> { <span class="kw">return</span> value; }
+        <span class="tp">iterator</span>&amp; <span class="kw">operator</span>++() { value += step; <span class="kw">return</span> *<span class="kw">this</span>; }
+        <span class="tp">bool</span> <span class="kw">operator</span>!=(<span class="kw">const</span> <span class="tp">iterator</span>&amp; o) <span class="kw">const</span> { <span class="kw">return</span> value &lt; o.value; }
+    };
+
+    <span class="fn">Range</span>(<span class="tp">int</span> end) : <span class="fn">start_</span>(<span class="nm">0</span>), <span class="fn">end_</span>(end), <span class="fn">step_</span>(<span class="nm">1</span>) {}
+    <span class="tp">iterator</span> <span class="fn">begin</span>() <span class="kw">const</span> { <span class="kw">return</span> {start_, step_}; }
+    <span class="tp">iterator</span> <span class="fn">end</span>() <span class="kw">const</span> { <span class="kw">return</span> {end_, step_}; }
+};
+
+<span class="cm">// 使用自定义迭代器</span>
+<span class="kw">for</span> (<span class="tp">int</span> n : <span class="tp">Range</span>(<span class="nm">10</span>)) {
+    std::cout &lt;&lt; n &lt;&lt; <span class="st">" "</span>;  <span class="cm">// 0 1 2 3 4 5 6 7 8 9</span>
 }</code></pre>
 </div>
 
@@ -1726,6 +1938,76 @@ counter();  <span class="cm">// 2</span>
 std::function&lt;<span class="tp">int</span>(<span class="tp">int</span>, <span class="tp">int</span>)&gt; op = [](<span class="tp">int</span> a, <span class="tp">int</span> b) { <span class="kw">return</span> a + b; };</code></pre>
 </div>
 
+<div class="code-block" data-lang="cpp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C++</span>
+    </div>
+    <pre><code><span class="cm">// 捕获模式详解 —— 选择合适的捕获方式</span>
+<span class="tp">int</span> x = <span class="nm">10</span>;
+<span class="tp">double</span> y = <span class="nm">3.14</span>;
+std::<span class="tp">string</span> s = <span class="st">"hello"</span>;
+
+<span class="cm">// [var]        按值捕获指定变量（拷贝）</span>
+<span class="kw">auto</span> f1 = [x]() { <span class="kw">return</span> x * <span class="nm">2</span>; };
+
+<span class="cm">// [&amp;var]       按引用捕获指定变量</span>
+<span class="kw">auto</span> f2 = [&amp;x]() { x++; };
+
+<span class="cm">// [=]          所有外部变量按值捕获</span>
+<span class="kw">auto</span> f3 = [=]() { <span class="kw">return</span> x + y; };
+
+<span class="cm">// [&amp;]          所有外部变量按引用捕获</span>
+<span class="kw">auto</span> f4 = [&amp;]() { x++; y *= <span class="nm">2</span>; };
+
+<span class="cm">// [=, &amp;s]      默认按值，s 按引用</span>
+<span class="kw">auto</span> f5 = [=, &amp;s]() { s += <span class="st">"!"</span>; };
+
+<span class="cm">// [x, &amp;y]      x 按值，y 按引用（混合）</span>
+<span class="kw">auto</span> f6 = [x, &amp;y]() { y += x; };
+
+<span class="cm">// C++14 init capture —— 移动捕获 / 自定义名称</span>
+<span class="kw">auto</span> ptr = std::<span class="fn">make_unique</span>&lt;<span class="tp">int</span>&gt;(<span class="nm">42</span>);
+<span class="kw">auto</span> f7 = [p = std::<span class="fn">move</span>(ptr)]() { <span class="kw">return</span> *p; };
+
+<span class="cm">// 初始化捕获也可以用于隐式移动</span>
+<span class="kw">auto</span> f8 = [val = std::<span class="fn">to_string</span>(<span class="nm">42</span>)]() { <span class="kw">return</span> val; };</code></pre>
+</div>
+
+<div class="code-block" data-lang="cpp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C++</span>
+    </div>
+    <pre><code><span class="cm">// 泛型 Lambda（C++14）与高阶 Lambda</span>
+<span class="cm">// auto 参数使其接受任意类型</span>
+<span class="kw">auto</span> print = [](<span class="kw">auto</span>&amp;&amp; val) {
+    std::cout &lt;&lt; val &lt;&lt; std::endl;
+};
+print(<span class="nm">42</span>);
+print(<span class="st">"hello"</span>);
+print(<span class="nm">3.14</span>);
+
+<span class="cm">// 高阶 Lambda —— Lambda 返回 Lambda</span>
+<span class="kw">auto</span> <span class="fn">make_adder</span> = [](<span class="tp">int</span> offset) {
+    <span class="kw">return</span> [offset](<span class="tp">int</span> x) { <span class="kw">return</span> x + offset; };
+};
+<span class="kw">auto</span> add5 = <span class="fn">make_adder</span>(<span class="nm">5</span>);
+add5(<span class="nm">10</span>);  <span class="cm">// 15</span>
+
+<span class="cm">// 无状态 Lambda 可隐式转换为函数指针</span>
+<span class="tp">int</span>(*fp)(<span class="tp">int</span>, <span class="tp">int</span>) = [](<span class="tp">int</span> a, <span class="tp">int</span> b) { <span class="kw">return</span> a + b; };
+fp(<span class="nm">3</span>, <span class="nm">4</span>);  <span class="cm">// 7</span>
+
+<span class="cm">// mutable Lambda 可修改按值捕获的副本</span>
+<span class="tp">int</span> count = <span class="nm">0</span>;
+<span class="kw">auto</span> counter = [count]() <span class="kw">mutable</span> {
+    <span class="kw">return</span> ++count;  <span class="cm">// 修改的是副本，不影响外部 count</span>
+};
+counter();  <span class="cm">// 1</span>
+counter();  <span class="cm">// 2</span></code></pre>
+</div>
+
 <!-- ==================== 25. 并发编程 ==================== -->
 <h2 id="concurrency">25. 并发编程</h2>
 
@@ -1825,6 +2107,104 @@ std::vector&lt;<span class="tp">int</span>&gt; nums = {<span class="nm">1</span>
         <span class="kw">return</span> res;
     }
 };</code></pre>
+</div>
+
+<div class="code-block" data-lang="cpp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C++</span>
+    </div>
+    <pre><code><span class="cm">// condition_variable —— 线程间同步等待</span>
+<span class="kw">#include</span> <span class="st">&lt;mutex&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;condition_variable&gt;</span>
+
+<span class="tp">std::mutex</span> mtx;
+<span class="tp">std::condition_variable</span> cv;
+<span class="tp">bool</span> ready = <span class="kw">false</span>;
+<span class="tp">int</span> data = <span class="nm">0</span>;
+
+<span class="cm">// 生产者线程</span>
+<span class="kw">void</span> <span class="fn">producer</span>() {
+    {
+        std::lock_guard&lt;std::mutex&gt; lock(mtx);
+        data = <span class="nm">42</span>;
+        ready = <span class="kw">true</span>;
+    }  <span class="cm">// 解锁</span>
+    cv.<span class="fn">notify_one</span>();  <span class="cm">// 通知一个等待线程</span>
+}
+
+<span class="cm">// 消费者线程</span>
+<span class="kw">void</span> <span class="fn">consumer</span>() {
+    std::unique_lock&lt;std::mutex&gt; lock(mtx);
+    cv.<span class="fn">wait</span>(lock, [] { <span class="kw">return</span> ready; });  <span class="cm">// 阻塞等待条件满足</span>
+    <span class="cm">// 此时锁已重新获取，data == 42</span>
+    std::cout &lt;&lt; data &lt;&lt; std::endl;
+}
+
+<span class="cm">// 生产者-消费者队列</span>
+<span class="kw">class</span> <span class="tp">BoundedQueue</span> {
+    std::queue&lt;<span class="tp">int</span>&gt; q_;
+    std::mutex mtx_;
+    std::condition_variable not_empty_;
+    std::condition_variable not_full_;
+    <span class="tp">size_t</span> max_size_;
+<span class="kw">public</span>:
+    <span class="fn">BoundedQueue</span>(<span class="tp">size_t</span> cap) : <span class="fn">max_size_</span>(cap) {}
+
+    <span class="kw">void</span> <span class="fn">push</span>(<span class="tp">int</span> val) {
+        std::unique_lock&lt;std::mutex&gt; lock(mtx_);
+        not_full_.<span class="fn">wait</span>(lock, [<span class="kw">this</span>] { <span class="kw">return</span> q_.<span class="fn">size</span>() &lt; max_size_; });
+        q_.<span class="fn">push</span>(val);
+        not_empty_.<span class="fn">notify_one</span>();
+    }
+
+    <span class="tp">int</span> <span class="fn">pop</span>() {
+        std::unique_lock&lt;std::mutex&gt; lock(mtx_);
+        not_empty_.<span class="fn">wait</span>(lock, [<span class="kw">this</span>] { <span class="kw">return</span> !q_.<span class="fn">empty</span>(); });
+        <span class="tp">int</span> val = q_.<span class="fn">front</span>(); q_.<span class="fn">pop</span>();
+        not_full_.<span class="fn">notify_one</span>();
+        <span class="kw">return</span> val;
+    }
+};</code></pre>
+</div>
+
+<div class="code-block" data-lang="cpp">
+    <div class="code-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C++</span>
+    </div>
+    <pre><code><span class="cm">// std::atomic —— 无锁线程安全操作</span>
+<span class="kw">#include</span> <span class="st">&lt;atomic&gt;</span>
+
+<span class="cm">// 基本原子操作</span>
+std::atomic&lt;<span class="tp">int</span>&gt; counter{<span class="nm">0</span>};
+<span class="kw">void</span> <span class="fn">increment</span>() {
+    counter.<span class="fn">fetch_add</span>(<span class="nm">1</span>, std::memory_order_relaxed);
+}
+
+<span class="cm">// 原子标志 —— 自旋锁实现</span>
+<span class="kw">class</span> <span class="tp">SpinLock</span> {
+    std::atomic&lt;<span class="tp">bool</span>&gt; flag_{<span class="kw">false</span>};
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">lock</span>() {
+        <span class="kw">while</span> (flag_.<span class="fn">exchange</span>(<span class="kw">true</span>, std::memory_order_acquire))
+            ;  <span class="cm">// 自旋直到获取锁</span>
+    }
+    <span class="kw">void</span> <span class="fn">unlock</span>() {
+        flag_.<span class="fn">store</span>(<span class="kw">false</span>, std::memory_order_release);
+    }
+};
+
+<span class="cm">// compare_exchange —— CAS（Compare-And-Swap）</span>
+std::atomic&lt;<span class="tp">int</span>&gt; balance{<span class="nm">1000</span>};
+<span class="tp">bool</span> <span class="fn">try_transfer</span>(<span class="tp">int</span> amount) {
+    <span class="tp">int</span> expected = balance.<span class="fn">load</span>();
+    <span class="kw">do</span> {
+        <span class="kw">if</span> (expected &lt; amount) <span class="kw">return false</span>;
+    } <span class="kw">while</span> (!balance.<span class="fn">compare_exchange_weak</span>(
+        expected, expected - amount));
+    <span class="kw">return true</span>;
+}</code></pre>
 </div>
 
 <div class="warning">数据竞争是并发编程中最常见的 bug。使用 <code>std::mutex</code> 保护共享可变数据，或使用 <code>std::atomic</code> 替代简单的计数器。<code>std::lock_guard</code> 和 <code>std::scoped_lock</code> 是管理锁的最佳实践（RAII）。</div>
